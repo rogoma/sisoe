@@ -48,13 +48,15 @@
                                     <form method="POST" action="{{ route('contracts.files.store_con', $contract->id) }}" enctype="multipart/form-data">
                                     @csrf
 
+                                    <div class="col-sm-12">
                                         <div class="form-group @error('description') has-danger @enderror">
                                             <label class="col-form-label">Descripción</label>
-                                            <input type="text" id="description" name="description" value="{{ old('description') }}" class="form-control">
+                                            <textarea rows="2" id="description" name="description" class="form-control">{{ old('description') }}</textarea>
                                             @error('description')
                                                 <div class="col-form-label">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                    </div>
 
                                         <div class="form-group @error('file') has-danger @enderror">
                                             <label class="col-form-label">Cargar archivo <small>(Archivos permitidos: WORD, PDF, EXCEL)</small></label>

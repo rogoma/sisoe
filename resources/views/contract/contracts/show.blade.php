@@ -107,25 +107,26 @@ p.centrado {
                                             <div class="slide"></div>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#tab2" role="tab"><i class="fa fa-list"></i> Ítems</a>
+                                            <a class="nav-link" data-toggle="tab" href="#tab2" role="tab"><i class="fa fa-file-archive-o"></i> Eval.Técnica</a>
+                                            <div class="slide"></div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i class="fa fa-list"></i>Ordenes de Ejec.</a>
                                             <div class="slide"></div>
                                         </li>
                                         {{-- <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i class="fa fa-list"></i> Pólizas</a>
                                             <div class="slide"></div>
                                         </li> --}}
-                                        <li class="nav-item">
+                                        {{-- <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i class="fa fa-file-pdf-o"></i> Reportes</a>
                                             <div class="slide"></div>
-                                        </li>
+                                        </li> --}}
                                         {{-- <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i class="fa fa-folder-open-o"></i> Archivos de Pólizas</a>
                                             <div class="slide"></div>
                                         </li> --}}
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#tab6" role="tab"><i class="fa fa-file-archive-o"></i> Archivos del Contrato</a>
-                                            <div class="slide"></div>
-                                        </li>
+                                        
                                     </ul>
 
                                     <div class="tab-content card-block">
@@ -292,7 +293,7 @@ p.centrado {
                                     </div> --}}
 
                                         {{-- NO SE USA EN SISOE --}}
-                                        <div class="tab-pane" id="tab2" role="tabpanel">
+                                        <div class="tab-pane" id="tab6" role="tabpanel">
                                             <table id="items" class="table table-striped table-bordered">
                                                     <thead>
                                                         <tr>
@@ -454,13 +455,13 @@ p.centrado {
                                             </div>
                                         </div>
 
-                                        <div class="tab-pane" id="tab6" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al llamado:</label>
+                                        <div class="tab-pane" id="tab2" role="tabpanel">
+                                                <label class="col-form-label f-w-600">Archivos de Evaluaciones Técnicas:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Descripción</th>
+                                                            <th>Descripción de la Eval.</th>
                                                             <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>
                                                             <th>Acciones</th>
@@ -498,7 +499,7 @@ p.centrado {
                                                 <div class="text-right">
                                                     @if (Auth::user()->hasPermission(['admin.orders.create', 'contracts.orders.create']))
                                                         @if (in_array($contract->contract_state_id, [1,2]))
-                                                            <a href="{{ route('contracts.files.create_con', $contract->id) }}" class="btn btn-primary">Cargar Contratos</a>
+                                                            <a href="{{ route('contracts.files.create_con', $contract->id) }}" class="btn btn-primary">Cargar Evaluación</a>
                                                         @endif
                                                     @endif
                                                 </div>

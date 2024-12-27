@@ -205,7 +205,7 @@ class ContractsFilesController extends Controller
         $contract = Contract::findOrFail($contract_id);
 
         $rules = array(
-            'description' => 'string|required|max:100',
+            'description' => 'string|required|max:500',
         );
 
         $validator =  Validator::make($request->input(), $rules);
@@ -257,7 +257,7 @@ class ContractsFilesController extends Controller
         $contract = Contract::findOrFail($contract_id);
 
         $rules = array(
-            'description' => 'string|required|max:100',
+            'description' => 'string|required|max:500',
         );
 
         $validator =  Validator::make($request->input(), $rules);
@@ -308,7 +308,7 @@ class ContractsFilesController extends Controller
         $contract = Contract::findOrFail($contract_id);
 
         $rules = array(
-            'description' => 'string|required|max:100',
+            'description' => 'string|required|max:500',
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -390,7 +390,7 @@ class ContractsFilesController extends Controller
         $contract = Contract::findOrFail($contract_id);
 
         $rules = array(
-            'description' => 'string|required|max:100',
+            'description' => 'string|required|max:500',
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -468,7 +468,7 @@ class ContractsFilesController extends Controller
         $contract = Contract::findOrFail($contract_id);
 
         $rules = array(
-            'description' => 'string|required|max:100',
+            'description' => 'string|required|max:500',
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
