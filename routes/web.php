@@ -539,11 +539,16 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('contracts/files/{contract_id}/create', [ContractsFilesController::class, 'create'])->name('contracts.files.create');
     //carga archivos de contratos
     Route::get('contracts/files/{contract_id}/create_con', [ContractsFilesController::class, 'create_con'])->name('contracts.files.create_con');
+    //carga archivos de evaluaciones
+    Route::get('contracts/files/{contract_id}/create_eval', [ContractsFilesController::class, 'create_eval'])->name('contracts.files.create_eval');
 
     //almacena archivos de pólizas
     Route::post('contracts/files/{contract_id}/store', [ContractsFilesController::class, 'store'])->name('contracts.files.store');
     //almacena archivos de contratos
     Route::post('contracts/files/{contract_id}/store_con', [ContractsFilesController::class, 'store_con'])->name('contracts.files.store_con');
+    //almacena archivos de evaluaciones
+    Route::post('contracts/files/{contract_id}/store_eval', [ContractsFilesController::class, 'store_eval'])->name('contracts.files.store_eval');
+
 
     Route::get('contracts/files/{file_id}/download', [ContractsFilesController::class, 'download'])->name('contracts.files.download');
     Route::delete('contracts/files/{file_id}/delete', [ContractsFilesController::class, 'destroy'])->name('contracts.files.delete');

@@ -433,7 +433,7 @@ class ContractsController extends Controller
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 3 contratos
         $user_files_con = $contract->files()->where('dependency_id', $user_dependency)
-            ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas  5-dictamenes
+            ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas 5-dictamenes
             ->orderBy('created_at','asc')
             ->get();
 
@@ -444,10 +444,23 @@ class ContractsController extends Controller
             ->get();
         // }
 
+        // Obtenemos los archivos cargados por usuarios con tipo de archivos 6-evaluaciones
+        $user_files_eval = $contract->files()->where('dependency_id', $user_dependency)
+            ->whereIn('file_type', [6])//1-polizas 3-contratos 4-addendas 5-dictamenes 6-evaluaciones
+            ->orderBy('created_at','asc')
+            ->get();
+
+        // if($role_user == 1){
+            $other_files_eval = $contract->files()->where('dependency_id', '!=', $user_dependency)
+            ->whereIn('file_type', [6])//1-polizas 3-contratos 4-addendas  5-dictamenes 6-evaluaciones
+            ->orderBy('created_at','asc')
+            ->get();
+        // }
+
         // chequeamos que el usuario tenga permisos para visualizar el pedido
         if($request->user()->hasPermission(['admin.contracts.show', 'process_contracts.contracts.show',
         'contracts.contracts.index','derive_contracts.contracts.index']) || $contract->dependency_id == $request->user()->dependency_id){
-            return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con','other_files_pol','other_files_con'));
+            return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con','user_files_eval','other_files_pol','other_files_con','other_files_eval'));
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }

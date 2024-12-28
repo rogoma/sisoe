@@ -158,42 +158,17 @@ class ContractsFilesController extends Controller
         return view('contract.files.create_con', compact('contract', 'post_max_size'));
     }
 
-    // /**
-    //  * Show the form for creating a new resource.
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function create_filedncp(Request $request, $contract_id)
-    // {
-    //     $contract = Contract::findOrFail($contract_id);
-    //     $post_max_size = $this->postMaxSize;
-    //     return view('contract.files.create_filedncp', compact('contract', 'post_max_size'));
-    // }
-
-    // /**
-    //  * Show the form for creating a new resource.
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function create_filedncp_con(Request $request, $contract_id)
-    // {
-    //     $contract = Contract::findOrFail($contract_id);
-    //     $post_max_size = $this->postMaxSize;
-    //     return view('contract.files.create_filedncp_con', compact('contract', 'post_max_size'));
-    // }
-
-    // /**
-    //  * Show the form for creating a new resource.
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function create_cuadro_compar(Request $request, $contract_id)
-    // {
-    //     $contract = Contract::findOrFail($contract_id);
-    //     $post_max_size = $this->postMaxSize;
-    //     return view('contract.files.create_cuadro_compar', compact('contract', 'post_max_size'));
-    // }
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create_eval(Request $request, $contract_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+        $post_max_size = $this->postMaxSize;
+        return view('contract.files.create_eval', compact('contract', 'post_max_size'));
+    }
 
     /**
      * Funcionalidad de agregar de archivo.
@@ -298,6 +273,59 @@ class ContractsFilesController extends Controller
 
         return redirect()->route('contracts.show', $contract_id);
     }
+
+    /**
+     * Funcionalidad de agregar de archivo.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store_eval(Request $request, $contract_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+
+        $rules = array(
+            'description' => 'string|required|max:500',
+        );
+
+        $validator =  Validator::make($request->input(), $rules);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        if(!$request->hasFile('file')){
+            $validator = Validator::make($request->input(), []);
+            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD, PDF o EXCEL.');
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // chequeamos la extension del archivo subido
+        $extension = $request->file('file')->getClientOriginalExtension();
+        if(!in_array($extension, array('doc', 'docx', 'pdf', 'xls', 'xlsx'))){
+            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf, xls, xlsx.'); // Agregamos el error
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Pasó todas las validaciones, guardamos el archivo
+        // $fileName = time().'-contract-file.'.$extension; // nombre a guardar
+        // $fileName = 'contrato_nro_'.$request->input($contract->number_year).'.'.$extension; // nombre a guardar
+        $fileName = 'evaluación'.time().'.'.$extension; // nombre a guardar
+        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
+        $path = $request->file('file')->storeAs('public/files', $fileName);
+
+        $file = new File;
+        $file->description = $request->input('description');
+        $file->file = $fileName;
+        $file->file_type = 6;//evaluaciones
+        $file->contract_id = $contract_id;
+        $file->contract_state_id = $contract->contract_state_id;
+        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
+        $file->save();
+
+        return redirect()->route('contracts.show', $contract_id);
+    }
+    
     /**
      * Funcionalidad de agregar de archivo.
      *
