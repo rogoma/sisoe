@@ -38,8 +38,8 @@
                                 <div class="card-header">
                                     <h5>Cargar Archivo de Contratos</h5>
                                 </div>
-                                <div class="col-sm-8 text-left">
-                                    <h5>{{ $contract->description." - ".$contract->modality->description." N° ".$contract->number_year." - ".$contract->provider->description }}
+                                <div class="col-sm-12 text-left">
+                                    <h5>{{ $contract->description." - ".$contract->modality->description." - Contrato N° ".$contract->number_year." - ".$contract->provider->description }}
                                     {{-- <h5>SIMESE: {{ number_format($contract->simese->first()['simese'],'0', ',','.') }} </h5> --}}
                                     {{-- <h5><a style="font-size: 17px; color:BLACK"> SIMESE: </a>{{ is_null($contract->simese->first()) ?' ' : number_format($contract->simese->first()['simese'],'0', ',','.')."/".$contract->simese->first()['year'] }}</h5> --}}
 
@@ -49,7 +49,7 @@
                                     @csrf
 
                                         <div class="form-group @error('description') has-danger @enderror">
-                                            <label class="col-form-label">Descripción</label>
+                                            <label class="col-form-label">Descripción (hasta 500 caracteres)</label>
                                             <input type="text" id="description" name="description" value="{{ old('description') }}" class="form-control">
                                             @error('description')
                                                 <div class="col-form-label">{{ $message }}</div>

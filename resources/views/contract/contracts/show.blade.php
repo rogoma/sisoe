@@ -246,25 +246,23 @@ p.centrado {
                                                 @endif
                                             </div>
                                         </div>
-                                                                       
-
-                                        
-
-                                        {{-- NO SE USA EN SISOE --}}
+                                       
+                                        {{-- ORDENES DE EJECUCIÓN --}}
                                         <div class="tab-pane" id="tab2" role="tabpanel">
                                             <table id="items" class="table table-striped table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Póliza</th>
-                                                            <th>N° de Póliza</th>
-                                                            <th>Vigencia Desde</th>
-                                                            <th>Vigencia Hasta</th>
-                                                            <th>Monto</th>
-                                                            <th>Comentarios</th>
-                                                            <th>Acciones</th>
-                                                            <th>Status</th>
-                                                            <th>Archivo</th>
+                                                            <th>Fecha</th>
+                                                            <th>N° OE</th>                                                            
+                                                            <th>Contrato N°</th>
+                                                            <th>Lote N°</th>
+                                                            <th>Contratista</th>
+                                                            <th>Localidad</th>
+                                                            <th>Referencia (Compon.)</th>
+                                                            <th>Estado</th>
+                                                            <th>Observación</th>
+                                                            <th>Acciones</th>                                                            
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -335,6 +333,8 @@ p.centrado {
                                                         {{-- Si pedido está anulado no muestra agregar ítems --}}
                                                         @if (in_array($contract->contract_state_id, [1]))
                                                         <a href="{{ route('contracts.items.create', $contract->id) }}" class="btn btn-primary">Agregar Orden</a>
+                                                        <a href="{{ route('orders.create', $contract->id) }}" title="Agregar pedido" class="btn btn-primary">Agregar pedido</a>
+                                                        <a href="{{ route('orders.uploadExcel', $contract->id)}}" title="Cargar Archivo EXCEL" class="btn btn-danger btn-icon"><i class="fa fa-upload text-white"></i></a>
                                                         @endif
                                                     @endif
                                                 </div>
