@@ -272,8 +272,8 @@ p.centrado {
                                                                 <td>{{ $contract->orders[$i]->totalAmountFormat()}} </td>
                                                                 <td>{{ $contract->orders[$i]->locality }}</td>
                                                                 <td>{{ $contract->orders[$i]->component_id }}</td>
-                                                                {{-- <td>{{ $contract->orders[$i]->order_state }}</td> --}}
-                                                                <td>{{ $contract->orders[$i]->orders->description }}</td>
+                                                                <td>{{ $contract->orders[$i]->order_state }}</td>
+                                                                {{-- <td>{{ $contract->orders[$i]->orders->description }}</td> --}}
                                                                 
                                                                 <td>{{ $contract->orders[$i]->comments }}</td>
 
