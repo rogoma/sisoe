@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderStatesTable extends Migration
+class CreateComponentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateOrderStatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_states', function (Blueprint $table) {
+        Schema::create('components', function (Blueprint $table) {
             $table->smallInteger('id')->autoIncrement();	// set auto-increment and primary key
-            $table->string('description', 150)->unique();	// unique index
+            $table->string('code', 10);	
+            $table->string('description', 200)->unique();	// unique index
             $table->timestamps();
 
-            // // INDEXES
-            // $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            // $table->foreign('dependency_id')->references('id')->on('dependencies')->onUpdate('cascade');
+            // INDEXES            
+            $table->foreign('comp_type_id')->references('id')->on('comp_type_id')->onUpdate('cascade');
         });
     }
 
@@ -31,6 +31,6 @@ class CreateOrderStatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_states');
+        Schema::dropIfExists('components');
     }
 }

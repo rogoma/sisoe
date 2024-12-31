@@ -164,6 +164,7 @@ class ContractsController extends Controller
             'financial_organism_id' => 'numeric|required|max:999999',
             'contract_type_id' => 'numeric|required|max:999999',
             'total_amount' => 'string|required|max:9223372036854775807',
+            'open_contract' => 'numeric|required',
             'dependency_id' => 'numeric|required|max:999999',
             'contract_admin_id' => 'numeric|required|max:999999',
             'comments' => 'nullable|max:300',
@@ -205,6 +206,8 @@ class ContractsController extends Controller
         }else{
             $contract->total_amount = $total_amount_fin;
         }
+
+        $contract->open_contract = $request->input('open_contract');
         $contract->dependency_id = $request->input('dependency_id');
         $contract->comments=$request->input('comments');
         $contract->creator_user_id = $request->user()->id;  // usuario logueado
@@ -413,7 +416,7 @@ class ContractsController extends Controller
      */
     public function show(Request $request, $contract_id)
     {
-        $contract = Contract::findOrFail($contract_id);
+        $contract = Contract::findOrFail($contract_id);     
         $user_dependency = $request->user()->dependency_id;
         $role_user = $request->user()->role_id;
 
@@ -516,6 +519,7 @@ class ContractsController extends Controller
             'financial_organism_id' => 'numeric|required|max:999999',
             'contract_type_id' => 'numeric|required|max:999999',
             'total_amount' => 'string|required|max:9223372036854775807',
+            'open_contract' => 'numeric|required',
             'dependency_id' => 'numeric|required|max:999999',
             'contract_admin_id' => 'numeric|required|max:999999',
             'comments' => 'nullable|max:300',
@@ -581,7 +585,7 @@ class ContractsController extends Controller
         }else{
             $contract->total_amount = $total_amount_fin;
         }
-
+        $contract->open_contract = $request->input('open_contract');
         $contract->dependency_id = $request->input('dependency_id');
         $contract->comments=$request->input('comments');
         $contract->creator_user_id = $request->user()->id;  // usuario logueado

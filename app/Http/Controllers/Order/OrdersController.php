@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Order;
+use App\Models\Contract;
+use App\Models\OrderState;
+use App\Models\Component;
+
 use App\Models\OrderMultiYear;
 use App\Models\Dependency;
 use App\Models\Modality;
@@ -14,6 +18,7 @@ use App\Models\FundingSource;
 use App\Models\FinancialOrganism;
 use App\Models\ExpenditureObject;
 use App\Models\OrderOrderState;
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -98,16 +103,32 @@ class OrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, $contract_id)
     {
-        $dependencies = Dependency::all();
-        $modalities = Modality::all();
-        $sub_programs = SubProgram::all();
-        $funding_sources = FundingSource::all();
-        $financial_organisms = FinancialOrganism::all();
-        $expenditure_objects = ExpenditureObject::where('level', 3)->get();
-        return view('order.orders.create', compact('dependencies', 'modalities','sub_programs', 'funding_sources', 'financial_organisms','expenditure_objects'));
+        $contract = Contract::findOrFail($contract_id);        
+
+        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
+        // if($request->user()->hasPermission(['admin.items.create', 'contracts.items.create']) || $contract->dependency_id == $request->user()->dependency_id){
+            // return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con','other_files_pol','other_files_con'));
+        // }else{
+        //     return back()->with('error', 'No tiene los suficientes permisos para agregar pólizas.');
+        // }
+
+        $orderstates = OrderState::all();//estados de las ordenes
+        $components = Component::all();//Componentes
+
+        return view('contract.orders.create', compact('contract','orderstates','components'));
     }
+     // public function create()
+    // {
+    //     $dependencies = Dependency::all();
+    //     $modalities = Modality::all();
+    //     $sub_programs = SubProgram::all();
+    //     $funding_sources = FundingSource::all();
+    //     $financial_organisms = FinancialOrganism::all();
+    //     $expenditure_objects = ExpenditureObject::where('level', 3)->get();
+    //     return view('order.orders.create', compact('dependencies', 'modalities','sub_programs', 'funding_sources', 'financial_organisms','expenditure_objects'));
+    // }
 
     /**
      * Formulario de agregacion de pedido cargando archivo excel.

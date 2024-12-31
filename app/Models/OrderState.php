@@ -15,7 +15,7 @@ class OrderState extends Model
      * Para obtener el vinculo con la tabla orders  
      */
     public function orders(){
-        return $this->hasMany('App\Models\Order');
+        return $this->belongsTo('App\Models\Order');
     }
 
     /**

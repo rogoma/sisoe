@@ -8,8 +8,8 @@
                 <div class="page-header-title">
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Llamados</h5>
-                        <span>Evaluaciones Técnicas</span>
+                        <h5>Evaluaciones Técnicas</h5>
+                        {{-- <span>Evaluaciones Técnicas</span> --}}
                     </div>
                 </div>
             </div>

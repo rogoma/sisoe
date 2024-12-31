@@ -51,6 +51,14 @@ class Contract extends Model
         return $this->hasMany('App\Models\Item');
     }
 
+    /**
+     * Para obtener el vinculo con la tabla orders_oi que equivalen a órdenes de ejecución de inicio de obras
+     */
+    public function orders(){
+        return $this->hasMany('App\Models\Order');
+    }
+
+
     // public function items_contract(){
     //     return $this->belongsTo('App\Models\Item');
     // }
@@ -294,6 +302,13 @@ class Contract extends Model
         }
     }
 
+    public function itemFromDateFormat(){
+        if(empty($this->item_from)){
+            return "";
+        }else{
+            return date('d/m/Y', strtotime($this->date));
+        }
+    }
 
     // public function beginDateFormatmY(){
     //     if(empty($this->begin_date)){

@@ -8,8 +8,33 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
+
+    /**
+     * Para dar formato a Fecha
+     */
+    public function DateFormat(){
+        if(empty($this->date)){
+            return "";
+        }else{
+            return date('d/m/Y', strtotime($this->date));
+        }
+    }
+
+    /**
+     * Para obtener el vinculo con la tabla contratos
+     */
+    public function contract(){
+        return $this->belongsTo('App\Models\Contract');
+    }
     
     /**
+     * Para obtener el vinculo con la tabla order_states
+     */
+    public function orderState(){
+        return $this->hasMany('App\Models\OrderState');
+    }
+
+        /**
      * Para obtener el vinculo con la tabla items
      */
     public function items(){
@@ -37,16 +62,18 @@ class Order extends Model
         return $this->belongsTo('App\Models\Modality');
     }
 
-    /**
-     * Para obtener el vinculo con la tabla order_states
-     */
-    public function orderState(){
-        //se coloca así porque en la tabla orders actual_state es la Fk de order_states
-        // return $this->belongsTo('App\Models\OrderState', 'actual_state','id');
-        return $this->belongsTo('App\Models\OrderState', 'actual_state','id');
-    }
-  
     
+    /**
+     * Para obtener el vinculo con la tabla Components
+     */
+    public function components(){
+        return $this->belongsTo('App\Models\Component');
+    }
+
+    // ACA TERMINA EL USO DE RELACIONES CON EL PROYECTO DE CONTRATOS
+
+    
+
     /**
      * Para obtener el vinculo con la tabla sub_programs
      */
@@ -163,14 +190,6 @@ class Order extends Model
         }
     }
     
-    public function beginDateFormat(){
-        if(empty($this->begin_date)){
-            return "";
-        }else{
-            return date('d/m/Y', strtotime($this->begin_date));
-        }
-    }
-
     public function beginDateFormatmY(){
         if(empty($this->begin_date)){
             return "";

@@ -47,10 +47,13 @@ use App\Http\Controllers\Tender\TendersController;
 use App\Http\Controllers\MinorPurchase\MinorPurchasesController;
 use App\Http\Controllers\Award\AwardsController;
 
+//DESDE ACA SE USA PARA EL SISTEMA DE CONTRATOS Y POLIZAS
 use App\Http\Controllers\Contract\ContractsController;
 use App\Http\Controllers\Contract\ContractsFilesController;
 use App\Http\Controllers\Contract\ItemsController;
 use App\Http\Controllers\Contract\ItemAwardHistoriesController;
+
+
 
 use App\Http\Controllers\Exception\ExceptionsController;
 
@@ -163,7 +166,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //RECURSOS PARA MANEJAR ITEMS AWARDS HISTORIES (ENDOSOS)
     Route::resource('items.item_award_histories', ItemAwardHistoriesController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-
+    
     // Route::get('items/{itemA_id}/item_award_histories', [ItemAwardHistoriesController::class, 'index'])->name('item_award_histories.index');
     // Route::get('items/{item_id}/item_award_histories/create', [ItemAwardHistoriesController::class, 'create'])->name('item_award_histories.create');
     // Route::post('items/{item_id}/item_award_histories/create', [ItemAwardHistoriesController::class, 'store'])->name('item_award_histories.store');

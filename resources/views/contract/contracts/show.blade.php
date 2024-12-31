@@ -111,7 +111,7 @@ p.centrado {
                                             <div class="slide"></div>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#tab2" role="tab"><i class="fa fa-clone"></i> Ordenes de Ejec.</a>
+                                            <a class="nav-link" data-toggle="tab" href="#tab2" role="tab"><i class="fa fa-clone"></i> Órdenes de Ejec.</a>
                                             <div class="slide"></div>
                                         </li>                                        
                                         <li class="nav-item">
@@ -255,9 +255,7 @@ p.centrado {
                                                             <th>#</th>
                                                             <th>Fecha</th>
                                                             <th>N° OE</th>                                                            
-                                                            <th>Contrato N°</th>
-                                                            <th>Lote N°</th>
-                                                            <th>Contratista</th>
+                                                            <th>Monto Orden</th>                                                            
                                                             <th>Localidad</th>
                                                             <th>Referencia (Compon.)</th>
                                                             <th>Estado</th>
@@ -266,57 +264,43 @@ p.centrado {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @for ($i = 0; $i < count($contract->items); $i++)
+                                                        @for ($i = 0; $i < count($contract->orders); $i++)
                                                             <tr>
                                                                 <td>{{ ($i+1) }}</td>
-                                                                <td>{{ $contract->items[$i]->policy->description }}</td>
-                                                                <td>{{ $contract->items[$i]->number_policy }}</td>
-                                                                <td>{{ $contract->items[$i]->itemFromDateFormat() }}</td>
+                                                                <td>{{ $contract->orders[$i]->dateFormat() }}</td>
+                                                                <td>{{ $contract->orders[$i]->number }}</td>
+                                                                <td>{{ $contract->orders[$i]->totalAmountFormat()}} </td>
+                                                                <td>{{ $contract->orders[$i]->locality }}</td>
+                                                                <td>{{ $contract->orders[$i]->component_id }}</td>
+                                                                {{-- <td>{{ $contract->orders[$i]->order_state }}</td> --}}
+                                                                <td>{{ $contract->orders[$i]->orders->description }}</td>
+                                                                
+                                                                <td>{{ $contract->orders[$i]->comments }}</td>
 
-                                                                {{-- Se calcula 60 días antes para mostrar colores y botón de Endoso --}}
-                                                                @php
-                                                                    // Ajusta el formato para que coincida con tu cadena de fecha
-                                                                    $toDate = \Carbon\Carbon::createFromFormat('d/m/Y', $contract->items[$i]->itemToDateFormat());
-                                                                    $currentDate = \Carbon\Carbon::now();
-                                                                    $sixtyDaysBefore = $toDate->copy()->subDays(60);  // Resta 60 días a $toDate
-                                                                    // var_dump($sixtyDaysBefore);exit;
-                                                                @endphp
-
-                                                                @if ($currentDate <= $sixtyDaysBefore)
-                                                                    <td style="color:blue;font-weight">{{ $contract->items[$i]->itemToDateFormat() }}</td>
-                                                                @else
-                                                                    <td style="color:red;font-weight">{{ $contract->items[$i]->itemToDateFormat() }}</td>
-                                                                @endif
-
-                                                                <td>{{ $contract->items[$i]->AmountFormat()}} </td>
-                                                                <td>{{ $contract->items[$i]->comments }}</td>
-                                                                <td>
                                                                 {{-- No muestra si estado de llamado no es rescindido, cerrado, impugando o en proceso de rescisión --}}
-                                                                @if (in_array($contract->contract_state_id, [1,5]))
+                                                                {{-- @if (in_array($contract->contract_state_id, [1,5]))
                                                                     @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update']))
                                                                         <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $contract->items[$i]->id }})">
                                                                             <i class="fa fa-pencil"></i>
                                                                         </button>
-                                                                    @endif
-                                                                    {{-- @if (Auth::user()->hasPermission(['admin.items.delete','contracts.items.delete']) || $contract->dependency_id == Auth::user()->dependency_id) --}}
+                                                                    @endif                                                                   
                                                                     @if (Auth::user()->hasPermission(['admin.items.delete','contracts.items.delete']))
                                                                         <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItem({{ $contract->items[$i]->id }})">
                                                                             <i class="fa fa-trash"></i>
                                                                         </button>
                                                                     @endif
-                                                                @endif
+                                                                @endif --}}
 
-                                                                @if ($currentDate <= $sixtyDaysBefore)
+                                                                {{-- @if ($currentDate <= $sixtyDaysBefore)
                                                                     <td style="color:BLUE;font-weight">OK</td>
                                                                 @else
-                                                                    @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update']) || $contract->dependency_id == Auth::user()->dependency_id)
-                                                                    {{-- @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update'])) --}}
+                                                                    @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update']) || $contract->dependency_id == Auth::user()->dependency_id)                                                                    
                                                                         <button type="button" title="Endosos de Póliza" class="btn btn-primary btn-icon" onclick="itemAwardHistories({{ $contract->items[$i]->id }})">
                                                                             <i class="fa fa-list"></i>
                                                                         </button>
                                                                     @endif
                                                                     <td style="color:red;font-weight">ALERTA</td>
-                                                                @endif
+                                                                @endif --}}
                                                                 </td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/'.$contract->items[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
@@ -333,8 +317,8 @@ p.centrado {
                                                         {{-- Si pedido está anulado no muestra agregar ítems --}}
                                                         @if (in_array($contract->contract_state_id, [1]))
                                                         <a href="{{ route('contracts.items.create', $contract->id) }}" class="btn btn-primary">Agregar Orden</a>
-                                                        <a href="{{ route('orders.create', $contract->id) }}" title="Agregar pedido" class="btn btn-primary">Agregar pedido</a>
-                                                        <a href="{{ route('orders.uploadExcel', $contract->id)}}" title="Cargar Archivo EXCEL" class="btn btn-danger btn-icon"><i class="fa fa-upload text-white"></i></a>
+                                                        {{-- <a href="{{ route('orders.create', $contract->id) }}" title="Agregar pedido" class="btn btn-primary">Agregar pedido</a> --}}
+                                                        {{-- <a href="{{ route('orders.uploadExcel', $contract->id)}}" title="Cargar Archivo EXCEL" class="btn btn-danger btn-icon"><i class="fa fa-upload text-white"></i></a> --}}
                                                         @endif
                                                     @endif
                                                 </div>

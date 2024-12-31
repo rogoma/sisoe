@@ -32,7 +32,7 @@ class Item extends Model
 // }
 
     /**
-     * Para obtener el vinculo con la item_award_histories items
+     * Para obtener el vinculo con la tabla item_award_histories (Endosos)
      */
     public function itemAwardHistories(){
         return $this->hasMany('App\Models\ItemAwardHistory');
@@ -40,7 +40,7 @@ class Item extends Model
 
 
     /**
-     * Para obtener el vinculo con la tabla level5_catalog_codes
+     * Para obtener el vinculo con la tabla policies (Pólizas)
      */
     public function policy(){
         return $this->belongsTo('App\Models\Policy');

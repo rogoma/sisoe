@@ -74,6 +74,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('expenditure_object_id')->references('id')->on('expenditure_objects')->onUpdate('cascade');
             $table->foreign('creator_user_id')->references('id')->on('users')->onUpdate('cascade');
             $table->foreign('modifier_user_id')->references('id')->on('users')->onUpdate('cascade');
+            
         });
     }
 
