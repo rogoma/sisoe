@@ -113,7 +113,7 @@ p.centrado {
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#tab2" role="tab"><i class="fa fa-clone"></i> Órdenes de Ejec.</a>
                                             <div class="slide"></div>
-                                        </li>                                        
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i class="fa fa-file-pdf-o"></i> Reportes</a>
                                             <div class="slide"></div>
@@ -173,8 +173,8 @@ p.centrado {
 
                                                         <td>{{ $contract->modality->description }}</td>
                                                         <td>{{ $contract->financialOrganism->description }}</td>
-                                                        
-                                                        @if ($contract->open_contract == 1)                                                        
+
+                                                        @if ($contract->open_contract == 1)
                                                             <td>Contrato Abierto</td>
                                                         @else
                                                             <td>Contrato Cerrado</td>
@@ -246,7 +246,7 @@ p.centrado {
                                                 @endif
                                             </div>
                                         </div>
-                                       
+
                                         {{-- ORDENES DE EJECUCIÓN --}}
                                         <div class="tab-pane" id="tab2" role="tabpanel">
                                             <table id="items" class="table table-striped table-bordered">
@@ -254,13 +254,13 @@ p.centrado {
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Fecha</th>
-                                                            <th>N° OE</th>                                                            
-                                                            <th>Monto Orden</th>                                                            
+                                                            <th>N° OE</th>
+                                                            <th>Monto Orden</th>
                                                             <th>Localidad</th>
                                                             <th>Referencia (Compon.)</th>
                                                             <th>Estado</th>
                                                             <th>Observación</th>
-                                                            <th>Acciones</th>                                                            
+                                                            <th>Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -271,10 +271,8 @@ p.centrado {
                                                                 <td>{{ $contract->orders[$i]->number }}</td>
                                                                 <td>{{ $contract->orders[$i]->totalAmountFormat()}} </td>
                                                                 <td>{{ $contract->orders[$i]->locality }}</td>
-                                                                <td>{{ $contract->orders[$i]->component_id }}</td>
-                                                                <td>{{ $contract->orders[$i]->order_state }}</td>
-                                                                {{-- <td>{{ $contract->orders[$i]->orders->description }}</td> --}}
-                                                                
+                                                                <td>{{ $contract->orders[$i]->component->description }}</td>
+                                                                <td>{{ $contract->orders[$i]->orderState->description }}</td>
                                                                 <td>{{ $contract->orders[$i]->comments }}</td>
 
                                                                 {{-- No muestra si estado de llamado no es rescindido, cerrado, impugando o en proceso de rescisión --}}
@@ -283,7 +281,7 @@ p.centrado {
                                                                         <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $contract->items[$i]->id }})">
                                                                             <i class="fa fa-pencil"></i>
                                                                         </button>
-                                                                    @endif                                                                   
+                                                                    @endif
                                                                     @if (Auth::user()->hasPermission(['admin.items.delete','contracts.items.delete']))
                                                                         <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItem({{ $contract->items[$i]->id }})">
                                                                             <i class="fa fa-trash"></i>
@@ -294,7 +292,7 @@ p.centrado {
                                                                 {{-- @if ($currentDate <= $sixtyDaysBefore)
                                                                     <td style="color:BLUE;font-weight">OK</td>
                                                                 @else
-                                                                    @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update']) || $contract->dependency_id == Auth::user()->dependency_id)                                                                    
+                                                                    @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update']) || $contract->dependency_id == Auth::user()->dependency_id)
                                                                         <button type="button" title="Endosos de Póliza" class="btn btn-primary btn-icon" onclick="itemAwardHistories({{ $contract->items[$i]->id }})">
                                                                             <i class="fa fa-list"></i>
                                                                         </button>

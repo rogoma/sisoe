@@ -26,12 +26,16 @@ class Order extends Model
     public function contract(){
         return $this->belongsTo('App\Models\Contract');
     }
-    
+
     /**
      * Para obtener el vinculo con la tabla order_states
      */
+    // public function orderState(){
+    //     return $this->hasMany('App\Models\OrderState');
+    // }
+
     public function orderState(){
-        return $this->hasMany('App\Models\OrderState');
+        return $this->belongsTo('App\Models\OrderState');
     }
 
         /**
@@ -62,17 +66,17 @@ class Order extends Model
         return $this->belongsTo('App\Models\Modality');
     }
 
-    
+
     /**
      * Para obtener el vinculo con la tabla Components
      */
-    public function components(){
+    public function component(){
         return $this->belongsTo('App\Models\Component');
     }
 
     // ACA TERMINA EL USO DE RELACIONES CON EL PROYECTO DE CONTRATOS
 
-    
+
 
     /**
      * Para obtener el vinculo con la tabla sub_programs
@@ -87,7 +91,7 @@ class Order extends Model
     public function fundingSource(){
         return $this->belongsTo('App\Models\FundingSource');
     }
-    
+
     /**
      * Para obtener el vinculo con la tabla financial_organisms
      */
@@ -127,15 +131,15 @@ class Order extends Model
     public function itemAwardHistories(){
         return $this->belongsToMany('App\Models\ItemAwardHistory', 'budget_request_providers');
     }
-    
+
     /**
      * Para obtener el vinculo con la tabla providers
      */
     public function providers(){
         return $this->belongsToMany('App\Models\Provider', 'budget_request_providers');
     }
-    
-        
+
+
     /**
      * Para obtener el vinculo con la tabla order_multi_years
      */
@@ -149,7 +153,7 @@ class Order extends Model
     public function simese(){
         return $this->hasMany('App\Models\Simese');
     }
-        
+
     /**
      * Para obtener el vinculo con la tabla files
      */
@@ -179,9 +183,9 @@ class Order extends Model
     }
 
     /**
-     * Agregamos funciones que formatean los datos 
+     * Agregamos funciones que formatean los datos
      * para mayor utilidad en los views
-     */    
+     */
     public function adjudicaDateFormat(){
         if(empty($this->queries_deadline_adj)){
             return "";
@@ -189,7 +193,7 @@ class Order extends Model
             return date('d/m/Y', strtotime($this->queries_deadline_adj));
         }
     }
-    
+
     public function beginDateFormatmY(){
         if(empty($this->begin_date)){
             return "";
@@ -212,7 +216,7 @@ class Order extends Model
     public function dncpPacIdFormat(){
         return number_format($this->dncp_pac_id,0,",",".");
     }
-    
+
     public function totalAmountFormat(){
         return number_format($this->total_amount,0,",",".");
     }
@@ -220,11 +224,11 @@ class Order extends Model
     public function totalAmountAwardFormat(){
         return number_format($this->total_amount_award,0,",",".");
     }
-    
+
     public function cdpAmountFormat(){
         return number_format($this->cdp_amount,0,",",".");
     }
-           
+
     public function form4DateFormat(){
         if(empty($this->form4_date)){
             return "";
@@ -240,12 +244,12 @@ class Order extends Model
         }
     }
     public function queriesDeadline(){
-        return empty($this->queries_deadline) ? "" : 
+        return empty($this->queries_deadline) ? "" :
                date('d/m/Y', strtotime($this->queries_deadline));
     }
 
     public function queriesDeadlineAdj(){
-        return empty($this->queries_deadline_adj) ? "" : 
+        return empty($this->queries_deadline_adj) ? "" :
                date('d/m/Y', strtotime($this->queries_deadline_adj));
     }
 }
