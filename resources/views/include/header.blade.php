@@ -78,7 +78,7 @@
         @elseif(Auth::user()->role_id == 2)
             @include('include.menus.orders')
         @elseif(Auth::user()->role_id == 3)
-            @include('include.menus.process_orders')
+            @include('include.menus.orders')
         @elseif(Auth::user()->role_id == 4)
             @include('include.menus.derive_orders')
         @elseif(Auth::user()->role_id == 5)
