@@ -3,13 +3,13 @@
 @push('styles')
 <style type="text/css">
 
-.table td, .table th {
+/* .table td, .table th {
     padding: 0.2rem 0.5rem;
     font-size: 14px
 }
 .tab-content.card-block {
     padding: 1.25rem 0.5rem;
-}
+} */
 
 /* .columna1 { width: 3%; text-align: center;}
 .columna2 { width: 50%; text-align: left;}
@@ -78,7 +78,7 @@ p.centrado {
                                     </div>
                                     <br>
                                     {{-- @if (Auth::user()->hasPermission(['derive_contracts.contracts.show','contracts.contracts.create','admin.orders.create'])) --}}
-                                    @if (Auth::user()->hasPermission(['admin.orders.create']))
+                                    @if (Auth::user()->hasPermission(['admin.contracts.create','contracts.contracts.create']))
                                         <div class="float-left">
                                             <br>
                                             <a href="{{ route('contracts.create') }}" title="Agregar llamado" class="btn btn-primary">Agregar Llamado</a>
@@ -108,9 +108,9 @@ p.centrado {
                                             <tbody>
                                             @for ($i = 0; $i < count($contracts); $i++)
                                                 <tr>
-                                                    <td> {{ ($i+1) }}</td>
+                                                    <td style="max-width: 10px"> {{ ($i+1) }}</td>
                                                     <td> {{ $contracts[$i]->dependency->description }}</td>
-                                                    <td> {{ $contracts[$i]->description }}</td>
+                                                    <td style="max-width: 800px"> {{ $contracts[$i]->description }}</td>
                                                     <td> {{ number_format($contracts[$i]->iddncp,'0', ',','.') }} </td>  
 
                                                     {{-- <td> {{ $contracts[$i]->year_adj }}</td> --}}
@@ -126,7 +126,7 @@ p.centrado {
                                                         <td>Contrato Cerrado</td>
                                                     @endif
                                                     
-                                                    <td> Gs.{{ number_format($contracts[$i]->total_amount,'0', ',','.') }} </td>
+                                                    <td style="max-width: 200px"> Gs.{{ number_format($contracts[$i]->total_amount,'0', ',','.') }} </td>
                                                     
                                                     <td>{{ $contracts[$i]->provider->description }}</td>
                                                     {{-- <td>{{ $contracts[$i]->modality->code }}-{{ $contracts[$i]->modality->description }}</td> --}}

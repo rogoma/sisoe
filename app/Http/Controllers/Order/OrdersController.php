@@ -169,7 +169,7 @@ class OrdersController extends Controller
             'fonacide' => 'boolean|required',
             'catalogs_technical_annexes' => 'boolean|required',
             'alternative_offers' => 'boolean|required',
-            'open_contract' => 'boolean|required',
+            'open_contract' => 'integer|required',
             'period_time' => 'string|required|max:50',
             'manufacturer_authorization' => 'boolean|required',
             'financial_advance_percentage_amount' => 'boolean|nullable',

@@ -76,7 +76,7 @@ p.centrado {
                                             <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia Responsable: {{ $contract->dependency->description }}</h5>
                                         </div>
                                         <div class="col-sm-2">
-                                                @if (Auth::user()->hasPermission(['admin.orders.create','admin.orders.update']))
+                                                @if (Auth::user()->hasPermission(['admin.contracts.update']))
                                                     {{-- @if (in_array($contract->contract_state_id, [1,2])) --}}
                                                         <button class="btn btn-primary dropdown-toggle waves-effect" type="button" id="acciones" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones</button>
                                                     {{-- @endif --}}
@@ -213,9 +213,9 @@ p.centrado {
                                                         @for ($i=0; $i < count($user_files_eval); $i++)
                                                         <tr>
                                                             <td>{{ $i+1 }}</td>
-                                                            <td>{{ $user_files_eval[$i]->description }}</td>
-                                                            <td>{{ $user_files_eval[$i]->dependency->description }}</td>
-                                                            <td>{{ $user_files_eval[$i]->updated_atDateFormat() }}</td>
+                                                            <td style="max-width: 700px">{{ $user_files_eval[$i]->description }}</td>
+                                                            <td style="max-width: 400px">{{ $user_files_eval[$i]->dependency->description }}</td>
+                                                            <td style="max-width: 100px">{{ $user_files_eval[$i]->updated_atDateFormat() }}</td>
                                                             <td>
                                                                 <a href="{{ asset('storage/files/'.$user_files_eval[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
                                                                 <a href="{{ route('contracts.files.download', $user_files_eval[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
@@ -238,8 +238,9 @@ p.centrado {
                                                     @endfor
                                                 </tbody>
                                             </table>
-                                            <div class="text-right">
-                                                @if (Auth::user()->hasPermission(['admin.orders.create', 'contracts.orders.create']))
+                                            <br>                                          
+                                            <div class="text-center">
+                                                @if (Auth::user()->hasPermission(['admin.orders.create', 'contracts.orders.create','orders.orders.create']))
                                                     @if (in_array($contract->contract_state_id, [1,2]))
                                                         <a href="{{ route('contracts.files.create_eval', $contract->id) }}" class="btn btn-primary">Cargar Evaluación</a>
                                                     @endif

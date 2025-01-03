@@ -30,39 +30,20 @@ use App\Http\Controllers\Admin\ProgramsController;
 use App\Http\Controllers\Admin\SubProgramsController;
 use App\Http\Controllers\Admin\Level1CatalogCodeController;
 use App\Http\Controllers\Admin\Level5CatalogCodeController;
-
 use App\Http\Controllers\Order\OrdersController;
-// use App\Http\Controllers\Order\ItemsController;
 use App\Http\Controllers\Order\ItemsAdjudicaController;
 use App\Http\Controllers\Order\BudgetRequestProvidersController;
 use App\Http\Controllers\DeriveOrder\DeriveOrdersController;
 use App\Http\Controllers\Order\SimeseOrdersController;
 use App\Http\Controllers\Order\OrdersFilesController;
 
-use App\Http\Controllers\Planning\PlanningsController;
-use App\Http\Controllers\Planning\ObjectionsController;
-use App\Http\Controllers\Planning\ObjectionsResponsesController;
-
-use App\Http\Controllers\Tender\TendersController;
-use App\Http\Controllers\MinorPurchase\MinorPurchasesController;
-use App\Http\Controllers\Award\AwardsController;
-
 //DESDE ACA SE USA PARA EL SISTEMA DE CONTRATOS Y POLIZAS
 use App\Http\Controllers\Contract\ContractsController;
 use App\Http\Controllers\Contract\ContractsFilesController;
 use App\Http\Controllers\Contract\ItemsController;
 use App\Http\Controllers\Contract\ItemAwardHistoriesController;
-
-
-
-use App\Http\Controllers\Exception\ExceptionsController;
-
-use App\Http\Controllers\Uta\UtasController;
-use App\Http\Controllers\Comite\ComitesController;
-use App\Http\Controllers\LegalAdvice\LegalAdvicesController;
-use App\Http\Controllers\Coordination\CoordinationsController;
 use App\Http\Controllers\Dgaf\DgafsController;
-use App\Http\Controllers\Documental\DocumentalsController;
+
 
 // use App\Http\Controllers\Report\PdfsController;
 use App\Http\Controllers\Report\ReportsController;
@@ -149,16 +130,6 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('catalog_level5s', Level5CatalogCodeController::class);
     Route::get('catalog_level5s/{id}/edit_c5', [Level5CatalogCodeController::class, 'edit_c5'])->name('catalog_level5s.edit_c5');
 
-    // Route::delete('catalog_level5s/{id}/delete', [Level5CatalogCodeController::class, 'destroy'])->name('catalog_level5s.delete');
-
-    // Route::delete('orders/files/{file_id}/delete', [OrdersFilesController::class, 'destroy'])->name('orders.files.delete');
-
-
-    //RECURSOS ANIDADOS
-    // Route::resource('orders.items', ItemsController::class); //Recurso anidado, es igual a /orders/{order_id}/items/{item_id}
-    // Route::resource('orders.items_adjudica', ItemsAdjudicaController::class); //Recurso anidado, es igual a /orders/{order_id}/items/{item_id}
-    // Route::resource('orders.items_budget', BudgetRequestProvidersController::class); //Recurso anidado, es igual a /orders/{order_id}/items/{item_id}
-
     //RECURSOS DE CONTRACTS PARA MANEJAR ITEMS (POLIZAS)
     Route::resource('contracts.items', ItemsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
     //GRABAR PÓLIZAS
@@ -167,19 +138,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //RECURSOS PARA MANEJAR ITEMS AWARDS HISTORIES (ENDOSOS)
     Route::resource('items.item_award_histories', ItemAwardHistoriesController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
     
-    // Route::get('items/{itemA_id}/item_award_histories', [ItemAwardHistoriesController::class, 'index'])->name('item_award_histories.index');
-    // Route::get('items/{item_id}/item_award_histories/create', [ItemAwardHistoriesController::class, 'create'])->name('item_award_histories.create');
-    // Route::post('items/{item_id}/item_award_histories/create', [ItemAwardHistoriesController::class, 'store'])->name('item_award_histories.store');
-    // Route::get('items/{item_id}/item_award_histories/{itemA_id}/edit', [ItemAwardHistoriesController::class, 'edit'])->name('item_award_histories.edit');
-    // Route::post('items/{item_id}/item_award_histories/{itemA_id}/edit', [ItemAwardHistoriesController::class, 'update'])->name('item_award_histories.update');
-    // Route::delete('items/{item_id}/item_award_histories', [ItemAwardHistoriesController::class, 'destroy'])->name('item_award_histories.destroy');
-
-
-
-
-    //DESDE ACA PARA AGREGAR EMPRESAS ADJUDICADAS
-    //Route::resource('orders.budget_request_providers', BudgetRequestProvidersController::class); //Recurso anidado, es igual a /orders/{order_id}/items/{item_id}
-
+    
+    //DESDE ACA PARA AGREGAR EMPRESAS ADJUDICADAS    
     Route::get('orders/{id}/budget_request_providers', [BudgetRequestProvidersController::class, 'index'])->name('orders.budget_request_providers.index');
     //EMPRESAS COTIZANTES DE REQUIRIENTE
     Route::get('orders/{id}/budget_request_providers/create', [BudgetRequestProvidersController::class, 'create'])->name('orders.budget_request_providers.create');
@@ -228,8 +188,6 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');
     Route::put('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'update_providers_contracts'])->name('orders.budget_request_providers.update_providers_contracts');
 
-    // /orders/{order_id}/items/{item_id}
-
 
     /********** MODULO PEDIDOS **********/
     Route::get('/orders/uploadExcel', [OrdersController::class, 'uploadExcel'])->name('orders.uploadExcel');
@@ -259,26 +217,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/orders/{id}/uploadExcelAw', [ItemsAdjudicaController::class, 'uploadExcelAw'])->name('orders.items_adjudica.uploadExcelAw');
     // Contrato Abierto
     Route::post('/orders/{id}/uploadExcelAw', [ItemsAdjudicaController::class, 'storeExcelAw'])->name('orders.items_adjudica.storeExcelAw');
-    // Contrato Cerrado
-    // Route::post('/orders/{id}/uploadExcel2', [ItemsAdjudicaController::class, 'storeExcel2'])->name('orders.items_adjudica.storeExcel2');
-    // Contrato Abierto con Mmin y Mmax
-    // Route::post('/orders/{id}/uploadExcel3', [ItemsAdjudicaController::class, 'storeExcel3'])->name('orders.items_adjudica.storeExcel3');
-
-    //Route::resource('orders.items', ItemsController::class); //Recurso anidado, es igual a /orders/{order_id}/items/{item_id}
-    //Route::resource('orders.items_adjudica', ItemsAdjudicaController::class); //Recurso anidado, es igual a /orders/{order_id}/items/{item_id}
-    //Route::resource('orders.budget_request_providers', BudgetRequestProvidersController::class); //Recurso anidado, es igual a /orders/{order_id}/items/{item_id}
-
-    // Contrato Abierto
-    // Route::post('/orders/{id}/uploadExcel', [ItemsController::class, 'storeExcel'])->name('orders.items.storeExcel');
-    // // Contrato Cerrado
-    // Route::post('/orders/{id}/uploadExcel2', [ItemsController::class, 'storeExcel2'])->name('orders.items.storeExcel2');
-    // // Contrato Abierto con Mmin y Mmax
-    // Route::post('/orders/{id}/uploadExcel3', [ItemsController::class, 'storeExcel3'])->name('orders.items.storeExcel3');
-
-
-
-    // location.href = '/items/{{ $item->id }}/item_award_histories/'+item+'/edit/';
-
+    
     //BUSCA ITEMS DE CATALOGO 5
     Route::get('items/search', [ItemsController::class, 'search']);
     //BUSCA ITEMS DE CATALOGO 4
@@ -332,40 +271,6 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('derive_orders/deriveInforme/{order_id}', [DeriveOrdersController::class, 'deriveInforme'])->name('derive_orders.deriveInforme');
 
     Route::post('derive_orders/deriveInformeUTA/{order_id}', [DeriveOrdersController::class, 'deriveInformeUTA'])->name('derive_orders.deriveInformeUTA');
-
-
-    /********** MODULO PLANIFICACIÓN **********/
-    Route::resource('plannings', PlanningsController::class);
-    Route::resource('plannings.objections', ObjectionsController::class);
-    Route::resource('plannings.objections_responses', ObjectionsResponsesController::class);
-    Route::post('plannings/recibe_order/{order_id}', [PlanningsController::class, 'recibeOrder'])->name('plannings.recibeOrder');
-
-    Route::post('plannings/recibe_orderObs/{order_id}', [PlanningsController::class, 'recibeOrderObs'])->name('plannings.recibeOrderObs');
-    Route::post('plannings/recibe_orderObsAdju/{order_id}', [PlanningsController::class, 'recibeOrderObsAdju'])->name('plannings.recibeOrderObsAdju');
-
-    Route::get('plannings/orders/{order_id}/edit', [PlanningsController::class, 'edit'])->name('plannings.orders.edit');
-
-    // Route::put('plannings/orders/{order_id}/edit', [PlanningsController::class, 'update'])->name('plannings.orders.update');
-
-    Route::put('plannings/orders/{order_id}/edit', [PlanningsController::class, 'update'])->name('plannings.orders.update');
-
-    Route::post('plannings/derive_order/{order_id}', [PlanningsController::class, 'deriveOrder'])->name('plannings.deriveOrder');
-    Route::post('plannings/derive_orderObs/{order_id}', [PlanningsController::class, 'deriveOrderObs'])->name('plannings.deriveOrderObs');
-
-    // Route::post('plannings/derive_adjudica/{order_id}', [PlanningsController::class, 'deriveAdjudica'])->name('plannings.deriveAdjudica');
-
-    //VERIFICAR ESTO CUANDO SE REMITE DESDE ADJUDICACIONES
-    // Route::post('plannings/derive_orderObsAdju/{order_id}', [PlanningsController::class, 'deriveOrderObs'])->name('plannings.deriveOrderObs');
-    // Route::post('plannings/derive_adjudica/{order_id}', [PlanningsController::class, 'deriveAdjudica'])->name('plannings.deriveAdjudica');
-
-
-
-    /**************** REPORTES MPDF **************/
-    // Route::get('pdf','PdfsController@getIndex');
-    // Route::get('pdf/generar','PdfsController@getGenerar');
-    // Route::get('pdf/pdf', [PdfsController::class, 'getIndex'])->name('pdf.pdf');
-    // Route::get('pdf/generarPDF', [PdfsController::class, 'generarPDF'])->name('pdf.generarPDF');
-    // Route::get('pdf/tipres2', [ReportsContropdf/panel_contractsller::class, 'pdfMPDF'])->name('pdf.ptipres2');
 
 
     /*************** REPORTES DOMPDF **************/
@@ -449,86 +354,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::get('pedidos/export-excel2/', [ItemsAdjudicaController::class, 'exportExcel2']);
     // Route::get('pdf/panel_uta', [ReportsController::class, 'generarPanelUta'])->name('pdf.panel_uta');
 
-    /********** MODULO TENDER - LICITACIÓN **********/
-    Route::get('tenders/getNotifications', [TendersController::class, 'getNotifications'])->name('tenders.getNotifications');
-    Route::resource('tenders', TendersController::class);
-    Route::resource('tenders.queries', App\Http\Controllers\Tender\QueriesController::class);
-    Route::resource('tenders.queries_responses', App\Http\Controllers\Tender\QueriesResponsesController::class);
-    Route::resource('tenders.objections', App\Http\Controllers\Tender\ObjectionsController::class);
-    Route::resource('tenders.objections_responses', App\Http\Controllers\Tender\ObjectionsResponsesController::class);
-    Route::post('tenders/recibe_order/{order_id}', [TendersController::class, 'recibeOrder'])->name('tenders.recibeOrder');
-    Route::post('tenders/recibe_order_uta/{order_id}', [TendersController::class, 'recibeOrderUTA'])->name('tenders.recibeOrderUTA');
-    Route::get('tenders/orders/{order_id}/edit', [TendersController::class, 'edit'])->name('tenders.orders.edit');
-    Route::put('tenders/orders/{order_id}/edit', [TendersController::class, 'update'])->name('tenders.orders.update');
-    Route::post('tenders/derive_order/{order_id}', [TendersController::class, 'deriveOrder'])->name('tenders.deriveOrder');
-    Route::post('tenders/derive_comite/{order_id}', [TendersController::class, 'deriveComite'])->name('tenders.deriveComite');
-    Route::post('tenders/update_queries_deadline/{order_id}', [TendersController::class, 'updateQueriesDeadline'])->name('tenders.updateQueriesDeadline');
-
-    Route::post('tenders/derivePAC/{order_id}', [TendersController::class, 'derivePAC'])->name('tenders.derivePAC');
-
-
-    /********** MODULO MINOR_PURCHASES - COMPRAS MENORES **********/
-    Route::get('minor_purchases/getNotifications', [MinorPurchasesController::class, 'getNotifications'])->name('minor_purchases.getNotifications');
-    Route::resource('minor_purchases', MinorPurchasesController::class);
-    Route::resource('minor_purchases.queries', App\Http\Controllers\MinorPurchase\QueriesController::class);
-    Route::resource('minor_purchases.queries_responses', App\Http\Controllers\MinorPurchase\QueriesResponsesController::class);
-    Route::resource('minor_purchases.objections', App\Http\Controllers\MinorPurchase\ObjectionsController::class);
-    Route::resource('minor_purchases.objections_responses', App\Http\Controllers\MinorPurchase\ObjectionsResponsesController::class);
-    Route::post('minor_purchases/recibe_order/{order_id}', [MinorPurchasesController::class, 'recibeOrder'])->name('minor_purchases.recibeOrder');
-    Route::post('minor_purchases/recibe_order_uta/{order_id}', [MinorPurchasesController::class, 'recibeOrderUTA'])->name('minor_purchases.recibeOrderUTA');
-    Route::get('minor_purchases/orders/{order_id}/edit', [MinorPurchasesController::class, 'edit'])->name('minor_purchases.orders.edit');
-    Route::put('minor_purchases/orders/{order_id}/edit', [MinorPurchasesController::class, 'update'])->name('minor_purchases.orders.update');
-    Route::post('minor_purchases/derive_order/{order_id}', [MinorPurchasesController::class, 'deriveOrder'])->name('minor_purchases.deriveOrder');
-    Route::post('minor_purchases/derive_comite/{order_id}', [MinorPurchasesController::class, 'deriveComite'])->name('minor_purchases.deriveComite');
-    Route::post('minor_purchases/update_queries_deadline/{order_id}', [MinorPurchasesController::class, 'updateQueriesDeadline'])->name('minor_purchases.updateQueriesDeadline');
-
-    Route::post('minor_purchases/recibe_pbc_uta/{order_id}', [MinorPurchasesController::class, 'recibePBCdeUTA'])->name('minor_purchases.recibePBCdeUTA');
-    Route::post('minor_purchases/derive_uta/{order_id}', [MinorPurchasesController::class, 'deriveUTA'])->name('minor_purchases.deriveUTA');
-    Route::post('minor_purchases/recibeOrderReparo/{order_id}', [MinorPurchasesController::class, 'recibeOrderReparo'])->name('minor_purchases.recibeOrderReparo');
-    Route::post('/minor_purchases/deriveAJ_NoCovid/{order_id}', [MinorPurchasesController::class, 'deriveAJ_NoCovid'])->name('minor_purchases.deriveAJ_NoCovid');
-
-    Route::post('minor_purchases/derivePAC/{order_id}', [MinorPurchasesController::class, 'derivePAC'])->name('minor_purchases.derivePAC');
-
-
-
-    /********** MODULO EXCEPTIONS - PROCESOS COMPLEMENTARIOS Y EXCEPCIONES **********/
-    Route::get('exceptions/getNotifications', [ExceptionsController::class, 'getNotifications'])->name('exceptions.getNotifications');
-    Route::resource('exceptions', ExceptionsController::class);
-    Route::resource('exceptions.queries', App\Http\Controllers\Exception\QueriesController::class);
-    Route::resource('exceptions.queries_responses', App\Http\Controllers\Exception\QueriesResponsesController::class);
-    Route::resource('exceptions.objections', App\Http\Controllers\Exception\ObjectionsController::class);
-    Route::resource('exceptions.objections_responses', App\Http\Controllers\Exception\ObjectionsResponsesController::class);
-    Route::post('exceptions/recibe_order/{order_id}', [ExceptionsController::class, 'recibeOrder'])->name('exceptions.recibeOrder');
-    Route::post('exceptions/recibe_order_uta/{order_id}', [ExceptionsController::class, 'recibeOrderUTA'])->name('exceptions.recibeOrderUTA');
-    Route::get('exceptions/orders/{order_id}/edit', [ExceptionsController::class, 'edit'])->name('exceptions.orders.edit');
-    Route::put('exceptions/orders/{order_id}/edit', [ExceptionsController::class, 'update'])->name('exceptions.orders.update');
-    Route::post('exceptions/derive_order/{order_id}', [ExceptionsController::class, 'deriveOrder'])->name('exceptions.deriveOrder');
-    Route::post('exceptions/derivePAC/{order_id}', [ExceptionsController::class, 'derivePAC'])->name('exceptions.derivePAC');
-    Route::post('exceptions/derive_comite/{order_id}', [ExceptionsController::class, 'deriveComite'])->name('exceptions.deriveComite');
-
-    Route::post('exceptions/update_queries_deadline/{order_id}', [ExceptionsController::class, 'updateQueriesDeadline'])->name('exceptions.updateQueriesDeadline');
-
-
-    /********** MODULO AWARDS - ADJUDICACIONES **********/
-    Route::get('awards/getNotifications', [AwardsController::class, 'getNotifications'])->name('awards.getNotifications');
-    Route::resource('awards', AwardsController::class);
-    Route::resource('awards.objections', App\Http\Controllers\Award\ObjectionsController::class);
-    Route::resource('awards.objections_responses', App\Http\Controllers\Award\ObjectionsResponsesController::class);
-    Route::resource('awards.queries', App\Http\Controllers\Award\QueriesController::class);
-    Route::resource('awards.queries_responses', App\Http\Controllers\Award\QueriesResponsesController::class);
-    Route::post('awards/recibe_order/{order_id}', [AwardsController::class, 'recibeOrder'])->name('awards.recibeOrder');
-    Route::post('awards/recibe_order2ET/{order_id}', [AwardsController::class, 'recibeOrder2ET'])->name('awards.recibeOrder2ET');
-    Route::get('awards/orders/{order_id}/edit', [AwardsController::class, 'edit'])->name('awards.orders.edit');
-    Route::put('awards/orders/{order_id}/edit', [AwardsController::class, 'update'])->name('awards.orders.update');
-    Route::post('awards/derive_order/{order_id}', [AwardsController::class, 'deriveOrder'])->name('awards.deriveOrder');
-    Route::post('awards/derivePAC/{order_id}', [AwardsController::class, 'derivePAC'])->name('awards.derivePAC');
-    Route::post('awards/derive_comite/{order_id}', [AwardsController::class, 'deriveComite'])->name('awards.deriveComite');
-
-    Route::post('awards/update_queries_deadline/{order_id}', [AwardsController::class, 'updateQueriesDeadline'])->name('awards.updateQueriesDeadline');
-    // Route::post('awards/update_queries_deadline_adj/{order_id}', [AwardsController::class, 'updateQueriesDeadlineAdj'])->name('awards.updateQueriesDeadlineAdj');
-
-    Route::get('excel/itemsAw', [AwardsController::class, 'ArchivoItemAw'])->name('excel.itemsAw');
-
+    
+    
     //ITEMS SE PASA A EXCEL EN AWARDS
     Route::get('items/export-excel/{order_id}', [ItemsAdjudicaController::class, 'exportExcel']);
 
@@ -560,115 +387,18 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::delete('/contracts/contract/{contract_id}/delete', 'ContractController@delete')->name('contracts.delete');
     Route::delete('contracts/contract/{contract_id}/delete', [ContractsController::class, 'destroy'])->name('contracts.delete');
 
-
-    // Route::get('/sendToMultiple', function() {
-    //     $emails = ['first@example.com', 'second@example.com', 'third@example.com'];
-    //     $name = "Funny Coder"; // Assuming you want to send the same content to all
-
-    //     Mail::to($emails)->send(new MyTestEmail($name));
-    // });
-    // Route::get('/enviar-correo', [CorreoController::class, 'enviarCorreo']);
-
+    
     Route::get('contracts/getNotifications', [ContractsController::class, 'getNotifications'])->name('contracts.getNotifications');
     Route::resource('contracts', ContractsController::class);
-    Route::resource('contracts.objections', ObjectionsController::class);
-    Route::resource('contracts.objections_responses', ObjectionsResponsesController::class);
     Route::post('contracts/recibe_order/{order_id}', [ContractsController::class, 'recibeOrder'])->name('contracts.recibeOrder');
     Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
     Route::put('contracts/orders/{order_id}/edit', [ContractsController::class, 'update'])->name('contracts.orders.update');
     Route::post('contracts/derive_order/{order_id}', [ContractsController::class, 'deriveOrder'])->name('contracts.deriveOrder');
-
-    // Route::get('contracts/getNotifications', [ContractsController::class, 'getNotifications'])->name('contracts.getNotifications');
-    // Route::resource('contracts', ContractsController::class);
-    // Route::resource('contracts.objections', ObjectionsController::class);
-    // Route::resource('contracts.objections_responses', ObjectionsResponsesController::class);
-    // Route::post('contracts/recibe_order/{order_id}', [ContractsController::class, 'recibeOrder'])->name('contracts.recibeOrder');
-    // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
-    // Route::put('contracts/orders/{order_id}/edit', [ContractsController::class, 'update'])->name('contracts.orders.update');
-    // Route::post('contracts/derive_order/{order_id}', [ContractsController::class, 'deriveOrder'])->name('contracts.deriveOrder');
-
-    /********** MODULO UTA **********/
-    Route::resource('utas', UtasController::class);
-    // Route::resource('utas.queries', App\Http\Controllers\Uta\QueriesController::class);
-    // Route::resource('utas.queries_responses', App\Http\Controllers\Uta\QueriesResponsesController::class);
-
-    Route::resource('utas.objections', App\Http\Controllers\Uta\ObjectionsController::class);
-    Route::resource('utas.objections_responses', App\Http\Controllers\Uta\ObjectionsResponsesController::class);
-
-    Route::post('utas/recibe_order_uta/{order_id}', [UtasController::class, 'recibeOrderUta'])->name('utas.recibeOrderUta');
-    Route::post('utas/recibe_info_uta/{order_id}', [UtasController::class, 'recibeInfoUta'])->name('utas.recibeInfoUta');
-
-    Route::get('utas/orders/{order_id}/edit', [UtasController::class, 'edit'])->name('utas.orders.edit');
-    Route::put('utas/orders/{order_id}/edit', [UtasController::class, 'update'])->name('utas.orders.update');
-
-    Route::post('utas/verifica_pbc_sr/{order_id}', [UtasController::class, 'verificaPBC_Sr'])->name('utas.verificaPBC_Sr');
-    Route::post('utas/verifica_pbc_cr/{order_id}', [UtasController::class, 'verificaPBC_Cr'])->name('utas.verificaPBC_Cr');
-    Route::post('utas/verifica_pbc_cr_aj/{order_id}', [UtasController::class, 'verificaPBC_Cr_AJ'])->name('utas.verificaPBC_Cr_AJ');
-    Route::post('utas/verifica_pbc_srCovid/{order_id}', [UtasController::class, 'verificaPBC_SrCovid'])->name('utas.verificaPBC_SrCovid');
-
-
-    Route::post('utas/verifica_info_sr/{order_id}', [UtasController::class, 'verificaINFO_Sr'])->name('utas.verificaINFO_Sr');
-    Route::post('utas/verifica_info_cr/{order_id}', [UtasController::class, 'verificaINFO_Cr'])->name('utas.verificaINFO_Cr');
-
-    Route::post('utas/deriveCESC/{order_id}', [UtasController::class, 'deriveCESC'])->name('utas.deriveCESC');
-    Route::post('utas/recibeCESC/{order_id}', [UtasController::class, 'recibeCESC'])->name('utas.recibeCESC');
-
-
-    Route::post('utas/derive_comite/{order_id}', [UtasController::class, 'deriveComite'])->name('utas.deriveComite');
-
-    // *************** REVISAR ESTE PROCESO EN COMPRAS MENORES *********
-    Route::post('utas/deriveAJ_PCovid/{order_id}', [UtasController::class, 'deriveAJ_PCovid'])->name('utas.deriveAJ_PCovid');
-    // *****************************************************************
-
-    Route::post('utas/update_queries_deadline/{order_id}', [UtasController::class, 'updateQueriesDeadline'])->name('utas.updateQueriesDeadline');
-
-    /********** MODULO ASESORIA JURÍDICA **********/
-    Route::resource('legal_advices', LegalAdvicesController::class);
-
-    // Route::resource('legal_advices.queries', App\Http\Controllers\LegalAdvice\QueriesController::class);
-    // Route::resource('legal_advices.queries_responses', App\Http\Controllers\LegalAdvice\QueriesResponsesController::class);
-
-    Route::resource('legal_advices.objections', App\Http\Controllers\LegalAdvice\ObjectionsController::class);
-    Route::resource('legal_advices.objections_responses', App\Http\Controllers\LegalAdvice\ObjectionsResponsesController::class);
-
-    Route::post('legal_advices/recibeOrder/{order_id}', [LegalAdvicesController::class, 'recibeOrder'])->name('legal_advices.recibeOrder');
-    Route::post('legal_advices/deriveDictamen/{order_id}', [LegalAdvicesController::class, 'deriveDictamen'])->name('legal_advices.deriveDictamen');
-
-    Route::post('legal_advices/recibeOrderEVAL/{order_id}', [LegalAdvicesController::class, 'recibeOrderEVAL'])->name('legal_advices.recibeOrderEVAL');
-    Route::post('legal_advices/recibeOrderCVE/{order_id}', [LegalAdvicesController::class, 'recibeOrderCVE'])->name('legal_advices.recibeOrderCVE');
-
-    Route::post('legal_advices/deriveDictamenEVAL/{order_id}', [LegalAdvicesController::class, 'deriveDictamenEVAL'])->name('legal_advices.deriveDictamenEVAL');
-    Route::post('legal_advices/deriveDictamenCVE/{order_id}', [LegalAdvicesController::class, 'deriveDictamenCVE'])->name('legal_advices.deriveDictamenCVE');
-
-    /********** MODULO COORDINACIÓN **********/
-    Route::resource('coordinations', CoordinationsController::class);
-
-    // Route::resource('coordinations.queries', App\Http\Controllers\Coordination\QueriesController::class);
-    // Route::resource('coordinations.queries_responses', App\Http\Controllers\Coordination\QueriesResponsesController::class);
-
-    Route::resource('coordinations.objections', App\Http\Controllers\Coordination\ObjectionsController::class);
-    Route::resource('coordinations.objections_responses', App\Http\Controllers\Coordination\ObjectionsResponsesController::class);
-
-    Route::post('coordinations/recibeOrder/{order_id}', [CoordinationsController::class, 'recibeOrder'])->name('coordinations.recibeOrder');
-    Route::post('coordinations/deriveOrderPedido/{order_id}', [CoordinationsController::class, 'deriveOrderPedido'])->name('coordinations.deriveOrderPedido');
-    Route::post('coordinations/deriveOrderPAC/{order_id}', [CoordinationsController::class, 'deriveOrderPAC'])->name('coordinations.deriveOrderPAC');
-    Route::post('coordinations/deriveOrderPCYE/{order_id}', [CoordinationsController::class, 'deriveOrderPCYE'])->name('coordinations.deriveOrderPCYE');
-    Route::post('coordinations/deriveOrder/{order_id}', [CoordinationsController::class, 'deriveOrder'])->name('coordinations.deriveOrder');
-    Route::post('coordinations/deriveAdjudica/{order_id}', [CoordinationsController::class, 'deriveAdjudica'])->name('coordinations.deriveAdjudica');
-
-    Route::post('coordinations/recibeOrderEVAL/{order_id}', [CoordinationsController::class, 'recibeOrderEVAL'])->name('coordinations.recibeOrderEVAL');
-    Route::post('coordinations/recibeOrderCVE/{order_id}', [CoordinationsController::class, 'recibeOrderCVE'])->name('coordinations.recibeOrderCVE');
-
-    Route::post('coordinations/deriveDictamen/{order_id}', [CoordinationsController::class, 'deriveDictamen'])->name('coordinations.deriveDictamen');
-    Route::post('coordinations/deriveDictamenEVAL/{order_id}', [CoordinationsController::class, 'deriveDictamenEVAL'])->name('coordinations.deriveDictamenEVAL');
-    Route::post('coordinations/deriveDictamenCVE/{order_id}', [CoordinationsController::class, 'deriveDictamenCVE'])->name('legal_advices.deriveDictamenCVE');
+   
 
     /********** MODULO DE DGAF **********/
     Route::resource('dgafs', DgafsController::class);
-
-    // Route::resource('dgafs.queries', App\Http\Controllers\Dgaf\QueriesController::class);
-    // Route::resource('dgafs.queries_responses', App\Http\Controllers\Dgaf\QueriesResponsesController::class);
-
+   
     Route::resource('dgafs.objections', App\Http\Controllers\Dgaf\ObjectionsController::class);
     Route::resource('dgafs.objections_responses', App\Http\Controllers\Dgaf\ObjectionsResponsesController::class);
 
@@ -684,48 +414,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('dgafs/deriveDictamenEVAL/{order_id}', [DgafsController::class, 'deriveDictamenEVAL'])->name('dgafs.deriveDictamenEVAL');
     Route::post('dgafs/deriveDictamenCVE/{order_id}', [DgafsController::class, 'deriveDictamenCVE'])->name('dgafs.deriveDictamenCVE');
 
-    /********** MODULO COMITE **********/
-    Route::resource('comites', ComitesController::class);
-
-    // Route::resource('comites.queries', App\Http\Controllers\Comite\QueriesController::class);
-    // Route::resource('comites.queries_responses', App\Http\Controllers\Comite\QueriesResponsesController::class);
-
-    // Route::resource('comites.objections', App\Http\Controllers\Comite\ObjectionsController::class);
-    // Route::resource('comites.objections_responses', App\Http\Controllers\Comite\ObjectionsResponsesController::class);
-
-    Route::post('comites/recibeOrder/{order_id}', [ComitesController::class, 'recibeOrder'])->name('comites.recibeOrder');
-    Route::post('comites/recibeOrderReparo/{order_id}', [ComitesController::class, 'recibeOrderReparo'])->name('comites.recibeOrderReparo');
-    Route::post('comites/recibeOrderAdjudica/{order_id}', [ComitesController::class, 'recibeOrderAdjudica'])->name('comites.recibeOrderAdjudica');
-
-    Route::post('comites/deriveInforme/{order_id}', [ComitesController::class, 'deriveInforme'])->name('comites.deriveInforme');
-    Route::post('comites/deriveInformeAdjudica/{order_id}', [ComitesController::class, 'deriveInformeAdjudica'])->name('comites.deriveInformeAdjudica');
-
-
-    /********** MODULO UNIDAD DE GESTIÓN DOCUMENTAL **********/
-    Route::resource('documentals', DocumentalsController::class);
-
-    // Route::resource('documentals.queries', App\Http\Controllers\Documental\QueriesController::class);
-    // Route::resource('documentals.queries_responses', App\Http\Controllers\Documental\QueriesResponsesController::class);
-
-    // Route::resource('documentals.objections', App\Http\Controllers\Documental\ObjectionsController::class);
-    // Route::resource('documentals.objections_responses', App\Http\Controllers\Documental\ObjectionsResponsesController::class);
-
-    Route::post('documentals/recibeOrder/{order_id}', [DocumentalsController::class, 'recibeOrder'])->name('documentals.recibeOrder');
-    Route::post('documentals/recibeOrderReparo/{order_id}', [DocumentalsController::class, 'recibeOrderReparo'])->name('documentals.recibeOrderReparo');
-    Route::post('documentals/deriveInforme/{order_id}', [DocumentalsController::class, 'deriveInforme'])->name('documentals.deriveInforme');
-
+    
     Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
-
-    // Route::get('/compilarReporte', function () {
-    //     $input = base_path() .
-    //     '/vendor/geekcom/phpjasper/examples/hello_world.jrxml';
-
-    //     $jasper = new PHPJasper;
-    //     $jasper->compile($input)->execute();
-
-    //     return response()->json([
-    //         'status' => 'ok',
-    //         'msj' => '¡Reporte compilado!'
-    //     ]);
-    // });
+    
 });
