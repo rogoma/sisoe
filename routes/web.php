@@ -131,20 +131,19 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('catalog_level5s', Level5CatalogCodeController::class);
     Route::get('catalog_level5s/{id}/edit_c5', [Level5CatalogCodeController::class, 'edit_c5'])->name('catalog_level5s.edit_c5');
 
+
+    //RECURSOS PARA MANEJAR CONTRACTS (CONTRATOS)
+    Route::resource('contracts', ContractsController::class);
+
     //RECURSOS DE CONTRACTS PARA MANEJAR ITEMS (POLIZAS)
     Route::resource('contracts.items', ItemsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-    //GRABAR PÓLIZAS
-    // Route::post('/contracts/{id}/store', [ItemsController::class, 'store'])->name('contracts.items.store');
-
+    
     //RECURSOS PARA MANEJAR ITEMS AWARDS HISTORIES (ENDOSOS)
     Route::resource('items.item_award_histories', ItemAwardHistoriesController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
     
-    //RECURSOS DE CONTRACTS PARA MANEJAR ORDENES
+    //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-
-
-
-
+    
     
     
     

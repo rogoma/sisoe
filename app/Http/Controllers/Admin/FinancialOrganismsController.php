@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Models\FinancialOrganism;
 
 class FinancialOrganismsController extends Controller
@@ -51,9 +52,10 @@ class FinancialOrganismsController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'code' => 'numeric|required|max:32767',
-            'description' => 'string|required|max:150'
+        $rules = array(            
+            'code' => 'numeric|required|max:32767|unique:financial_organisms,code',            
+            'description' => 'required|string|max:100|unique:financial_organisms,description'
+            
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -112,8 +114,19 @@ class FinancialOrganismsController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(            
-            // 'code' => 'numeric|required|max:32767',
-            'description' => 'string|required|max:150'
+            'code' => [
+                'numeric',
+                'required',
+                'max:32767',                
+                Rule::unique('financial_organisms')->ignore($id),
+            ],
+
+            'description' => [
+                'string',
+                'required', 
+                'max:100',
+                Rule::unique('financial_organisms')->ignore($id),
+            ],
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {

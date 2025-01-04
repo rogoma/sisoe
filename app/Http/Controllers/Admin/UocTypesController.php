@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UocType;
+use Illuminate\Validation\Rule;
 
 class UocTypesController extends Controller
 {
@@ -51,8 +52,8 @@ class UocTypesController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'description' => 'string|required|max:150'
+        $rules = array(            
+            'description' => 'required|string|max:150|unique:uoc_types,description'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -99,8 +100,13 @@ class UocTypesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = array(
-            'description' => 'string|required|max:150'
+        $rules = array(            
+            'description' => [
+                'string',
+                'required',
+                'max:150',
+                Rule::unique('uoc_types')->ignore($id),
+            ]
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {

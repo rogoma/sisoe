@@ -45,7 +45,7 @@
                                         <div class="form-group row @error('coddpto') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Código de Dpto.</label>
                                             <div class="col-sm-10">                                                
-                                                <input type="text" id="coddpto" name="coddpto" value="{{ old('coddpto', $department->coddpto) }}" class="form-control @error('coddpto') form-control-danger @enderror" value="{{ old('coddpto', $department->coddpto) }}" readonly>
+                                                <input type="text" id="coddpto" name="coddpto" value="{{ old('coddpto', $department->coddpto) }}" class="form-control @error('coddpto') form-control-danger @enderror" value="{{ old('coddpto', $department->coddpto) }}">
                                                 @error('coddpto')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror

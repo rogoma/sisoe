@@ -11,6 +11,7 @@ use App\Models\DependencyType;
 use App\Models\UocType;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersExport4;
+use Illuminate\Validation\Rule;
 
 class DependenciesController extends Controller
 {
@@ -65,8 +66,8 @@ class DependenciesController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'description' => 'string|required|max:150',
+        $rules = array(            
+            'description' => 'required|string|max:150|unique:dependencies,description',
             'dependency_types' => 'required',
             'uoc_types' => 'numeric|nullable|max:999',
             'uoc_number' => 'numeric|nullable|min:1|max:999',
@@ -125,8 +126,16 @@ class DependenciesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = array(
-            'description' => 'string|required|max:150',
+        $rules = array(            
+            'description' => [
+                'string',
+                'required',
+                'max:150',
+                Rule::unique('dependencies')->ignore($id),
+            ],
+
+            // 'description' => 'required|string|max:150|unique:dependencies,description',
+
             'dependency_types' => 'required',
             'uoc_types' => 'numeric|nullable|max:999',
             'uoc_number' => 'numeric|nullable|min:1|max:999',

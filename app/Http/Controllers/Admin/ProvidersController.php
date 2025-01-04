@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Models\Provider;
 use App\Models\Order;
 
@@ -52,9 +53,9 @@ class ProvidersController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'description' => 'string|required|max:100',
-            'ruc' => 'string|required|max:10|unique:providers',
+        $rules = array(            
+            'description' => 'required|string|max:200|unique:providers,description',
+            'ruc' => 'required|string|max:15|unique:providers,ruc',
             'telefono' => 'string|nullable|max:50',
             'email_oferta' => 'email|nullable|max:60',
             'email_ocompra' => 'nullable|email|max:60',
@@ -111,8 +112,20 @@ class ProvidersController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            'description' => 'string|required|max:100',
-            'ruc' => 'string|required|max:10',
+            'ruc' => [
+                'string',
+                'required', 
+                'max:25',
+                Rule::unique('providers')->ignore($id),
+            ],
+
+            'description' => [
+                'string',
+                'required', 
+                'max:200',
+                Rule::unique('providers')->ignore($id),
+            ],
+            
             'telefono' => 'string|nullable|max:50',
             'email_oferta' => 'email|nullable|max:60',
             'email_ocompra' => 'nullable|email|max:60',

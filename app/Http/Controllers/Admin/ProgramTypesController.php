@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Models\ProgramType;
 
 class ProgramTypesController extends Controller
@@ -51,9 +52,9 @@ class ProgramTypesController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'description' => 'string|required|max:200',
-            'code' => 'required'
+        $rules = array(            
+            'code' => 'numeric|required|max:32767|unique:program_types,code',            
+            'description' => 'required|string|max:150|unique:program_types,description'            
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -110,9 +111,20 @@ class ProgramTypesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = array(           
-            'description' => 'string|required|max:200',
-            'code' => 'required'
+        $rules = array(
+            'code' => [
+                'numeric',
+                'required',
+                'max:32767',                
+                Rule::unique('program_types')->ignore($id),
+            ],
+
+            'description' => [
+                'string',
+                'required', 
+                'max:150',
+                Rule::unique('program_types')->ignore($id),
+            ],       
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {

@@ -68,7 +68,7 @@ class ContractsController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->user()->hasPermission(['admin.contracts.index'])){
+        if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
             //NO SE MUESTRAN LOS PEDIDOS ANULADOS
             $contracts = Contract::where('contract_state_id', '>=', 1)
                     ->orderBy('iddncp','asc')

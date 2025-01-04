@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\DependencyType;
+use Illuminate\Validation\Rule;
 
 class DependencyTypesController extends Controller
 {
@@ -51,8 +52,8 @@ class DependencyTypesController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'description' => 'string|required|max:150'
+        $rules = array(            
+            'description' => 'required|string|max:150|unique:dependency_types,description'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -100,8 +101,14 @@ class DependencyTypesController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            'description' => 'string|required|max:150'
+            'description' => [
+                'string',
+                'required',
+                'max:150',
+                Rule::unique('dependency_types')->ignore($id),
+            ]
         );
+        
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();

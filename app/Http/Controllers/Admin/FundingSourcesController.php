@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use App\Models\FundingSource;
 
@@ -52,8 +53,8 @@ class FundingSourcesController extends Controller
     public function store(Request $request)
     {
         $rules = array(
-            'code' => 'numeric|required|max:32767',
-            'description' => 'string|required|max:100'
+            'code' => 'numeric|required|max:32767|unique:funding_sources,code',            
+            'description' => 'required|string|max:100|unique:funding_sources,description'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -113,8 +114,19 @@ class FundingSourcesController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            // 'code' => 'numeric|required|max:32767',
-            'description' => 'string|required|max:100'
+            'code' => [
+                'numeric',
+                'required',
+                'max:32767',                
+                Rule::unique('funding_sources')->ignore($id),
+            ],
+
+            'description' => [
+                'string',
+                'required',
+                'max:150',
+                Rule::unique('funding_sources')->ignore($id),
+            ]
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {

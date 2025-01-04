@@ -201,18 +201,18 @@ class OrdersEjecsController extends Controller
     public function store(Request $request, $contract_id)
     {
         $rules = array(
-            // 'policy_id' => 'numeric|required|max:2147483647|unique:items,policy_id',
-            'policy_id' => [
-            'numeric','required','max:2147483647',
-            Rule::unique('items')->where(function ($query) use ($contract_id) {
-                return $query->where('contract_id', $contract_id);
-                })
-            ],
-            'number_policy' => 'string|required|unique:items,number_policy',
-            'item_from' => 'date_format:d/m/Y',
-            'item_to' => 'required|date_format:d/m/Y',
-            'amount' => 'nullable|string|max:9223372036854775807',
-            'comments' => 'nullable|max:300'
+            
+            // 'policy_id' => [
+            // 'numeric','required','max:2147483647',
+            // Rule::unique('items')->where(function ($query) use ($contract_id) {
+            //     return $query->where('contract_id', $contract_id);
+            //     })
+            // ],
+            // 'number_policy' => 'string|required|unique:items,number_policy',
+            // 'item_from' => 'date_format:d/m/Y',
+            // 'item_to' => 'required|date_format:d/m/Y',
+            // 'amount' => 'nullable|string|max:9223372036854775807',
+            // 'comments' => 'nullable|max:300'
         );
 
         $validator =  Validator::make($request->input(), $rules);
@@ -220,34 +220,31 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // var_dump($request->hasFile('file'));exit;
-
-        if(!$request->hasFile('file')){
-            $validator = Validator::make($request->input(), []);
-            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
-            return back()->withErrors($validator)->withInput();
-        }
+        // if(!$request->hasFile('file')){
+        //     $validator = Validator::make($request->input(), []);
+        //     $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
+        //     return back()->withErrors($validator)->withInput();
+        // }
 
         // chequeamos la extension del archivo subido
-        $extension = $request->file('file')->getClientOriginalExtension();
-        if(!in_array($extension, array('doc', 'docx', 'pdf'))){
-            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
-            return back()->withErrors($validator)->withInput();
-        }
+        // $extension = $request->file('file')->getClientOriginalExtension();
+        // if(!in_array($extension, array('doc', 'docx', 'pdf'))){
+        //     $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+        //     $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
+        //     return back()->withErrors($validator)->withInput();
+        // }
 
-        // Pasó todas las validaciones, guardamos el archivo
-        // $fileName = time().'-policy-file.'.$extension; // nombre a guardar
-        $fileName = 'poliza_nro_'.$request->input('number_policy').'.'.$extension; // nombre a guardar
+        // Pasó todas las validaciones, guardamos el archivo        
+        // $fileName = 'poliza_nro_'.$request->input('number_policy').'.'.$extension; // nombre a guardar
         // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
-        $path = $request->file('file')->storeAs('public/files', $fileName);
+        // $path = $request->file('file')->storeAs('public/files', $fileName);
 
-        $item = new Item;
-        $item->contract_id = $contract_id;
-        $item->policy_id = $request->input('policy_id');
-        $item->number_policy = $request->input('number_policy');
-        $item->item_from = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_from'))));
-        $item->item_to = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_to'))));
+        $order = new Order;
+        $order->contract_id = $contract_id;
+        $order->policy_id = $request->input('policy_id');
+        $order->number_policy = $request->input('number_policy');
+        $order->order_from = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('order_from'))));
+        $order->order_to = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('order_to'))));
 
         $amount = str_replace('.', '',($request->input('amount')));
         if ($amount === '' ) {
@@ -259,14 +256,14 @@ class OrdersEjecsController extends Controller
             $validator->errors()->add('amount', 'Monto no puede ser negativo');
             return back()->withErrors($validator)->withInput();
         }else{
-            $item->amount = $amount;
+            $order->amount = $amount;
         }
-        $item->comments = $request->input('comments');
-        $item->file = $fileName;
-        $item->file_type = 1;//póliza
-        $item->creator_user_id = $request->user()->id;  // usuario logueado
-        $item->save();
-        return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza agregada correctamente'); // Caso usuario posee rol pedidos
+        $order->comments = $request->input('comments');
+        // $order->file = $fileName;
+        // $order->file_type = 1;//póliza
+        $order->creator_user_id = $request->user()->id;  // usuario logueado
+        $order->save();
+        return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden agregada correctamente'); // Caso usuario posee rol pedidos
     }
 
 

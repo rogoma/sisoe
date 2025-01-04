@@ -39,12 +39,14 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h5>Agregar Orden al Contrato N° {{ $contract->number_year }}</h5>
-                                    <span class="text-danger" id="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</span>
+                                    <br><br>
+                                    <label id="fecha_actual" name="fecha_actual"  style="font-size: 20px;color: #FF0000;float: left;" for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>
+                                    <h3 style="text-align: center;">Agregar Orden</h3>                                        
                                 </div>
                                 <div class="card-block">
                                     <form method="POST" action="{{ route('contracts.orders.store', $contract->id) }}" enctype="multipart/form-data">
                                         @csrf
-                                        <div class="container">
+                                        <div class="container">                                            
                                             <div class="form-group row">
                                                 <label for="number" class="col-sm-2 col-form-label">N° de Orden</label>
                                                 <div class="col-sm-4">

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Permission;
+use Illuminate\Validation\Rule;
 
 class PermissionsController extends Controller
 {
@@ -51,8 +52,8 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'description' => 'string|required|max:100|unique:permissions'
+        $rules = array(            
+            'description' => 'required|string|max:100|unique:permissions,description'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -100,8 +101,17 @@ class PermissionsController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            'description' => 'string|required|max:100|unique:permissions'
+            'description' => [
+                'string',
+                'required',
+                'max:100',
+                Rule::unique('permissions')->ignore($id),
+            ]
         );
+
+        
+
+
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Department;
+use Illuminate\Validation\Rule;
 
 class DepartmentsController extends Controller
 {
@@ -53,7 +54,7 @@ class DepartmentsController extends Controller
     {
         $rules = array(
             'coddpto' => 'required|numeric|max:999|unique:departments',          
-            'nomdpto' => 'string|required|max:25'
+            'nomdpto' => 'string|required|max:25|unique:departments'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -112,9 +113,20 @@ class DepartmentsController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            //'coddpto' => 'required|numeric|max:999|unique:departments',           
-            'nomdpto' => 'string|required|max:25'
+            'coddpto' => [
+                'integer',
+                'required',                
+                Rule::unique('departments')->ignore($id),
+            ],
+            
+            'nomdpto' => [
+                'string',
+                'required',
+                'max:25',
+                Rule::unique('departments')->ignore($id),
+            ],            
         );
+
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();

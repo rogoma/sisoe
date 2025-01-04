@@ -51,8 +51,8 @@ class ModalitiesController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'description' => 'string|required|max:150',
+        $rules = array(            
+            'description' => 'required|string|max:150|unique:modalities,description',
             'code' => 'string|required|max:10',
             'modality_type' => 'string|required|max:100',
             'dncp_verification'=> 'required',
@@ -119,7 +119,7 @@ class ModalitiesController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            'description' => 'string|required|max:150',
+            'description' => 'required|string|max:150|unique:modalities,description',
             'code' => 'string|required|max:10',
             'modality_type' => 'string|required|max:100',
             'dncp_verification'=> 'required',
