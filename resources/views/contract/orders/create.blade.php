@@ -83,6 +83,18 @@
                                             </div>
 
                                             <div class="form-group row">
+                                                <label for="locality" class="col-sm-2 col-form-label">Localidad <br><small>(Hasta 200 caracteres)</small></label>
+                                                
+                                                {{-- <label class="col-form-label">Dependencia <br><small>(Dependencia solicitante)</small></label> --}}
+                                                <div class="col-sm-10">
+                                                    <input type="text" id="locality" name="locality" class="form-control @error('locality') is-invalid @enderror" value="{{ old('locality') }}" maxlength="200">
+                                                    @error('locality')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
                                                 <label for="component_id" class="col-sm-2 col-form-label">Componente</label>
                                                 <div class="col-sm-10">
                                                     <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
@@ -113,7 +125,7 @@
                                             </div>
 
                                             <div class="form-group row">
-                                                <label for="comments" class="col-sm-2 col-form-label">Comentarios (Hasta 300 caracteres)</label>
+                                                <label for="comments" class="col-sm-2 col-form-label">Comentarios <br><small>(Hasta 300 caracteres)</small></label>
                                                 <div class="col-sm-10">
                                                     <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror" maxlength="300">{{ old('comments') }}</textarea>
                                                     @error('comments')

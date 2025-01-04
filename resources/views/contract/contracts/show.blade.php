@@ -387,19 +387,19 @@
                                                                                 onclick="updateOrder({{ $contract->orders[$i]->id }})">
                                                                                 <i class="fa fa-pencil"></i>
                                                                             </button>
+                                                                                @if (Auth::user()->hasPermission(['admin.orders.delete']))
+                                                                                    <button type="button" title="Borrar"
+                                                                                        class="btn btn-danger btn-icon"
+                                                                                        onclick="deleteOrder({{ $contract->orders[$i]->id }})">
+                                                                                        <i class="fa fa-trash"></i>
+                                                                                    </button>
+                                                                                @endif
                                                                             <button type="button" title="Carga de Rubros"
                                                                                 class="btn btn-primary btn-icon"
                                                                                 onclick="itemAwardHistories({{ $contract->orders[$i]->id }})">
                                                                                 <i class="fa fa-list"></i>
                                                                             </button>
-                                                                        @endif
-                                                                        @if (Auth::user()->hasPermission(['admin.orders.delete']))
-                                                                            <button type="button" title="Borrar"
-                                                                                class="btn btn-danger btn-icon"
-                                                                                onclick="deleteOrder({{ $contract->orders[$i]->id }})">
-                                                                                <i class="fa fa-trash"></i>
-                                                                            </button>
-                                                                        @endif
+                                                                        @endif                                                                        
                                                                     @endif
                                                                 </td>
                                                                 {{-- <td>

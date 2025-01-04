@@ -201,18 +201,13 @@ class OrdersEjecsController extends Controller
     public function store(Request $request, $contract_id)
     {
         $rules = array(
-            
-            // 'policy_id' => [
-            // 'numeric','required','max:2147483647',
-            // Rule::unique('items')->where(function ($query) use ($contract_id) {
-            //     return $query->where('contract_id', $contract_id);
-            //     })
-            // ],
-            // 'number_policy' => 'string|required|unique:items,number_policy',
-            // 'item_from' => 'date_format:d/m/Y',
-            // 'item_to' => 'required|date_format:d/m/Y',
-            // 'amount' => 'nullable|string|max:9223372036854775807',
-            // 'comments' => 'nullable|max:300'
+            'number' => 'numeric|required|unique:orders,number',
+            'total_amount' => 'nullable|string|max:9223372036854775807',
+            'date' => 'date_format:d/m/Y|required|',
+            'component_id' => 'required|numeric',
+            'order_state_id'=> 'required|numeric',
+            'locality' => 'required|string|max:100',
+            'comments' => 'nullable|max:300'
         );
 
         $validator =  Validator::make($request->input(), $rules);
@@ -241,26 +236,34 @@ class OrdersEjecsController extends Controller
 
         $order = new Order;
         $order->contract_id = $contract_id;
-        $order->policy_id = $request->input('policy_id');
-        $order->number_policy = $request->input('number_policy');
-        $order->order_from = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('order_from'))));
-        $order->order_to = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('order_to'))));
-
-        $amount = str_replace('.', '',($request->input('amount')));
-        if ($amount === '' ) {
-            $validator->errors()->add('amount', 'Ingrese Monto');
-            return back()->withErrors($validator)->withInput();
-        }
-
-        if ($amount < 0 ) {
-            $validator->errors()->add('amount', 'Monto no puede ser negativo');
-            return back()->withErrors($validator)->withInput();
-        }else{
-            $order->amount = $amount;
-        }
+        $order->number = $request->input('number');
+        $order->total_amount = 0;
+        $order->date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('date'))));
+        $order->locality = $request->input('locality');        
+        $order->component_id = $request->input('component_id');
+        $order->order_state_id = $request->input('order_state_id');
         $order->comments = $request->input('comments');
+
+        //PARA ALMACENAR MONTO ( NO SE USA EN ESTE CASO)
+        // $total_amount = str_replace('.', '',($request->input('total_amount')));
+        
+        // if ($total_amount === '' ) {
+        //     $validator->errors()->add('total_amount', 'Ingrese Monto');
+        //     return back()->withErrors($validator)->withInput();
+        // }
+
+        // if ($total_amount < 0 ) {
+        //     $validator->errors()->add('total_amount', 'Monto no puede ser negativo');
+        //     return back()->withErrors($validator)->withInput();
+        // }else{
+        //     $order->total_amount = $total_amount;
+        // }
+        //**********************************
+
+        //PARA ALMACENAR ARCHIVOS ( NO SE USA EN ESTE CASO)
         // $order->file = $fileName;
         // $order->file_type = 1;//póliza
+
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden agregada correctamente'); // Caso usuario posee rol pedidos
@@ -276,16 +279,18 @@ class OrdersEjecsController extends Controller
     public function edit(Request $request, $contract_id, $item_id)
     {
         $contract = Contract::findOrFail($contract_id);
-        $post_max_size = $this->postMaxSize;
+        // $post_max_size = $this->postMaxSize;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.items.update','contracts.items.update']) &&  $contract->dependency_id != $request->user()->dependency_id){
-            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
-        }
+        // if(!$request->user()->hasPermission(['admin.items.update','contracts.items.update']) &&  $contract->dependency_id != $request->user()->dependency_id){
+        //     return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        // }
 
-        $item = Item::findOrFail($item_id);
-        $policies = Policy::all();
-        return view('contract.items.update', compact('contract','item','policies','post_max_size'));
+        $orders = Order::findOrFail($item_id);
+        $components = Component::all();
+        $order_states = OrderState::all();
+
+        return view('contract.orders.update', compact('contract','orders','components','order_states'));
     }
 
 

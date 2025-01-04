@@ -144,8 +144,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
     
-    
-    
+    Route::get('/contracts/{contract}/orders/{order}/edit', [OrdersEjecsController::class, 'edit'])->name('orders.edit');
+
     
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');
