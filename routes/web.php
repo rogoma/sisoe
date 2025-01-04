@@ -42,6 +42,7 @@ use App\Http\Controllers\Contract\ContractsController;
 use App\Http\Controllers\Contract\ContractsFilesController;
 use App\Http\Controllers\Contract\ItemsController;
 use App\Http\Controllers\Contract\ItemAwardHistoriesController;
+use App\Http\Controllers\Contract\OrdersEjecsController;
 use App\Http\Controllers\Dgaf\DgafsController;
 
 
@@ -138,52 +139,15 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //RECURSOS PARA MANEJAR ITEMS AWARDS HISTORIES (ENDOSOS)
     Route::resource('items.item_award_histories', ItemAwardHistoriesController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
     
+    //RECURSOS DE CONTRACTS PARA MANEJAR ORDENES
+    Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+
+
+
+
     
-    //DESDE ACA PARA AGREGAR EMPRESAS ADJUDICADAS    
-    Route::get('orders/{id}/budget_request_providers', [BudgetRequestProvidersController::class, 'index'])->name('orders.budget_request_providers.index');
-    //EMPRESAS COTIZANTES DE REQUIRIENTE
-    Route::get('orders/{id}/budget_request_providers/create', [BudgetRequestProvidersController::class, 'create'])->name('orders.budget_request_providers.create');
-    Route::post('orders/{id}/budget_request_providers/create', [BudgetRequestProvidersController::class, 'store'])->name('orders.budget_request_providers.store');
-    //EMPRESAS COTIZANTES DE PAC
-    Route::get('orders/{id}/budget_request_providers/create_PAC', [BudgetRequestProvidersController::class, 'create_PAC'])->name('orders.budget_request_providers.create_PAC');
-    Route::post('orders/{id}/budget_request_providers/create_PAC', [BudgetRequestProvidersController::class, 'store_PAC'])->name('orders.budget_request_providers.store_PAC');
-
-
-    //PARA EDITAR EMPRESAS COTIZANTES, INVITADAS O PARTICIPANTES
-    Route::get('orders/{id}/budget_request_providers/editar', [BudgetRequestProvidersController::class, 'editar'])->name('orders.budget_request_providers.editar');
-    Route::put('orders/{id}/budget_request_providers/editar', [BudgetRequestProvidersController::class, 'updatetype1'])->name('orders.budget_request_providers.updatetype1');
-
-    //PARA EDITAR EMPRESAS COTIZANTES REQUIRIENTE
-    Route::get('orders/{id}/budget_request_providers/edit_providers', [BudgetRequestProvidersController::class, 'edit_providers'])->name('orders.budget_request_providers.edit_providers');
-    Route::put('orders/{id}/budget_request_providers/edit_providers', [BudgetRequestProvidersController::class, 'update_providers'])->name('orders.budget_request_providers.update_providers');
-
-    //PARA EDITAR EMPRESAS COTIZANTES PAC
-    Route::get('orders/{id}/budget_request_providers/edit_providersPAC', [BudgetRequestProvidersController::class, 'edit_providersPAC'])->name('orders.budget_request_providers.edit_providersPAC');
-    Route::put('orders/{id}/budget_request_providers/edit_providersPAC', [BudgetRequestProvidersController::class, 'update_providersPAC'])->name('orders.budget_request_providers.update_providersPAC');
-
-
-    Route::delete('orders/{id}/budget_request_providers', [BudgetRequestProvidersController::class, 'destroy'])->name('orders.budget_request_providers.delete');
-
-    Route::get('orders/{id}/budget_request_providers/create_providers_guests', [BudgetRequestProvidersController::class, 'create_providers_guests'])->name('orders.budget_request_providers.create_providers_guests');
-    Route::post('orders/{id}/budget_request_providers/create_providers_guests', [BudgetRequestProvidersController::class, 'store_providers_guests'])->name('orders.budget_request_providers.store_providers_guests');
-    Route::get('orders/{id}/budget_request_providers/edit_providers_guests', [BudgetRequestProvidersController::class, 'edit_providers_guests'])->name('orders.budget_request_providers.edit_providers_guests');
-    Route::put('orders/{id}/budget_request_providers/edit_providers_guests', [BudgetRequestProvidersController::class, 'update_providers_guests'])->name('orders.budget_request_providers.update_providers_guests');
-
-    Route::delete('orders/{id}/budget_request_providers_providers_guests', [BudgetRequestProvidersController::class, 'destroy_providers_guests'])->name('orders.budget_request_providers.delete_providers_guests');
-
-    Route::get('orders/{id}/budget_request_providers/create_providers_participants', [BudgetRequestProvidersController::class, 'create_providers_participants'])->name('orders.budget_request_providers.create_providers_participants');
-    Route::post('orders/{id}/budget_request_providers/create_providers_participants', [BudgetRequestProvidersController::class, 'store_providers_participants'])->name('orders.budget_request_providers.store_providers_participants');
-    Route::get('orders/{id}/budget_request_providers/edit_providers_participants', [BudgetRequestProvidersController::class, 'edit_providers_participants'])->name('orders.budget_request_providers.edit_providers_participants');
-    Route::put('orders/{id}/budget_request_providers/edit_providers_participants', [BudgetRequestProvidersController::class, 'update_providers_participants'])->name('orders.budget_request_providers.update_providers_participants');
-    Route::delete('orders/{id}/budget_request_providers_providers_participants', [BudgetRequestProvidersController::class, 'destroy_providers_participants'])->name('orders.budget_request_providers.delete_providers_participants');
-
-    Route::get('orders/{id}/budget_request_providers/create_providers_awarded', [BudgetRequestProvidersController::class, 'create_providers_awarded'])->name('orders.budget_request_providers.create_providers_awarded');
-    Route::post('orders/{id}/budget_request_providers/create_providers_awarded', [BudgetRequestProvidersController::class, 'store_providers_awarded'])->name('orders.budget_request_providers.store_providers_awarded');
-    Route::get('orders/{id}/budget_request_providers/edit_providers_awarded', [BudgetRequestProvidersController::class, 'edit_providers_awarded'])->name('orders.budget_request_providers.edit_providers_awarded');
-    Route::put('orders/{id}/budget_request_providers/edit_providers_awarded', [BudgetRequestProvidersController::class, 'update_providers_awarded'])->name('orders.budget_request_providers.update_providers_awarded');
-    Route::delete('orders/{id}/budget_request_providers_providers_awarded', [BudgetRequestProvidersController::class, 'destroy_providers_awarded'])->name('orders.budget_request_providers.delete_providers_awarded');
-
-
+    
+    
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');
     Route::put('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'update_providers_contracts'])->name('orders.budget_request_providers.update_providers_contracts');
@@ -197,7 +161,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/orders/exportarexcel', [OrdersController::class, 'exportarExcel']); // PONER DEBAJO DE LAS RUTAS /orders/uploadExcel para que funcione
     Route::get('/orders/exportarexcel2', [OrdersController::class, 'exportarExcel2']); // PONER DEBAJO DE LAS RUTAS /orders/uploadExcel para que funcione
 
-    Route::resource('orders', OrdersController::class);    // PONER DEBAJO DE LAS RUTAS /orders/uploadExcel para que funcione
+    Route::resource('orders', OrdersEjecsController::class);    // PONER DEBAJO DE LAS RUTAS /orders/uploadExcel para que funcione
 
     Route::post('orders/derive/{order_id}', [OrdersController::class, 'derive'])->name('orders.derive');
     Route::post('orders/anuleOrder/{order_id}', [OrdersController::class, 'anuleOrder'])->name('orders.anuleOrder');
@@ -390,10 +354,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     
     Route::get('contracts/getNotifications', [ContractsController::class, 'getNotifications'])->name('contracts.getNotifications');
     Route::resource('contracts', ContractsController::class);
-    Route::post('contracts/recibe_order/{order_id}', [ContractsController::class, 'recibeOrder'])->name('contracts.recibeOrder');
-    Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
-    Route::put('contracts/orders/{order_id}/edit', [ContractsController::class, 'update'])->name('contracts.orders.update');
-    Route::post('contracts/derive_order/{order_id}', [ContractsController::class, 'deriveOrder'])->name('contracts.deriveOrder');
+
+    // Route::post('contracts/recibe_order/{order_id}', [ContractsController::class, 'recibeOrder'])->name('contracts.recibeOrder');
+    // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
+    // Route::put('contracts/orders/{order_id}/edit', [ContractsController::class, 'update'])->name('contracts.orders.update');
+    // Route::post('contracts/derive_order/{order_id}', [ContractsController::class, 'deriveOrder'])->name('contracts.deriveOrder');
    
 
     /********** MODULO DE DGAF **********/
@@ -415,6 +380,6 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('dgafs/deriveDictamenCVE/{order_id}', [DgafsController::class, 'deriveDictamenCVE'])->name('dgafs.deriveDictamenCVE');
 
     
-    Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
+    // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
     
 });

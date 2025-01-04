@@ -134,19 +134,19 @@ p.centrado {
                                             <table class="table table-striped table-bcontracted">
                                                 <tbody>
                                                     <tr>
-                                                        <td><label class="col-form-label f-w-600" >Nombre del Llamado:</label></td>
-                                                        <td><label class="col-form-label f-w-600" >Tipo Llamado:</label></td>
-                                                        <td><label class="col-form-label f-w-600">IDDNCP:</label></td>
-                                                        <td><label class="col-form-label f-w-600">Link DNCP:</label></td>
-                                                        <td><label class="col-form-label f-w-600">N° Contrato/Año:</label></td>
-                                                        <td><label class="col-form-label f-w-600">AÑO:</label></td>
-                                                        <td><label class="col-form-label f-w-600">Fecha firma contrato:</label></td>
+                                                        <td><label>Nombre del Llamado:</label></td>
+                                                        <td><label>Tipo Llamado:</label></td>
+                                                        <td><label>IDDNCP:</label></td>
+                                                        <td><label>Link DNCP:</label></td>
+                                                        <td><label>N° Contrato/Año:</label></td>
+                                                        <td><label>AÑO:</label></td>
+                                                        <td><label>Fecha firma contrato:</label></td>
                                                     </tr>
                                                     <tr>
-                                                        <td>{{ $contract->description }}</td>
+                                                        <td style="max-width: 800px">{{ $contract->description }}</td>
                                                         <td>{{ $contract->modality->description }}</td>
                                                         <td> {{ number_format($contract->iddncp,'0', ',','.') }} </td>
-                                                        <td style="color:blue">{{ $contract->linkdncp }}</td>
+                                                        <td style="color:blue; width: 100px;">{{ $contract->linkdncp }}</td>
                                                         <td>{{ $contract->number_year }}</td>
                                                         <td> {{ number_format($contract->year_adj,'0', ',','.') }} </td>
                                                         <td>{{ $contract->signDateFormat() }}</td>
@@ -312,12 +312,10 @@ p.centrado {
 
                                                 <div class="text-right">
                                                     {{-- @if (Auth::user()->hasPermission(['contracts.contracts.create','admin.orders.create'])) --}}
-                                                    @if (Auth::user()->hasPermission(['admin.orders.create']))
+                                                    @if (Auth::user()->hasPermission(['admin.orders.create','orders.orders.create']))
                                                         {{-- Si pedido está anulado no muestra agregar ítems --}}
                                                         @if (in_array($contract->contract_state_id, [1]))
-                                                        <a href="{{ route('contracts.items.create', $contract->id) }}" class="btn btn-primary">Agregar Orden</a>
-                                                        {{-- <a href="{{ route('orders.create', $contract->id) }}" title="Agregar pedido" class="btn btn-primary">Agregar pedido</a> --}}
-                                                        {{-- <a href="{{ route('orders.uploadExcel', $contract->id)}}" title="Cargar Archivo EXCEL" class="btn btn-danger btn-icon"><i class="fa fa-upload text-white"></i></a> --}}
+                                                            <a href="{{ route('contracts.orders.create', $contract->id) }}" class="btn btn-primary">Agregar Orden</a>                                                            
                                                         @endif
                                                     @endif
                                                 </div>
