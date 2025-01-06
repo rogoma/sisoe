@@ -80,7 +80,7 @@
         @elseif(Auth::user()->role_id == 3)
             @include('include.menus.orders')
         @elseif(Auth::user()->role_id == 4)
-            @include('include.menus.derive_orders')
+            @include('include.menus.orders')
         @elseif(Auth::user()->role_id == 5)
             @include('include.menus.plannings')
         @elseif(Auth::user()->role_id == 6)

@@ -86,7 +86,7 @@
                     <div class="page-header-title">
                         <i class="fa fa-list bg-c-blue"></i>
                         <div class="d-inline">
-                            <h5>Visualizar Llamado</h5>
+                            <h5>Visualizar Contratos</h5>
                             <span>Contrato Nº {{ $contract->number_year }}</span>
                             <br><br>
                             <h5>
@@ -103,7 +103,7 @@
                                 <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                             </li>
                             <li class="breadcrumb-item">
-                                <a href="{{ route('contracts.index') }}">Llamados</a>
+                                <a href="{{ route('contracts.index') }}">Contratos</a>
                             </li>
                         </ul>
                     </div>
@@ -121,13 +121,11 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-sm-10 text-left">
-                                                <h5>Llamado:
-                                                    {{ $contract->description . ' - ' . $contract->modality->description . ' - Contraro N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
+                                                <h5>Llamado: {{ $contract->description . ' - ' . $contract->modality->description . ' - Contraro N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
                                                 </h5>
                                             </div>
                                             <div class="col-sm-10 text-left">
-                                                <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia
-                                                    Responsable: {{ $contract->dependency->description }}</h5>
+                                                <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia Responsable: {{ $contract->dependency->description }}</h5>
                                             </div>
                                             <div class="col-sm-2">
                                                 @if (Auth::user()->hasPermission(['admin.contracts.update']))
@@ -146,8 +144,7 @@
                                                             Auth::user()->hasPermission(['admin.contracts.update']))
                                                         <a style="font-size: 14px; font-weight: bold; color:blue;background-color:lightblue;"
                                                             class="dropdown-item waves-effect f-w-600"
-                                                            href="{{ route('contracts.edit', $contract->id) }}">Editar
-                                                            Llamado</a>
+                                                            href="{{ route('contracts.edit', $contract->id) }}">Editar Contrato</a>
                                                     @endif
 
                                                     @if (Auth::user()->hasPermission(['admin.contracts.delete']) ||
@@ -167,7 +164,7 @@
                                         <ul class="nav nav-tabs md-tabs" role="tablist">
                                             <li class="nav-item">
                                                 <a class="nav-link active" data-toggle="tab" href="#tab0"
-                                                    role="tab"><i class="fa fa-tasks"></i> Datos del Llamado</a>
+                                                    role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
                                                 <div class="slide"></div>
                                             </li>
                                             <li class="nav-item">
@@ -198,7 +195,7 @@
 
                                         <div class="tab-content card-block">
                                             <div class="tab-pane active" id="tab0" role="tabpanel">
-                                                <h5 class="text-center">Datos del LLamado</h5>
+                                                <h5 class="text-center">Datos del Contrato</h5>
                                                 <table class="table table-striped table-bcontracted">
                                                     <tbody>
                                                         <tr>
@@ -280,13 +277,12 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab1" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Archivos de Evaluaciones
-                                                    Técnicas:</label>
+                                                <label class="col-form-label f-w-700">Archivos de Evaluaciones Técnicas:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Descripción de la Eval.</th>
+                                                            <th>Descripción de la Evaluación</th>
                                                             <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>
                                                             <th>Acciones</th>
@@ -296,12 +292,12 @@
                                                         @for ($i = 0; $i < count($user_files_eval); $i++)
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
-                                                                <td style="max-width: 700px">
+                                                                <td style="max-width: 800px">
                                                                     {{ $user_files_eval[$i]->description }}</td>
-                                                                <td style="max-width: 400px">
+                                                                <td style="max-width: 500px">
                                                                     {{ $user_files_eval[$i]->dependency->description }}
                                                                 </td>
-                                                                <td style="max-width: 100px">
+                                                                <td style="max-width: 200px">
                                                                     {{ $user_files_eval[$i]->updated_atDateFormat() }}</td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $user_files_eval[$i]->file) }}"
@@ -380,7 +376,8 @@
                                                                 <td>{{ $contract->orders[$i]->comments }}</td>
                                                                 {{-- Muestra si estado de llamado es En curso --}}
                                                                 <td>
-                                                                    @if (in_array($contract->contract_state_id, [1]))
+                                                                    @if (in_array($contract->contract_state_id, [1]))                                                                    
+                                                                        {{-- @if (Auth::user()->hasPermission(['admin.contracts.create'])) --}}
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             <button type="button" title="Editar"
                                                                                 class="btn btn-warning btn-icon"
@@ -623,11 +620,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-
-            updateOrder = function(order) {
-                //llamar a Función JS que está en H:\Proyectos\sistedoc\public\js\guardar-tab.js
-                // persistirTab();
-                location.href = '/contracts/{{ $contract->id }}/orders/' +order+'/edit/';
+            updateOrder = function(order) {                
+                location.href = '/contracts/{{ $contract->id }}/orders/'+order+'/edit/';
             }
 
             deleteOrder = function(item) {

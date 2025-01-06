@@ -21,22 +21,22 @@
                         </li>
                     </ul>
                     
-                    <div class="pcoded-navigation-label">Módulo de Contratos y Garantías</div>
+                    <div class="pcoded-navigation-label">Módulo de Contratos y Órdenes</div>
                     <ul class="pcoded-item pcoded-left-item">
                         <li class="pcoded-hasmenu">
                             <a href="javascript:void(0)" class="waves-effect waves-dark">
                             <span class="pcoded-micon"><i class="fa fa-clone"></i></span>
-                            <span class="pcoded-mtext">Contratos y Garantías</span>
+                            <span class="pcoded-mtext">Contratos generados</span>
                             </a>
                             <ul class="pcoded-submenu">
                                 <li class="@if(Route::currentRouteName() == 'contracts.index') active @endif">
                                     <a href="{{ route('contracts.index') }}" class="waves-effect waves-dark">
-                                    <span class="pcoded-mtext">Listado de Llamados</span>
+                                    <span class="pcoded-mtext">Listado de Contratos</span>
                                     </a>
                                 </li>
                                 <li class="@if(Route::currentRouteName() == 'contracts.create') active @endif">
                                     <a href="{{ route('contracts.create') }}" class="waves-effect waves-dark">
-                                    <span class="pcoded-mtext">Agregar Llamado</span>
+                                    <span class="pcoded-mtext">Agregar Contrato</span>
                                     </a>
                                 </li>
                             </ul>
@@ -48,7 +48,7 @@
                         <li class="pcoded-hasmenu">
                             <a href="javascript:void(0)" class="waves-effect waves-dark">
                             <span class="pcoded-micon"><i class="fa fa-folder-open"></i></span>
-                            <span class="pcoded-mtext">Admin. Contratos</span>
+                            <span class="pcoded-mtext">Administración</span>
                             </a>
                             <ul class="pcoded-submenu">
 

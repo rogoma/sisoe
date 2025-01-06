@@ -37,15 +37,15 @@ class OrdersEjecsController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.items.index',
-                            'contracts.items.index',
-                            'process_contracts.items.index',
-                            'derive_contracts.items.index',
-                            'plannings.items.index'];
-        $create_permissions = ['admin.items.create',
-                            'contracts.items.create'];
-        $update_permissions = ['admin.items.update',
-                            'contracts.items.update'];
+        $index_permissions = ['admin.orders.index',
+                            'orders.orders.index',
+                            'process_orders.orders.index',
+                            'derive_orders.orders.index',
+                            'plannings.orders.index'];
+        $create_permissions = ['admin.orders.create',
+                            'orders.orders.create'];
+        $update_permissions = ['admin.orders.update',
+                            'orders.orders.update'];
 
         $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index
         $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create
@@ -88,8 +88,7 @@ class OrdersEjecsController extends Controller
         $order = Order::findOrFail($order_id);
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.items.index','process_orders.items.index',
-        'derive_orders.items.index','plannings.items.index']) &&
+        if(!$request->user()->hasPermission(['admin.items.index','process_orders.items.index','derive_orders.items.index','plannings.items.index']) &&
         $order->dependency_id != $request->user()->dependency_id){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
@@ -276,21 +275,21 @@ class OrdersEjecsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $contract_id, $item_id)
+    public function edit(Request $request, $contract_id, $order_id)
     {
         $contract = Contract::findOrFail($contract_id);
         // $post_max_size = $this->postMaxSize;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        // if(!$request->user()->hasPermission(['admin.items.update','contracts.items.update']) &&  $contract->dependency_id != $request->user()->dependency_id){
-        //     return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
-        // }
+        if(!$request->user()->hasPermission(['admin.orders.update','contracts.orders.update']) &&  $contract->dependency_id != $request->user()->dependency_id){
+            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        }
 
-        $orders = Order::findOrFail($item_id);
+        $order = Order::findOrFail($order_id);
         $components = Component::all();
         $order_states = OrderState::all();
 
-        return view('contract.orders.update', compact('contract','orders','components','order_states'));
+        return view('contract.orders.update', compact('contract','order','components','order_states'));
     }
 
 
@@ -300,89 +299,44 @@ class OrdersEjecsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $contract_id, $item_id)
+    public function update(Request $request, $contract_id, $order_id)
     {
         $contract = Contract::findOrFail($contract_id);
-        $item = Item::findOrFail($item_id);
+        $order = Order::findOrFail($order_id);
 
         $rules = array(
-            'policy_id' => [
-            'numeric','required','max:2147483647',
-            Rule::unique('items')->ignore($item->id)->where(function ($query) use ($contract_id) {
-                return $query->where('contract_id', $contract_id);
-                })
-            ],
-            'number_policy' => [
-                'string',
-                'required',
-                Rule::unique('items')->ignore($item->id),
-            ],
-            
-            'item_from' => 'date_format:d/m/Y',
-            'item_to' => 'required|date_format:d/m/Y',
-            'amount' => 'nullable|string|max:9223372036854775807',            
-            'file' => 'nullable|file|max:2040', // Ejemplo para archivo de hasta 2 MB
+            // 'number' => 'numeric|required|unique:orders,number',
+            // 'total_amount' => 'nullable|string|max:9223372036854775807',
+            'date' => 'date_format:d/m/Y|required|',
+            'component_id' => 'required|numeric',
+            'order_state_id'=> 'required|numeric',
+            'locality' => 'required|string|max:100',
             'comments' => 'nullable|max:300'
         );
-
+        
         // Valida los datos de entrada
         $validatedData = $request->validate($rules);
 
-        // Actualiza el item con los datos validados
-        $item->update($validatedData);
+        // Actualiza la orden con los datos validados
+        $order->update($validatedData);
 
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        // Muestra desde la vista el nombre del archivo que está en un label
-        $filename = $request->input('filename');
-        // var_dump($filename);exit;
+        // $order->contract_id = $contract_id;
+        // $order->number = $request->input('number');
+        $order->total_amount = 0;
+        $order->date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('date'))));
+        $order->locality = $request->input('locality');        
+        $order->component_id = $request->input('component_id');
+        $order->order_state_id = $request->input('order_state_id');
+        $order->comments = $request->input('comments');
+        $order->creator_user_id = $request->user()->id;  // usuario logueado
+        $order->save();
 
-        if ($request->hasFile('file')) {
-            // Obtén la extensión del archivo (omite validación)
-            $extension = $request->file('file')->getClientOriginalExtension();
-            if(!in_array($extension, array('doc', 'docx', 'pdf'))){
-                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-                $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
-                return back()->withErrors($validator)->withInput();
-            }
-
-            // Guarda el archivo con un nombre único
-            // $fileName = time().'-policy-file.'.$extension;
-            $fileName = 'poliza_nro_'.$request->input('number_policy').'.'.$extension; // nombre a guardar
-            $path = $request->file('file')->storeAs('public/files', $fileName);
-
-            // Capturamos nombre del archivo almacenado en la tabla
-            $filename = $item->file;            
-
-            // Eliminamos el archivo del public/files
-            // Storage::delete('public/files/'.$filename);
-        }
-
-        $item->policy_id = $request->input('policy_id');
-        $item->number_policy = $request->input('number_policy');
-        $item->item_from = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_from'))));
-        $item->item_to = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_to'))));
-
-        $amount = str_replace('.', '',($request->input('amount')));
-        if ($amount === '') {
-            $validator->errors()->add('amount', 'Ingrese Monto');
-            return back()->withErrors($validator)->withInput();
-        }
-
-        if ($amount < 0 ) {
-            $validator->errors()->add('amount', 'Monto no puede ser negativo');
-            return back()->withErrors($validator)->withInput();
-        }else{
-            $item->amount = $amount;
-        }
-        $item->comments = $request->input('comments');
-        $item->file_type = 1;//pólizas
-        $item->creator_user_id = $request->user()->id;  // usuario logueado
-        $item->save();
-        return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza modificada correctamente'); // Caso usuario posee rol pedidos
+        return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
     }
 
     /**

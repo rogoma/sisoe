@@ -210,130 +210,24 @@ $(document).ready(function(){
     event.target.value = monto;
     });
 
-
-    $('#item_from').datepicker({
-        language: 'es',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayHighlight: true,
-    });
-
     $('#date').datepicker({
         language: 'es',
         format: 'dd/mm/yyyy',
         autoclose: true,
         todayHighlight: true,
     });
-
-    //VALIDACIÓN DE FECHAS DE ANTICIPOS
-    $('#item_from').on('changeDate', function() {
-        var fechaInicio = $(this).datepicker('getDate').getTime();
-        var fechaFin = $('#item_to').datepicker('getDate').getTime();
-
-        if (fechaInicio === fechaFin){
-            alert('La fecha final debe ser mayor a fecha de inicio');
-            $('#item_to').datepicker('date', null); // Limpiar el datapicker
-            $('#item_to').val('');
-            $('#control_1').val('');
-            $('#control_a').val('');
-            return;
-        }
-
-        if (fechaFin == null){
-
-        }else{
-            if (fechaInicio > fechaFin) {
-                alert('La fecha de inicio no puede ser mayor a la fecha final.');
-                $('#item_to').datepicker('date', null); // Limpiar el datapicker
-                $('#item_to').val('');
-                $('#control_1').val('');
-                $('#control_a').val('');
-            }else{
-                $('#item_to').datepicker('date', null); // Limpiar el datapicker
-                $('#item_to').val('');
-                $('#control_1').val('');
-                $('#control_a').val('');
-
-                //controla días para vigencia
-                restaFechas = function(f1,f2)
-                {
-                    var aFecha1 = f1.split('/');
-                    var aFecha2 = f2.split('/');
-                    var fFecha1 = Date.UTC(aFecha1[2],aFecha1[1]-1,aFecha1[0]);
-                    var fFecha2 = Date.UTC(aFecha2[2],aFecha2[1]-1,aFecha2[0]);
-                    var dif = fFecha2 - fFecha1;
-                    var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
-                    return dias;
-                }
-
-                $('#control_1').val(restaFechas(f1,f2));
-            }
-        }
-    });
-
-    $('#item_to').on('changeDate', function() {
-        var fechaInicio = $('#item_from').datepicker('getDate').getTime();
-        var fechaFin = $(this).datepicker('getDate').getTime();
-
-        if (fechaInicio === fechaFin) {
-            alert('La fecha final debe ser mayor a fecha de inicio');
-            $('#item_to').datepicker('date', null); // Limpiar el datapicker
-            $('#item_to').val('');
-            $('#control_1').val('');
-            $('#control_a').val('');
-            return;
-        }
-
-        if (fechaInicio > fechaFin) {
-            alert('La fecha de inicio no puede ser mayor a la fecha final.');
-            $('#item_to').datepicker('date', null); // Limpiar el datapicker
-            $('#item_to').val('');
-            $('#control_1').val('');
-            $('#control_a').val('');
-        }else{
-            ///calcula dias de vigencia
-            restaFechas = function(f1,f2)
-            {
-                var aFecha1 = f1.split('/');
-                var aFecha2 = f2.split('/');
-                var fFecha1 = Date.UTC(aFecha1[2],aFecha1[1]-1,aFecha1[0]);
-                var fFecha2 = Date.UTC(aFecha2[2],aFecha2[1]-1,aFecha2[0]);
-                var dif = fFecha2 - fFecha1;
-                var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
-                return dias;
-            }
-
-            ///calcula dias que faltan para vencer
-            restaFechas2 = function(f2,f3)
-            {
-                var aFecha1 = f3.split('/');
-                var aFecha2 = f2.split('/');
-                var fFecha1 = Date.UTC(aFecha1[2],aFecha1[1]-1,aFecha1[0]);
-                var fFecha2 = Date.UTC(aFecha2[2],aFecha2[1]-1,aFecha2[0]);
-                var dif = fFecha2 - fFecha1;
-                var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
-                return dias;
-            }
-
-            var f1 = $('#item_from').val();//fecha dtpicker inicio
-            var f2=  $('#item_to').val(); //fecha dtpicker final
-            var f3= $('#fecha_actual').text();//fecha actual
-            $('#control_1').val(restaFechas(f1,f2));//resultado fecha vigencia
-            $('#control_a').val(restaFechas2(f2,f3));//resultado fecha días para vencer
-        }
-    });
-
-    $('#file').bind('change', function() {
-        max_upload_size = {{ $post_max_size }};
-        if(this.files[0].size > max_upload_size){
-            $('#guardar').attr("disabled", "disabled");
-            file_size = Math.ceil((this.files[0].size/1024)/1024);
-            max_allowed = Math.ceil((max_upload_size/1024)/1024);
-            swal("Error!", "El tamaño del archivo seleccionado ("+file_size+" Mb) supera el tamaño maximo de carga permitido ("+max_allowed+" Mb).", "error");
-        }else{
-            $('#guardar').removeAttr("disabled");
-        }
-    });
+    
+    // $('#file').bind('change', function() {
+    //     max_upload_size = {{ $post_max_size }};
+    //     if(this.files[0].size > max_upload_size){
+    //         $('#guardar').attr("disabled", "disabled");
+    //         file_size = Math.ceil((this.files[0].size/1024)/1024);
+    //         max_allowed = Math.ceil((max_upload_size/1024)/1024);
+    //         swal("Error!", "El tamaño del archivo seleccionado ("+file_size+" Mb) supera el tamaño maximo de carga permitido ("+max_allowed+" Mb).", "error");
+    //     }else{
+    //         $('#guardar').removeAttr("disabled");
+    //     }
+    // });
 
 });
 </script>

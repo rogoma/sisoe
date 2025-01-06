@@ -9,6 +9,17 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'date',
+        // 'name',
+        // 'lastname',
+        // 'email',
+        // 'password',
+        // 'dependency_id',
+        // 'position_id',
+        // 'state',
+    ];
+
     /**
      * Para dar formato a Fecha
      */

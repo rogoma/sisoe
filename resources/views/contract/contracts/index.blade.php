@@ -34,10 +34,10 @@ p.centrado {
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Llamados - Listado de Llamados de Licitaciones</h5>
+                        <h5>Contratos - Listado de Contratos de Licitaciones</h5>
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <br>
-                            <a href="pdf/panel_contracts0" class="btn btn-outline-primary" target="_blank"> TOTAL LLAMADOS</a>
+                            <a href="pdf/panel_contracts0" class="btn btn-outline-primary" target="_blank"> TOTAL CONTRATOS</a>
                             <a href="pdf/panel_contracts1" class="btn btn-outline-warning" target="_blank">EN CURSO</a>
                             <a href="pdf/panel_contracts6" class="btn btn-outline-success" target="_blank">EN PROCESO RESCISIÓN</a>
                             <a href="pdf/panel_contracts2" class="btn btn-outline-warning" target="_blank">RESCINDIDOS</a>
@@ -58,7 +58,7 @@ p.centrado {
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.index') }}">Llamados</a>
+                            <a href="{{ route('contracts.index') }}">Contratos</a>
                         </li>
                     </ul>
                 </div>
@@ -74,7 +74,7 @@ p.centrado {
                             <div class="card">
                                 <div class="card-header">
                                     <div class="float-left">
-                                        <h5>Listado de Llamados de Licitaciones</h5>
+                                        <h5>Listado de Contratos</h5>
                                     </div>
                                     <br>
                                     {{-- @if (Auth::user()->hasPermission(['derive_contracts.contracts.show','contracts.contracts.create','admin.orders.create'])) --}}
