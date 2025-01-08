@@ -70,6 +70,12 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Role');
     }
 
+    /**
+     * Para obtener el vinculo con la tabla contracts
+     */
+    public function contracts(){
+        return $this->hasMany('App\Models\Contract');
+    }
 
     /**
      * Para obtener el vinculo con la tabla orders

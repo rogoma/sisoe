@@ -168,6 +168,11 @@
                                                 <div class="slide"></div>
                                             </li>
                                             <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
+                                                        class="fa fa-clone"></i> Asignar Fiscal</a>
+                                                <div class="slide"></div>
+                                            </li>
+                                            <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab1" role="tab"><i
                                                         class="fa fa-external-link"></i> Eval.Técnica</a>
                                                 <div class="slide"></div>
@@ -448,67 +453,28 @@
                                                 </table>
                                             </div>
 
-                                            <div class="tab-pane" id="tab5" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Archivos de pólizas cargados al
-                                                    llamado:</label>
+                                            <div class="tab-pane" id="tab3" role="tabpanel">
+                                                <label class="col-form-label f-w-600">Asignación de Fiscales del Contrato:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Descripción</th>
+                                                            <th>Nombre del Fiscal</th>
                                                             <th>Dependencia</th>
-                                                            <th>Fecha/Hora</th>
+                                                            <th>Fecha/Hora de asignación</th>
                                                             <th>Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @for ($i = 0; $i < count($user_files_pol); $i++)
-                                                            <tr>
-                                                                <td>{{ $i + 1 }}</td>
-                                                                <td>{{ $user_files_pol[$i]->description }}</td>
-                                                                <td>{{ $user_files_pol[$i]->dependency->description }}</td>
-                                                                <td>{{ $user_files_pol[$i]->updated_atDateFormat() }}</td>
-                                                                <td>
-                                                                    <a href="{{ asset('storage/files/' . $user_files_pol[$i]->file) }}"
-                                                                        title="Ver Archivo" target="_blank"
-                                                                        class="btn btn-primary"><i
-                                                                            class="fa fa-eye"></i></a>
-                                                                    <a href="{{ route('contracts.files.download', $user_files_pol[$i]->id) }}"
-                                                                        title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
-                                                                    <button title="Eliminar Archivo"
-                                                                        onclick="deleteFile({{ $user_files_pol[$i]->id }})"
-                                                                        class="btn btn-danger"><i
-                                                                            class="fa fa-trash"></i></a>
-                                                                </td>
-                                                            </tr>
-                                                        @endfor
 
-                                                        @for ($i = 0; $i < count($other_files_pol); $i++)
-                                                            <tr>
-                                                                <td>{{ $i + 1 }}</td>
-                                                                <td>{{ $other_files_pol[$i]->description }}</td>
-                                                                <td>{{ $other_files_pol[$i]->dependency->description }}
-                                                                </td>
-                                                                <td>{{ $other_files_pol[$i]->updated_atDateFormat() }}</td>
-                                                                <td>
-                                                                    <a href="{{ asset('storage/files/' . $other_files_pol[$i]->file) }}"
-                                                                        title="Ver Archivo" target="_blank"
-                                                                        class="btn btn-primary"><i
-                                                                            class="fa fa-eye"></i></a>
-                                                                    <a href="{{ route('contracts.files.download', $other_files_pol[$i]->id) }}"
-                                                                        title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
-                                                                </td>
-                                                            </tr>
-                                                        @endfor
+
                                                     </tbody>
                                                 </table>
-                                                <div class="text-right">
-                                                    @if (Auth::user()->hasPermission(['admin.files.create', 'contracts.files.create']))
+                                                <div class="text-center">
+                                                    @if (Auth::user()->hasPermission(['admin.files.create', 'contracts.contracts.create']))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
-                                                            <a href="{{ route('contracts.files.create', $contract->id) }}"
-                                                                class="btn btn-danger">Cargar Pólizas</a>
+                                                            <a href="{{ route('contracts.asign', $contract->id) }}"
+                                                                class="btn btn-danger">Asignar Fiscal</a>
                                                         @endif
                                                     @endif
                                                 </div>

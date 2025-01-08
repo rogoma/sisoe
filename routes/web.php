@@ -134,20 +134,24 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //RECURSOS PARA MANEJAR CONTRACTS (CONTRATOS)
     Route::resource('contracts', ContractsController::class);
+    // RUTA PARA EDITAR FORM CONTRATO Y AGREGAR FISCAL
+    Route::get('/contracts/orders/{order}/edit', [ContractsController::class, 'asign'])->name('contracts.asign');
+
+
 
     //RECURSOS DE CONTRACTS PARA MANEJAR ITEMS (POLIZAS)
     Route::resource('contracts.items', ItemsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-    
+
     //RECURSOS PARA MANEJAR ITEMS AWARDS HISTORIES (ENDOSOS)
     Route::resource('items.item_award_histories', ItemAwardHistoriesController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-    
+
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-    
+
     // Route::get('/contracts/{contract}/orders/{order}/edit', [OrdersEjecsController::class, 'edit'])->name('orders.edit');
 
-    
-    
+
+
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');
     Route::put('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'update_providers_contracts'])->name('orders.budget_request_providers.update_providers_contracts');
@@ -181,7 +185,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/orders/{id}/uploadExcelAw', [ItemsAdjudicaController::class, 'uploadExcelAw'])->name('orders.items_adjudica.uploadExcelAw');
     // Contrato Abierto
     Route::post('/orders/{id}/uploadExcelAw', [ItemsAdjudicaController::class, 'storeExcelAw'])->name('orders.items_adjudica.storeExcelAw');
-    
+
     //BUSCA ITEMS DE CATALOGO 5
     Route::get('items/search', [ItemsController::class, 'search']);
     //BUSCA ITEMS DE CATALOGO 4
@@ -318,8 +322,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::get('pedidos/export-excel2/', [ItemsAdjudicaController::class, 'exportExcel2']);
     // Route::get('pdf/panel_uta', [ReportsController::class, 'generarPanelUta'])->name('pdf.panel_uta');
 
-    
-    
+
+
     //ITEMS SE PASA A EXCEL EN AWARDS
     Route::get('items/export-excel/{order_id}', [ItemsAdjudicaController::class, 'exportExcel']);
 
@@ -351,7 +355,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::delete('/contracts/contract/{contract_id}/delete', 'ContractController@delete')->name('contracts.delete');
     Route::delete('contracts/contract/{contract_id}/delete', [ContractsController::class, 'destroy'])->name('contracts.delete');
 
-    
+
     Route::get('contracts/getNotifications', [ContractsController::class, 'getNotifications'])->name('contracts.getNotifications');
     Route::resource('contracts', ContractsController::class);
 
@@ -359,11 +363,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
     // Route::put('contracts/orders/{order_id}/edit', [ContractsController::class, 'update'])->name('contracts.orders.update');
     // Route::post('contracts/derive_order/{order_id}', [ContractsController::class, 'deriveOrder'])->name('contracts.deriveOrder');
-   
+
 
     /********** MODULO DE DGAF **********/
     Route::resource('dgafs', DgafsController::class);
-   
+
     Route::resource('dgafs.objections', App\Http\Controllers\Dgaf\ObjectionsController::class);
     Route::resource('dgafs.objections_responses', App\Http\Controllers\Dgaf\ObjectionsResponsesController::class);
 
@@ -379,7 +383,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('dgafs/deriveDictamenEVAL/{order_id}', [DgafsController::class, 'deriveDictamenEVAL'])->name('dgafs.deriveDictamenEVAL');
     Route::post('dgafs/deriveDictamenCVE/{order_id}', [DgafsController::class, 'deriveDictamenCVE'])->name('dgafs.deriveDictamenCVE');
 
-    
+
     // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
-    
+
 });

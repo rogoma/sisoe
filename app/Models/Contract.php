@@ -31,6 +31,13 @@ class Contract extends Model
     }
 
     /**
+     * Para obtener el vinculo con la tabla usuarios
+     */
+    public function user(){
+        return $this->belongsTo('App\Models\User');
+    }
+
+    /**
      * Para obtener el vinculo con la tabla financial_organisms
      */
     public function financialOrganism(){
