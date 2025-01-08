@@ -373,10 +373,10 @@
                                                                 <td>{{ $contract->orders[$i]->locality }}</td>
                                                                 <td>{{ $contract->orders[$i]->component->description }}</td>
                                                                 <td>{{ $contract->orders[$i]->orderState->description }}</td>
-                                                                <td>{{ $contract->orders[$i]->comments }}</td>
+                                                                <td style="max-width: 200px">{{ $contract->orders[$i]->comments }}</td>
                                                                 {{-- Muestra si estado de llamado es En curso --}}
                                                                 <td>
-                                                                    @if (in_array($contract->contract_state_id, [1]))                                                                    
+                                                                    @if (in_array($contract->contract_state_id, [1]))
                                                                         {{-- @if (Auth::user()->hasPermission(['admin.contracts.create'])) --}}
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             <button type="button" title="Editar"
@@ -396,7 +396,7 @@
                                                                                 onclick="itemAwardHistories({{ $contract->orders[$i]->id }})">
                                                                                 <i class="fa fa-list"></i>
                                                                             </button>
-                                                                        @endif                                                                        
+                                                                        @endif
                                                                     @endif
                                                                 </td>
                                                                 {{-- <td>
@@ -620,7 +620,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            updateOrder = function(order) {                
+            updateOrder = function(order) {
                 location.href = '/contracts/{{ $contract->id }}/orders/'+order+'/edit/';
             }
 

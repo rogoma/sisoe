@@ -39,7 +39,7 @@
                                         <h5>Modificar Orden del Contrato N° {{ $contract->number_year }}</h5>
                                         <br><br>
                                         <label id="fecha_actual" name="fecha_actual"  style="font-size: 20px;color: #FF0000;float: left;" for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>
-                                        <h3 style="text-align: center;">Modificar Orden</h3>                                        
+                                        <h3 style="text-align: center;">Modificar Orden</h3>
                                     </div>
                                     <div class="card-block">
                                         <form method="POST"
@@ -48,7 +48,7 @@
                                             @csrf
                                             @method('PUT')
 
-                                            <div class="container">                                                
+                                            <div class="container">
                                                 <div class="form-group row">
                                                     <label for="number" class="col-sm-2 col-form-label">N° de Orden</label>
                                                     <div class="col-sm-4">
@@ -77,11 +77,9 @@
                                                     <label for="date" class="col-sm-2 col-form-label">Fecha</label>
                                                     <div class="col-sm-4">
                                                         <div class="input-group">
-                                                            {{-- <input type="text" id="sign_date" name="sign_date"  --}}
                                                             <input type="text" id="date" name="date"
                                                                 class="form-control @error('date') is-invalid @enderror"
                                                                 value="{{ old('date', date('d/m/Y', strtotime($order->date)))}}" autocomplete="off">
-                                                                {{-- value="{{ old('sign_date', date('d/m/Y', strtotime($order->date))) }}" class="form-control" autocomplete="off"> --}}
                                                             <span class="input-group-append">
                                                                 <button type="button" class="btn btn-outline-secondary"
                                                                     onclick="show('date');"><i
@@ -95,8 +93,19 @@
                                                 </div>
 
                                                 <div class="form-group row">
+                                                    <label for="plazo" class="col-sm-2 col-form-label">Plazo de ejecución <br><small>(En días)</small></label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" id="plazo" name="plazo" class="form-control @error('plazo') is-invalid @enderror"
+                                                        value="{{ old('plazo', $order->plazo) }}" maxlength="3">
+                                                        @error('plazo')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
                                                     <label for="locality" class="col-sm-2 col-form-label">Localidad
-                                                        <br><small>(Hasta 200 caracteres)</small></label>                                                    
+                                                        <br><small>(Hasta 200 caracteres)</small></label>
                                                     <div class="col-sm-10">
                                                         <input type="text" id="locality" name="locality"
                                                             class="form-control @error('locality') is-invalid @enderror"
@@ -182,56 +191,82 @@ $(document).ready(function(){
     $('#component_id').select2();
     $('#order_state_id').select2();
 
-    // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
-    document.getElementById('number').addEventListener('input', function(event) {
+   // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
+   document.getElementById('number').addEventListener('input', function(event) {
     // Obtenemos el valor ingresado
-    let monto = event.target.value.replace(/\./g, '');
+    let number = event.target.value.replace(/\./g, '');
     // Comprobamos si el valor es vacío
-    if (monto === '' || monto < 0) {
+    if (number === '' || number < 0) {
         event.target.value = '0';
         return;
     }
 
     // Convertimos a número
-    monto = parseFloat(monto);
+    number = parseFloat(number);
 
-    // Verificamos si el monto es un número válido y no NaN
-    if (isNaN(monto) || monto < 0) {
+    // Verificamos si el number es un número válido y no NaN
+    if (isNaN(number) || number < 0) {
         event.target.value = '0';
         return;
     }
 
     // Formateamos el valor con separador de miles
-    monto = monto.toLocaleString('es-ES');
+    number = number.toLocaleString('es-ES');
 
     // Actualizamos el valor en el input text
-    event.target.value = monto;
+    event.target.value = number;
     });
 
     // Script para formatear el valor MONTO DE ORDEN con separador de miles mientras se ingresa Monto
     document.getElementById('total_amount').addEventListener('input', function(event) {
     // Obtenemos el valor ingresado
-    let monto = event.target.value.replace(/\./g, '');
+    let total_amount = event.target.value.replace(/\./g, '');
     // Comprobamos si el valor es vacío
-    if (monto === '' || monto < 0) {
+    if (total_amount === '' || total_amount < 0) {
         event.target.value = '0';
         return;
     }
 
     // Convertimos a número
-    monto = parseFloat(monto);
+    total_amount = parseFloat(total_amount);
 
-    // Verificamos si el monto es un número válido y no NaN
-    if (isNaN(monto) || monto < 0) {
+    // Verificamos si el total_amount es un número válido y no NaN
+    if (isNaN(total_amount) || total_amount < 0) {
         event.target.value = '0';
         return;
     }
 
     // Formateamos el valor con separador de miles
-    monto = monto.toLocaleString('es-ES');
+    total_amount = total_amount.toLocaleString('es-ES');
 
     // Actualizamos el valor en el input text
-    event.target.value = monto;
+    event.target.value = total_amount;
+    });
+
+    // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
+    document.getElementById('plazo').addEventListener('input', function(event) {
+    // Obtenemos el valor ingresado
+    let plazo = event.target.value.replace(/\./g, '');
+    // Comprobamos si el valor es vacío
+    if (plazo === '' || plazo < 0) {
+        event.target.value = '0';
+        return;
+    }
+
+    // Convertimos a número
+    plazo = parseFloat(plazo);
+
+    // Verificamos si el plazo es un número válido y no NaN
+    if (isNaN(plazo) || plazo < 0) {
+        event.target.value = '0';
+        return;
+    }
+
+    // Formateamos el valor con separador de miles
+    plazo = plazo.toLocaleString('es-ES');
+
+    // Actualizamos el valor en el input text
+    event.target.value = plazo;
     });
 
     $('#date').datepicker({
@@ -239,8 +274,8 @@ $(document).ready(function(){
         format: 'dd/mm/yyyy',
         autoclose: true,
         todayHighlight: true,
-    });   
-    
+    });
+
 
 });
 </script>

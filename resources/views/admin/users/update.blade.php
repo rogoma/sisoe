@@ -112,6 +112,22 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group row @error('contract_admin') has-danger @enderror">
+                                            <label class="col-sm-2 col-form-label">Administrador de Contrato <br><small>(Si/NO)</small></label>
+                                            <div class="col-sm-10">
+                                                <select id="contract_admin" name="contract_admin" class="form-control">
+                                                    <option value="">Seleccionar</option>
+                                                    @foreach (array(0 => 'NO', 1 => 'SI') as $index => $value)
+                                                        <option value="{{ $index }}" @if ($index == old('contract_admin', $user->contract_admin)) selected @endif>{{ $value }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('contract_admin')
+                                                    <div class="col-form-label">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
                                         <div class="form-group row @error('role') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Rol</label>
                                             <div class="col-sm-10">
@@ -142,35 +158,6 @@
                                             </div>
                                         </div>
 
-                                        {{-- <div class="form-group row @error('role') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Rol</label>
-                                            <div class="col-sm-10">
-                                                <select id="role" name="role" class="form-control">
-                                                    <option value="">--- Seleccionar Rol ---</option>
-                                                    @foreach ($roles as $role)
-                                                        <option value="{{ $role->id }}" @if ($role->id == old('role', $user->role_id)) selected @endif>{{ $role->description }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('role')
-                                                    <div class="col-form-label">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div> --}}
-
-                                        {{-- <div class="col-sm-2">
-                                            <div class="form-group @error('plurianualidad') has-danger @enderror">
-                                                <label style="color:red;font-weight: bold" class="col-form-label">Plurianualidad <br><small>(plurianualidad)</small></label>
-                                                <select id="plurianualidad" name="plurianualidad" class="form-control">
-                                                @foreach (array(0 => 'NO', 1 => 'SI') as $index => $value)
-                                                    <option disabled="disabled" value="{{ $index }}" @if ($index == old('plurianualidad', $order->plurianualidad)) selected @endif>{{ $value }}</option>
-                                                @endforeach
-                                                </select>
-                                                @error('plurianualidad')
-                                                    <div class="col-form-label">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div> --}}
-
                                         <div class="form-group row">
                                             <label class="col-sm-2"></label>
                                             <div class="col-sm-10">
@@ -198,6 +185,7 @@ $(document).ready(function(){
     $('#position').select2();
     $('#role').select2();
     $('#state').select2();
+    $('#contract_admin').select2();
 
 });
 </script>

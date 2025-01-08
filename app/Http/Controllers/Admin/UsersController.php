@@ -123,7 +123,8 @@ class UsersController extends Controller
             'dependency' => 'required',
             'position' => 'required',
             'role' => 'numeric|required',
-            'state' => 'required'
+            'state' => 'required',
+            'contract_admin' => 'boolean|required'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -139,6 +140,7 @@ class UsersController extends Controller
         $user->role_id = $request->input('role');
         $user->dependency_id = $request->input('dependency');
         $user->position_id = $request->input('position');
+        $user->contract_admin = $request->input('contract_admin');
         $user->state = $request->input('state');
         $user->creator_user_id = $request->user()->id;  // usuario logueado
         $user->save();
@@ -196,7 +198,8 @@ class UsersController extends Controller
             'dependency' => 'required',
             'position' => 'required',
             'role' => 'numeric|required',
-            'state' => 'required'
+            'state' => 'required',
+            'contract_admin' => 'boolean|required'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -222,6 +225,7 @@ class UsersController extends Controller
         $user->role_id = $request->input('role');
         $user->dependency_id = $request->input('dependency');
         $user->position_id = $request->input('position');
+        $user->contract_admin = $request->input('contract_admin');
         $user->state = $request->input('state');
         $user->modifier_user_id = $request->user()->id;  // usuario logueado
         $user->save();

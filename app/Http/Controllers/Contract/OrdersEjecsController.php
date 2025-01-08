@@ -206,7 +206,8 @@ class OrdersEjecsController extends Controller
             'component_id' => 'required|numeric',
             'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
-            'comments' => 'nullable|max:300'
+            'comments' => 'nullable|max:300',
+            'plazo' => 'required|numeric'
         );
 
         $validator =  Validator::make($request->input(), $rules);
@@ -228,7 +229,7 @@ class OrdersEjecsController extends Controller
         //     return back()->withErrors($validator)->withInput();
         // }
 
-        // Pasó todas las validaciones, guardamos el archivo        
+        // Pasó todas las validaciones, guardamos el archivo
         // $fileName = 'poliza_nro_'.$request->input('number_policy').'.'.$extension; // nombre a guardar
         // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
         // $path = $request->file('file')->storeAs('public/files', $fileName);
@@ -238,14 +239,15 @@ class OrdersEjecsController extends Controller
         $order->number = $request->input('number');
         $order->total_amount = 0;
         $order->date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('date'))));
-        $order->locality = $request->input('locality');        
+        $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         $order->order_state_id = $request->input('order_state_id');
         $order->comments = $request->input('comments');
+        $order->plazo = $request->input('plazo');
 
         //PARA ALMACENAR MONTO ( NO SE USA EN ESTE CASO)
         // $total_amount = str_replace('.', '',($request->input('total_amount')));
-        
+
         // if ($total_amount === '' ) {
         //     $validator->errors()->add('total_amount', 'Ingrese Monto');
         //     return back()->withErrors($validator)->withInput();
@@ -311,9 +313,10 @@ class OrdersEjecsController extends Controller
             'component_id' => 'required|numeric',
             'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
-            'comments' => 'nullable|max:300'
+            'comments' => 'nullable|max:300',
+            'plazo' => 'required|numeric'
         );
-        
+
         // Valida los datos de entrada
         $validatedData = $request->validate($rules);
 
@@ -329,10 +332,11 @@ class OrdersEjecsController extends Controller
         // $order->number = $request->input('number');
         $order->total_amount = 0;
         $order->date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('date'))));
-        $order->locality = $request->input('locality');        
+        $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         $order->order_state_id = $request->input('order_state_id');
         $order->comments = $request->input('comments');
+        $order->plazo = $request->input('plazo');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
 

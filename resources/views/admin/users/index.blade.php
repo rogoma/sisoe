@@ -64,6 +64,7 @@
                                                     <th>Dependencia</th>
                                                     <th>Cargo</th>
                                                     <th>Rol</th>
+                                                    <th>Admin Contrato</th>
                                                     <th>Estado</th>
                                                     <th>Acciones</th>
                                                 </tr>
@@ -79,15 +80,16 @@
                                                     <td width="50">{{ $users[$i]->position->description }}</td>
                                                     <td>{{ $users[$i]->role->description }}</td>
 
-                                                    {{-- @if ($orders[$i]->urgency_state == "MEDIA")
-                                                                <td style="color:orange;font-weight: bold">{{ $orders[$i]->urgency_state }}</td>
-                                                            @else
-                                                                <td>{{ $orders[$i]->urgency_state }}</td>
-                                                            @endif --}}
-                                                    @if ($users[$i]->state == 1)                                                        
+                                                    @if ($users[$i]->contract_admin == 1)
+                                                        <td width="50">SI</td>
+                                                    @else
+                                                        <td width="50">NO</td>
+                                                    @endif
+
+                                                    @if ($users[$i]->state == 1)
                                                         <td>Activo</td>
                                                     @else
-                                                        <td style="color:red;font-weight: bold">Inactivo</td>                                                        
+                                                        <td style="color:red;font-weight: bold">Inactivo</td>
                                                     @endif
 
                                                     <td>

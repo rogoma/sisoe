@@ -41,12 +41,12 @@
                                     <h5>Agregar Orden al Contrato N° {{ $contract->number_year }}</h5>
                                     <br><br>
                                     <label id="fecha_actual" name="fecha_actual"  style="font-size: 20px;color: #FF0000;float: left;" for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>
-                                    <h3 style="text-align: center;">Agregar Orden</h3>                                        
+                                    <h3 style="text-align: center;">Agregar Orden</h3>
                                 </div>
                                 <div class="card-block">
                                     <form method="POST" action="{{ route('contracts.orders.store', $contract->id) }}" enctype="multipart/form-data">
                                         @csrf
-                                        <div class="container">                                            
+                                        <div class="container">
                                             <div class="form-group row">
                                                 <label for="number" class="col-sm-2 col-form-label">N° de Orden</label>
                                                 <div class="col-sm-4">
@@ -83,8 +83,18 @@
                                             </div>
 
                                             <div class="form-group row">
+                                                <label for="plazo" class="col-sm-2 col-form-label">Plazo de ejecución <br><small>(En días)</small></label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" id="plazo" name="plazo" class="form-control @error('plazo') is-invalid @enderror" value="{{ old('plazo') }}" maxlength="3">
+                                                    @error('plazo')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
                                                 <label for="locality" class="col-sm-2 col-form-label">Localidad <br><small>(Hasta 200 caracteres)</small></label>
-                                                
+
                                                 {{-- <label class="col-form-label">Dependencia <br><small>(Dependencia solicitante)</small></label> --}}
                                                 <div class="col-sm-10">
                                                     <input type="text" id="locality" name="locality" class="form-control @error('locality') is-invalid @enderror" value="{{ old('locality') }}" maxlength="200">
@@ -161,54 +171,81 @@ $(document).ready(function(){
     // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
     document.getElementById('number').addEventListener('input', function(event) {
     // Obtenemos el valor ingresado
-    let monto = event.target.value.replace(/\./g, '');
+    let number = event.target.value.replace(/\./g, '');
     // Comprobamos si el valor es vacío
-    if (monto === '' || monto < 0) {
+    if (number === '' || number < 0) {
         event.target.value = '0';
         return;
     }
 
     // Convertimos a número
-    monto = parseFloat(monto);
+    number = parseFloat(number);
 
-    // Verificamos si el monto es un número válido y no NaN
-    if (isNaN(monto) || monto < 0) {
+    // Verificamos si el number es un número válido y no NaN
+    if (isNaN(number) || number < 0) {
         event.target.value = '0';
         return;
     }
 
     // Formateamos el valor con separador de miles
-    monto = monto.toLocaleString('es-ES');
+    number = number.toLocaleString('es-ES');
 
     // Actualizamos el valor en el input text
-    event.target.value = monto;
+    event.target.value = number;
     });
 
     // Script para formatear el valor MONTO DE ORDEN con separador de miles mientras se ingresa Monto
     document.getElementById('total_amount').addEventListener('input', function(event) {
     // Obtenemos el valor ingresado
-    let monto = event.target.value.replace(/\./g, '');
+    let total_amount = event.target.value.replace(/\./g, '');
     // Comprobamos si el valor es vacío
-    if (monto === '' || monto < 0) {
+    if (total_amount === '' || total_amount < 0) {
         event.target.value = '0';
         return;
     }
 
     // Convertimos a número
-    monto = parseFloat(monto);
+    total_amount = parseFloat(total_amount);
 
-    // Verificamos si el monto es un número válido y no NaN
-    if (isNaN(monto) || monto < 0) {
+    // Verificamos si el total_amount es un número válido y no NaN
+    if (isNaN(total_amount) || total_amount < 0) {
         event.target.value = '0';
         return;
     }
 
     // Formateamos el valor con separador de miles
-    monto = monto.toLocaleString('es-ES');
+    total_amount = total_amount.toLocaleString('es-ES');
 
     // Actualizamos el valor en el input text
-    event.target.value = monto;
+    event.target.value = total_amount;
     });
+
+    // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
+    document.getElementById('plazo').addEventListener('input', function(event) {
+    // Obtenemos el valor ingresado
+    let plazo = event.target.value.replace(/\./g, '');
+    // Comprobamos si el valor es vacío
+    if (plazo === '' || plazo < 0) {
+        event.target.value = '0';
+        return;
+    }
+
+    // Convertimos a número
+    plazo = parseFloat(plazo);
+
+    // Verificamos si el plazo es un número válido y no NaN
+    if (isNaN(plazo) || plazo < 0) {
+        event.target.value = '0';
+        return;
+    }
+
+    // Formateamos el valor con separador de miles
+    plazo = plazo.toLocaleString('es-ES');
+
+    // Actualizamos el valor en el input text
+    event.target.value = plazo;
+    });
+
 
     $('#date').datepicker({
         language: 'es',
@@ -216,7 +253,7 @@ $(document).ready(function(){
         autoclose: true,
         todayHighlight: true,
     });
-    
+
     // $('#file').bind('change', function() {
     //     max_upload_size = {{ $post_max_size }};
     //     if(this.files[0].size > max_upload_size){
