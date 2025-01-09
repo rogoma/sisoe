@@ -39,6 +39,13 @@ class Order extends Model
     }
 
     /**
+     * Relación: Una orden pertenece a un departamento.
+     */
+    public function department()
+    {
+        return $this->belongsTo('App\Models\Department');
+    }
+    /**
      * Para obtener el vinculo con la tabla order_states
      */
     // public function orderState(){

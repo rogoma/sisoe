@@ -14,6 +14,8 @@ use App\Models\Contract;
 use App\Models\Policy;
 use App\Models\Item;
 use App\Models\File;
+use App\Models\Department;
+use App\Models\District;
 use App\Models\Level5CatalogCode;
 use App\Models\OrderPresentation;
 use App\Models\OrderMeasurementUnit;
@@ -157,9 +159,9 @@ class OrdersEjecsController extends Controller
     {
         $contract = Contract::findOrFail($contract_id);
 
-        // $order = $contract->order;
-        $order = Order::where('contract_id', $contract_id)->firstOrFail();
-        $nextContractNumber = $order->number + 1;
+        // PARA NUMERAR ORDENES DE ACUERDO A LA CANTIDAD
+        $order = Order::where('contract_id', $contract_id)->count();
+        $nextContractNumber = $order + 1;
 
         $post_max_size = $this->postMaxSize;
 
@@ -168,14 +170,16 @@ class OrdersEjecsController extends Controller
         if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create'])){
             // return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con','other_files_pol','other_files_con'));
         }else{
-            return back()->with('error', 'No tiene los suficientes permisos para agregar pólizas.');
+            return back()->with('error', 'No tiene los suficientes permisos para agregar órdenes.');
         }
 
         $components = Component::all();
-        $order_states = OrderState::all();        
-        
+        $order_states = OrderState::all();
+        $departments = Department::all();
+        $districts = District::all();
 
-        return view('contract.orders.create', compact('contract','order_states','components','post_max_size', 'nextContractNumber'));
+        return view('contract.orders.create', compact('contract','order_states','components',
+        'post_max_size', 'nextContractNumber', 'departments','districts'));
     }
 
     /**

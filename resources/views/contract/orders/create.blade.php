@@ -51,8 +51,8 @@
                                                 <label for="number" class="col-sm-2 col-form-label">N° de Orden</label>
                                                 <div class="col-sm-4">
                                                     {{-- <label for="" value="{{ $nextContractId }}"></label> --}}
-                                                    <label for="number">{{ $nextContractNumber }}</label> 
-                                                    {{-- <input type="text" id="number" name="number" class="form-control @error('number') is-invalid @enderror" 
+                                                    <label for="number">{{ $nextContractNumber }}</label>
+                                                    {{-- <input type="text" id="number" name="number" class="form-control @error('number') is-invalid @enderror"
                                                     value="{{ $contract->number }}" maxlength="6" disabled>
                                                     @error('number')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -71,35 +71,60 @@
                                             </div>
 
                                             <div class="form-group row">
-                                                <label for="component_id" class="col-sm-2 col-form-label">Departamento</label>
+                                                <label for="department_id" class="col-sm-2 col-form-label">Departamento</label>
                                                 <div class="col-sm-10">
-                                                    <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
+                                                    <select id="department_id" name="department_id" class="form-control @error('department_id') is-invalid @enderror">
                                                         <option value="">--- Seleccionar Departamento ---</option>
-                                                        @foreach ($components as $component)
-                                                        <option value="{{ $component->id }}" @if ($component->id == old('component_id')) selected @endif>{{ $component->description }}</option>
+                                                        @foreach ($departments as $department)
+                                                        <option value="{{ $department->id }}" @if ($department->id == old('department_id')) selected @endif>
+                                                            {{ $department->description }}
+                                                        </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('component_id')
+                                                    @error('department_id')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
 
                                             <div class="form-group row">
-                                                <label for="component_id" class="col-sm-2 col-form-label">Distrito</label>
+                                                <label for="district_id" class="col-sm-2 col-form-label">Distrito</label>
                                                 <div class="col-sm-10">
-                                                    <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
+                                                    <select id="district_id" name="district_id" class="form-control @error('district_id') is-invalid @enderror">
                                                         <option value="">--- Seleccionar Distrito ---</option>
-                                                        @foreach ($components as $component)
-                                                        <option value="{{ $component->id }}" @if ($component->id == old('component_id')) selected @endif>{{ $component->description }}</option>
-                                                        @endforeach
                                                     </select>
-                                                    @error('component_id')
+                                                    @error('district_id')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
-                                            
+
+                                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#department_id').on('change', function () {
+            var departmentId = $(this).val();
+            if (departmentId) {
+                $.ajax({
+                    url: '/districts/' + departmentId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#district_id').empty();
+                        $('#district_id').append('<option value="">--- Seleccionar Distrito ---</option>');
+                        $.each(data, function (key, district) {
+                            $('#district_id').append('<option value="' + district.id + '">' + district.description + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#district_id').empty();
+                $('#district_id').append('<option value="">--- Seleccionar Distrito ---</option>');
+            }
+        });
+    });
+</script>
+
                                             <div class="form-group row">
                                                 <label for="locality" class="col-sm-2 col-form-label">Localidad <br><small>(Hasta 200 caracteres)</small></label>
                                                 <div class="col-sm-10">
@@ -133,7 +158,7 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            </div>                                            
+                                            </div>
 
                                             <div class="form-group row">
                                                 <label for="component_id" class="col-sm-2 col-form-label">Componente</label>
@@ -193,11 +218,17 @@
 
 
 @push('scripts')
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+
 <script type="text/javascript">
+
 $(document).ready(function(){
 
     $('#component_id').select2();
     $('#order_state_id').select2();
+    $('#department_id').select2();
+    $('#district_id').select2();
+
 
     // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
     document.getElementById('number').addEventListener('input', function(event) {

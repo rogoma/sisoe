@@ -44,6 +44,7 @@ use App\Http\Controllers\Contract\ItemsController;
 use App\Http\Controllers\Contract\ItemAwardHistoriesController;
 use App\Http\Controllers\Contract\OrdersEjecsController;
 use App\Http\Controllers\Dgaf\DgafsController;
+use App\Http\Controllers\LocationController;
 
 
 // use App\Http\Controllers\Report\PdfsController;
@@ -138,6 +139,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/contracts/orders/{order}/edit', [ContractsController::class, 'asign'])->name('contracts.asign');
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
     Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.asign.update');
+    // RUTA PARA MANEJAR COMBO DEPARTAMENTO-DISTRITOS
+    Route::get('/districts/{department}', [LocationController::class, 'getDistricts'])->name('districts.get');
+
 
 
     //RECURSOS DE CONTRACTS PARA MANEJAR ITEMS (POLIZAS)
