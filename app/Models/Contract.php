@@ -38,6 +38,24 @@ class Contract extends Model
     }
 
     /**
+     * Para obtener el vinculo con la tabla usuarios y fiscales
+     */
+    public function fiscal1()
+    {
+        return $this->belongsTo(User::class, 'fiscal1_id');
+    }
+
+    public function fiscal2()
+    {
+        return $this->belongsTo(User::class, 'fiscal2_id');
+    }
+
+    public function fiscal3()
+    {
+        return $this->belongsTo(User::class, 'fiscal3_id');
+    }
+
+    /**
      * Para obtener el vinculo con la tabla financial_organisms
      */
     public function financialOrganism(){

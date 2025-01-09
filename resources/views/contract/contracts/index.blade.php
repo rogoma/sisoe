@@ -106,47 +106,47 @@ p.centrado {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @for ($i = 0; $i < count($contracts); $i++)
-                                                <tr>
-                                                    <td style="max-width: 10px"> {{ ($i+1) }}</td>
-                                                    <td> {{ $contracts[$i]->dependency->description }}</td>
-                                                    <td style="max-width: 800px"> {{ $contracts[$i]->description }}</td>
-                                                    <td> {{ number_format($contracts[$i]->iddncp,'0', ',','.') }} </td>  
+                                                @for ($i = 0; $i < count($contracts); $i++)
+                                                    <tr>
+                                                        <td style="max-width: 10px"> {{ ($i+1) }}</td>
+                                                        <td> {{ $contracts[$i]->dependency->description }}</td>
+                                                        <td style="max-width: 800px"> {{ $contracts[$i]->description }}</td>
+                                                        <td> {{ number_format($contracts[$i]->iddncp,'0', ',','.') }} </td>  
 
-                                                    {{-- <td> {{ $contracts[$i]->year_adj }}</td> --}}
-                                                    <td> {{ number_format($contracts[$i]->year_adj,'0', ',','.') }} </td>  
+                                                        {{-- <td> {{ $contracts[$i]->year_adj }}</td> --}}
+                                                        <td> {{ number_format($contracts[$i]->year_adj,'0', ',','.') }} </td>  
 
-                                                    <td style="color:#ff0000">{{ $contracts[$i]->linkdncp }}</td>
-                                                    
-                                                    <td> {{ $contracts[$i]->number_year }}</td>
+                                                        <td style="color:#ff0000">{{ $contracts[$i]->linkdncp }}</td>
+                                                        
+                                                        <td> {{ $contracts[$i]->number_year }}</td>
 
-                                                    @if ($contracts[$i]->open_contract == 1)                                                        
-                                                        <td>Contrato Abierto</td>
-                                                    @else
-                                                        <td>Contrato Cerrado</td>
-                                                    @endif
-                                                    
-                                                    <td style="max-width: 200px"> Gs.{{ number_format($contracts[$i]->total_amount,'0', ',','.') }} </td>
-                                                    
-                                                    <td>{{ $contracts[$i]->provider->description }}</td>
-                                                    {{-- <td>{{ $contracts[$i]->modality->code }}-{{ $contracts[$i]->modality->description }}</td> --}}
-
-                                                    @if (in_array($contracts[$i]->contractState->id, [2,3,6]))
-                                                        <td style="color:#ff0000">{{ $contracts[$i]->contractState->description }}</td>
-                                                    @else
-                                                        @if (in_array($contracts[$i]->contractState->id, [4]))
-                                                            <td style="color:red;font-weight: bold;background-color:yellow">{{ $contracts[$i]->contractState->description }}</td>
+                                                        @if ($contracts[$i]->open_contract == 1)                                                        
+                                                            <td>Contrato Abierto</td>
                                                         @else
-                                                            <td style="color:green">{{ $contracts[$i]->contractState->description }}</td>
+                                                            <td>Contrato Cerrado</td>
                                                         @endif
-                                                    @endif
+                                                        
+                                                        <td style="max-width: 200px"> Gs.{{ number_format($contracts[$i]->total_amount,'0', ',','.') }} </td>
+                                                        
+                                                        <td>{{ $contracts[$i]->provider->description }}</td>
+                                                        {{-- <td>{{ $contracts[$i]->modality->code }}-{{ $contracts[$i]->modality->description }}</td> --}}
 
-                                                    <td>{{ $contracts[$i]->contractType->description }}</td>
-                                                    <td>
-                                                        <a href="{{ route('contracts.show', $contracts[$i]->id) }}" class="btn btn-outline-success">Ver Más</a>
-                                                    </td>
-                                                </tr>
-                                            @endfor
+                                                        @if (in_array($contracts[$i]->contractState->id, [2,3,6]))
+                                                            <td style="color:#ff0000">{{ $contracts[$i]->contractState->description }}</td>
+                                                        @else
+                                                            @if (in_array($contracts[$i]->contractState->id, [4]))
+                                                                <td style="color:red;font-weight: bold;background-color:yellow">{{ $contracts[$i]->contractState->description }}</td>
+                                                            @else
+                                                                <td style="color:green">{{ $contracts[$i]->contractState->description }}</td>
+                                                            @endif
+                                                        @endif
+
+                                                        <td>{{ $contracts[$i]->contractType->description }}</td>
+                                                        <td>
+                                                            <a href="{{ route('contracts.show', $contracts[$i]->id) }}" class="btn btn-outline-success">Ver Más</a>
+                                                        </td>
+                                                    </tr>
+                                                @endfor
                                             </tbody>
                                         </table>
                                     </div>

@@ -167,11 +167,13 @@
                                                     role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
                                                 <div class="slide"></div>
                                             </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
-                                                        class="fa fa-clone"></i> Asignar Fiscal</a>
-                                                <div class="slide"></div>
-                                            </li>
+                                            @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
+                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está en Curso)</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab1" role="tab"><i
                                                         class="fa fa-external-link"></i> Eval.Técnica</a>
@@ -263,19 +265,21 @@
                                                             <td>{{ $contract->contractType->description }}</td>
                                                             <td colspan="3"
                                                                 style="font-size: 16px;color:blue;font-weight: bold">
-                                                                {{ 'Gs. ' . $contract->totalAmountFormat() }}</td>
-                                                            {{-- <td>{{ $contract->dependency->description }}</td> --}}
-                                                            {{-- <td>{{ $contract->comments }}</td> --}}
+                                                                {{ 'Gs. ' . $contract->totalAmountFormat() }}</td>                                                            
                                                         </tr>
                                                         <tr>
-                                                            <td><label class="col-form-label f-w-600">Dependencia
-                                                                    Responsable:</label></td>
-                                                            <td><label class="col-form-label f-w-1600">Comentarios:</label>
-                                                            </td>
+                                                            <td><label class="col-form-label f-w-600">Dependencia Responsable:</label></td>
+                                                            <td><label class="col-form-label f-w-1600">Comentarios:</label></td>
+                                                            <td><label class="col-form-label f-w-1600">Fiscal 1:</label></td>
+                                                            <td><label class="col-form-label f-w-1600">Fiscal 2:</label></td>
+                                                            <td><label class="col-form-label f-w-1600">Fiscal 3:</label></td>                                                            
                                                         </tr>
                                                         <tr>
                                                             <td>{{ $contract->dependency->description }}</td>
                                                             <td>{{ $contract->comments }}</td>
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -458,23 +462,27 @@
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Nombre del Fiscal</th>
-                                                            <th>Dependencia</th>
-                                                            <th>Fecha/Hora de asignación</th>
-                                                            <th>Acciones</th>
+                                                            <th>Nombre del Fiscal 1</th>
+                                                            <th>Nombre del Fiscal 2</th>
+                                                            <th>Nombre del Fiscal 3</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-
-
+                                                            <tr>                                                                
+                                                                <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} </td>
+                                                                <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} </td>
+                                                                <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} </td>                                                                
+                                                            </tr>                                                        
                                                     </tbody>
                                                 </table>
                                                 <div class="text-center">
-                                                    @if (Auth::user()->hasPermission(['admin.files.create', 'contracts.contracts.create']))
-                                                        @if (in_array($contract->contract_state_id, [1, 2]))
-                                                            <a href="{{ route('contracts.asign', $contract->id) }}"
-                                                                class="btn btn-danger">Asignar Fiscal</a>
+                                                    @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
+                                                        @if (in_array($contract->contract_state_id, [1]))
+                                                            @if ($contract->fiscal1_id === null )
+                                                                <a href="{{ route('contracts.asign', $contract->id) }}"  class="btn btn-danger">Asignar Fiscal</a>
+                                                            @else
+                                                                <a href="{{ route('contracts.asign', $contract->id) }}"  class="btn btn-danger">Reasignar Fiscal</a>
+                                                            @endif    
                                                         @endif
                                                     @endif
                                                 </div>

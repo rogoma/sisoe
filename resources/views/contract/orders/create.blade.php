@@ -50,10 +50,13 @@
                                             <div class="form-group row">
                                                 <label for="number" class="col-sm-2 col-form-label">N° de Orden</label>
                                                 <div class="col-sm-4">
-                                                    <input type="text" id="number" name="number" class="form-control @error('number') is-invalid @enderror" value="{{ old('number') }}" maxlength="6">
+                                                    {{-- <label for="" value="{{ $nextContractId }}"></label> --}}
+                                                    <label for="number">{{ $nextContractNumber }}</label> 
+                                                    {{-- <input type="text" id="number" name="number" class="form-control @error('number') is-invalid @enderror" 
+                                                    value="{{ $contract->number }}" maxlength="6" disabled>
                                                     @error('number')
                                                     <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
+                                                    @enderror --}}
                                                 </div>
                                             </div>
 
@@ -68,7 +71,47 @@
                                             </div>
 
                                             <div class="form-group row">
-                                                <label for="date" class="col-sm-2 col-form-label">Fecha</label>
+                                                <label for="component_id" class="col-sm-2 col-form-label">Departamento</label>
+                                                <div class="col-sm-10">
+                                                    <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
+                                                        <option value="">--- Seleccionar Departamento ---</option>
+                                                        @foreach ($components as $component)
+                                                        <option value="{{ $component->id }}" @if ($component->id == old('component_id')) selected @endif>{{ $component->description }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('component_id')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="component_id" class="col-sm-2 col-form-label">Distrito</label>
+                                                <div class="col-sm-10">
+                                                    <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
+                                                        <option value="">--- Seleccionar Distrito ---</option>
+                                                        @foreach ($components as $component)
+                                                        <option value="{{ $component->id }}" @if ($component->id == old('component_id')) selected @endif>{{ $component->description }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('component_id')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label for="locality" class="col-sm-2 col-form-label">Localidad <br><small>(Hasta 200 caracteres)</small></label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" id="locality" name="locality" class="form-control @error('locality') is-invalid @enderror" value="{{ old('locality') }}" maxlength="200">
+                                                    @error('locality')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="date" class="col-sm-2 col-form-label">Fecha acuse recibo Contratista</label>
                                                 <div class="col-sm-4">
                                                     <div class="input-group">
                                                         <input type="text" id="date" name="date" class="form-control @error('date') is-invalid @enderror" value="{{ old('date') }}" autocomplete="off">
@@ -90,19 +133,7 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label for="locality" class="col-sm-2 col-form-label">Localidad <br><small>(Hasta 200 caracteres)</small></label>
-
-                                                {{-- <label class="col-form-label">Dependencia <br><small>(Dependencia solicitante)</small></label> --}}
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="locality" name="locality" class="form-control @error('locality') is-invalid @enderror" value="{{ old('locality') }}" maxlength="200">
-                                                    @error('locality')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
+                                            </div>                                            
 
                                             <div class="form-group row">
                                                 <label for="component_id" class="col-sm-2 col-form-label">Componente</label>

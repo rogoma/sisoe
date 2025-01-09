@@ -136,7 +136,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('contracts', ContractsController::class);
     // RUTA PARA EDITAR FORM CONTRATO Y AGREGAR FISCAL
     Route::get('/contracts/orders/{order}/edit', [ContractsController::class, 'asign'])->name('contracts.asign');
-
+    // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
+    Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.asign.update');
 
 
     //RECURSOS DE CONTRACTS PARA MANEJAR ITEMS (POLIZAS)

@@ -19,7 +19,7 @@ use App\Models\OrderPresentation;
 use App\Models\OrderMeasurementUnit;
 use App\Models\OrderState;
 use App\Models\Component;
-
+use Brick\Math\Internal\Calculator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -156,6 +156,11 @@ class OrdersEjecsController extends Controller
     public function create(Request $request, $contract_id)
     {
         $contract = Contract::findOrFail($contract_id);
+
+        // $order = $contract->order;
+        $order = Order::where('contract_id', $contract_id)->firstOrFail();
+        $nextContractNumber = $order->number + 1;
+
         $post_max_size = $this->postMaxSize;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
@@ -167,9 +172,10 @@ class OrdersEjecsController extends Controller
         }
 
         $components = Component::all();
-        $order_states = OrderState::all();
+        $order_states = OrderState::all();        
+        
 
-        return view('contract.orders.create', compact('contract','order_states','components','post_max_size'));
+        return view('contract.orders.create', compact('contract','order_states','components','post_max_size', 'nextContractNumber'));
     }
 
     /**
