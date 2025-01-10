@@ -140,7 +140,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
     Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.asign.update');
     // RUTA PARA MANEJAR COMBO DEPARTAMENTO-DISTRITOS
-    Route::get('/districts/{department}', [LocationController::class, 'getDistricts'])->name('districts.get');
+    // Route::get('/districts/{department}', [OrdersEjecsController::class, 'getDistricts'])->name('districts.get');
+
+    Route::get('/orders/create', [OrdersEjecsController::class, 'create']);
+    Route::post('/orders', [OrdersEjecsController::class, 'store']);
+    Route::get('/fetch-districts', [OrdersEjecsController::class, 'fetchDistricts']);
 
 
 

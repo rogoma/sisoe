@@ -18,19 +18,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('catalogs', function () {   
-    // Route::get('users', function () {   
+Route::get('catalogs', function () {
+    // Route::get('users', function () {
         // return App\Models\User::all();
-    
-        return datatables()                
+
+        return datatables()
             //DESDE EL MODELO
             // ->eloquent(App\Models\Level5CatalogCode::query())
-            
+
             //DESDE LA BD O VISTA
             // ->query(DB::table('level5_catalog_codes'))
             ->query(DB::table('vista_catalogs'))
             ->addColumn('btn', 'actions')
             ->rawColumns(['btn'])
-            ->toJson();       
+            ->toJson();
 });
+
+
 

@@ -182,6 +182,14 @@ class OrdersEjecsController extends Controller
         'post_max_size', 'nextContractNumber', 'departments','districts'));
     }
 
+    // PARA ANIDAR COMBOS
+    public function fetchDistricts(Request $request)
+    {
+        $districts = District::where('department_id', $request->department_id)->get();
+        return response()->json($districts);
+    }
+
+
     /**
      * Formulario de agregacion de items cargando archivo excel.
      *

@@ -22,6 +22,7 @@ class DistrictsController extends Controller
         $this->middleware('checkPermission:admin.districts.update')->only(['edit', 'update']);   // Permiso para update
     }
 
+
     /**
      * Display a listing of the resource.
      *

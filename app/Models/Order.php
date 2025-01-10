@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
@@ -11,25 +12,8 @@ class Order extends Model
 
     protected $fillable = [
         'date',
-        // 'name',
-        // 'lastname',
-        // 'email',
-        // 'password',
-        // 'dependency_id',
-        // 'position_id',
-        // 'state',
+        'district_id'
     ];
-
-    /**
-     * Para dar formato a Fecha
-     */
-    public function DateFormat(){
-        if(empty($this->date)){
-            return "";
-        }else{
-            return date('d/m/Y', strtotime($this->date));
-        }
-    }
 
     /**
      * Para obtener el vinculo con la tabla contratos
@@ -39,19 +23,14 @@ class Order extends Model
     }
 
     /**
-     * Relación: Una orden pertenece a un departamento.
+     * Relación: Una orden pertenece a un distrito-departamento.
      */
-    public function department()
+    public function district(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Department');
+        return $this->belongsTo('App\Models\District');
     }
-    /**
-     * Para obtener el vinculo con la tabla order_states
-     */
-    // public function orderState(){
-    //     return $this->hasMany('App\Models\OrderState');
-    // }
 
+    
     public function orderState(){
         return $this->belongsTo('App\Models\OrderState');
     }
@@ -90,6 +69,17 @@ class Order extends Model
      */
     public function component(){
         return $this->belongsTo('App\Models\Component');
+    }
+
+    /**
+     * Para dar formato a Fecha
+     */
+    public function DateFormat(){
+        if(empty($this->date)){
+            return "";
+        }else{
+            return date('d/m/Y', strtotime($this->date));
+        }
     }
 
     // ACA TERMINA EL USO DE RELACIONES CON EL PROYECTO DE CONTRATOS
