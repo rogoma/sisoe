@@ -172,10 +172,84 @@
                                             </div>
                                             
                                         </div>
+                                        <br>                                        
+                                        
+                                        <div class="tab-pane" id="tab2" role="tabpanel">
+                                            <table id="items" class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        {{-- <th>#</th> --}}
+                                                        <th>N° OE</th>
+                                                        <th>Fecha</th>                                                            
+                                                        <th>Monto Orden</th>
+                                                        <th>Localidad</th>
+                                                        <th>Referencia (Compon.)</th>
+                                                        <th>Estado</th>
+                                                        <th>Observación</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {{-- @for ($i = 0; $i < count($contract->orders); $i++)
+                                                        <tr>                                                            
+                                                            <td style="text-align: center;">{{ $contract->orders[$i]->number }}</td>
+                                                            <td>{{ $contract->orders[$i]->dateFormat() }}</td>                                                                
+                                                            <td style="text-align: center;">{{ $contract->orders[$i]->totalAmountFormat() }}</td>
+                                                            <td>{{ $contract->orders[$i]->locality }}</td>
+                                                            <td>{{ $contract->orders[$i]->component->description }}</td>
+                                                            <td>{{ $contract->orders[$i]->orderState->description }}</td>
+                                                            <td style="max-width: 200px">{{ $contract->orders[$i]->comments }}</td>
+                                                            
+                                                            <td>
+                                                                @if (in_array($contract->contract_state_id, [1]))                                                                    
+                                                                    @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
+                                                                        <button type="button" title="Editar"
+                                                                            class="btn btn-warning btn-icon"
+                                                                            onclick="updateOrder({{ $contract->orders[$i]->id }})">
+                                                                            <i class="fa fa-pencil"></i>
+                                                                        </button>
+                                                                            @if (Auth::user()->hasPermission(['admin.orders.delete']))
+                                                                                <button type="button" title="Borrar"
+                                                                                    class="btn btn-danger btn-icon"
+                                                                                    onclick="deleteOrder({{ $contract->orders[$i]->id }})">
+                                                                                    <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                            @endif
+                                                                        <button type="button" title="Carga de Rubros"
+                                                                            class="btn btn-primary btn-icon"
+                                                                            onclick="itemAwardHistories({{ $contract->orders[$i]->id }})">
+                                                                            <i class="fa fa-list"></i>
+                                                                        </button>
+                                                                    @endif
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endfor --}}
+                                                </tbody>
+                                            </table>
+
+                                            {{-- <div class="text-right">                                            
+                                                @if (Auth::user()->hasPermission(['admin.orders.create', 'orders.orders.create']))                                                    
+                                                    @if (in_array($contract->contract_state_id, [1]))
+                                                        <a href="{{ route('contracts.orders.create', $contract->id) }}"
+                                                            class="btn btn-primary">Agregar Orden</a>
+                                                    @endif
+                                                @endif
+                                            </div>                                             --}}
+                                        </div>
+
+
 
                                         <div class="text-center mt-4">
-                                            <button id="saveButton" type="submit" class="btn btn-primary">Guardar</button>
+                                            <button id="saveButton1" type="submit" class="btn btn-danger">importar Rubros</button>
                                         </div>
+
+                                        <br>
+                                        {{-- <div class="text-center mt-4">
+                                            <button id="saveButton" type="submit" class="btn btn-primary">Guardar</button>
+                                        </div> --}}
+
+
                                     </form>
                                 </div>
                             </div>

@@ -121,11 +121,13 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-sm-10 text-left">
-                                                <h5>Llamado: {{ $contract->description . ' - ' . $contract->modality->description . ' - Contraro N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
+                                                <h5>Llamado:
+                                                    {{ $contract->description . ' - ' . $contract->modality->description . ' - Contraro N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
                                                 </h5>
                                             </div>
                                             <div class="col-sm-10 text-left">
-                                                <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia Responsable: {{ $contract->dependency->description }}</h5>
+                                                <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia
+                                                    Responsable: {{ $contract->dependency->description }}</h5>
                                             </div>
                                             <div class="col-sm-2">
                                                 @if (Auth::user()->hasPermission(['admin.contracts.update']))
@@ -144,7 +146,8 @@
                                                             Auth::user()->hasPermission(['admin.contracts.update']))
                                                         <a style="font-size: 14px; font-weight: bold; color:blue;background-color:lightblue;"
                                                             class="dropdown-item waves-effect f-w-600"
-                                                            href="{{ route('contracts.edit', $contract->id) }}">Editar Contrato</a>
+                                                            href="{{ route('contracts.edit', $contract->id) }}">Editar
+                                                            Contrato</a>
                                                     @endif
 
                                                     @if (Auth::user()->hasPermission(['admin.contracts.delete']) ||
@@ -170,7 +173,8 @@
                                             @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
-                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está en Curso)</a>
+                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está
+                                                        en Curso)</a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -265,28 +269,37 @@
                                                             <td>{{ $contract->contractType->description }}</td>
                                                             <td colspan="3"
                                                                 style="font-size: 16px;color:blue;font-weight: bold">
-                                                                {{ 'Gs. ' . $contract->totalAmountFormat() }}</td>                                                            
+                                                                {{ 'Gs. ' . $contract->totalAmountFormat() }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><label class="col-form-label f-w-600">Dependencia Responsable:</label></td>
-                                                            <td><label class="col-form-label f-w-1600">Comentarios:</label></td>
-                                                            <td><label class="col-form-label f-w-1600">Fiscal 1:</label></td>
-                                                            <td><label class="col-form-label f-w-1600">Fiscal 2:</label></td>
-                                                            <td><label class="col-form-label f-w-1600">Fiscal 3:</label></td>                                                            
+                                                            <td><label class="col-form-label f-w-600">Dependencia
+                                                                    Responsable:</label></td>
+                                                            <td><label class="col-form-label f-w-1600">Comentarios:</label>
+                                                            </td>
+                                                            <td><label class="col-form-label f-w-1600">Fiscal 1:</label>
+                                                            </td>
+                                                            <td><label class="col-form-label f-w-1600">Fiscal 2:</label>
+                                                            </td>
+                                                            <td><label class="col-form-label f-w-1600">Fiscal 3:</label>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ $contract->dependency->description }}</td>
                                                             <td>{{ $contract->comments }}</td>
-                                                            <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} </td>
-                                                            <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} </td>
-                                                            <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }}
+                                                                {{ $contract->fiscal1->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }}
+                                                                {{ $contract->fiscal2->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }}
+                                                                {{ $contract->fiscal3->lastname ?? '-' }} </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
 
                                             <div class="tab-pane" id="tab1" role="tabpanel">
-                                                <label class="col-form-label f-w-700">Archivos de Evaluaciones Técnicas:</label>
+                                                <label class="col-form-label f-w-700">Archivos de Evaluaciones
+                                                    Técnicas:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -363,7 +376,7 @@
                                                         <tr>
                                                             {{-- <th>#</th> --}}
                                                             <th>N° OE</th>
-                                                            <th>Fecha</th>                                                            
+                                                            <th>Fecha</th>
                                                             <th>Monto Orden</th>
                                                             <th>Localidad</th>
                                                             <th>Referencia (Compon.)</th>
@@ -373,46 +386,55 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @for ($i = 0; $i < count($contract->orders); $i++)
-                                                            <tr>
-                                                                {{-- <td>{{ $i + 1 }}</td> --}}
-                                                                <td style="text-align: center;">{{ $contract->orders[$i]->number }}</td>
-                                                                <td>{{ $contract->orders[$i]->dateFormat() }}</td>                                                                
-                                                                <td style="text-align: center;">{{ $contract->orders[$i]->totalAmountFormat() }}</td>
-                                                                <td>{{ $contract->orders[$i]->locality }}</td>
-                                                                <td>{{ $contract->orders[$i]->component->description }}</td>
-                                                                <td>{{ $contract->orders[$i]->orderState->description }}</td>
-                                                                <td style="max-width: 200px">{{ $contract->orders[$i]->comments }}</td>
+                                                        @foreach ($contract->orders->sortBy('id') as $index => $order)
+                                                            <tr>                                                                
+                                                                <td style="text-align: center;">{{ $order->number }}</td>
+                                                                <td>{{ $order->dateFormat() }}</td>
+                                                                <td style="text-align: center;">
+                                                                    {{ $order->totalAmountFormat() }}</td>
+                                                                <td>{{ $order->locality }}</td>
+                                                                <td>{{ $order->component->description }}</td>
+                                                                {{-- SI ES ESTADO 5 "ELIMINADO" SE MUESTRA EN ROJO --}}
+                                                                @if (in_array($order->orderState->id, [5]))
+                                                                    <td style="color:#ff0000">
+                                                                        {{ $order->orderState->description }}</td>
+                                                                @else
+                                                                    <td>{{ $order->orderState->description }}</td>
+                                                                @endif
+
+                                                                <td style="max-width: 200px">{{ $order->comments }}</td>
                                                                 {{-- Muestra si estado de llamado es En curso --}}
                                                                 <td>
-                                                                    @if (in_array($contract->contract_state_id, [1]))
+                                                                    {{-- PREGUNTAR SI TAMBIEN AL ANULARSE EL CONTRATO NO DEBE MOSTRAR DATOS --}}
+                                                                    {{-- @if (in_array($contract->contract_state_id, [1])) --}}
+
+                                                                    {{-- NO MUESTRA BOTONES SI LA ORDEN SE ANULÓ --}}
+                                                                    @if (in_array($order->orderState->id, [1,2,3,4]))
                                                                         {{-- @if (Auth::user()->hasPermission(['admin.contracts.create'])) --}}
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             <button type="button" title="Editar"
                                                                                 class="btn btn-warning btn-icon"
-                                                                                onclick="updateOrder({{ $contract->orders[$i]->id }})">
+                                                                                onclick="updateOrder({{ $order->id }})">
                                                                                 <i class="fa fa-pencil"></i>
                                                                             </button>
-                                                                                @if (Auth::user()->hasPermission(['admin.orders.delete']))
-                                                                                    <button type="button" title="Borrar"
-                                                                                        class="btn btn-danger btn-icon"
-                                                                                        onclick="deleteOrder({{ $contract->orders[$i]->id }})">
-                                                                                        <i class="fa fa-trash"></i>
-                                                                                    </button>
-                                                                                @endif
+                                                                            @if (Auth::user()->hasPermission(['admin.orders.delete']))
+                                                                                <button type="button" title="Borrar"
+                                                                                    class="btn btn-danger btn-icon"
+                                                                                    onclick="deleteOrder({{ $order->id }})">
+                                                                                    <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                            @endif
                                                                             <button type="button" title="Carga de Rubros"
                                                                                 class="btn btn-primary btn-icon"
-                                                                                onclick="itemAwardHistories({{ $contract->orders[$i]->id }})">
+                                                                                onclick="itemAwardHistories({{ $order->id }})">
                                                                                 <i class="fa fa-list"></i>
                                                                             </button>
                                                                         @endif
                                                                     @endif
                                                                 </td>
-                                                                {{-- <td>
-                                                                    <a href="{{ asset('storage/files/'.$contract->items[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
-                                                                </td> --}}
                                                             </tr>
-                                                        @endfor
+                                                        @endforeach
+
 
                                                     </tbody>
                                                 </table>
@@ -428,7 +450,8 @@
                                                     @endif
                                                 </div>
                                                 <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
+                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO
+                                                    DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
                                             </div>
 
                                             <div class="tab-pane" id="tab4" role="tabpanel">
@@ -457,7 +480,8 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab3" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Asignación de Fiscales del Contrato:</label>
+                                                <label class="col-form-label f-w-600">Asignación de Fiscales del
+                                                    Contrato:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -467,21 +491,26 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                            <tr>                                                                
-                                                                <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} </td>
-                                                                <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} </td>
-                                                                <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} </td>                                                                
-                                                            </tr>                                                        
+                                                        <tr>
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }}
+                                                                {{ $contract->fiscal1->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }}
+                                                                {{ $contract->fiscal2->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }}
+                                                                {{ $contract->fiscal3->lastname ?? '-' }} </td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                                 <div class="text-center">
                                                     @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                         @if (in_array($contract->contract_state_id, [1]))
-                                                            @if ($contract->fiscal1_id === null )
-                                                                <a href="{{ route('contracts.asign', $contract->id) }}"  class="btn btn-danger">Asignar Fiscal</a>
+                                                            @if ($contract->fiscal1_id === null)
+                                                                <a href="{{ route('contracts.asign', $contract->id) }}"
+                                                                    class="btn btn-danger">Asignar Fiscal</a>
                                                             @else
-                                                                <a href="{{ route('contracts.asign', $contract->id) }}"  class="btn btn-danger">Reasignar Fiscal</a>
-                                                            @endif    
+                                                                <a href="{{ route('contracts.asign', $contract->id) }}"
+                                                                    class="btn btn-danger">Reasignar Fiscal</a>
+                                                            @endif
                                                         @endif
                                                     @endif
                                                 </div>
@@ -547,7 +576,7 @@
                                                     @if (Auth::user()->hasPermission(['admin.orders.create', 'contracts.orders.create']))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
                                                             <a href="{{ route('contracts.files.create_con', $contract->id) }}"
-                                                                class="btn btn-primary">Cargar Contratos</a>
+                                                                class="btn btn-primary">Cargar Archivos</a>
                                                         @endif
                                                     @endif
                                                 </div>
@@ -594,10 +623,10 @@
         $(document).ready(function() {
 
             updateOrder = function(order) {
-                location.href = '/contracts/{{ $contract->id }}/orders/'+order+'/edit/';
+                location.href = '/contracts/{{ $contract->id }}/orders/' + order + '/edit/';
             }
 
-            deleteOrder = function(item) {
+            deleteOrder = function(order) {
                 swal({
                         title: "Atención",
                         text: "Está seguro que desea eliminar la orden?",

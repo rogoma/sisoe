@@ -324,7 +324,7 @@ class OrdersEjecsController extends Controller
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -334,33 +334,31 @@ class OrdersEjecsController extends Controller
     public function destroy(Request $request, $contract_id, $item_id)
     {
         $contract = Contract::findOrFail($contract_id);
-        $item = Item::find($item_id);
+        $order = Order::find($item_id);
+
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.items.delete','contracts.items.delete']) && $item->contract->dependency_id != $request->user()->dependency_id){
+        if(!$request->user()->hasPermission(['admin.orders.delete','contracts.orders.delete']) && $order->contract->dependency_id != $request->user()->dependency_id){
             return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para eliminar la póliza.', 'code' => 200], 200);
         }
 
-        // Chequeamos si existen item_award_histories referenciando al item
-        if($item->itemAwardHistories->count() > 0){
-            return response()->json(['status' => 'error', 'message' => 'Póliza no puede eliminarse, posee detalle en endosos, verificar ', 'code' => 200], 200);
-        }
+        //ARREGLAR ESTO PARA QUE NO ELIMINE SI EXISTEN ITEMS O RUBROS
+        // Chequeamos si existen items_oi referenciando al item
+        // if($order->itemAwardHistories->count() > 0){
+        //     return response()->json(['status' => 'error', 'message' => 'Orden no puede eliminarse, posee carga de rubros, verificar ', 'code' => 200], 200);
+        // }
 
-        // Capturamos nombre del archivo almacenado en la tabla
-        $filename = $item->file;
-        // var_dump($filename);exit;
+        // Cambia a estado 5 = "eliminado" /no mostrara en listado de ordenes /no piere nro secuencial de ordenes            
+        $order->order_state_id = 5;
+        $order->save();
+        // $order->delete();
 
-        // Eliminamos el archivo del public/files
-        Storage::delete('public/files/'.$filename);
-
-        // Eliminamos en caso de no existir registros referenciando al item
-        $item->delete();
         session()->flash('status', 'success');
-        session()->flash('message', 'Se ha eliminado la póliza ' . $item->number_policy);
+        session()->flash('message', 'Se ha eliminado la orden ' . $order->number);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Se ha eliminado la póliza'. $item->number_policy,
+            'message' => 'Se ha eliminado la póliza'. $order->number,
             'code' => 200
         ], 200);
 
