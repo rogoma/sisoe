@@ -218,71 +218,34 @@ class OrdersEjecsController extends Controller
     public function store(Request $request, $contract_id)
     {
         $rules = array(
-            'number' => 'numeric|required|unique:orders,number',
-            'total_amount' => 'nullable|string|max:9223372036854775807',
+            // 'number' => 'numeric|required|orders,number',
+            // 'total_amount' => 'nullable|string|max:9223372036854775807',
             'date' => 'date_format:d/m/Y|required|',
             'component_id' => 'required|numeric',
             'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
             'comments' => 'nullable|max:300',
-            'plazo' => 'required|numeric'
+            'plazo' => 'required|numeric',
+            'department_id' => 'required',
+            'district_id' => 'required|numeric'
         );
 
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
-        }
-
-        // if(!$request->hasFile('file')){
-        //     $validator = Validator::make($request->input(), []);
-        //     $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
-        //     return back()->withErrors($validator)->withInput();
-        // }
-
-        // chequeamos la extension del archivo subido
-        // $extension = $request->file('file')->getClientOriginalExtension();
-        // if(!in_array($extension, array('doc', 'docx', 'pdf'))){
-        //     $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-        //     $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
-        //     return back()->withErrors($validator)->withInput();
-        // }
-
-        // Pasó todas las validaciones, guardamos el archivo
-        // $fileName = 'poliza_nro_'.$request->input('number_policy').'.'.$extension; // nombre a guardar
-        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
-        // $path = $request->file('file')->storeAs('public/files', $fileName);
+        }        
 
         $order = new Order;
         $order->contract_id = $contract_id;
-        $order->number = $request->input('number');
-        $order->total_amount = 0;
+        $order->number = $request->input('number');        
         $order->date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('date'))));
-        $order->locality = $request->input('locality');
+        $order->locality = $request->input('locality');        
         $order->component_id = $request->input('component_id');
         $order->order_state_id = $request->input('order_state_id');
+        $order->total_amount = 0;
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
-
-        //PARA ALMACENAR MONTO ( NO SE USA EN ESTE CASO)
-        // $total_amount = str_replace('.', '',($request->input('total_amount')));
-
-        // if ($total_amount === '' ) {
-        //     $validator->errors()->add('total_amount', 'Ingrese Monto');
-        //     return back()->withErrors($validator)->withInput();
-        // }
-
-        // if ($total_amount < 0 ) {
-        //     $validator->errors()->add('total_amount', 'Monto no puede ser negativo');
-        //     return back()->withErrors($validator)->withInput();
-        // }else{
-        //     $order->total_amount = $total_amount;
-        // }
-        //**********************************
-
-        //PARA ALMACENAR ARCHIVOS ( NO SE USA EN ESTE CASO)
-        // $order->file = $fileName;
-        // $order->file_type = 1;//póliza
-
+        $order->district_id = $request->input('district_id');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden agregada correctamente'); // Caso usuario posee rol pedidos
@@ -308,8 +271,10 @@ class OrdersEjecsController extends Controller
         $order = Order::findOrFail($order_id);
         $components = Component::all();
         $order_states = OrderState::all();
+        $departments = Department::all();
+        $districts = District::all();
 
-        return view('contract.orders.update', compact('contract','order','components','order_states'));
+        return view('contract.orders.update', compact('contract','order','components','order_states','departments','districts'));
     }
 
 
@@ -332,7 +297,9 @@ class OrdersEjecsController extends Controller
             'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
             'comments' => 'nullable|max:300',
-            'plazo' => 'required|numeric'
+            'plazo' => 'required|numeric',
+            // 'department_id' => 'required',
+            'district_id' => 'required|numeric'
         );
 
         // Valida los datos de entrada
@@ -345,19 +312,16 @@ class OrdersEjecsController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
-        // $order->contract_id = $contract_id;
-        // $order->number = $request->input('number');
-        $order->total_amount = 0;
+        
         $order->date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('date'))));
-        $order->locality = $request->input('locality');
+        $order->locality = $request->input('locality');        
         $order->component_id = $request->input('component_id');
-        $order->order_state_id = $request->input('order_state_id');
+        $order->order_state_id = $request->input('order_state_id');        
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
+        $order->district_id = $request->input('district_id');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
-
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
     }
 

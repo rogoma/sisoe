@@ -361,9 +361,9 @@
                                                 <table id="items" class="table table-striped table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Fecha</th>
+                                                            {{-- <th>#</th> --}}
                                                             <th>N° OE</th>
+                                                            <th>Fecha</th>                                                            
                                                             <th>Monto Orden</th>
                                                             <th>Localidad</th>
                                                             <th>Referencia (Compon.)</th>
@@ -375,10 +375,10 @@
                                                     <tbody>
                                                         @for ($i = 0; $i < count($contract->orders); $i++)
                                                             <tr>
-                                                                <td>{{ $i + 1 }}</td>
-                                                                <td>{{ $contract->orders[$i]->dateFormat() }}</td>
-                                                                <td>{{ $contract->orders[$i]->number }}</td>
-                                                                <td>{{ $contract->orders[$i]->totalAmountFormat() }}</td>
+                                                                {{-- <td>{{ $i + 1 }}</td> --}}
+                                                                <td style="text-align: center;">{{ $contract->orders[$i]->number }}</td>
+                                                                <td>{{ $contract->orders[$i]->dateFormat() }}</td>                                                                
+                                                                <td style="text-align: center;">{{ $contract->orders[$i]->totalAmountFormat() }}</td>
                                                                 <td>{{ $contract->orders[$i]->locality }}</td>
                                                                 <td>{{ $contract->orders[$i]->component->description }}</td>
                                                                 <td>{{ $contract->orders[$i]->orderState->description }}</td>
@@ -428,8 +428,7 @@
                                                     @endif
                                                 </div>
                                                 <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">MONTO
-                                                    TOTAL DEL LLAMADO: {{ $contract->totalAmountFormat() }}</span>
+                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
                                             </div>
 
                                             <div class="tab-pane" id="tab4" role="tabpanel">

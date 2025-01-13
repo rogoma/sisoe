@@ -1,4 +1,4 @@
-@push('scripts')
+<!-- @push('scripts')
 <script type="text/javascript">
 $(document).ready(function(){
 
@@ -64,4 +64,4 @@ $(document).ready(function(){
     setInterval(getNotifications, 10*60*1000);
 });
 </script>
-@endpush
+@endpush -->

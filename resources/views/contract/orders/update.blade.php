@@ -49,33 +49,74 @@
                                             @method('PUT')
 
                                             <div class="container">
-                                                <div class="form-group row">
-                                                    <label for="number" class="col-sm-2 col-form-label">N° de Orden</label>
-                                                    <div class="col-sm-4">
-                                                        <input type="text" id="number" name="number"
-                                                            class="form-control @error('number') is-invalid @enderror"
-                                                            value="{{ old('number',$order->number) }}" maxlength="6" disabled>
+                                                <div class="form-group row">                                                
+                                                    <div class="col-sm-6">
+                                                        <label for="number" class="col-form-label">N° de Orden</label>                                                    
+                                                        <input type="text" id="number" name="number_display" class="form-control @error('number') is-invalid @enderror" value="{{ old('number', $order->number) }}" maxlength="23" disabled>
+                                                        {{-- <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $order->number) }}"> --}}
                                                         @error('number')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label for="total_amount" class="col-sm-2 col-form-label">Monto</label>
-                                                    <div class="col-sm-4">
+                                                
+                                                    <div class="col-sm-6">
+                                                        <label for="total_amount" class="col-form-label">Monto</label>
                                                         <input type="text" id="total_amount" name="total_amount"
                                                             class="form-control @error('total_amount') is-invalid @enderror"
                                                             value="{{ old('total_amount', $order->total_amount) }}" maxlength="23" disabled>
                                                         @error('total_amount')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>                                                
+    
+                                                <div class="form-group row">
+                                                    <div class="col-sm-6">
+                                                        <label for="department_id" class="col-form-label">Departamento</label>
+                                                        <select id="department_id" name="department_id" class="form-control @error('department_id') is-invalid @enderror">
+                                                            <option value="">--- Seleccionar Departamento ---</option>
+                                                            @foreach ($departments as $department)
+                                                            <option value="{{ $department->id }}"
+                                                                @if ($department->id == old('department_id',$order->department_id)) selected @endif>
+                                                                {{ $department->description }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('department_id')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                
+                                                    <div class="col-sm-6">
+                                                        <label for="district_id" class="col-form-label">Distrito</label>
+                                                        <select id="district_id" name="district_id" class="form-control @error('district_id') is-invalid @enderror">
+                                                            <option value="">--- Seleccionar Distrito ---</option>
+                                                            @foreach ($districts as $district)
+                                                            <option value="{{ $district->id }}"
+                                                                @if ($district->id == old('district_id',$order->district_id)) selected @endif>
+                                                                {{ $district->description }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('district_id')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="form-group row">
-                                                    <label for="date" class="col-sm-2 col-form-label">Fecha</label>
-                                                    <div class="col-sm-4">
+                                                    <label for="locality" class="col-sm-6 col-form-label">Localidad (Hasta 200 caracteres)</label>
+                                                    <div class="col-sm-12">
+                                                        <input type="text" id="locality" name="locality"
+                                                            class="form-control @error('locality') is-invalid @enderror"
+                                                            value="{{ old('locality',$order->locality) }}" maxlength="200">
+                                                        @error('locality')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+    
+                                                <div class="form-group row">
+                                                    <div class="col-sm-3">
+                                                        <label for="date" class="col-form-label">Fecha acuse recibo Contratista</label>
                                                         <div class="input-group">
                                                             <input type="text" id="date" name="date"
                                                                 class="form-control @error('date') is-invalid @enderror"
@@ -87,14 +128,27 @@
                                                             </span>
                                                         </div>
                                                         @error('date')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label for="plazo" class="col-sm-2 col-form-label">Plazo de ejecución <br><small>(En días)</small></label>
-                                                    <div class="col-sm-4">
+                                                
+                                                    <div class="col-sm-6">
+                                                        <label for="component_id" class="col-form-label">Componente</label>
+                                                        <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
+                                                            <option value="">--- Seleccionar Componente ---</option>
+                                                            @foreach ($components as $component)
+                                                                <option value="{{ $component->id }}"
+                                                                    @if ($component->id == old('component_id',$order->component_id)) selected @endif>
+                                                                    {{ $component->description }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('component_id')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+    
+                                                    <div class="col-sm-3">
+                                                        <label for="plazo" class="col-form-label">Plazo de ejecución (En días)</label>
                                                         <input type="text" id="plazo" name="plazo" class="form-control @error('plazo') is-invalid @enderror"
                                                         value="{{ old('plazo', $order->plazo) }}" maxlength="3">
                                                         @error('plazo')
@@ -104,42 +158,9 @@
                                                 </div>
 
                                                 <div class="form-group row">
-                                                    <label for="locality" class="col-sm-2 col-form-label">Localidad
-                                                        <br><small>(Hasta 200 caracteres)</small></label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" id="locality" name="locality"
-                                                            class="form-control @error('locality') is-invalid @enderror"
-                                                            value="{{ old('locality',$order->locality) }}" maxlength="200">
-                                                        @error('locality')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label for="component_id"
-                                                        class="col-sm-2 col-form-label">Componente</label>
-                                                    <div class="col-sm-10">
-                                                        <select id="component_id" name="component_id"
-                                                            class="form-control @error('component_id') is-invalid @enderror">
-                                                            <option value="">--- Seleccionar Componente ---</option>
-                                                            @foreach ($components as $component)
-                                                                <option value="{{ $component->id }}"
-                                                                    @if ($component->id == old('component_id',$order->component_id)) selected @endif>
-                                                                    {{ $component->description }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('component_id')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label for="order_state_id" class="col-sm-2 col-form-label">Estado de la Orden</label>
-                                                    <div class="col-sm-10">
-                                                        <select id="order_state_id" name="order_state_id"
-                                                            class="form-control @error('order_state_id') is-invalid @enderror">
+                                                    <div class="col-sm-3">
+                                                        <label for="order_state_id" class="col-form-label">Estado de la Orden</label>
+                                                        <select id="order_state_id" name="order_state_id" class="form-control @error('order_state_id') is-invalid @enderror">
                                                             <option value="">--- Seleccionar Estado ---</option>
                                                             @foreach ($order_states as $order_state)
                                                                 <option value="{{ $order_state->id }}"
@@ -148,19 +169,16 @@
                                                             @endforeach
                                                         </select>
                                                         @error('order_state_id')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label for="comments" class="col-sm-2 col-form-label">Comentarios
-                                                        <br><small>(Hasta 300 caracteres)</small></label>
-                                                    <div class="col-sm-10">
+                                                
+                                                    <div class="col-sm-9">
+                                                        <label for="comments" class="col-form-label">Comentarios (Hasta 300 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
-                                                            maxlength="300">{{ old('comments',$order->comments) }}</textarea>
+                                                        maxlength="300">{{ old('comments',$order->comments) }}</textarea>
                                                         @error('comments')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
                                                 </div>
@@ -185,89 +203,51 @@
 @endsection
 
 @push('scripts')
+
 <script type="text/javascript">
+
 $(document).ready(function(){
+
+    $('#department_id').on('change', function() {
+                var departmentId = $(this).val();
+                $('#district_id').empty().append('<option value="">--- Seleccionar Distrito ---</option>');
+
+                if (departmentId) {
+                    $.ajax({
+                        url: '/fetch-districts',
+                        type: 'GET',
+                        data: {
+                            department_id: departmentId
+                        },
+                        success: function(data) {
+                            $.each(data, function(key, district) {
+                                $('#district_id').append('<option value="' + district.id +
+                                    '">' + district.description + '</option>');
+                            });
+                        },
+                        error: function(xhr) {
+                            console.error('Error fetching districts:', xhr.responseText);
+                        }
+                    });
+                }
+    });
+
+    // Validar antes de guardar
+    // $('#saveButton').on('click', function(event) {
+    //     var districtId = $('#district_id').val();
+    //     if (!districtId) {
+    //         event.preventDefault(); // Evita que el formulario se envíe
+    //         alert('Por favor, seleccione un distrito antes de guardar.');
+    //     } else {
+    //         // Aquí puedes agregar la lógica para proceder con el guardado
+    //         //console.log('Formulario válido. Procediendo con el guardado...');
+    //     }
+    // });
 
     $('#component_id').select2();
     $('#order_state_id').select2();
-
-   // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
-   document.getElementById('number').addEventListener('input', function(event) {
-    // Obtenemos el valor ingresado
-    let number = event.target.value.replace(/\./g, '');
-    // Comprobamos si el valor es vacío
-    if (number === '' || number < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Convertimos a número
-    number = parseFloat(number);
-
-    // Verificamos si el number es un número válido y no NaN
-    if (isNaN(number) || number < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Formateamos el valor con separador de miles
-    number = number.toLocaleString('es-ES');
-
-    // Actualizamos el valor en el input text
-    event.target.value = number;
-    });
-
-    // Script para formatear el valor MONTO DE ORDEN con separador de miles mientras se ingresa Monto
-    document.getElementById('total_amount').addEventListener('input', function(event) {
-    // Obtenemos el valor ingresado
-    let total_amount = event.target.value.replace(/\./g, '');
-    // Comprobamos si el valor es vacío
-    if (total_amount === '' || total_amount < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Convertimos a número
-    total_amount = parseFloat(total_amount);
-
-    // Verificamos si el total_amount es un número válido y no NaN
-    if (isNaN(total_amount) || total_amount < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Formateamos el valor con separador de miles
-    total_amount = total_amount.toLocaleString('es-ES');
-
-    // Actualizamos el valor en el input text
-    event.target.value = total_amount;
-    });
-
-    // Script para formatear el valor NUMERO DE ORDEN con separador de miles mientras se ingresa Monto
-    document.getElementById('plazo').addEventListener('input', function(event) {
-    // Obtenemos el valor ingresado
-    let plazo = event.target.value.replace(/\./g, '');
-    // Comprobamos si el valor es vacío
-    if (plazo === '' || plazo < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Convertimos a número
-    plazo = parseFloat(plazo);
-
-    // Verificamos si el plazo es un número válido y no NaN
-    if (isNaN(plazo) || plazo < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Formateamos el valor con separador de miles
-    plazo = plazo.toLocaleString('es-ES');
-
-    // Actualizamos el valor en el input text
-    event.target.value = plazo;
-    });
+    $('#department_id').select2();
+    $('#district_id').select2();
 
     $('#date').datepicker({
         language: 'es',
@@ -275,8 +255,6 @@ $(document).ready(function(){
         autoclose: true,
         todayHighlight: true,
     });
-
-
 });
 </script>
 @endpush
