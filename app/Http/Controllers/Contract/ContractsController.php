@@ -70,20 +70,25 @@ class ContractsController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
+        // if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
+        if($request->user()->hasPermission(['admin.contracts.index'])){
             //NO SE MUESTRAN LOS PEDIDOS ANULADOS
             $contracts = Contract::where('contract_state_id', '>=', 1)
                     ->orderBy('iddncp','asc')
                     ->get();
-            $dependency = $request->user()->dependency_id;
+            $dependency = $request->user()->dependency_id;            
+            
         }else{
-            // Para los otros roles se visualizan los pedidos de la dependencia del usuario "NO MUESTRA PEDIDOS ANULADOS"
-            $contracts = Contract::where('dependency_id', $request->user()->dependency_id)
-                    ->where('contract_state_id', '>=', 1)
-                    ->orderBy('iddncp','asc')
-                    ->get();
-            //Se captura el id de de la dependencia para pasar este parámetro y así filtrar en Panel de llamados
-            $dependency = $request->user()->dependency_id;
+            // Para ver contratos no anulados asignados a usuarios fiscales
+            $contracts = Contract::where(function ($query) use ($request) {
+                $query->where('fiscal1_id', $request->user()->id)
+                      ->orWhere('fiscal2_id', $request->user()->id)
+                      ->orWhere('fiscal3_id', $request->user()->id);
+            })
+            ->where('contract_state_id', '>=', 1)
+            ->orderBy('iddncp', 'asc')
+            ->get();
+            
         }
         return view('contract.contracts.index', compact('contracts'));
     }
@@ -229,6 +234,7 @@ class ContractsController extends Controller
         $contract = Contract::findOrFail($contract_id);
         $user_dependency = $request->user()->dependency_id;
         $role_user = $request->user()->role_id;
+        // $user = $request->user()->id;
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 1 pólizas
         $user_files_pol = $contract->files()->where('dependency_id', $user_dependency)
@@ -421,7 +427,7 @@ class ContractsController extends Controller
         $rules = [
             'fiscal1_id' => [
                 'numeric',
-                'required',
+                'nullable',
                 'max:999999',
                 function ($attribute, $value, $fail) {
                     if ($value == request()->input('fiscal2_id') || $value == request()->input('fiscal3_id')) {
@@ -457,15 +463,44 @@ class ContractsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
        
-        $contract->fiscal1_id = $request->input('fiscal1_id');
-        $contract->fiscal2_id = $request->input('fiscal2_id');
-        $contract->fiscal3_id = $request->input('fiscal3_id');
+        // PARA ASIGNAR Y REASIGNAR FISCALES DE OBRAS
+        $fiscal1_id = $request->input('fiscal1_id');
+        if (empty($fiscal1_id) || $fiscal1_id === '0') {
+            // Acción si fiscal1_id está vacío o es igual a 0
+            $contract->fiscal1_id = null;
+            $contract->fiscal1_date = now(); // Por ejemplo, asignar un valor nulo
+        } else {
+            // Acción si fiscal1_id tiene un valor válido
+            $contract->fiscal1_id = $request->input('fiscal1_id');
+            $contract->fiscal1_date = now();
+        }
+
+        $fiscal2_id = $request->input('fiscal2_id');
+        if (empty($fiscal2_id) || $fiscal2_id === '0') {
+            // Acción si fiscal2_id está vacío o es igual a 0
+            $contract->fiscal2_id = null;
+            $contract->fiscal2_date = now(); // Por ejemplo, asignar un valor nulo
+        } else {
+            // Acción si fiscal2_id tiene un valor válido
+            $contract->fiscal2_id = $request->input('fiscal2_id');
+            $contract->fiscal2_date = now();
+        }
+
+        $fiscal3_id = $request->input('fiscal3_id');
+        if (empty($fiscal3_id) || $fiscal3_id === '0') {
+            // Acción si fiscal3_id está vacío o es igual a 0
+            $contract->fiscal3_id = null;
+            $contract->fiscal3_date = now(); // Por ejemplo, asignar un valor nulo
+        } else {
+            // Acción si fiscal3_id tiene un valor válido
+            $contract->fiscal3_id = $request->input('fiscal3_id');
+            $contract->fiscal3_date = now();
+        }
+        
         $contract->creator_user_id = $request->user()->id;  // usuario logueado
         $contract->save();
         return redirect()->route('contracts.show', $contract->id)->with('success', 'Fiscal agregado correctamente');
     }
-
-
 
     public function excel(){
         $spreadsheet = new Spreadsheet();

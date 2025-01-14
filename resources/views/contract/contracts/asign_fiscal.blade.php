@@ -45,7 +45,7 @@
                                 <div class="card-block">
                                     {{-- <h3 class="text-center">Asignar Fiscal al Contrato</h3>
                                     <br> --}}
-                                    <form class="row" method="POST" action="{{ route('contracts.asign.update', $contract->id) }}">
+                                    <form class="row" method="POST" action="{{ route('contracts.update.fiscal', $contract->id) }}">
                                         @csrf
                                         @method('PUT')
                                         {{-- PARA MOSTRAR ERRORES DE VALIDACION --}}
@@ -294,7 +294,6 @@
                                             </div>
                                         </div>
                                     </form>
-
                                 </div>
                             </div>
                         </div>

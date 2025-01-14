@@ -81,7 +81,7 @@ p.centrado {
                                     @if (Auth::user()->hasPermission(['admin.contracts.create','contracts.contracts.create']))
                                         <div class="float-left">
                                             <br>
-                                            <a href="{{ route('contracts.create') }}" title="Agregar llamado" class="btn btn-primary">Agregar Llamado</a>
+                                            <a href="{{ route('contracts.create') }}" title="Agregar llamado" class="btn btn-primary">Agregar Contrato</a>
                                         </div>
                                     @endif
                                 </div>
@@ -111,11 +111,8 @@ p.centrado {
                                                         <td style="max-width: 10px"> {{ ($i+1) }}</td>
                                                         <td> {{ $contracts[$i]->dependency->description }}</td>
                                                         <td style="max-width: 800px"> {{ $contracts[$i]->description }}</td>
-                                                        <td> {{ number_format($contracts[$i]->iddncp,'0', ',','.') }} </td>  
-
-                                                        {{-- <td> {{ $contracts[$i]->year_adj }}</td> --}}
-                                                        <td> {{ number_format($contracts[$i]->year_adj,'0', ',','.') }} </td>  
-
+                                                        <td> {{ number_format($contracts[$i]->iddncp,'0', ',','.') }} </td>                                                          
+                                                        <td> {{ number_format($contracts[$i]->year_adj,'0', ',','.') }} </td>
                                                         <td style="color:#ff0000">{{ $contracts[$i]->linkdncp }}</td>
                                                         
                                                         <td> {{ $contracts[$i]->number_year }}</td>
@@ -128,8 +125,7 @@ p.centrado {
                                                         
                                                         <td style="max-width: 200px"> Gs.{{ number_format($contracts[$i]->total_amount,'0', ',','.') }} </td>
                                                         
-                                                        <td>{{ $contracts[$i]->provider->description }}</td>
-                                                        {{-- <td>{{ $contracts[$i]->modality->code }}-{{ $contracts[$i]->modality->description }}</td> --}}
+                                                        <td>{{ $contracts[$i]->provider->description }}</td>                                                       
 
                                                         @if (in_array($contracts[$i]->contractState->id, [2,3,6]))
                                                             <td style="color:#ff0000">{{ $contracts[$i]->contractState->description }}</td>

@@ -122,7 +122,7 @@
                                         <div class="row">
                                             <div class="col-sm-10 text-left">
                                                 <h5>Llamado:
-                                                    {{ $contract->description . ' - ' . $contract->modality->description . ' - Contraro N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
+                                                    {{ $contract->description . ' - ' . $contract->modality->description . ' - Contrato N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
                                                 </h5>
                                             </div>
                                             <div class="col-sm-10 text-left">
@@ -298,8 +298,7 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab1" role="tabpanel">
-                                                <label class="col-form-label f-w-700">Archivos de Evaluaciones
-                                                    Técnicas:</label>
+                                                <label class="col-form-label f-w-700">Archivos de Evaluaciones Técnicas:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -316,7 +315,8 @@
                                                                 <td>{{ $i + 1 }}</td>
                                                                 <td style="max-width: 800px">
                                                                     {{ $user_files_eval[$i]->description }}</td>
-                                                                <td style="max-width: 500px">
+                                                                <td style="max-width: 500px">                                                                    
+                                                                    {{-- {{ $user_files_eval[$i]->creator_user_id }} --}}
                                                                     {{ $user_files_eval[$i]->dependency->description }}
                                                                 </td>
                                                                 <td style="max-width: 200px">
@@ -573,7 +573,7 @@
                                                     </tbody>
                                                 </table>
                                                 <div class="text-right">
-                                                    @if (Auth::user()->hasPermission(['admin.orders.create', 'contracts.orders.create']))
+                                                    @if (Auth::user()->hasPermission(['admin.files.create', 'contracts.files.create']))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
                                                             <a href="{{ route('contracts.files.create_con', $contract->id) }}"
                                                                 class="btn btn-primary">Cargar Archivos</a>

@@ -44,7 +44,7 @@
                                         {{ Auth::user()->dependency->description }}
                                     </p>
                                     <p>
-                                        <span class="f-w-600">Rol:</span><br>
+                                        <span class="f-w-600">Rol:</span><br>                                        
                                         {{ Auth::user()->role->description }}
                                     </p>
                                 </div>

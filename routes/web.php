@@ -138,7 +138,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // RUTA PARA EDITAR FORM CONTRATO Y AGREGAR FISCAL
     Route::get('/contracts/orders/{order}/edit', [ContractsController::class, 'asign'])->name('contracts.asign');
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
-    Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.asign.update');
+    Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.update.fiscal');
     // RUTA PARA MANEJAR COMBO DEPARTAMENTO-DISTRITOS
     // Route::get('/districts/{department}', [OrdersEjecsController::class, 'getDistricts'])->name('districts.get');
 
