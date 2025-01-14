@@ -11,112 +11,75 @@ use App\Models\Order;
 use App\Models\ItemAwardHistory;
 use App\Models\ItemAwardType;
 use Illuminate\Validation\Rule;
+use App\Models\Level5CatalogCode;
+use App\Models\OrderPresentation;
+use App\Models\OrderMeasurementUnit;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use Illuminate\Support\Facades\DB;
+
+use App\Models\ItemOrder;
 
 class ItemsOrdersController extends Controller
 {
-    protected $postMaxSize;
     /**
-     * Create a new controller instance.
+     * Create a new controller instance. 
      *
      * @return void
      */
     public function __construct()
     {
-        $index_permissions = ['admin.itemsorders.index',
-                            'orders.itemsorders.index'];
-        $create_permissions = ['admin.itemsorders.create',
-                            'orders.itemsorders.create'];
-        $update_permissions = ['admin.itemsorders.update',
-                            'orders.itemsorders.update'];
+        $index_permissions = ['admin.items.index',
+                            'orders.items.index',
+                            'process_orders.items.index',
+                            'derive_orders.items.index',
+                            'plannings.items.index'];
+        $create_permissions = ['admin.items.create',
+                            'orders.items.create'];
+        $update_permissions = ['admin.items.update',
+                            'orders.items.update'];
 
-        $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index
+        $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index 
         $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create
         $this->middleware('checkPermission:'.implode(',',$update_permissions))->only(['edit', 'update']);   // Permiso para update
-
-         // obtenemos el tamaño permitido de subida de archivos del servidor
-         if (is_numeric(ini_get('post_max_size'))) {
-            $postMaxSize = ini_get('post_max_size');
-        }else{
-            $metric = strtoupper(substr(ini_get('post_max_size'), -1));
-            $postMaxSize = (int) ini_get('post_max_size');
-
-            switch ($metric) {
-                case 'K':
-                    $postMaxSize = $postMaxSize * 1024;
-                    break;
-                case 'M':
-                    $postMaxSize = $postMaxSize * 1048576;
-                    break;
-                case 'G':
-                    $postMaxSize = $postMaxSize * 1073741824;
-                    break;
-                default:
-                    $postMaxSize = 8 * 1024 * 1024;
-                    break;
-            }
-        }
-        // $this->postMaxSize = $postMaxSize;
-        //MÁXIMO PERMITIDO 2 MEGAS POR CADA ARCHIVO
-        $this->postMaxSize = 1048576 * 2;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request, $item_id)
+     
+    public function uploadExcel(Request $request, $order_id)
     {
-        // ordenamos por fecha de creación
-        // $item = Item::where('id', $item_id)->orderBy('created_at', 'asc')->first();
+        $order = Order::findOrFail($order_id);
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.item_award_histories.index','contracts.item_award_histories.index'])){
+        if(!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
-        // $item_award_histories = $item->itemAwardHistories;
-
-        return view('contract.item_award_histories.index', compact('item'));
+        return view('contracts.items.uploadExcel', compact('order'));
     }
 
+        
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request, $item_id)
-    {
-        $item = Item::findOrFail($item_id);
-        $item_award_types = ItemAwardType::all();
-        $post_max_size = $this->postMaxSize;
-
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.item_award_histories.create', 'contracts.item_award_histories.create']) &&
-            $item->contract->dependency_id != $request->user()->dependency_id){
-            // return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
-        }
-
-        // return view('contract.item_award_histories.create', compact('item'));
-        return view('contract.item_award_histories.create', compact('item', 'item_award_types','post_max_size'));
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
+     * Funcionalidad de guardado del pedido de ítemes Contrato Abierto.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $item_id)
+    public function store(Request $request, $order_id)
     {
         $rules = array(
-            'item_award_type_id' => 'numeric|required|max:2147483647',
-            'number_policy' => 'string|required|unique:items,number_policy|unique:item_award_histories,number_policy',
-            'item_from' => 'date_format:d/m/Y',
-            'item_to' => 'required|date_format:d/m/Y',
-            'amount' => 'nullable|string|max:9223372036854775807',
-            'comments' => 'nullable|max:300'
+            'batch' => 'numeric|nullable|max:2147483647',
+            'item_number' => 'numeric|nullable|max:2147483647',
+            'level5_catalog_code_id' => 'numeric|required|max:2147483647',
+            'technical_specifications' => 'string|required|max:100',
+            'order_presentation_id' => 'numeric|required|max:32767',
+            'order_measurement_unit_id' => 'numeric|required|max:32767',
+            'unit_price' => 'numeric|required|max:2147483647',            
+            'min_quantity' => 'numeric|required|max:2147483647',
+            'max_quantity' => 'numeric|required|max:2147483647',                    
+            'total_amount_min' => 'numeric|required|max:9223372036854775807',
+            'total_amount' => 'numeric|required|max:9223372036854775807',
         );
 
         $validator =  Validator::make($request->input(), $rules);
@@ -124,284 +87,787 @@ class ItemsOrdersController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // var_dump(
-        //     $request->number_policy,
-        //     $request->amount,
-        //     $request->hasFile('file'),
-        // );exit;
+        $item = new ItemOrder; 
+        $item->order_id = $order_id;
+        $item->batch = $request->input('batch');
+        $item->item_number = $request->input('item_number');
+        $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
+        $item->technical_specifications = $request->input('technical_specifications');
+        $item->order_presentation_id = $request->input('order_presentation_id');
+        $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
+        $item->unit_price = $request->input('unit_price');         
+        $item->min_quantity = $item['min_quantity'];
+        $item->max_quantity = $item['max_quantity'];
+        $item->total_amount_min = $item['total_amount_min'];
+        $item->total_amount = $item['total_amount'];
+        $item->creator_user_id = $request->user()->id;  // usuario logueado
+        $item->save();
 
-        if(!$request->hasFile('file')){
-            $validator = Validator::make($request->input(), []);
-            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // chequeamos la extension del archivo subido
-        $extension = $request->file('file')->getClientOriginalExtension();
-        if(!in_array($extension, array('doc', 'docx', 'pdf'))){
-            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // Pasó todas las validaciones, guardamos el archivo
-        // $fileName = time().'-addendum-file.'.$extension; // nombre a guardar
-        $fileName = 'endoso_nro_'.$request->input('number_policy').'.'.$extension; // nombre a guardar
-        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
-        $path = $request->file('file')->storeAs('public/files', $fileName);
-
-        $itemA = new ItemAwardHistory;
-        $itemA->item_id = $item_id;
-        $itemA->number_policy = $request->input('number_policy');
-        $itemA->item_from = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_from'))));
-        $itemA->item_to = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_to'))));
-
-        $amount = str_replace('.', '',($request->input('amount')));
-        // monto de póliza del form create
-        $amount_poliza = $request->input('tot');
-
-        if ($amount === '' ) {
-            $validator->errors()->add('amount', 'Ingrese Monto');
-            return back()->withErrors($validator)->withInput();
-        }
-
-        if ($amount < 0 ) {
-            $validator->errors()->add('amount', 'Monto no puede ser negativo');
-            return back()->withErrors($validator)->withInput();
-        }else{
-            $itemA->amount = $amount;
-        }
-
-        // consulta si tipo endoso = 1 o 2 (plazo, vigencia o monto) para cambiar a estado inactivo el registo anterior que posee mismo tipo de endoso
-        $tipo_endoso_id = $request->input('item_award_type_id');
-
-        //tipo endoso (item_award_type_id): 1 = PLAZO O VIGENCIA 2= MONTO 3= OTRAS MODIF.
-        if ($tipo_endoso_id == 1 || $tipo_endoso_id == 2) {
-            // se consulta si hay endosos con tipo_endoso 1 o 2 y si su estado es 1 = ACTIVO
-            $check1 = ItemAwardHistory::where('item_award_type_id', '=', 1)//PLAZO O VIGENCIA
-                                    ->where('item_id', '=', $item_id)
-                                    ->where('state_id', '=', 1)
-                                    ->first();
-
-            $check2 = ItemAwardHistory::where('item_award_type_id', '=', 2)//MONTO
-                                    ->where('item_id', '=', $item_id)
-                                    ->where('state_id', '=', 1)
-                                    ->first();
-
-            //Si hay resultado de la consulta, sino se asume el item_award_type_id
-            if ($check1) {
-                $check1->state_id = 2; // Cambia el state_id a 2 (inactivo) del registro de la sentencia consultado
-                $check1->save();
-                $itemA->item_award_type_id = $request->input('item_award_type_id');
-            }else{
-                $itemA->item_award_type_id = $request->input('item_award_type_id');
-            }
-
-            //Si hay resultado de la consulta, sino se asume el item_award_type_id
-            if ($check2) {
-                $check2->state_id = 2; // Cambia el state_id a 2 (inactivo) del registro de la sentencia consultado
-                $check2->save();
-                $itemA->item_award_type_id = $request->input('item_award_type_id');
-            }else{
-                $itemA->item_award_type_id = $request->input('item_award_type_id');
-            }
-        //tipo endoso (item_award_type_id): 3= OTRAS MODIF.
-        }else{
-            $itemA->item_award_type_id = $request->input('item_award_type_id');
-        }
-
-        //SE DEJA DE CONTROLAR MONTO DE POLIZA VS MONTO DE ENDOSO
-        // if ($amount > $amount_poliza) {
-        //     $validator->errors()->add('amount', 'Monto no puede ser mayor a monto póliza');
-        //     return back()->withErrors($validator)->withInput();
-        // }else{
-             $itemA->amount = $amount;
-        // }
-
-        $itemA->comments = $request->input('comments');
-        $itemA->file = $fileName;
-        $itemA->file_type = 2;//endoso
-        $itemA->state_id = 1;
-        $itemA->creator_user_id = $request->user()->id;  // usuario logueado
-        $itemA->save();
-        return redirect()->route('items.item_award_histories.index', $item_id)->with('success', 'Endoso agregado correctamente'); // Caso usuario posee rol pedidos
+        return redirect()->route('orders.show', $order_id)->with('success', 'Ítem agregado correctamente'); // Caso usuario posee rol pedidos
     }
 
-        /**
-     * Show the form for editing the specified resource.
+    /**
+     * Formulario de agregacion de ítems Archivo Excel de CONTRATO ABIERTO.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $item_id, $itemA_id)
+    public function storeExcel(Request $request, $order_id)
     {
-        // $item = ItemAwardHistory::findOrFail($item_id);
+        $order = Order::findOrFail($order_id);
 
-        $item = Item::findOrFail($item_id);
-        $item_award_types = ItemAwardType::all();
-        $post_max_size = $this->postMaxSize;
-
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.item_award_histories.create', 'contracts.item_award_histories.create']) &&
-        $item->contract->dependency_id != $request->user()->dependency_id){
-            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
+        $cant_item = 0;
+        if ($order->items->count() > 0){
+            $cant_item = 1;
         }
 
-        $itemA = ItemAwardHistory::findOrFail($itemA_id);
-
-        return view('contract.item_award_histories.update', compact('item','itemA','item_award_types','post_max_size'));
-    }
-
-    /**
- * Update the specified resource in storage.
- *
- * @param  \Illuminate\Http\Request  $request
- * @param  int  $item_id
- * @param  int  $itemA_id
- * @return \Illuminate\Http\Response
- */
-public function update(Request $request, $item_id, $itemA_id)
-{
-    // Encontrar los modelos correspondientes o lanzar una excepción
-    $item = Item::findOrFail($item_id);
-    $itemA = ItemAwardHistory::findOrFail($itemA_id);
-
-    // Reglas de validación
-    $rules = [
-        'item_award_type_id' => 'numeric|required|max:2147483647',
-        'number_policy' => [
-            'string',
-            'required',
-            Rule::unique('item_award_histories')->ignore($itemA->id),
-            Rule::unique('items'),
-        ],
-        'item_from' => 'date_format:d/m/Y',
-        'item_to' => 'required|date_format:d/m/Y',
-        'amount' => 'nullable|string|max:9223372036854775807',
-        'file' => 'nullable|file|max:2040', // Ejemplo para archivo de hasta 2 MB
-        'comments' => 'nullable|max:300'
-    ];
-
-    // Validar los datos de entrada
-    $validatedData = $request->validate($rules);
-
-    // Manejar la validación manual adicional para los archivos
-    if ($request->hasFile('file')) {
-        $extension = $request->file('file')->getClientOriginalExtension();
-        if (!in_array($extension, ['doc', 'docx', 'pdf'])) {
-            return back()->withErrors(['file' => 'El archivo debe ser de tipo: doc, docx o pdf.'])->withInput();
-        }
-
-        // Guardar el archivo con un nombre único
-        $fileName = 'endoso_nro_' . $request->input('number_policy') . '.' . $extension;
-        $path = $request->file('file')->storeAs('public/files', $fileName);
-
-        // Guardar el nombre del archivo en la base de datos
-        $itemA->file = $fileName;
-    }
-
-    // Convertir las fechas al formato adecuado
-    $itemA->item_award_type_id = $validatedData['item_award_type_id'];
-    $itemA->number_policy = $validatedData['number_policy'];
-    $itemA->item_from = date('Y-m-d', strtotime(str_replace("/", "-", $validatedData['item_from'])));
-    $itemA->item_to = date('Y-m-d', strtotime(str_replace("/", "-", $validatedData['item_to'])));
-
-    // Manejar el campo amount
-    $amount = str_replace('.', '', $validatedData['amount']);
-    if ($amount === '') {
-        return back()->withErrors(['amount' => 'Ingrese Monto'])->withInput();
-    }
-    $itemA->amount = $amount;
-
-    // Actualizar otros campos
-    $itemA->comments = $validatedData['comments'];
-    $itemA->file_type = 2; // endoso
-    $itemA->state_id = 1;
-    $itemA->creator_user_id = $request->user()->id; // usuario logueado
-
-    // Guardar los cambios
-    $itemA->save();
-
-    // Redirigir con mensaje de éxito
-    return redirect()->route('items.item_award_histories.index', $item_id)
-                     ->with('success', 'Se ha modificado exitosamente el endoso de la póliza');
-}
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $item_id
-     * @param  int  $itemA_id
-     * @return \Illuminate\Http\Respons
-     */
-    public function update_orig(Request $request, $item_id, $itemA_id)
-    {
-        $item = Item::findOrFail($item_id);
-        $itemA = ItemAwardHistory::findOrFail($itemA_id);
-
-        $rules = array(
-            'item_award_type_id' => 'numeric|required|max:2147483647',
-            'number_policy' => [
-                'string',
-                'required',
-                Rule::unique('item_award_histories')->ignore($itemA->id),
-                Rule::unique('items'),                
-            ],
-            'item_from' => 'date_format:d/m/Y',
-            'item_to' => 'required|date_format:d/m/Y',
-            'amount' => 'nullable|string|max:9223372036854775807',
-            'file' => 'nullable|file|max:2040', // Ejemplo para archivo de hasta 2 MB
-            'comments' => 'nullable|max:300'
-        );
-
-        // Valida los datos de entrada
-        $validatedData = $request->validate($rules);
-
-        // Actualiza el item con los datos validados
-        $itemA->update($validatedData);
-
-
-        $validator =  Validator::make($request->input(), $rules);
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // Muestra desde la vista el nombre del archivo que está en un label
-        $filename = $request->input('filename');        
-
-        if ($request->hasFile('file')) {
-            // Obtén la extensión del archivo (omite validación)
-            $extension = $request->file('file')->getClientOriginalExtension();
-            if(!in_array($extension, array('doc', 'docx', 'pdf'))){
+        if($request->hasFile('excel')){
+            // chequeamos la extension del archivo subido
+            if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
                 $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-                $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
+                $validator->errors()->add('excel', 'El archivo introducido debe ser un excel de tipo: xls o xlsx'); // Agregamos el error
                 return back()->withErrors($validator)->withInput();
             }
 
-            // Guarda el archivo con un nombre único           
-            $fileName = 'endoso_nro_'.$request->input('number_policy').'.'.$extension; // nombre a guardar
-            $path = $request->file('file')->storeAs('public/files', $fileName);
+            // creamos un array de indices de las columnas
+            $header = array('type','batch', 'item_number', 'level5_catalog_code', 
+            'technical_specifications', 'order_presentation', 'order_measurement_unit', 
+            'unit_price','min_quantity','max_quantity','total_amount_min','total_amount');
 
-            // Capturamos nombre del archivo almacenado en la tabla
-            $filename = $itemA->file;            
-        }        
-        $itemA->item_award_type_id = $request->input('item_award_type_id');
-        $itemA->number_policy = $request->input('number_policy');
-        $itemA->item_from = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_from'))));
-        $itemA->item_to = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('item_to'))));
-        $amount = str_replace('.', '',($request->input('amount')));
-        if ($amount === '' ) {
-            $validator->errors()->add('amount', 'Ingrese Monto');
+            // accedemos al archivo excel cargado
+            $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
+            $reader->setReadDataOnly(true); 
+            $reader->setReadEmptyCells(false);
+            $spreadsheet = $reader->load($request->excel->path());  // cargamos el archivo
+            // variable que guarda la plantilla activa
+            $worksheet = $spreadsheet->getActiveSheet();    
+
+            $rows = $worksheet->getHighestRow();    // cantidad de filas
+            $columns = count($header);  // cantidad de columnas que debe tener el archivo
+            $last_column = Coordinate::stringFromColumnIndex($columns);
+
+            // Recorremos cada fila del archivo excel y sumamos el total de los totales de ítemes
+            $order_amount_items = 0;
+            for ($row = 2; $row <= $rows; ++$row) {
+                $data = $spreadsheet->getActiveSheet()->rangeToArray(
+                    'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
+                    NULL,        // Value that should be returned for empty cells
+                    TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
+                    TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
+                    TRUE         // Should the array be indexed by cell row and cell column
+                );
+
+                // Manejando BUG de la librería phpspreadsheet para archivos con formato xlsx
+                if(empty(trim(implode("", $data[$row])))){
+                    continue;
+                }
+
+                // creamos un array con indices igual al array de columnas y valores igual a los obtenidos en el archivo excel
+                $item = array_combine($header, $data[$row]);
+                
+                // creamos las reglas de validacion
+                $rules = array(
+                    // 'type' => 'numeric|required|max:1',
+                    'batch' => 'numeric|nullable|max:2147483647',
+                    'item_number' => 'numeric|nullable|max:2147483647',
+                    'technical_specifications' => 'string|required|max:250',
+                    'order_presentation' => 'string|required|max:100',
+                    'order_measurement_unit' => 'string|required|max:100',
+                    'unit_price' => 'numeric|required|max:2147483647',                    
+                    'min_quantity' => 'numeric|required|max:2147483647',
+                    'max_quantity' => 'numeric|required|max:2147483647',                    
+                    'total_amount_min' => 'numeric|required|max:9223372036854775807',
+                    'total_amount' => 'numeric|required|max:9223372036854775807',
+                );
+                // validamos los datos
+                $validator = Validator::make($item, $rules); // Creamos un objeto validator
+                if ($validator->fails()) {
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
+                if ($item['type'] <> 1){
+                    $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO ABIERTO');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                // Chequea si existe el código de catálogo5
+                $level5_catalog_code = Level5CatalogCode::where('code', $item['level5_catalog_code'])->get()->first();
+                if (is_null($level5_catalog_code)) {
+                    $validator->errors()->add('level5_catalog_code', 'No existe código de catálogo igual al ingresado. Por favor ingrese uno de los códigos de catálogo registrados en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+                $order_presentation = OrderPresentation::where('description', $item['order_presentation'])->get()->first();
+                if (is_null($order_presentation)) {
+                    $validator->errors()->add('order_presentation', 'No existe Presentación igual a la ingresada. Por favor ingrese una de las registradas en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+                $order_measurement_unit = OrderMeasurementUnit::where('description', $item['order_measurement_unit'])->get()->first();
+                if (is_null($order_measurement_unit)) {
+                    $validator->errors()->add('order_measurement_unit', 'No existe unidad de medidad igual a la ingresada. Por favor ingrese una de las registrados en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                $item['level5_catalog_code_id'] = $level5_catalog_code->id;
+                $item['order_presentation_id'] = $order_presentation->id;
+                $item['order_measurement_unit_id'] = $order_measurement_unit->id;
+                // agregamos la fila al array de pedidos
+                $items[] = $item;
+
+                //ACUMULAR LOS TOTALES DE ITEMES                
+                $order_amount_items = $order_amount_items + $item['total_amount'];
+            }
+            
+            // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
+            $order = Order::findOrFail($order_id);
+            // $order_amount = $order->total_amount;            
+
+            // CONTROLAMOS SI MONTO DE TOTAL ES IGUAL A TOTAL SUMATORIA DE ITEMS
+            // if ($order_amount <> $order_amount_items) {
+            //     $validator->errors()->add('order_measurement_unit', 'Monto de Ítems: '.$order_amount_items.', no es igual a monto del Pedido, VERIFIQUE ARCHIVO EXCEL');
+            //     return back()->withErrors($validator)->withInput()->with('fila', $row);                
+            // }            
+
+            // En caso de haber pasado todas las validaciones guardamos los datos
+            foreach ($items as $item) {
+                $new_item = new ItemOrder; 
+                $new_item->order_id = $order_id;
+                $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
+                $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
+                $new_item->level5_catalog_code_id = $item['level5_catalog_code_id'];
+                $new_item->technical_specifications = $item['technical_specifications'];
+                $new_item->order_presentation_id = $item['order_presentation_id'];
+                $new_item->order_measurement_unit_id = $item['order_measurement_unit_id'];                
+                $new_item->unit_price = $item['unit_price'];
+                $new_item->min_quantity = $item['min_quantity'];
+                $new_item->max_quantity = $item['max_quantity'];
+                $new_item->total_amount_min = $item['total_amount_min'];
+                $new_item->total_amount = $item['total_amount'];
+                $new_item->creator_user_id = $request->user()->id;  // usuario logueado
+                $new_item->save();
+            }       
+            
+            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
+            
+            //capturamos valor del pedido
+            $order_amount = $order->total_amount;
+            // var_dump($order['total_amount']);exit();            
+
+            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
+            if ($cant_item == 1){               
+                $order->total_amount = $order_amount + $order_amount_items;       
+                $order->save();
+            }else{                
+                $order->total_amount = $order_amount_items;
+                //SI ITEM ES AGREGADO DESPUÉS DE PEDIDO EL MONTO DE ITEM QUEDA COMO MONTO TOTAL Y OG1
+                $order->amount1 = $order_amount_items;
+                $order->save();
+            }
+
+            return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
+
+        }else{
+            $validator = Validator::make($request->input(), []);
+            $validator->errors()->add('excel', 'El campo es requerido');
             return back()->withErrors($validator)->withInput();
         }
-        $itemA->amount = $amount;
-        $itemA->comments = $request->input('comments');        
-        $itemA->file_type = 2;//endoso
-        $itemA->state_id = 1;
-        $itemA->creator_user_id = $request->user()->id;  // usuario logueado
-        $itemA->save();
-        return redirect()->route('items.item_award_histories.index',$item_id)->with('success', 'Se ha modificado exitosamente el endoso de la póliza'); // Caso usuario posee rol pedidos
+    }
+
+    /**
+     * Formulario de agregacion de ítems Archivo Excel de CONTRATO CERRADO.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function storeExcel2(Request $request, $order_id)
+    {
+        $order = Order::findOrFail($order_id);
+
+        //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
+        $cant_item = 0;
+        if ($order->items->count() > 0){
+            $cant_item = 1;
+        }
+
+        // var_dump($order->items->count());exit();
+
+        if($request->hasFile('excel')){
+            // chequeamos la extension del archivo subido
+            if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+                $validator->errors()->add('excel', 'El archivo introducido debe ser un excel de tipo: xls o xlsx'); // Agregamos el error
+                return back()->withErrors($validator)->withInput();
+            }
+
+            // creamos un array de indices de las columnas
+            $header = array('type','batch', 'item_number', 'level5_catalog_code', 
+            'technical_specifications', 'order_presentation','order_measurement_unit', 
+            'quantity', 'unit_price', 'total_amount');            
+            // 'unit_price','min_quantity','max_quantity','total_amount_min','total_amount');
+
+
+            // accedemos al archivo excel cargado
+            $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
+            $reader->setReadDataOnly(true); 
+            $reader->setReadEmptyCells(false);
+            $spreadsheet = $reader->load($request->excel->path());  // cargamos el archivo
+            // variable que guarda la plantilla activa
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $rows = $worksheet->getHighestRow();    // cantidad de filas
+            $columns = count($header);  // cantidad de columnas que debe tener el archivo
+            $last_column = Coordinate::stringFromColumnIndex($columns);
+
+            // Recorremos cada fila del archivo excel y sumamos el total de los totales de ítemes
+            $order_amount_items = 0;
+            for ($row = 2; $row <= $rows; ++$row) {
+                $data = $spreadsheet->getActiveSheet()->rangeToArray(
+                    'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
+                    NULL,        // Value that should be returned for empty cells
+                    TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
+                    TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
+                    TRUE         // Should the array be indexed by cell row and cell column
+                );
+
+                // Manejando BUG de la librería phpspreadsheet para archivos con formato xlsx
+                if(empty(trim(implode("", $data[$row])))){
+                    continue;
+                }
+
+                // creamos un array con indices igual al array de columnas y valores igual a los obtenidos en el archivo excel
+                $item = array_combine($header, $data[$row]);
+                
+                // creamos las reglas de validacion
+                $rules = array(
+                    // 'type' => 'numeric|required|max:2',
+                    'batch' => 'numeric|nullable|max:2147483647',
+                    'item_number' => 'numeric|nullable|max:2147483647',
+                    'level5_catalog_code' => 'string|required|max:200',
+                    'technical_specifications' => 'string|required|max:250',
+                    'order_presentation' => 'string|required|max:100',
+                    'order_measurement_unit' => 'string|required|max:100',
+                    'quantity' => 'numeric|required|max:2147483647',
+                    'unit_price' => 'numeric|required|max:2147483647',
+                    'total_amount' => 'numeric|required|max:9223372036854775807',
+                );
+                // validamos los datos
+                $validator = Validator::make($item, $rules); // Creamos un objeto validator
+                if ($validator->fails()) {
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+                
+                //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
+                if ($item['type'] <> 2){
+                    $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO CERRADO');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                $level5_catalog_code = Level5CatalogCode::where('code', $item['level5_catalog_code'])->get()->first();
+                if (is_null($level5_catalog_code)) {
+                    $validator->errors()->add('level5_catalog_code', 'No existe código de catálogo igual al ingresado. Por favor ingrese uno de los códigos de catálogo registrados en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+                $order_presentation = OrderPresentation::where('description', $item['order_presentation'])->get()->first();
+                if (is_null($order_presentation)) {
+                    $validator->errors()->add('order_presentation', 'No existe Presentación igual a la ingresada. Por favor ingrese una de las registradas en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+                $order_measurement_unit = OrderMeasurementUnit::where('description', $item['order_measurement_unit'])->get()->first();
+                if (is_null($order_measurement_unit)) {
+                    $validator->errors()->add('order_measurement_unit', 'No existe unidad de medidad igual a la ingresada. Por favor ingrese una de las registrados en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                $item['level5_catalog_code_id'] = $level5_catalog_code->id;
+                $item['order_presentation_id'] = $order_presentation->id;
+                $item['order_measurement_unit_id'] = $order_measurement_unit->id;
+                // agregamos la fila al array de pedidos
+                $items[] = $item;    
+                
+                //ACUMULAR LOS TOTALES DE ITEMES                
+                $order_amount_items = $order_amount_items + $item['total_amount'];
+            }                
+
+            // En caso de haber pasado todas las validaciones guardamos los datos
+            foreach ($items as $item) {
+                $new_item = new ItemOrder; 
+                $new_item->order_id = $order_id;
+                $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
+                $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
+                $new_item->level5_catalog_code_id = $item['level5_catalog_code_id'];
+                $new_item->technical_specifications = $item['technical_specifications'];
+                $new_item->order_presentation_id = $item['order_presentation_id'];
+                $new_item->order_measurement_unit_id = $item['order_measurement_unit_id'];
+                $new_item->quantity = $item['quantity'];
+                $new_item->unit_price = $item['unit_price'];
+                $new_item->total_amount = $item['total_amount'];
+                $new_item->creator_user_id = $request->user()->id;  // usuario logueado
+                $new_item->save();
+            }
+            
+            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
+            
+            //capturamos valor del pedido
+            $order_amount = $order->total_amount;
+            // var_dump($order['total_amount']);exit();            
+
+            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
+            if ($cant_item == 1){               
+                $order->total_amount = $order_amount + $order_amount_items;       
+                $order->save();
+            }else{
+                $order->total_amount = $order_amount_items;                
+                $order->save();
+            }
+            
+            return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
+
+        }else{
+            $validator = Validator::make($request->input(), []);
+            $validator->errors()->add('excel', 'El campo es requerido');
+            return back()->withErrors($validator)->withInput();
+        }
+    }
+
+    /**
+     * Formulario de agregacion de ítems Archivo Excel de CONTRATO CERRADO MMIN Y MMAX.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function storeExcel3(Request $request, $order_id)
+    {
+        $order = Order::findOrFail($order_id);
+
+        //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
+        $cant_item = 0;
+        if ($order->items->count() > 0){
+            $cant_item = 1;
+        }
+
+        if($request->hasFile('excel')){
+            // chequeamos la extension del archivo subido
+            if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+                $validator->errors()->add('excel', 'El archivo introducido debe ser un excel de tipo: xls o xlsx'); // Agregamos el error
+                return back()->withErrors($validator)->withInput();
+            }
+
+            // creamos un array de indices de las columnas
+            $header = array('type','batch', 'item_number', 'level5_catalog_code', 
+            'technical_specifications', 'order_presentation','order_measurement_unit', 
+            'quantity', 'unit_price', 'total_amount_min','total_amount');            
+            // max_quuantity es igual a quantity
+
+
+            // accedemos al archivo excel cargado
+            $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
+            $reader->setReadDataOnly(true); 
+            $reader->setReadEmptyCells(false);
+            $spreadsheet = $reader->load($request->excel->path());  // cargamos el archivo
+            // variable que guarda la plantilla activa
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $rows = $worksheet->getHighestRow();    // cantidad de filas
+            $columns = count($header);  // cantidad de columnas que debe tener el archivo
+            $last_column = Coordinate::stringFromColumnIndex($columns);
+
+            // Recorremos cada fila del archivo excel y sumamos el total de los totales de ítemes
+            $order_amount_items = 0;
+            for ($row = 2; $row <= $rows; ++$row) {
+                $data = $spreadsheet->getActiveSheet()->rangeToArray(
+                    'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
+                    NULL,        // Value that should be returned for empty cells
+                    TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
+                    TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
+                    TRUE         // Should the array be indexed by cell row and cell column
+                );
+
+                // Manejando BUG de la librería phpspreadsheet para archivos con formato xlsx
+                if(empty(trim(implode("", $data[$row])))){
+                    continue;
+                }
+
+                // creamos un array con indices igual al array de columnas y valores igual a los obtenidos en el archivo excel
+                $item = array_combine($header, $data[$row]);
+                
+                // creamos las reglas de validacion
+                $rules = array(
+                    // 'type' => 'numeric|required|max:3',
+                    'batch' => 'numeric|nullable|max:2147483647',
+                    'item_number' => 'numeric|nullable|max:2147483647',
+                    'level5_catalog_code' => 'string|required|max:200',
+                    'technical_specifications' => 'string|required|max:250',
+                    'order_presentation' => 'string|required|max:100',
+                    'order_measurement_unit' => 'string|required|max:100',
+                    'quantity' => 'numeric|required|max:2147483647',                    
+                    'unit_price' => 'numeric|required|max:2147483647',
+                    'total_amount_min' => 'numeric|required|max:2147483647',
+                    'total_amount' => 'numeric|required|max:9223372036854775807',
+                );
+                // validamos los datos
+                $validator = Validator::make($item, $rules); // Creamos un objeto validator
+                if ($validator->fails()) {
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
+                if ($item['type'] <> 3){
+                    $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO CERRADO MMIN Y MMAX.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                $level5_catalog_code = Level5CatalogCode::where('code', $item['level5_catalog_code'])->get()->first();
+                if (is_null($level5_catalog_code)) {
+                    $validator->errors()->add('level5_catalog_code', 'No existe código de catálogo igual al ingresado. Por favor ingrese uno de los códigos de catálogo registrados en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+                $order_presentation = OrderPresentation::where('description', $item['order_presentation'])->get()->first();
+                if (is_null($order_presentation)) {
+                    $validator->errors()->add('order_presentation', 'No existe Presentación igual a la ingresada. Por favor ingrese una de las registradas en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+                $order_measurement_unit = OrderMeasurementUnit::where('description', $item['order_measurement_unit'])->get()->first();
+                if (is_null($order_measurement_unit)) {
+                    $validator->errors()->add('order_measurement_unit', 'No existe unidad de medidad igual a la ingresada. Por favor ingrese una de las registrados en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                $item['level5_catalog_code_id'] = $level5_catalog_code->id;
+                $item['order_presentation_id'] = $order_presentation->id;
+                $item['order_measurement_unit_id'] = $order_measurement_unit->id;
+                // agregamos la fila al array de pedidos
+                $items[] = $item;
+
+                //ACUMULAR LOS TOTALES DE ITEMES                
+                $order_amount_items = $order_amount_items + $item['total_amount'];
+            }
+
+            // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
+            $order = Order::findOrFail($order_id);
+            // $order_amount = $order->total_amount;            
+
+            // CONTROLAMOS SI MONTO DE TOTAL ES IGUAL A TOTAL SUMATORIA DE ITEMS
+            // if ($order_amount <> $order_amount_items) {
+            //     $validator->errors()->add('order_measurement_unit', 'Monto de Ítems: '.$order_amount_items.', no es igual a monto del Pedido, VERIFIQUE ARCHIVO EXCEL');
+            //     return back()->withErrors($validator)->withInput()->with('fila', $row);                
+            // }            
+            
+            // En caso de haber pasado todas las validaciones guardamos los datos
+            foreach ($items as $item) {
+                $new_item = new ItemOrder; 
+                $new_item->order_id = $order_id;
+                $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
+                $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
+                $new_item->level5_catalog_code_id = $item['level5_catalog_code_id'];
+                $new_item->technical_specifications = $item['technical_specifications'];
+                $new_item->order_presentation_id = $item['order_presentation_id'];
+                $new_item->order_measurement_unit_id = $item['order_measurement_unit_id'];
+                $new_item->quantity = $item['quantity'];                
+                $new_item->unit_price = $item['unit_price'];
+                $new_item->total_amount_min = $item['total_amount_min'];
+                $new_item->total_amount = $item['total_amount'];
+                $new_item->creator_user_id = $request->user()->id;  // usuario logueado
+                $new_item->save();
+            }
+
+            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
+            
+            //capturamos valor del pedido
+            $order_amount = $order->total_amount;
+            // var_dump($order['total_amount']);exit();            
+
+            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
+            if ($cant_item == 1){               
+                $order->total_amount = $order_amount + $order_amount_items;       
+                $order->save();
+            }else{
+                $order->total_amount = $order_amount_items;                
+                $order->save();
+            }
+
+            return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
+
+        }else{
+            $validator = Validator::make($request->input(), []);
+            $validator->errors()->add('excel', 'El campo es requerido');
+            return back()->withErrors($validator)->withInput();
+        }
+    }
+
+    /**
+     * Formulario de modificacion de pedido
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $order_id, $item_id)
+    {
+        $order = Order::findOrFail($order_id);
+        
+        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
+        if(!$request->user()->hasPermission(['admin.items.update']) &&
+        $order->dependency_id != $request->user()->dependency_id){
+            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        }
+
+        $item = ItemOrder::findOrFail($item_id);
+        $level5_catalog_codes = Level5CatalogCode::all();
+        $order_presentations = OrderPresentation::all();
+        $order_measurement_units = OrderMeasurementUnit::all();
+        return view('order.items.update', compact('order', 'item','level5_catalog_codes', 'order_presentations','order_measurement_units'));
+    }
+
+    /**
+     * Funcionalidad de modificacion del pedido CUANDO ESTIPO CONTRATO 1 = ABIERTO
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update1(Request $request, $order_id, $item_id)
+    {
+        $order = Order::findOrFail($order_id);
+        $item = ItemOrder::findOrFail($item_id);
+
+        $rules = array(
+            'batch' => 'numeric|nullable|max:2147483647',
+            'item_number' => 'numeric|nullable|max:2147483647',
+            'level5_catalog_code_id' => 'numeric|required|max:2147483647',
+            'technical_specifications' => 'string|required|max:250',
+            'order_presentation_id' => 'numeric|required|max:32767',
+            'order_measurement_unit_id' => 'numeric|required|max:32767',
+            'unit_price' => 'numeric|required|max:2147483647',            
+            'min_quantity' => 'numeric|required|max:2147483647',
+            'max_quantity' => 'numeric|required|max:2147483647',                    
+            'total_amount_min' => 'numeric|required|max:9223372036854775807',
+            'total_amount' => 'numeric|required|max:9223372036854775807',
+        );
+        $validator =  Validator::make($request->input(), $rules);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $item->batch = $request->input('batch');
+        $item->item_number = $request->input('item_number');
+        $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
+        $item->technical_specifications = $request->input('technical_specifications');
+        $item->order_presentation_id = $request->input('order_presentation_id');
+        $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');        
+        $item->unit_price = $request->input('unit_price');        
+        $item->min_quantity = $request->input('min_quantity');
+        $item->max_quantity = $request->input('max_quantity');
+        $item->total_amount_min = $request->input('total_amount_min');
+        $item->total_amount = $request->input('total_amount');
+        $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+        $item->save();
+
+        // Si usuario es de Plannings direcciona a plannings.show sino direcciona a orders
+        if(($request->user()->dependency_id == 59)){
+            return redirect()->route('plannings.show', $order_id)->with('success', 'Ítem modificado correctamente'); // Caso usuario posee rol pedidos
+        }else{
+            return redirect()->route('orders.show', $order_id)->with('success', 'Ítem modificado correctamente'); // Caso usuario posee rol pedidos
+        }
+    }
+
+    /**
+     * Funcionalidad de modificacion del pedido CUANDO ESTIPO CONTRATO 2 = CERRADO
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $order_id, $item_id)
+    {
+        $order = Order::findOrFail($order_id);
+        $item = ItemOrder::findOrFail($item_id);
+
+        //CONTROLAR SI AL CAMBIAR EL MONTO DE ITEM A MODIFICAR SOBREPASA MONTO CDP (SI YA TIENE CDP)
+        // $cdp_amount = $order->cdp_amount;            
+        // if ($total_amountitems > $cdp_amount) {
+        //     $validator = Validator::make($request->input(), []); // Creamos un objeto validator            
+        //     $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, VERIFIQUE...');
+        //     return back()->withErrors($validator)->withInput();
+        // } 
+
+        
+        // ACTUALIZA TIPO DE CONTRATO 1 ABIERTO
+        if ($order->open_contract == 1){
+            $rules = array(
+                'batch' => 'numeric|nullable|max:2147483647',
+                'item_number' => 'numeric|nullable|max:2147483647',
+                'level5_catalog_code_id' => 'numeric|required|max:2147483647',
+                'technical_specifications' => 'string|required|max:250',
+                'order_presentation_id' => 'numeric|required|max:32767',
+                'order_measurement_unit_id' => 'numeric|required|max:32767',
+                'min_quantity' => 'numeric|required|max:2147483647',
+                'max_quantity' => 'numeric|required|max:2147483647',                    
+                'total_amount_min' => 'numeric|required|max:9223372036854775807',                
+                'unit_price' => 'numeric|required|max:2147483647', 
+                'total_amount' => 'numeric|required|max:9223372036854775807'
+            );
+            $validator =  Validator::make($request->input(), $rules);
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $item->batch = $request->input('batch');
+            $item->item_number = $request->input('item_number');
+            $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
+            $item->technical_specifications = $request->input('technical_specifications');
+            $item->order_presentation_id = $request->input('order_presentation_id');
+            $item->order_measurement_unit_id = $request->input('order_measurement_unit_id'); 
+            $item->min_quantity = $request->input('min_quantity');
+            $item->max_quantity = $request->input('max_quantity');
+            $item->total_amount_min = $request->input('total_amount_min');
+            $item->unit_price = $request->input('unit_price'); 
+            $item->total_amount = $request->input('total_amount');
+            $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+            $item->save();
+        }    
+
+        // ACTUALIZA TIPO DE CONTRATO 2 CERRADO
+        if ($order->open_contract == 2){
+            $rules = array(
+                'batch' => 'numeric|nullable|max:2147483647',
+                'item_number' => 'numeric|nullable|max:2147483647',
+                'level5_catalog_code_id' => 'numeric|required|max:2147483647',
+                'technical_specifications' => 'string|required|max:250',
+                'order_presentation_id' => 'numeric|required|max:32767',
+                'order_measurement_unit_id' => 'numeric|required|max:32767',
+                'quantity' => 'numeric|required|max:2147483647',
+                'unit_price' => 'numeric|required|max:2147483647', 
+                'total_amount' => 'numeric|required|max:9223372036854775807'
+            );
+            $validator =  Validator::make($request->input(), $rules);
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $item->batch = $request->input('batch');
+            $item->item_number = $request->input('item_number');
+            $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
+            $item->technical_specifications = $request->input('technical_specifications');
+            $item->order_presentation_id = $request->input('order_presentation_id');
+            $item->order_measurement_unit_id = $request->input('order_measurement_unit_id'); 
+            $item->quantity = $request->input('quantity');
+            $item->unit_price = $request->input('unit_price');
+            $item->total_amount = $request->input('total_amount');            
+            $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+            $item->save();
+        }    
+
+        // ACTUALIZA TIPO DE CONTRATO 3 ABIERTOMM
+        if ($order->open_contract == 3){
+            $rules = array(
+                'batch' => 'numeric|nullable|max:2147483647',
+                'item_number' => 'numeric|nullable|max:2147483647',
+                'level5_catalog_code_id' => 'numeric|required|max:2147483647',
+                'technical_specifications' => 'string|required|max:250',
+                'order_presentation_id' => 'numeric|required|max:32767',
+                'order_measurement_unit_id' => 'numeric|required|max:32767',
+                'quantity' => 'numeric|required|max:2147483647',
+                'unit_price' => 'numeric|required|max:2147483647',                  
+                'total_amount_min' => 'numeric|required|max:9223372036854775807',
+                'total_amount' => 'numeric|required|max:9223372036854775807'
+            );
+            $validator =  Validator::make($request->input(), $rules);
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $item->batch = $request->input('batch');
+            $item->item_number = $request->input('item_number');
+            $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
+            $item->technical_specifications = $request->input('technical_specifications');
+            $item->order_presentation_id = $request->input('order_presentation_id');
+            $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
+            $item->quantity = $request->input('quantity');                   
+            $item->unit_price = $request->input('unit_price'); 
+            $item->total_amount_min = $request->input('total_amount_min');            
+            $item->total_amount = $request->input('total_amount');
+            $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+            $item->save();
+        } 
+
+
+        // AQUI RECORRER LOS ITEMS DEL PEDIDO Y CARGAR COMO NUEVO TOTAL_AMOUNT EN ORDERS COMO PLURIANUAL
+        $total_amountitems = 0;
+        for ($i = 0; $i < count($order->items); $i++){                            
+            $total_amountitems += $order->items[$i]->total_amount;                           
+        }
+
+        //CERAMOS VALOR DEL MONTO DE ORDER Y CARGAMOS VALOR NUEVO
+        $order->total_amount = 0;
+        $order->total_amount = $total_amountitems;
+        $order->save();
+
+
+        //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)        
+        $cdp_amount = $order->cdp_amount;            
+        if ($cdp_amount > 0) {
+            if ($total_amountitems > $cdp_amount) {
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator            
+                $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, DEBE ACTUALIZAR CDP...');
+                return back()->withErrors($validator)->withInput();
+            }
+        }
+          
+
+        // Si usuario es de Plannings direcciona a plannings.show sino direcciona a orders
+        if(($request->user()->dependency_id == 59)){
+            return redirect()->route('plannings.show', $order_id)->with('success', 'Ítem modificado en PAC correctamente'); // Caso usuario posee rol pedidos
+        }else{
+            return redirect()->route('orders.show', $order_id)->with('success', 'Ítem modificado en PEDIDOS correctamente'); // Caso usuario posee rol pedidos
+        }
+    }
+
+
+    /**
+     * Funcionalidad de modificacion del pedido CUANDO ESTIPO CONTRATO 3 = ABIERTO MM
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update3(Request $request, $order_id, $item_id)
+    {
+        $order = Order::findOrFail($order_id);
+        $item = ItemOrder::findOrFail($item_id);
+
+        $rules = array(
+            'batch' => 'numeric|nullable|max:2147483647',
+            'item_number' => 'numeric|nullable|max:2147483647',
+            'level5_catalog_code_id' => 'numeric|required|max:2147483647',
+            'technical_specifications' => 'string|required|max:250',
+            'order_presentation_id' => 'numeric|required|max:32767',
+            'order_measurement_unit_id' => 'numeric|required|max:32767',
+            'unit_price' => 'numeric|required|max:2147483647',            
+            'min_quantity' => 'numeric|required|max:2147483647',
+            'max_quantity' => 'numeric|required|max:2147483647',                    
+            'total_amount_min' => 'numeric|required|max:9223372036854775807',
+            'total_amount' => 'numeric|required|max:9223372036854775807',
+        );
+        $validator =  Validator::make($request->input(), $rules);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $item->batch = $request->input('batch');
+        $item->item_number = $request->input('item_number');
+        $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
+        $item->technical_specifications = $request->input('technical_specifications');
+        $item->order_presentation_id = $request->input('order_presentation_id');
+        $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');        
+        $item->unit_price = $request->input('unit_price');        
+        $item->min_quantity = $request->input('min_quantity');
+        $item->max_quantity = $request->input('max_quantity');
+        $item->total_amount_min = $request->input('total_amount_min');
+        $item->total_amount = $request->input('total_amount');
+        $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+        $item->save();
+
+        // Si usuario es de Plannings direcciona a plannings.show sino direcciona a orders
+        if(($request->user()->dependency_id == 59)){
+            return redirect()->route('plannings.show', $order_id)->with('success', 'Ítem modificado correctamente'); // Caso usuario posee rol pedidos
+        }else{
+            return redirect()->route('orders.show', $order_id)->with('success', 'Ítem modificado correctamente'); // Caso usuario posee rol pedidos
+        }
     }
 
     /**
@@ -410,39 +876,48 @@ public function update(Request $request, $item_id, $itemA_id)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $item_id, $itemA_id)
+    public function destroy(Request $request, $order_id, $item_id)
     {
-        $item = Item::findOrFail($item_id);
-
-        $itemA = ItemAwardHistory::findOrFail($itemA_id);
+        $order = Order::findOrFail($order_id);
+        $item = ItemOrder::find($item_id);
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.item_award_histories.delete']) &&
-        ($item->contract->dependency_id != $request->user()->dependency_id && $request->user()->hasPermission(['contracts.item_award_histories.delete'])) ){
+        if(!$request->user()->hasPermission(['admin.items.delete']) &&
+        $item->order->dependency_id != $request->user()->dependency_id){
             return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
         }
 
-        // Capturamos nombre del archivo almacenado en la tabla
-        $filename = $itemA->file;
-        // var_dump($filename);exit;
-
-        // Eliminamos el archivo del public/files
-        Storage::delete('public/files/'.$filename);
-
-
+        // Chequeamos si existen item_award_histories referenciando al item
+        if($item->itemAwardHistories->count() > 0){
+            return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el item debido a que se encuentra vinculado con históricos de precios referenciales, debe eliminarlos primero para continuar. ', 'code' => 200], 200);
+        }
+        
         // Eliminamos en caso de no existir registros referenciando al item
-        $itemA->delete();
-        session()->flash('status', 'success');
-        session()->flash('message', 'Se ha eliminado el endoso ' . $itemA->number_policy);
+        $item->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Se ha eliminado el endoso'. $itemA->number_policy,
-            'code' => 200
-        ], 200);
+        // AQUI RECORRER LOS ITEMS DEL PEDIDO Y CARGAR COMO NUEVO TOTAL_AMOUNT 
+        $total_amountitems = 0;
+        for ($i = 0; $i < count($order->items); $i++){                            
+            $total_amountitems += $order->items[$i]->total_amount;                           
+        }
+
+        //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)        
+        $cdp_amount = $order->cdp_amount;            
+        if ($cdp_amount > 0) {
+            if ($total_amountitems > $cdp_amount) {
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator            
+                $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, DEBE ACTUALIZAR CDP...');
+                return back()->withErrors($validator)->withInput();
+            }
+        }
 
 
-        // $request->session()->flash('success', 'Se ha eliminado el endoso referencial a la póliza');
-        // return response()->json(['status' => 'success', 'code' => 200], 200);
+        //CERAMOS VALOR DEL MONTO DE ORDER Y CARGAMOS VALOR NUEVO
+        $order->total_amount = 0;
+        $order->total_amount = $total_amountitems;
+        
+        $order->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el ítem ', 'code' => 200], 200);
     }
 }

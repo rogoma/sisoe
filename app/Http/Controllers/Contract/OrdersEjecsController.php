@@ -264,7 +264,7 @@ class OrdersEjecsController extends Controller
         // $post_max_size = $this->postMaxSize;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.orders.update','contracts.orders.update']) &&  $contract->dependency_id != $request->user()->dependency_id){
+        if(!$request->user()->hasPermission(['admin.orders.update','orders.orders.update']) &&  $contract->dependency_id != $request->user()->dependency_id){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 

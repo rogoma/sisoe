@@ -37,6 +37,7 @@ use App\Http\Controllers\DeriveOrder\DeriveOrdersController;
 use App\Http\Controllers\Order\SimeseOrdersController;
 use App\Http\Controllers\Order\OrdersFilesController;
 
+
 //DESDE ACA SE USA PARA EL SISTEMA DE CONTRATOS Y POLIZAS
 use App\Http\Controllers\Contract\ContractsController;
 use App\Http\Controllers\Contract\ContractsFilesController;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Contract\ItemAwardHistoriesController;
 use App\Http\Controllers\Contract\OrdersEjecsController;
 use App\Http\Controllers\Dgaf\DgafsController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\Contract\ItemsOrdersController;
 
 
 // use App\Http\Controllers\Report\PdfsController;
@@ -157,9 +159,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
-    // Route::get('/contracts/{contract}/orders/{order}/edit', [OrdersEjecsController::class, 'edit'])->name('orders.edit');
-
-
+    //PARA IMPORTAR EXCEL EN ITEMS DE ORDENES DE EJECUCIÓN
+    Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
+    
 
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');

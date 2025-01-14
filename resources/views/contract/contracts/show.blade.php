@@ -424,18 +424,17 @@
                                                                                     <i class="fa fa-trash"></i>
                                                                                 </button>
                                                                             @endif
-                                                                            <button type="button" title="Carga de Rubros"
+                                                                            <a href="{{ route('orders.items.uploadExcel', $order->id)}}" title="Importar Rubros EXCEL" class="btn btn-success btn-icon"><i class="fa fa-upload text-white"></i>
+                                                                            {{-- <button type="button" title="Carga de Rubros"
                                                                                 class="btn btn-primary btn-icon"
                                                                                 onclick="itemAwardHistories({{ $order->id }})">
                                                                                 <i class="fa fa-list"></i>
-                                                                            </button>
+                                                                            </button> --}}
                                                                         @endif
                                                                     @endif
                                                                 </td>
                                                             </tr>
                                                         @endforeach
-
-
                                                     </tbody>
                                                 </table>
 
@@ -450,8 +449,7 @@
                                                     @endif
                                                 </div>
                                                 <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO
-                                                    DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
+                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
                                             </div>
 
                                             <div class="tab-pane" id="tab4" role="tabpanel">
