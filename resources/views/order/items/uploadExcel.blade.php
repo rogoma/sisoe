@@ -19,8 +19,8 @@
                         <li class="breadcrumb-item">
                             <a><i class="feather icon-home"></i></a>
                         </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('orders.show', $order->id) }}">Orden Nº {{ $order->id }}</a>
+                        <li class="breadcrumb-item">                            
+                            <a href="{{ route('contracts.show', $order->contract_id) }}">Contrato Nº {{ $order->contract->number_year }}</a>                            
                         </li>
                     </ul>
                 </div>

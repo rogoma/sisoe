@@ -141,8 +141,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/contracts/orders/{order}/edit', [ContractsController::class, 'asign'])->name('contracts.asign');
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
     Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.update.fiscal');
-    // RUTA PARA MANEJAR COMBO DEPARTAMENTO-DISTRITOS
-    // Route::get('/districts/{department}', [OrdersEjecsController::class, 'getDistricts'])->name('districts.get');
+    
 
     Route::get('/orders/create', [OrdersEjecsController::class, 'create']);
     Route::post('/orders', [OrdersEjecsController::class, 'store']);
@@ -160,9 +159,15 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
     //PARA IMPORTAR EXCEL EN ITEMS DE ORDENES DE EJECUCIÓN
+    Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+    
     Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
     Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
     
+    // Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+
+
+    // Route::get('/contracts/{order_id}', [ContractsController::class, 'show'])->name('contracts.show');
 
 
 

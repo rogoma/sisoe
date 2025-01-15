@@ -417,19 +417,27 @@
                                                                                 onclick="updateOrder({{ $order->id }})">
                                                                                 <i class="fa fa-pencil"></i>
                                                                             </button>
-                                                                            @if (Auth::user()->hasPermission(['admin.orders.delete']))
+                                                                            {{-- @if (Auth::user()->hasPermission(['admin.orders.delete']) || ($order->items->count() == 0)) --}}
+                                                                            @if (($order->items->count() == 0))
                                                                                 <button type="button" title="Borrar"
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="deleteOrder({{ $order->id }})">
                                                                                     <i class="fa fa-trash"></i>
                                                                                 </button>
                                                                             @endif
-                                                                            <a href="{{ route('orders.items.uploadExcel', $order->id)}}" title="Importar Rubros EXCEL" class="btn btn-success btn-icon"><i class="fa fa-upload text-white"></i>
-                                                                            {{-- <button type="button" title="Carga de Rubros"
-                                                                                class="btn btn-primary btn-icon"
-                                                                                onclick="itemAwardHistories({{ $order->id }})">
-                                                                                <i class="fa fa-list"></i>
-                                                                            </button> --}}
+                                                                            
+                                                                            @if ($order->items->count() > 0)
+                                                                                <button type="button" title="Orden con Rubros"
+                                                                                    class="btn btn-primary btn-icon"
+                                                                                    onclick="itemOrder({{ $order->id }})">
+                                                                                    <i class="fa fa-list"></i>
+                                                                                </button>
+                                                                            @else
+                                                                                <a href="{{ route('orders.items.uploadExcel', $order->id)}}" 
+                                                                                    title="Importar Rubros EXCEL" class="btn btn-success btn-icon">
+                                                                                    <i class="fa fa-upload text-white"></i>
+                                                                            @endif
+                                                                            
                                                                         @endif
                                                                     @endif
                                                                 </td>
@@ -677,7 +685,8 @@
             itemOrder = function(order) {
                 //lleva a itemawardhistories index
                 // location.href = '/items/' + item + '/item_award_histories';
-                location.href = '/orders/' + order + '/item_award_histories';
+                location.href = '/orders/'+order+'/items_orders';
+
             }
 
             updateItem = function(item) {

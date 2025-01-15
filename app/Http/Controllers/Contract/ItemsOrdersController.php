@@ -45,6 +45,22 @@ class ItemsOrdersController extends Controller
     }
 
      
+    public function index(Request $request, $order_id)
+    {
+        $order = Order::findOrFail($order_id);
+        
+        $contracts = $order->contracts;
+        $items = $order->items;
+        
+        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
+        if(!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])){
+            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        }
+
+        return view('order.items.index', compact('order', 'items','contracts'));        
+    }
+
+
     public function uploadExcel(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
