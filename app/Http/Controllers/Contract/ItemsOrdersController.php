@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
-use App\Models\ItemAwardHistory;
-use App\Models\ItemAwardType;
 use Illuminate\Validation\Rule;
 use App\Models\Level5CatalogCode;
 use App\Models\OrderPresentation;
@@ -18,9 +16,9 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\DB; 
 use App\Models\ItemOrder;
+use App\Models\Rubro;
 
 class ItemsOrdersController extends Controller
 {
@@ -51,12 +49,14 @@ class ItemsOrdersController extends Controller
     {
         $order = Order::findOrFail($order_id);
 
+        $contracts = $order->contracts;
+        
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if(!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
-        return view('contracts.items.uploadExcel', compact('order'));
+        return view('order.items.uploadExcel', compact('order', 'contracts'));        
     }
 
         
@@ -114,12 +114,17 @@ class ItemsOrdersController extends Controller
     public function storeExcel(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
+        
+        //capturamos el id del contrato para enviar a la vista show de contrato al finalizar
+        $contract_id = $order->contract_id;
 
         //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
         $cant_item = 0;
         if ($order->items->count() > 0){
             $cant_item = 1;
         }
+
+        // var_dump($cant_item);exit();
 
         if($request->hasFile('excel')){
             // chequeamos la extension del archivo subido
@@ -130,9 +135,8 @@ class ItemsOrdersController extends Controller
             }
 
             // creamos un array de indices de las columnas
-            $header = array('type','batch', 'item_number', 'level5_catalog_code', 
-            'technical_specifications', 'order_presentation', 'order_measurement_unit', 
-            'unit_price','min_quantity','max_quantity','total_amount_min','total_amount');
+            $header = array('item_number', 'rubro_id', 'rubro','quantity', 
+            'unid','unit_price_mo','unit_price_mat', 'tot_price_mo', 'tot_price_mat');
 
             // accedemos al archivo excel cargado
             $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
@@ -166,18 +170,16 @@ class ItemsOrdersController extends Controller
                 $item = array_combine($header, $data[$row]);
                 
                 // creamos las reglas de validacion
-                $rules = array(
-                    // 'type' => 'numeric|required|max:1',
-                    'batch' => 'numeric|nullable|max:2147483647',
-                    'item_number' => 'numeric|nullable|max:2147483647',
-                    'technical_specifications' => 'string|required|max:250',
-                    'order_presentation' => 'string|required|max:100',
-                    'order_measurement_unit' => 'string|required|max:100',
-                    'unit_price' => 'numeric|required|max:2147483647',                    
-                    'min_quantity' => 'numeric|required|max:2147483647',
-                    'max_quantity' => 'numeric|required|max:2147483647',                    
-                    'total_amount_min' => 'numeric|required|max:9223372036854775807',
-                    'total_amount' => 'numeric|required|max:9223372036854775807',
+                $rules = array(                    
+                    'item_number' => 'numeric|nullable|max:2147483647',                    
+                    'rubro_id' => 'numeric|required|max:100',
+                    // 'rubro' => 'string|required|max:500',
+                    'quantity' => 'numeric|required|max:2147483647',
+                    'unid' => 'string|required|max:10',
+                    'unit_price_mo' => 'numeric|required|max:2147483647',                    
+                    'unit_price_mat' => 'numeric|required|max:2147483647',
+                    'tot_price_mo' => 'numeric|required|max:2147483647',
+                    'tot_price_mat' => 'numeric|required|max:2147483647'
                 );
                 // validamos los datos
                 $validator = Validator::make($item, $rules); // Creamos un objeto validator
@@ -185,41 +187,26 @@ class ItemsOrdersController extends Controller
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
 
-                //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
-                if ($item['type'] <> 1){
-                    $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO ABIERTO');
+                
+                // Chequea si existe el código o id del rubro
+                $rubro = Rubro::where('id', $item['rubro_id'])->get()->first();
+                if (is_null($rubro)) {
+                    $validator->errors()->add('rubro', 'No existe id de rubro ingresado. Por favor ingrese un rubro registrado registrado en el sistema.');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
+                
 
-                // Chequea si existe el código de catálogo5
-                $level5_catalog_code = Level5CatalogCode::where('code', $item['level5_catalog_code'])->get()->first();
-                if (is_null($level5_catalog_code)) {
-                    $validator->errors()->add('level5_catalog_code', 'No existe código de catálogo igual al ingresado. Por favor ingrese uno de los códigos de catálogo registrados en el sistema.');
-                    return back()->withErrors($validator)->withInput()->with('fila', $row);
-                }
-                $order_presentation = OrderPresentation::where('description', $item['order_presentation'])->get()->first();
-                if (is_null($order_presentation)) {
-                    $validator->errors()->add('order_presentation', 'No existe Presentación igual a la ingresada. Por favor ingrese una de las registradas en el sistema.');
-                    return back()->withErrors($validator)->withInput()->with('fila', $row);
-                }
-                $order_measurement_unit = OrderMeasurementUnit::where('description', $item['order_measurement_unit'])->get()->first();
-                if (is_null($order_measurement_unit)) {
-                    $validator->errors()->add('order_measurement_unit', 'No existe unidad de medidad igual a la ingresada. Por favor ingrese una de las registrados en el sistema.');
-                    return back()->withErrors($validator)->withInput()->with('fila', $row);
-                }
-
-                $item['level5_catalog_code_id'] = $level5_catalog_code->id;
-                $item['order_presentation_id'] = $order_presentation->id;
-                $item['order_measurement_unit_id'] = $order_measurement_unit->id;
+                $item['rubro_id'] = $rubro->id;
+                
                 // agregamos la fila al array de pedidos
                 $items[] = $item;
 
                 //ACUMULAR LOS TOTALES DE ITEMES                
-                $order_amount_items = $order_amount_items + $item['total_amount'];
+                // $order_amount_items = $order_amount_items + $item['total_amount'];
             }
             
             // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
-            $order = Order::findOrFail($order_id);
+            // $order = Order::findOrFail($order_id);
             // $order_amount = $order->total_amount;            
 
             // CONTROLAMOS SI MONTO DE TOTAL ES IGUAL A TOTAL SUMATORIA DE ITEMS
@@ -232,39 +219,37 @@ class ItemsOrdersController extends Controller
             foreach ($items as $item) {
                 $new_item = new ItemOrder; 
                 $new_item->order_id = $order_id;
-                $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
+                // $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
                 $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
-                $new_item->level5_catalog_code_id = $item['level5_catalog_code_id'];
-                $new_item->technical_specifications = $item['technical_specifications'];
-                $new_item->order_presentation_id = $item['order_presentation_id'];
-                $new_item->order_measurement_unit_id = $item['order_measurement_unit_id'];                
-                $new_item->unit_price = $item['unit_price'];
-                $new_item->min_quantity = $item['min_quantity'];
-                $new_item->max_quantity = $item['max_quantity'];
-                $new_item->total_amount_min = $item['total_amount_min'];
-                $new_item->total_amount = $item['total_amount'];
+                $new_item->rubro_id = $item['rubro_id'];
+                $new_item->quantity = $item['quantity'];
+                $new_item->unit_price_mo = $item['unit_price_mo'];
+                $new_item->unit_price_mat = $item['unit_price_mat'];
+                $new_item->tot_price_mo = $item['tot_price_mo'];
+                $new_item->tot_price_mat = $item['tot_price_mat'];               
+                // $new_item->total_amount = $item['total_amount'];
                 $new_item->creator_user_id = $request->user()->id;  // usuario logueado
                 $new_item->save();
             }       
             
             // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
             
-            //capturamos valor del pedido
-            $order_amount = $order->total_amount;
-            // var_dump($order['total_amount']);exit();            
+            // //capturamos valor del pedido
+            // $order_amount = $order->total_amount;
+            // // var_dump($order['total_amount']);exit();            
 
-            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
-            if ($cant_item == 1){               
-                $order->total_amount = $order_amount + $order_amount_items;       
-                $order->save();
-            }else{                
-                $order->total_amount = $order_amount_items;
-                //SI ITEM ES AGREGADO DESPUÉS DE PEDIDO EL MONTO DE ITEM QUEDA COMO MONTO TOTAL Y OG1
-                $order->amount1 = $order_amount_items;
-                $order->save();
-            }
+            // //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
+            // if ($cant_item == 1){               
+            //     $order->total_amount = $order_amount + $order_amount_items;       
+            //     $order->save();
+            // }else{                
+            //     $order->total_amount = $order_amount_items;
+            //     //SI ITEM ES AGREGADO DESPUÉS DE PEDIDO EL MONTO DE ITEM QUEDA COMO MONTO TOTAL Y OG1
+            //     $order->amount1 = $order_amount_items;
+            //     $order->save();
+            // }
 
-            return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
+            return redirect()->route('contracts.show', $contract_id)->with('success', 'Archivo de rubros importado correctamente'); // Caso usuario posee rol pedidos            
 
         }else{
             $validator = Validator::make($request->input(), []);

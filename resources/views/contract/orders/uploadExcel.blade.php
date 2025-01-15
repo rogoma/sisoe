@@ -9,7 +9,7 @@
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
                         <h5>Ítems</h5>
-                        <span>Importar Ítem</span>
+                        <span>Importar Ítemes</span>
                     </div>
                 </div>
             </div>
@@ -36,9 +36,9 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>{{ is_null($order->number)? $order->description : $order->modality->description." N° ".$order->number."-".$order->description }}<label class="label label-info m-l-5">Prioridad {{ $order->urgency_state }}</label></h5>                                            
+                                    {{-- <h5>{{ is_null($order->number)? $order->description : $order->modality->description." N° ".$order->number."-".$order->description }}<label class="label label-info m-l-5">Prioridad {{ $order->urgency_state }}</label></h5>                                            
                                     <h5>SIMESE: {{ is_null($order->simese->first()) ? '' : number_format($order->simese->first()['simese'],'0', ',','.')."-".$order->simese->first()['year'] }} </h5>
-                                    <br><br>
+                                    <br><br> --}}
                                     {{-- <h5>Agregar Ítem al pedido Nº {{ $order->id }}</h5> --}}
                                     <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Agregar Ítem al pedido Nº {{ $order->id }}</p></h5>
                                         @if ($order->open_contract == 1)

@@ -36,10 +36,10 @@ class Order extends Model
     }
 
         /**
-     * Para obtener el vinculo con la tabla items
+     * Para obtener el vinculo con la tabla itemsOrders
      */
     public function items(){
-        return $this->hasMany('App\Models\Item');
+        return $this->hasMany('App\Models\ItemOrder');
     }
 
     /**

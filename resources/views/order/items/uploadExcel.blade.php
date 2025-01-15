@@ -8,8 +8,8 @@
                 <div class="page-header-title">
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Ítems</h5>
-                        <span>Importar Ítem</span>
+                        <h5>Rubros</h5>
+                        <span>Importar Rubros</span>
                     </div>
                 </div>
             </div>
@@ -20,7 +20,7 @@
                             <a><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('orders.show', $order->id) }}">Pedido Nº {{ $order->id }}</a>
+                            <a href="{{ route('orders.show', $order->id) }}">Orden Nº {{ $order->id }}</a>
                         </li>
                     </ul>
                 </div>
@@ -36,36 +36,17 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>{{ is_null($order->number)? $order->description : $order->modality->description." N° ".$order->number."-".$order->description }}<label class="label label-info m-l-5">Prioridad {{ $order->urgency_state }}</label></h5>                                            
+                                    {{-- <h5>{{ is_null($order->number)? $order->description : $order->modality->description." N° ".$order->number."-".$order->description }}<label class="label label-info m-l-5">Prioridad {{ $order->urgency_state }}</label></h5>                                            
                                     <h5>SIMESE: {{ is_null($order->simese->first()) ? '' : number_format($order->simese->first()['simese'],'0', ',','.')."-".$order->simese->first()['year'] }} </h5>
-                                    <br><br>
-                                    {{-- <h5>Agregar Ítem al pedido Nº {{ $order->id }}</h5> --}}
-                                    <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Agregar Ítem al pedido Nº {{ $order->id }}</p></h5>
-                                        @if ($order->open_contract == 1)
-                                            <h5 style="color:blue;background-color:yellow;font-weight: bold">   -   Adjuntar Archivo Excel de Contrato Abierto</h5>                                            
-                                        @else
-                                            @if ($order->open_contract == 2)
-                                                <h5 style="color:blue;background-color:yellow;font-weight: bold">   -   Adjuntar Archivo Excel de Contrato Cerrado</h5>                                        
-                                            @else
-                                                <h5 style="color:blue;background-color:yellow;font-weight: bold">   -   Adjuntar Archivo Excel de Contrato Abierto Mmin Mmáx</h5>
-                                            @endif        
-                                        @endif 
+                                    <br><br> --}}
+                                    {{-- <h5>Agregar Rubros al pedido Nº {{ $order->id }}</h5> --}}
+                                    <h5><p style="font-size: 17px; font-weight: bold; color:blue">Agregar Rubros a la orden Nº {{ $order->id }}</p></h5>
+                                    <br>
+                                    <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Componente: {{ $order->component->description }} - Localidad: {{ $order->locality }}</p></h5>                                        
                                 </div>
                                 <div class="card-block">
-                                        {{-- Elejimos el POST de acuerdo al tipo de Contrato --}}
-                                        @if ($order->open_contract == 1)
-                                            {{-- CONTRATO ABIERTO --}}
-                                            <form method="POST" action="{{ route('orders.items.storeExcel', $order->id) }}" enctype="multipart/form-data">
-                                        @else
-                                            {{-- CONTRATO CERRADO --}}
-                                            @if ($order->open_contract == 2)
-                                                <form method="POST" action="{{ route('orders.items.storeExcel2', $order->id) }}" enctype="multipart/form-data">
-                                            @else
-                                                {{-- CONTRATO MIN MAX --}}    
-                                                <form method="POST" action="{{ route('orders.items.storeExcel3', $order->id) }}" enctype="multipart/form-data">
-                                            @endif        
-                                        @endif
-
+                                        <form method="POST" action="{{ route('orders.items.storeExcel', $order->id) }}" enctype="multipart/form-data">
+                                        
                                         @csrf
 
                                         <div class="form-group row @error('excel') has-danger @enderror">

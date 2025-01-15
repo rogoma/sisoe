@@ -8,13 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Policy extends Model
 {
     use HasFactory;
-
-    /**
-     * Para obtener el vinculo con la tabla level4_catalog_codes
-     */
-    public function level4CatalogCode(){
-        return $this->belongsTo('App\Models\Level4CatalogCode');
-    }
+    
 
     /**
      * Para obtener el vinculo con la tabla items

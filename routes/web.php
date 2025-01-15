@@ -161,7 +161,24 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //PARA IMPORTAR EXCEL EN ITEMS DE ORDENES DE EJECUCIÓN
     Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
+    Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
     
+
+
+
+    // Route::get('/orders/{id}/uploadExcelItem', [ItemsController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
+    // Contrato Abierto
+    // Route::post('/orders/{id}/uploadExcel', [ItemsController::class, 'storeExcel'])->name('orders.items.storeExcel');
+    // Contrato Cerrado
+    // Route::post('/orders/{id}/uploadExcel2', [ItemsController::class, 'storeExcel2'])->name('orders.items.storeExcel2');
+    // Contrato Abierto con Mmin y Mmax
+    // Route::post('/orders/{id}/uploadExcel3', [ItemsController::class, 'storeExcel3'])->name('orders.items.storeExcel3');
+
+
+
+
+
+
 
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');
@@ -184,13 +201,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('orders/anuleDerive/{order_id}', [OrdersController::class, 'anuleDerive'])->name('orders.anuleDerive');
 
 
-    Route::get('/orders/{id}/uploadExcelItem', [ItemsController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
-    // Contrato Abierto
-    Route::post('/orders/{id}/uploadExcel', [ItemsController::class, 'storeExcel'])->name('orders.items.storeExcel');
-    // Contrato Cerrado
-    Route::post('/orders/{id}/uploadExcel2', [ItemsController::class, 'storeExcel2'])->name('orders.items.storeExcel2');
-    // Contrato Abierto con Mmin y Mmax
-    Route::post('/orders/{id}/uploadExcel3', [ItemsController::class, 'storeExcel3'])->name('orders.items.storeExcel3');
+    
 
 
     Route::get('/orders/{id}/uploadExcelAw', [ItemsAdjudicaController::class, 'uploadExcelAw'])->name('orders.items_adjudica.uploadExcelAw');

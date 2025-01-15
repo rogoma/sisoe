@@ -9,28 +9,16 @@ class ItemOrder extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    // protected $table = 'item_award_histories';
-    protected $fillable = [
-        'policy_number',
-        // 'name',
-        // 'lastname',
-        // 'email',
-        // 'password',
-        // 'dependency_id',
-        // 'position_id',
-        // 'state',
-    ];
+    protected $table = 'items_orders';
+    
+    /*** Para obtener el vinculo con la tabla orders */
+    public function order(){
+        return $this->belongsToMany('App\Models\Order');
+    }
 
-    /**
-     * Para obtener el vinculo con la tabla items
-     */
-    public function item(){
-        return $this->belongsTo('App\Models\Item');
+    /*** Para obtener el vinculo con la tabla rubros */
+    public function rubros(){
+        return $this->belongsToMany('App\Models\Rubro');
     }
 
     /**
@@ -47,9 +35,11 @@ class ItemOrder extends Model
         return $this->belongsTo('App\Models\BudgetRequestProvider');
     }
 
-    /*** Para obtener el vinculo con la tabla orders */
-    public function orders(){
-        return $this->belongsToMany('App\Models\Order', 'budget_request_providers');
+    
+
+    /*** Para obtener el vinculo con la tabla rubros */
+    public function rubro(){
+        return $this->belongsToMany('App\Models\Rubro');
     }
 
     /**

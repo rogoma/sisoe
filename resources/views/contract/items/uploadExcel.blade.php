@@ -1,3 +1,5 @@
+hola
+
 @extends('layouts.app')
 
 @section('content')
@@ -9,7 +11,7 @@
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
                         <h5>Ítems</h5>
-                        <span>Importar Ítem</span>
+                        <span>Importar Ítemes</span>
                     </div>
                 </div>
             </div>

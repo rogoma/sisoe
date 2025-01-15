@@ -116,18 +116,18 @@
     
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="date" class="col-form-label">Fecha acuse recibo Contratista</label>
+                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
                                                         <div class="input-group">
-                                                            <input type="text" id="date" name="date"
-                                                                class="form-control @error('date') is-invalid @enderror"
-                                                                value="{{ old('date', date('d/m/Y', strtotime($order->date)))}}" autocomplete="off">
+                                                            <input type="text" id="sign_date" name="sign_date"
+                                                                class="form-control @error('sign_date') is-invalid @enderror"
+                                                                value="{{ old('sign_date', date('d/m/Y', strtotime($order->sign_date)))}}" autocomplete="off">
                                                             <span class="input-group-append">
                                                                 <button type="button" class="btn btn-outline-secondary"
-                                                                    onclick="show('date');"><i
+                                                                    onclick="show('sign_date');"><i
                                                                         class="fa fa-calendar"></i></button>
                                                             </span>
                                                         </div>
-                                                        @error('date')
+                                                        @error('sign_date')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
@@ -249,7 +249,7 @@ $(document).ready(function(){
     $('#department_id').select2();
     $('#district_id').select2();
 
-    $('#date').datepicker({
+    $('#sign_date').datepicker({
         language: 'es',
         format: 'dd/mm/yyyy',
         autoclose: true,
