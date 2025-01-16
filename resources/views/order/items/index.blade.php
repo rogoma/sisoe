@@ -1,29 +1,25 @@
 @extends('layouts.app')
 
 @push('styles')
-<style type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/datatables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/buttons.datatables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/responsive.bootstrap4.min.css') }}">
 
-/* .table td, .table th {
-    padding: 0.2rem 0.5rem;
-    font-size: 14px
-}
-.tab-content.card-block {
-    padding: 1.25rem 0.5rem;
-} */
-
-/* .columna1 { width: 3%; text-align: center;}
-.columna2 { width: 50%; text-align: left;}
-.columna3 { width: 5%; text-align: center;}
-.columna4 { width: 1%; text-align: left;}
-.columna5 { width: 5%; text-align: center;}
-.columna6 { width: 5%; text-align: center;}
-.columna7 { width: 5%; text-align: center;}
-.columna8 { width: 5%; text-align: center;} */
-
-p.centrado {
-
-}
-</style>
+    <style>
+        #items td, 
+        #items th {
+            padding: 4px 8px;
+            vertical-align: middle;
+        }
+    
+        #items {
+            border-collapse: collapse;
+        }
+    
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+    </style>    
 @endpush
 
 @section('content')
@@ -58,10 +54,18 @@ p.centrado {
                 <div class="page-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <div class="card">                                
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="float-left">
+                                        {{-- <h5>Listado Precios Referenciales del Ítem Nro {{ $item->item_number }}</h5> --}}
+                                        {{-- <h5>Producto {{ $item->level5_catalog_code->description }}</h5> --}}
+                                    </div>
+                                    <div class="float-right">
+                                    </div>
+                                </div>                                
                                 <div class="card-block">
                                     <div class="dt-responsive table-responsive">
-                                        <table id="contracts" class="table table-striped table-bordered">
+                                        <table id="items" class="table table-striped table-bcontracted nowrap">
                                             <thead>
                                                 <tr>                                                    
                                                     <th>N° item</th>
@@ -94,6 +98,20 @@ p.centrado {
                                                         <td>{{ number_format($items[$i]->unit_price_mat,'0', ',','.') }} </td>
                                                         <td>{{ number_format($items[$i]->tot_price_mo,'0', ',','.') }} </td>
                                                         <td>{{ number_format($items[$i]->tot_price_mat,'0', ',','.') }} </td>                           
+
+                                                        <td>
+                                                            {{-- @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update'])) --}}
+                                                                <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $items[$i]->id }})">
+                                                                    <i class="fa fa-pencil"></i>
+                                                                </button>
+                                                            {{-- @endif --}}
+
+                                                            {{-- @if (Auth::user()->hasPermission(['admin.items.delete','contracts.items.update'])) --}}
+                                                            <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItemAwardHistories({{$items[$i]->id }})">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                            {{-- @endif --}}
+                                                        </td>
                                                     </tr>
                                                 @endfor
                                             </tbody>

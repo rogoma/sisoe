@@ -390,8 +390,7 @@
                                                             <tr>                                                                
                                                                 <td style="text-align: center;">{{ $order->number }}</td>
                                                                 <td>{{ $order->dateFormat() }}</td>
-                                                                <td style="text-align: center;">
-                                                                    {{ $order->totalAmountFormat() }}</td>
+                                                                <td style="text-align: center;"> {{ $order->totalAmountFormat() }}</td>
                                                                 <td>{{ $order->locality }}</td>
                                                                 <td>{{ $order->component->description }}</td>
                                                                 {{-- SI ES ESTADO 5 "ELIMINADO" SE MUESTRA EN ROJO --}}
@@ -419,10 +418,10 @@
                                                                             </button>
                                                                             {{-- @if (Auth::user()->hasPermission(['admin.orders.delete']) || ($order->items->count() == 0)) --}}
                                                                             @if (($order->items->count() == 0))
-                                                                                <button type="button" title="Borrar"
+                                                                                <button type="button" title="Anular"
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="deleteOrder({{ $order->id }})">
-                                                                                    <i class="fa fa-trash"></i>
+                                                                                    <i class="fa fa-ban"></i>
                                                                                 </button>
                                                                             @endif
                                                                             
@@ -635,11 +634,11 @@
             deleteOrder = function(order) {
                 swal({
                         title: "Atención",
-                        text: "Está seguro que desea eliminar la orden?",
+                        text: "Está seguro que desea anular la orden?",
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Sí, eliminar",
+                        confirmButtonText: "Sí, anular",
                         cancelButtonText: "Cancelar",
                     },
                     function(isConfirm) {
@@ -657,7 +656,7 @@
                                         response = (typeof data == "object") ? data : JSON
                                             .parse(data);
                                         if (response.status == "success") {
-                                            swal("Éxito!", "Orden eliminada correctamente",
+                                            swal("Éxito!", "Orden anulada correctamente",
                                                 "success");
                                             location.reload();
                                         } else {
