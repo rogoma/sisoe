@@ -49,6 +49,49 @@ class ReportsController extends Controller
     }
 
 
+    // MUESTRA UNA ORDEN DE EJECUCIÓN EN ESPECÍFICO
+    public function generarContracts10(Request $request, $order_id)
+    {
+        
+        // if ($request->user()->hasPermission(['orders.reports.show'])) {
+            //Donde contracts es una vista
+            
+            $contracts1 = DB::table('vista_full')
+                ->select(DB::raw('DISTINCT ON (orders_id) orders_id, orders_number,
+                    contracts_description,contracts_iddncp, contracts_number_year,
+                    providers_description, orders_number,
+                    orders_locality,orders_date, dependencies_description,
+                    components_description,orders_total_amount'))
+                ->where('orders_id', '=', $order_id)                
+                ->orderBy('orders_id')
+                ->get();    
+
+            
+            $contracts2 = DB::table('vista_full') //vista que muestra los datos
+                ->select([
+                    'items_orders_item_number',
+                    'rubros_id',
+                    'rubros_description',
+                    'items_orders_quantity',
+                    'order_presentations_description',
+                    'items_orders_unit_price_mo',
+                    'items_orders_unit_price_mat',
+                    'items_orders_tot_price_mo',
+                    'items_orders_tot_price_mat',                    
+                ])
+                ->where('orders_id', '=', $order_id)                
+                ->get();        
+        // }
+
+        $view = View::make('reports.contracts_items10', compact('contracts1', 'contracts2'))->render();
+        // $view = View::make('reports.contracts_items', compact('contracts1', 'contracts2', 'contracts3'))->render();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        // $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
+        return $pdf->stream('ORDEN DE EJECUCIÓN' . '.pdf');
+    }
+
+    
     // Para mostrar todos los llamados que tienen contratos
     public function generarContracts(Request $request, $contract_id)
     {
@@ -693,103 +736,7 @@ class ReportsController extends Controller
         return view('reports.contracts_vctos_polizas_menu', compact('contracts_poli','contracts_endo'));
     }
 
-    // function to display preview
-    public function generarModalities()
-    {
-        //Donde cargos es una vista
-        $modals = DB::table('modalities')
-            ->select([
-                'id',
-                'description',
-                'code',
-                'modality_type',
-                'dncp_verification',
-                'dncp_objections_verification',
-                'press_publication',
-                'portal_difusion',
-                'inquiries_reception',
-                'addendas_verification',
-                'addenda_publication',
-                'clarifications_publication'
-            ])
-            ->get();
-
-        $view = View::make('reports.modalities', compact('modals'))->render();
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($view);
-        return $pdf->stream('Modalidades' . '.pdf');
-    }
-
-    // Para mostrar pedidos y llamados a Planificación
-    public function generarPanel()
-    {
-        //Donde cargos es una vista
-        $orders = DB::table('vista_orders') //vista que muestra los datos
-            ->select([
-                'order_description',
-                'dependency',
-                'modality_type',
-                'dncp_resolution_number',
-                'modality_code',
-                'number',
-                'code_supexp',
-                'dncp_pac_id',
-                'form4_date',
-                'total_amount',
-                'begin_date'
-            ])
-            // ->where('actual_state', '>', 1)
-            ->get();
-
-        $view = View::make('reports.panel', compact('orders'))->render();
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($view);
-        $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
-        return $pdf->stream('PANEL-DPP' . '.pdf');
-    }
-
-    // Para mostrar llamados de Licitaciones
-    public function generarPanelLicit()
-    {
-        $orders = DB::table('vista_uta') //vista que muestra los datos
-            ->select([
-                'number',
-                'dncp_pac_id',
-                'order_description',
-                'modality_code',
-                'exp_obj_code',
-                'total_amount',
-                'cdp_number',
-                'cdp_date',
-                'order_state_description',
-                'begin_date',
-                'covid',
-                'year',
-                'provider',
-                'contract_number',
-                'contract_date',
-                'cc_number',
-                'cc_date',
-                'monto_adjudica'
-            ])
-            ->where('monto_adjudica', '>', 0)
-            ->wherein('modality_id', [1, 2, 3, 7, 8, 17, 20])
-            ->orderBy('provider', 'asc')
-            ->get();
-
-        //Donde cargos es una vista
-        // $orders = DB::table('vista_orders')//vista que muestra los datos
-        // ->select(['number','dncp_pac_id','order_description','modality_code','exp_obj_code','total_amount',
-        //             'cdp_number','cdp_date','order_state_description','begin_date','covid','year'])
-        //             ->wherein('modality_id', [1,2,3,7,8,17,20])
-        //             ->get();
-        $view = View::make('reports.panel_licit', compact('orders'))->render();
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($view);
-        $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
-        return $pdf->stream('PROCESOS LICITACIONES' . '.pdf');
-    }
-
+    
     // Para mostrar llamados de Compras Menores
     public function generarPanelMinor()
     {

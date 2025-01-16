@@ -48,7 +48,7 @@ class ItemsOrdersController extends Controller
     public function index(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
-        
+                
         $contracts = $order->contracts;
         $items = $order->items;
         
@@ -139,9 +139,7 @@ class ItemsOrdersController extends Controller
         if ($order->items->count() > 0){
             $cant_item = 1;
         }
-
-        // var_dump($cant_item);exit();
-
+        
         if($request->hasFile('excel')){
             // chequeamos la extension del archivo subido
             if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
@@ -167,7 +165,12 @@ class ItemsOrdersController extends Controller
             $last_column = Coordinate::stringFromColumnIndex($columns);
 
             // Recorremos cada fila del archivo excel y sumamos el total de los totales de ítemes
+            
+            //ceramos la variable que guarda la suma de los totales de los ítems
             $order_amount_items = 0;
+            $tot_tot_price_mo = 0;
+            $tot_tot_price_mat = 0;
+
             for ($row = 2; $row <= $rows; ++$row) {
                 $data = $spreadsheet->getActiveSheet()->rangeToArray(
                     'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
@@ -211,26 +214,16 @@ class ItemsOrdersController extends Controller
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
                 
-
                 $item['rubro_id'] = $rubro->id;
                 
                 // agregamos la fila al array de pedidos
                 $items[] = $item;
 
-                //ACUMULAR LOS TOTALES DE ITEMES                
-                // $order_amount_items = $order_amount_items + $item['total_amount'];
+                //ACUMULA LOS TOTALES DE PRECIOS DE ITEMES                                
+                $tot_tot_price_mo = $tot_tot_price_mo + $item['tot_price_mo'];
+                $tot_tot_price_mat = $tot_tot_price_mat + $item['tot_price_mat'];                
             }
-            
-            // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
-            // $order = Order::findOrFail($order_id);
-            // $order_amount = $order->total_amount;            
-
-            // CONTROLAMOS SI MONTO DE TOTAL ES IGUAL A TOTAL SUMATORIA DE ITEMS
-            // if ($order_amount <> $order_amount_items) {
-            //     $validator->errors()->add('order_measurement_unit', 'Monto de Ítems: '.$order_amount_items.', no es igual a monto del Pedido, VERIFIQUE ARCHIVO EXCEL');
-            //     return back()->withErrors($validator)->withInput()->with('fila', $row);                
-            // }            
-
+           
             // En caso de haber pasado todas las validaciones guardamos los datos
             foreach ($items as $item) {
                 $new_item = new ItemOrder; 
@@ -242,28 +235,18 @@ class ItemsOrdersController extends Controller
                 $new_item->unit_price_mo = $item['unit_price_mo'];
                 $new_item->unit_price_mat = $item['unit_price_mat'];
                 $new_item->tot_price_mo = $item['tot_price_mo'];
-                $new_item->tot_price_mat = $item['tot_price_mat'];               
-                // $new_item->total_amount = $item['total_amount'];
+                $new_item->tot_price_mat = $item['tot_price_mat'];
                 $new_item->creator_user_id = $request->user()->id;  // usuario logueado
                 $new_item->save();
             }       
             
             // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
             
-            // //capturamos valor del pedido
-            // $order_amount = $order->total_amount;
-            // // var_dump($order['total_amount']);exit();            
-
-            // //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
-            // if ($cant_item == 1){               
-            //     $order->total_amount = $order_amount + $order_amount_items;       
-            //     $order->save();
-            // }else{                
-            //     $order->total_amount = $order_amount_items;
-            //     //SI ITEM ES AGREGADO DESPUÉS DE PEDIDO EL MONTO DE ITEM QUEDA COMO MONTO TOTAL Y OG1
-            //     $order->amount1 = $order_amount_items;
-            //     $order->save();
-            // }
+             // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
+             $order = Order::findOrFail($order_id);
+             //CALCULA EL TOTAL GRAL PARA GRABAR EN ORDERS
+             $order->total_amount = $tot_tot_price_mo + $tot_tot_price_mat;
+             $order->save(); 
 
             return redirect()->route('contracts.show', $contract_id)->with('success', 'Archivo de rubros importado correctamente'); // Caso usuario posee rol pedidos            
 

@@ -286,11 +286,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //VISTA PARA ELEGIR DEPENDENCIA OPARA MOSTRAR ALERTAS DE VENCIMIENTOS DE PÓLIZAS
     Route::get('pdf/panel_contracts7/{dependency_id}', [ReportsController::class, 'generarContracts7'])->name('pdf.panel_contracts7');
-    // Route::get('pdf/panel_contracts/{contract_id}', [ReportsController::class, 'generarContracts'])->name('pdf.panel_contracts');
-
+    
     //VISTA PARA ALERTAS POR DEPENDENCIA
     Route::get('pdf/panel_contracts9', [ReportsController::class, 'generarContracts9'])->name('pdf.panel_contracts9');
-
 
     //REPORTE DE UN CONTRATO ESPECÍFICO
     Route::get('pdf/panel_contracts/{contract_id}', [ReportsController::class, 'generarContracts'])->name('pdf.panel_contracts');
@@ -300,6 +298,15 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //REPORTE DE CONTRATISTAS
     Route::get('pdf/pdfContratistas', [ReportsController::class, 'pdfContratistas'])->name('pdf.contratistas');
+
+    //REPORTE DE UNA ORDEN DE EJECUCIÓN EN ESPECÍFICO
+    Route::get('pdf/panel_contracts10/{order_id}', [ReportsController::class, 'generarContracts10'])->name('pdf.panel_contracts10');
+    // Route::get('pdf/panel_contracts10', [ReportsController::class, 'generarContracts10'])->name('pdf.panel_contracts10');
+    
+    
+
+
+
 
 
     Route::get('pdf/users', [ReportsController::class, 'pdfUsers'])->name('pdf.users');

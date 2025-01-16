@@ -9,12 +9,7 @@ class Rubro extends Model
 {
     use HasFactory;
 
-    /**
-     * Para obtener el vinculo con la tabla level4_catalog_codes
-     */
-    public function level4CatalogCode(){
-        return $this->belongsTo('App\Models\Level4CatalogCode');
-    }
+    protected $table = 'rubros';
 
     /**
      * Para obtener el vinculo con la tabla items
@@ -22,4 +17,22 @@ class Rubro extends Model
     public function items(){
         return $this->hasMany('App\Models\ItemOrder');
     }
+
+    /**
+     * Para obtener el vinculo con la tabla items
+     */
+    public function orderPresentations(){
+        return $this->belongsTo('App\Models\OrderPresentation', 'order_presentation_id');
+    }
+
+    // public function items(){
+    //     return $this->belongsToMany('App\Models\ItemOrder');
+    // }
+
+    /**
+     * Para obtener el vinculo con la tabla level4_catalog_codes
+     */
+    // public function level4CatalogCode(){
+    //     return $this->belongsTo('App\Models\Level4CatalogCode');
+    // }
 }

@@ -63,7 +63,7 @@
                                                         <label for="total_amount" class="col-form-label">Monto</label>
                                                         <input type="text" id="total_amount" name="total_amount"
                                                             class="form-control @error('total_amount') is-invalid @enderror"
-                                                            value="{{ old('total_amount', $order->total_amount) }}" maxlength="23" disabled>
+                                                            value="{{ old('total_amount', number_format($order->total_amount, 0, ',', '.')) }}" maxlength="23" disabled>
                                                         @error('total_amount')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror

@@ -10,6 +10,8 @@
         #items th {
             padding: 4px 8px;
             vertical-align: middle;
+            border-left: 1px solid #ddd;  /* Línea vertical a la izquierda */
+            border-right: 1px solid #ddd; /* Línea vertical a la derecha */
         }
     
         #items {
@@ -41,7 +43,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.index') }}">Contratos</a>
+                            <a href="{{ route('contracts.index',$order->id ) }}">Órdenes</a>                            
                         </li>
                     </ul>
                 </div>
@@ -57,8 +59,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="float-left">
-                                        {{-- <h5>Listado Precios Referenciales del Ítem Nro {{ $item->item_number }}</h5> --}}
-                                        {{-- <h5>Producto {{ $item->level5_catalog_code->description }}</h5> --}}
+                                        <h5>Items de la Orden de Ejecución</h5>
                                     </div>
                                     <div class="float-right">
                                     </div>
@@ -77,27 +78,34 @@
                                                     <th>Precio UNIT. MAT</th>
                                                     <th>Precio TOT. MO</th>
                                                     <th>Precio TOT. MAT</th>
-                                                    <th>Acciones</th>
+                                                    <th style="width: 120px;">Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @php
+                                                   $tot_price_mo = 0; $tot_price_mat = 0;    
+                                                @endphp
+                                                
                                                 @for ($i = 0; $i < count($items); $i++)
                                                     <tr>                                                        
-                                                        <td>{{ $items[$i]->item_number }}</td>
-                                                        <td>{{ $items[$i]->rubro_id }}</td>
+                                                        
+                                                        <td style="text-align: center;">{{ $items[$i]->item_number }}</td>
+                                                        <td style="text-align: center;">{{ $items[$i]->rubro_id }}</td>
                                                         
                                                         {{-- debe mostrar description de rubro --}}
-                                                        <td>{{ $items[$i]->rubro_id }}</td> 
-                                                        
-                                                        <td>{{ $items[$i]->quantity }}</td>
-
+                                                        <td>{{ $items[$i]->rubro->description }}</td>                                                        
+                                                        <td style="text-align: center;">{{ $items[$i]->quantity }}</td>
                                                         {{-- debe mostrar description de tipo de unidad de medida --}}
-                                                        <td>{{ $items[$i]->quantity }}</td>
-
-                                                        <td>{{ number_format($items[$i]->unit_price_mo,'0', ',','.') }} </td>
-                                                        <td>{{ number_format($items[$i]->unit_price_mat,'0', ',','.') }} </td>
-                                                        <td>{{ number_format($items[$i]->tot_price_mo,'0', ',','.') }} </td>
-                                                        <td>{{ number_format($items[$i]->tot_price_mat,'0', ',','.') }} </td>                           
+                                                        <td style="text-align: center;">{{ $items[$i]->rubro->orderPresentations->description }}</td>
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mo,'0', ',','.') }} </td>
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mat,'0', ',','.') }} </td>
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mo,'0', ',','.') }} </td>
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mat,'0', ',','.') }} </td>
+                                                        
+                                                        @php
+                                                            $tot_price_mo += $items[$i]->tot_price_mo;
+                                                            $tot_price_mat += $items[$i]->tot_price_mat;
+                                                        @endphp
 
                                                         <td>
                                                             {{-- @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update'])) --}}
@@ -115,6 +123,15 @@
                                                     </tr>
                                                 @endfor
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="6"></td> <!-- Celdas vacías para alinear el total -->
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td>
+                                                    <td colspan="3"></td> <!-- Celdas vacías para llenar el espacio restante -->
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>

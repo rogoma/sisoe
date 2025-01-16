@@ -9,10 +9,18 @@ class OrderPresentation extends Model
 {
     use HasFactory;
 
+    protected $table = 'order_presentations';
     /**
      * Para obtener el vinculo con la tabla items
      */
-    public function items(){
-        return $this->hasMany('App\Models\Item');
+    public function rubros(){
+        return $this->hasMany('App\Models\Rubro','order_presentation_id');
     }
+    
+    /**
+     * Para obtener el vinculo con la tabla items
+     */
+    // public function items(){
+    //     return $this->hasMany('App\Models\Item');
+    // }
 }

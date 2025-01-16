@@ -393,7 +393,7 @@
                                                                 <td style="text-align: center;"> {{ $order->totalAmountFormat() }}</td>
                                                                 <td>{{ $order->locality }}</td>
                                                                 <td>{{ $order->component->description }}</td>
-                                                                {{-- SI ES ESTADO 5 "ELIMINADO" SE MUESTRA EN ROJO --}}
+                                                                {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
                                                                 @if (in_array($order->orderState->id, [5]))
                                                                     <td style="color:#ff0000">
                                                                         {{ $order->orderState->description }}</td>
@@ -416,13 +416,13 @@
                                                                                 onclick="updateOrder({{ $order->id }})">
                                                                                 <i class="fa fa-pencil"></i>
                                                                             </button>
-                                                                            {{-- @if (Auth::user()->hasPermission(['admin.orders.delete']) || ($order->items->count() == 0)) --}}
+                                                                            {{-- @if (Auth::user()->hasPermission(['admin.orders.delete']) && ($order->items->count() == 0)) --}}
                                                                             @if (($order->items->count() == 0))
                                                                                 <button type="button" title="Anular"
                                                                                     class="btn btn-danger btn-icon"
-                                                                                    onclick="deleteOrder({{ $order->id }})">
+                                                                                    onclick="anuleOrder({{ $order->id }})">
                                                                                     <i class="fa fa-ban"></i>
-                                                                                </button>
+                                                                                </button>                                                                                
                                                                             @endif
                                                                             
                                                                             @if ($order->items->count() > 0)
@@ -431,6 +431,10 @@
                                                                                     onclick="itemOrder({{ $order->id }})">
                                                                                     <i class="fa fa-list"></i>
                                                                                 </button>
+                                                                                {{-- MOSTRAR PDF DE ORDEN --}}
+                                                                                {{-- <a href="/pdf/panel_contracts10" title="Ver Orden" target="_blank" class="btn btn-secondary btn-icon"><i class="fa fa-eye"></i></a> --}}
+                                                                                <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-secondary btn-icon"><i class="fa fa-eye"></i></a>
+                                                                                {{-- <td><a href="/pdf/panel_contracts/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Informe de Pólizas</a></td> --}}
                                                                             @else
                                                                                 <a href="{{ route('orders.items.uploadExcel', $order->id)}}" 
                                                                                     title="Importar Rubros EXCEL" class="btn btn-success btn-icon">
@@ -455,8 +459,7 @@
                                                         @endif
                                                     @endif
                                                 </div>
-                                                <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
+                                                <span style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
                                             </div>
 
                                             <div class="tab-pane" id="tab4" role="tabpanel">
@@ -631,7 +634,7 @@
                 location.href = '/contracts/{{ $contract->id }}/orders/' + order + '/edit/';
             }
 
-            deleteOrder = function(order) {
+            anuleOrder = function(order) {
                 swal({
                         title: "Atención",
                         text: "Está seguro que desea anular la orden?",

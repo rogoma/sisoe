@@ -13,12 +13,13 @@ class ItemOrder extends Model
     
     /*** Para obtener el vinculo con la tabla orders */
     public function order(){
-        return $this->belongsToMany('App\Models\Order');
+        // return $this->belongsToMany('App\Models\Order');
+        return $this->belongsTo('App\Models\Order');
     }
 
     /*** Para obtener el vinculo con la tabla rubros */
-    public function rubros(){
-        return $this->belongsToMany('App\Models\Rubro');
+    public function rubro(){
+        return $this->belongsTo('App\Models\Rubro', 'rubro_id');
     }
 
     /**
@@ -34,13 +35,7 @@ class ItemOrder extends Model
     public function budgetRequestProvider(){
         return $this->belongsTo('App\Models\BudgetRequestProvider');
     }
-
-    
-
-    /*** Para obtener el vinculo con la tabla rubros */
-    public function rubro(){
-        return $this->belongsToMany('App\Models\Rubro');
-    }
+   
 
     /**
      * Para obtener el vinculo con la tabla users
