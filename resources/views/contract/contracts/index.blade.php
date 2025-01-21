@@ -37,17 +37,11 @@ p.centrado {
                         <h5>Contratos - Listado de Contratos de Licitaciones</h5>
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <br>
-                            <a href="pdf/panel_contracts0" class="btn btn-outline-primary" target="_blank"> TOTAL CONTRATOS</a>
+                            {{-- <a href="pdf/panel_contracts0" class="btn btn-outline-primary" target="_blank"> TOTAL CONTRATOS</a>
                             <a href="pdf/panel_contracts1" class="btn btn-outline-warning" target="_blank">EN CURSO</a>
                             <a href="pdf/panel_contracts6" class="btn btn-outline-success" target="_blank">EN PROCESO RESCISIÓN</a>
                             <a href="pdf/panel_contracts2" class="btn btn-outline-warning" target="_blank">RESCINDIDOS</a>
-                            <a href="pdf/panel_contracts3" class="btn btn-outline-danger" target="_blank">CERRADOS</a>
-
-                            {{-- <a href="pdf/panel_contracts4" class="btn btn-outline-primary" target="_blank">DETALLE PÓLIZAS</a> --}}
-
-                            {{-- <a href="/contracts/exportarexcel6" class="btn btn-outline-primary" target="_blank">EXCEL PÓLIZAS</a> --}}
-                            {{-- <a href="/users/exportarexcel" class="btn btn-success">Bajar_en_Excel</a> --}}
-
+                            <a href="pdf/panel_contracts3" class="btn btn-outline-danger" target="_blank">CERRADOS</a> --}}
                     </div>
                 </div>
             </div>

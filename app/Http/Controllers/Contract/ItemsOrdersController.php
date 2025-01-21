@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Illuminate\Support\Facades\DB; 
 use App\Models\ItemOrder;
 use App\Models\Rubro;
+use App\Models\Component;
 
 class ItemsOrdersController extends Controller
 {
@@ -149,7 +150,7 @@ class ItemsOrdersController extends Controller
             }
 
             // creamos un array de indices de las columnas
-            $header = array('item_number', 'rubro_id', 'rubro','quantity', 
+            $header = array('component_id','item_number', 'rubro_id', 'rubro','quantity', 
             'unid','unit_price_mo','unit_price_mat', 'tot_price_mo', 'tot_price_mat');
 
             // accedemos al archivo excel cargado
@@ -190,6 +191,7 @@ class ItemsOrdersController extends Controller
                 
                 // creamos las reglas de validacion
                 $rules = array(                    
+                    'component_id' => 'numeric|required',
                     'item_number' => 'numeric|nullable|max:2147483647',                    
                     'rubro_id' => 'numeric|required|max:100',
                     // 'rubro' => 'string|required|max:500',
@@ -207,15 +209,32 @@ class ItemsOrdersController extends Controller
                 }
 
                 
+                // Chequea si existe el código o id del componente                
+                $component = Component::where('id', $item['component_id'])->get()->first();
+                if (is_null($component)) {
+                    $validator->errors()->add('component', 'No existe id de componenente ingresado. Por favor ingrese un componenente registrado en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);                
+                }
+
+                // Chequea si el código del componente del excel sea el mismo de la orden
+                $compo = $order->component->id;
+                $item['component_id']; 
+                // var_dump($compo);
+                // var_dump($item['component_id']);exit();
+
+                if ($item['component_id'] !== $compo) {                
+                    $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente de la Orden de Ejecución, verifique....');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);   
+                }
+
                 // Chequea si existe el código o id del rubro
                 $rubro = Rubro::where('id', $item['rubro_id'])->get()->first();
                 if (is_null($rubro)) {
-                    $validator->errors()->add('rubro', 'No existe id de rubro ingresado. Por favor ingrese un rubro registrado registrado en el sistema.');
+                    $validator->errors()->add('rubro', 'No existe id de rubro ingresado. Por favor ingrese un rubro registrado en el sistema.');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
-                
+
                 $item['rubro_id'] = $rubro->id;
-                
                 // agregamos la fila al array de pedidos
                 $items[] = $item;
 

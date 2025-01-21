@@ -74,10 +74,10 @@ class ContractsController extends Controller
         if($request->user()->hasPermission(['admin.contracts.index'])){
             //NO SE MUESTRAN LOS PEDIDOS ANULADOS
             $contracts = Contract::where('contract_state_id', '>=', 1)
+                    ->where('contract_type_id', '=', 2)//solo muestra contratos de obras
                     ->orderBy('iddncp','asc')
                     ->get();
-            $dependency = $request->user()->dependency_id;            
-            
+            $dependency = $request->user()->dependency_id;
         }else{
             // Para ver contratos no anulados asignados a usuarios fiscales
             $contracts = Contract::where(function ($query) use ($request) {

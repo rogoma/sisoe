@@ -42,7 +42,8 @@
                                     {{-- <h5>Agregar Rubros al pedido Nº {{ $order->id }}</h5> --}}
                                     <h5><p style="font-size: 17px; font-weight: bold; color:blue">Agregar Rubros a la orden Nº {{ $order->id }}</p></h5>
                                     <br>
-                                    <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Componente: {{ $order->component->description }} - Localidad: {{ $order->locality }}</p></h5>                                        
+                                    <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Componente: {{ $order->component->id }} - {{ $order->component->description }}</p></h5>
+                                    <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Localidad: {{ $order->locality }}</p></h5>
                                 </div>
                                 <div class="card-block">
                                         <form method="POST" action="{{ route('orders.items.storeExcel', $order->id) }}" enctype="multipart/form-data">
