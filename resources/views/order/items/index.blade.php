@@ -66,7 +66,7 @@
                                 </div>                                
                                 <div class="card-block">
                                     <div class="dt-responsive table-responsive">
-                                        <table id="items" class="table table-striped table-bcontracted nowrap">
+                                        <table id="items" class="table table-striped table-bordered nowrap">
                                             <thead>
                                                 <tr>                                                    
                                                     <th>N° item</th>
@@ -78,63 +78,68 @@
                                                     <th>Precio UNIT. MAT</th>
                                                     <th>Precio TOT. MO</th>
                                                     <th>Precio TOT. MAT</th>
-                                                    <th style="width: 120px;">Acciones</th>
+                                                    {{-- <th style="width: 120px;">Acciones</th> --}}
+                                                    <th style="width: 120px; text-align: center;"> Valor
+                                                        <input type="checkbox" id="select-all" title="Seleccionar todos">
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @php
-                                                   $tot_price_mo = 0; $tot_price_mat = 0;    
+                                                    $tot_price_mo = 0; 
+                                                    $tot_price_mat = 0;    
                                                 @endphp
                                                 
                                                 @for ($i = 0; $i < count($items); $i++)
                                                     <tr>                                                        
-                                                        
                                                         <td style="text-align: center;">{{ $items[$i]->item_number }}</td>
                                                         <td style="text-align: center;">{{ $items[$i]->rubro_id }}</td>
-                                                        
-                                                        {{-- debe mostrar description de rubro --}}
-                                                        <td>{{ $items[$i]->rubro->description }}</td>                                                        
+                                                        <td>{{ $items[$i]->rubro->description }}</td>
                                                         <td style="text-align: center;">{{ $items[$i]->quantity }}</td>
-                                                        {{-- debe mostrar description de tipo de unidad de medida --}}
                                                         <td style="text-align: center;">{{ $items[$i]->rubro->orderPresentations->description }}</td>
-                                                        <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mo,'0', ',','.') }} </td>
-                                                        <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mat,'0', ',','.') }} </td>
-                                                        <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mo,'0', ',','.') }} </td>
-                                                        <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mat,'0', ',','.') }} </td>
-                                                        
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mo, '0', ',', '.') }}</td>
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mat, '0', ',', '.') }}</td>
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mo, '0', ',', '.') }}</td>
+                                                        <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mat, '0', ',', '.') }}</td>
+                                
                                                         @php
                                                             $tot_price_mo += $items[$i]->tot_price_mo;
                                                             $tot_price_mat += $items[$i]->tot_price_mat;
                                                         @endphp
+                                
+                                                        <td style="text-align: center;">
+                                                            {{-- <td style="text-align: center;"> --}}
+                                                                <input type="checkbox" class="row-checkbox" data-id="{{ $items[$i]->id }}">
+                                                            {{-- </td> --}}
 
-                                                        <td>
-                                                            {{-- @if (Auth::user()->hasPermission(['admin.items.update','contracts.items.update'])) --}}
-                                                                <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $items[$i]->id }})">
-                                                                    <i class="fa fa-pencil"></i>
-                                                                </button>
-                                                            {{-- @endif --}}
+                                                            {{-- <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $items[$i]->id }})">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </button> --}}
 
-                                                            {{-- @if (Auth::user()->hasPermission(['admin.items.delete','contracts.items.update'])) --}}
-                                                            <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItemAwardHistories({{$items[$i]->id }})">
+                                                            {{-- <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItemAwardHistories({{$items[$i]->id }})">
                                                                 <i class="fa fa-trash"></i>
-                                                            </button>
-                                                            {{-- @endif --}}
+                                                            </button> --}}
                                                         </td>
+                                                        {{-- <td>
+                                                            <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $items[$i]->id }})">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </button>
+                                                        </td> --}}
                                                     </tr>
                                                 @endfor
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <td colspan="6"></td> <!-- Celdas vacías para alinear el total -->
+                                                    <td colspan="6"></td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td>
-                                                    <td colspan="3"></td> <!-- Celdas vacías para llenar el espacio restante -->
+                                                    <td colspan="3"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
-                                </div>
+                                </div>                                
                             </div>
                         </div>
                     </div>

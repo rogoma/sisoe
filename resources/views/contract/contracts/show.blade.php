@@ -431,10 +431,14 @@
                                                                                     onclick="itemOrder({{ $order->id }})">
                                                                                     <i class="fa fa-list"></i>
                                                                                 </button>
-                                                                                {{-- MOSTRAR PDF DE ORDEN --}}
-                                                                                {{-- <a href="/pdf/panel_contracts10" title="Ver Orden" target="_blank" class="btn btn-secondary btn-icon"><i class="fa fa-eye"></i></a> --}}
-                                                                                <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-secondary btn-icon"><i class="fa fa-eye"></i></a>
-                                                                                {{-- <td><a href="/pdf/panel_contracts/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Informe de Pólizas</a></td> --}}
+                                                                                {{-- MOSTRAR PDF DE ORDEN --}}                                                                                
+                                                                                <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
+                                                                                
+                                                                                <button type="button" title="Anular"
+                                                                                    class="btn btn-danger btn-icon"
+                                                                                    onclick="anuleOrder({{ $order->id }})">
+                                                                                    <i class="fa fa-ban"></i>
+                                                                                </button>
                                                                             @else
                                                                                 <a href="{{ route('orders.items.uploadExcel', $order->id)}}" 
                                                                                     title="Importar Rubros EXCEL" class="btn btn-success btn-icon">
