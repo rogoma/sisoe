@@ -107,7 +107,7 @@ fabric.properties
 ### Laravel ###
 /node_modules
 /public/hot
-/public/storage
+#/public/storage
 /storage/*.key
 /vendor
 .env
