@@ -35,9 +35,9 @@ class Order extends Model
         return $this->belongsTo('App\Models\OrderState');
     }
 
-        /**
-     * Para obtener el vinculo con la tabla itemsOrders
-     */
+    /**
+    * Para obtener el vinculo con la tabla itemsOrders
+    */
     public function items(){
         return $this->hasMany('App\Models\ItemOrder');
     }
@@ -72,13 +72,13 @@ class Order extends Model
     }
 
     /**
-     * Para dar formato a Fecha
+     * Para dar formato a Fecha de Creación de la orden
      */
     public function DateFormat(){
-        if(empty($this->date)){
+        if(empty($this->create_at)){
             return "";
         }else{
-            return date('d/m/Y', strtotime($this->date));
+            return date('d/m/Y', strtotime($this->create_at));
         }
     }
 

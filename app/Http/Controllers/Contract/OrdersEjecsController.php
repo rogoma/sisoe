@@ -100,6 +100,16 @@ class OrdersEjecsController extends Controller
         return view('order.items.index', compact('order', 'items'));
     }
 
+    //Para mostrar un archivo EXCEL guardado en el Proyecto
+    public function ArchivoPedido(){
+        header("Content-type: application/zip");
+        header("Content-Disposition: inline; filename=1-Planilla 1.1. Pozo Tipo A.zip");
+        readfile("files/1-Planilla 1.1. Pozo Tipo A.zip");
+
+        // header("Content-type: application/xlsx");
+        // header("Content-Disposition: inline; filename=1-Planilla 1.1. Pozo Tipo A.xlsx");
+        // readfile("files/1-Planilla 1.1. Pozo Tipo A.xlsx");
+    }
     /**
      * BUscar codigos de catalogo 5
      *
@@ -173,7 +183,15 @@ class OrdersEjecsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para agregar órdenes.');
         }
 
-        $components = Component::all();
+        // Chequeamos que haya Fiscal asignado para proceder        
+        // if($contract->fiscal1_id != null ){
+        
+        // }else{
+        //     return back()->with('error', 'Para generar una Orden debe asignar un Fiscal');
+        // }
+
+        // $components = Component::all();
+        $components = Component::orderBy('id')->get();//ordenado por id componente
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();

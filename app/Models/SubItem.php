@@ -5,43 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ItemOrder extends Model
+class SubItem extends Model
 {
     use HasFactory;
 
-    protected $table = 'items_orders';
+    protected $table = 'sub_items_oi';
     
-    /*** Para obtener el vinculo con la tabla orders */
-    public function order(){
-        // return $this->belongsToMany('App\Models\Order');
-        return $this->belongsTo('App\Models\Order');
-    }
-
+    
     /*** Para obtener el vinculo con la tabla rubros */
     public function rubro(){
         return $this->belongsTo('App\Models\Rubro', 'rubro_id');
     }
-
-    
-    /*** Para obtener el vinculo con la tabla sub_items_oi */
-    public function subitem(){
-        return $this->belongsTo('App\Models\SubItem', 'subitem_id');        
-    }
-
-    /**
-     * Para obtener el vinculo con la tabla Item_award_types
-     */
-    public function itemAwardType(){
-        return $this->belongsTo('App\Models\ItemAwardType');
-    }
-
-    /**
-     * Para obtener el vinculo con la tabla budget_request_providers
-     */
-    public function budgetRequestProvider(){
-        return $this->belongsTo('App\Models\BudgetRequestProvider');
-    }
    
+
+    /**
+     * Para obtener el vinculo con la tabla itemsOrders
+     */
+    public function items(){
+        return $this->hasMany('App\Models\ItemOrder');
+    }
+
 
     /**
      * Para obtener el vinculo con la tabla users

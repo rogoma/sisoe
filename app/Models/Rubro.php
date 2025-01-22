@@ -12,7 +12,7 @@ class Rubro extends Model
     protected $table = 'rubros';
 
     /**
-     * Para obtener el vinculo con la tabla items
+     * Para obtener el vinculo con la tabla itemsOrders
      */
     public function items(){
         return $this->hasMany('App\Models\ItemOrder');
@@ -25,6 +25,12 @@ class Rubro extends Model
         return $this->belongsTo('App\Models\OrderPresentation', 'order_presentation_id');
     }
 
+    /**
+     * Para obtener el vinculo con la tabla items
+     */
+    public function subitems(){
+        return $this->hasMany('App\Models\SubItem','sub_items_oi');
+    }
     // public function items(){
     //     return $this->belongsToMany('App\Models\ItemOrder');
     // }

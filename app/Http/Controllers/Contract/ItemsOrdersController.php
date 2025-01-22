@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ItemOrder;
 use App\Models\Rubro;
 use App\Models\Component;
+use App\Models\SubItem;
 
 class ItemsOrdersController extends Controller
 {
@@ -150,7 +151,7 @@ class ItemsOrdersController extends Controller
             }
 
             // creamos un array de indices de las columnas
-            $header = array('component_id','item_number', 'rubro_id', 'rubro','quantity', 
+            $header = array('component_id','subItem_id','rubro_id', 'item_number','rubro','quantity', 
             'unid','unit_price_mo','unit_price_mat', 'tot_price_mo', 'tot_price_mat');
 
             // accedemos al archivo excel cargado
@@ -191,12 +192,12 @@ class ItemsOrdersController extends Controller
                 
                 // creamos las reglas de validacion
                 $rules = array(                    
-                    'component_id' => 'numeric|required',
-                    'item_number' => 'numeric|nullable|max:2147483647',                    
-                    'rubro_id' => 'numeric|required|max:100',
-                    // 'rubro' => 'string|required|max:500',
-                    'quantity' => 'numeric|required|max:2147483647',
-                    'unid' => 'string|required|max:10',
+                    'component_id' => 'numeric|required',                    
+                    'subItem_id' => 'numeric|required',
+                    'rubro_id' => 'numeric|required',
+                    'item_number' => 'numeric|required',                    
+                    'quantity' => 'numeric|required',
+                    'unid' => 'string|required',
                     'unit_price_mo' => 'numeric|required|max:2147483647',                    
                     'unit_price_mat' => 'numeric|required|max:2147483647',
                     'tot_price_mo' => 'numeric|required|max:2147483647',
@@ -212,7 +213,14 @@ class ItemsOrdersController extends Controller
                 // Chequea si existe el código o id del componente                
                 $component = Component::where('id', $item['component_id'])->get()->first();
                 if (is_null($component)) {
-                    $validator->errors()->add('component', 'No existe id de componenente ingresado. Por favor ingrese un componenente registrado en el sistema.');
+                    $validator->errors()->add('component', 'No existe id de Componente ingresado. Por favor ingrese un componenente registrado en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);                
+                }
+
+                // Chequea si existe el código o id del SubItem
+                $subItem = SubItem::where('id', $item['subItem_id'])->get()->first();
+                if (is_null($subItem)) {
+                    $validator->errors()->add('subItem', 'No existe SubItem ingresado. Por favor ingrese un subItem registrado en el sistema.');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);                
                 }
 
@@ -250,6 +258,13 @@ class ItemsOrdersController extends Controller
                 // $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
                 $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
                 $new_item->rubro_id = $item['rubro_id'];
+
+                if ($item['rubro_id'] == 9999){
+                    $new_item->subitem_id = $item['subItem_id'];
+                }else{
+                    $new_item->subitem_id = NULL;
+                }                 
+                
                 $new_item->quantity = $item['quantity'];
                 $new_item->unit_price_mo = $item['unit_price_mo'];
                 $new_item->unit_price_mat = $item['unit_price_mat'];

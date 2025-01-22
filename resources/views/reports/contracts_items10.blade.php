@@ -108,7 +108,7 @@
     <table>
         <tr>
             <th>N° item</th>
-            <th>Id_rubro</th>
+            <th>Cod_rubro</th>
             <th>Rubro</th>
             <th>Cant.</th>
             <th>Unid.</th>
@@ -118,19 +118,50 @@
             <th>Precio TOT. MAT</th>
         </tr>
 
+        @php
+            $tot_price_mo = 0; 
+            $tot_price_mat = 0;    
+        @endphp
+
         @for ($i = 0; $i < count($contracts2); $i++)
-            <tr>
-                <td> {{ $contracts2[$i]->items_orders_item_number }}</td>
-                <td> {{ $contracts2[$i]->rubros_id }}</td>
-                <td> {{ $contracts2[$i]->rubros_description }}</td>
-                <td> {{ $contracts2[$i]->items_orders_quantity }}</td>
-                <td> {{ $contracts2[$i]->order_presentations_description }}</td>
-                <td> {{ number_format($contracts2[$i]->items_orders_unit_price_mo,'0', ',','.') }} </td>
-                <td> {{ number_format($contracts2[$i]->items_orders_unit_price_mat,'0', ',','.') }} </td>
-                <td> {{ number_format($contracts2[$i]->items_orders_tot_price_mo,'0', ',','.') }} </td>
-                <td> {{ number_format($contracts2[$i]->items_orders_tot_price_mat,'0', ',','.') }} </td>                
+            <tr>                
+                @if($contracts2[$i]->rubros_code == '9999')
+                    <td> </td>
+                    <td> </td>
+                    <td><b> {{ $contracts2[$i]->sub_items_oi_description }} </b></td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>                    
+                @else
+                    <td> {{ $contracts2[$i]->items_orders_item_number }}</td>
+                    <td> {{ $contracts2[$i]->rubros_code }}</td>                
+                    <td> {{ $contracts2[$i]->rubros_description }}</td>
+                    <td> {{ $contracts2[$i]->items_orders_quantity }}</td>
+                    <td> {{ $contracts2[$i]->order_presentations_description }}</td>
+                    <td> {{ number_format($contracts2[$i]->items_orders_unit_price_mo,'0', ',','.') }} </td>
+                    <td> {{ number_format($contracts2[$i]->items_orders_unit_price_mat,'0', ',','.') }} </td>
+                    <td> {{ number_format($contracts2[$i]->items_orders_tot_price_mo,'0', ',','.') }} </td>
+                    <td> {{ number_format($contracts2[$i]->items_orders_tot_price_mat,'0', ',','.') }} </td>
+
+                    @php
+                        $tot_price_mo += $contracts2[$i]->items_orders_tot_price_mo;
+                        $tot_price_mat += $contracts2[$i]->items_orders_tot_price_mat;
+                    @endphp
+                @endif
             </tr>
         @endfor
+        <tfoot>
+            <tr>
+                <td colspan="6"></td>
+                <td style="font-size: 10px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
+                <td style="font-size: 10px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
+                <td style="font-size: 10px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td>
+                <td colspan="3"></td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>

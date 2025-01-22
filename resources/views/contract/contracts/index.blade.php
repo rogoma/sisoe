@@ -68,12 +68,16 @@ p.centrado {
                             <div class="card">
                                 <div class="card-header">
                                     <div class="float-left">
-                                        <h5>Listado de Contratos</h5>
+                                        {{-- <h5>Listado de Contratos</h5> --}}
                                     </div>
                                     <br>
                                     {{-- @if (Auth::user()->hasPermission(['derive_contracts.contracts.show','contracts.contracts.create','admin.orders.create'])) --}}
                                     @if (Auth::user()->hasPermission(['admin.contracts.create','contracts.contracts.create']))
-                                        <div class="float-left">
+                                    <div class="float-rigth">
+                                        <h5  style="color:blue">Modelos de Archivos de Componentes en Excel para Descargar y realizar importación de rubros</h5><a href="excel/pedidos" title="Descargar Modelo Pedido.xlsx" class="btn btn-danger" target="_blank">Archivos</a>
+                                    </div>                                                                        
+                                    <br>
+                                    <div class="float-left">
                                             <br>
                                             <a href="{{ route('contracts.create') }}" title="Agregar llamado" class="btn btn-primary">Agregar Contrato</a>
                                         </div>

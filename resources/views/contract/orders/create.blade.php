@@ -130,7 +130,7 @@
                                                     <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
                                                         <option value="">--- Seleccionar Componente ---</option>
                                                         @foreach ($components as $component)
-                                                        <option value="{{ $component->id }}" @if ($component->id == old('component_id')) selected @endif>{{ $component->description }}</option>
+                                                        <option value="{{ $component->id }}" @if ($component->id == old('component_id')) selected @endif>{{ $component->code }}-{{ $component->description }}</option>
                                                         @endforeach
                                                     </select>
                                                     @error('component_id')

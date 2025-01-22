@@ -167,6 +167,14 @@ class ContractsFilesController extends Controller
     {
         $contract = Contract::findOrFail($contract_id);
         $post_max_size = $this->postMaxSize;
+
+        // Chequeamos que haya Fiscal asignado para proceder        
+        // if($contract->fiscal1_id != null ){
+        
+        // }else{
+        //     return back()->with('error', 'Para generar una Evaluación debe asignar un Fiscal');
+        // }
+
         return view('contract.files.create_eval', compact('contract', 'post_max_size'));
     }
 

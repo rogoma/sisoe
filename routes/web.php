@@ -242,10 +242,10 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::get('orders/files/{file_id}/download', [OrdersFilesController::class, 'download'])->name('orders.files.download');
 
-    Route::get('excel/pedidos', [OrdersController::class, 'ArchivoPedido'])->name('excel.pedidos');
-    Route::get('excel/items', [OrdersController::class, 'ArchivoItem'])->name('excel.items');
-    Route::get('excel/items2', [OrdersController::class, 'ArchivoItem2'])->name('excel.items2');
-    Route::get('excel/items3', [OrdersController::class, 'ArchivoItem3'])->name('excel.items3');
+    Route::get('excel/pedidos', [OrdersEjecsController::class, 'ArchivoPedido'])->name('excel.pedidos');
+    // Route::get('excel/items', [OrdersController::class, 'ArchivoItem'])->name('excel.items');
+    // Route::get('excel/items2', [OrdersController::class, 'ArchivoItem2'])->name('excel.items2');
+    // Route::get('excel/items3', [OrdersController::class, 'ArchivoItem3'])->name('excel.items3');
 
 
     //excel/itemsAw

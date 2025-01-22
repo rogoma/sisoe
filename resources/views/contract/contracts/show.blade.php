@@ -382,14 +382,15 @@
                                                             <th>Referencia (Compon.)</th>
                                                             <th>Estado</th>
                                                             <th>Observación</th>
-                                                            <th>Acciones</th>
+                                                            <th style="width: 190px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
                                                             <tr>                                                                
                                                                 <td style="text-align: center;">{{ $order->number }}</td>
-                                                                <td>{{ $order->dateFormat() }}</td>
+                                                                <td>{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
+                                                                {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
                                                                 <td style="text-align: center;"> {{ $order->totalAmountFormat() }}</td>
                                                                 <td>{{ $order->locality }}</td>
                                                                 <td>{{ $order->component->description }}</td>
@@ -538,7 +539,7 @@
                                                             <th>Descripción</th>
                                                             <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>
-                                                            <th>Acciones</th>
+                                                            <th>Acciones</th>                                                            
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -689,8 +690,7 @@
             };
 
             itemOrder = function(order) {
-                //lleva a itemawardhistories index
-                // location.href = '/items/' + item + '/item_award_histories';
+                //lleva a index de ItemsOrdersController                
                 location.href = '/orders/'+order+'/items_orders';
 
             }

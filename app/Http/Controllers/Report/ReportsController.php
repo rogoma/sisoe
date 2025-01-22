@@ -67,10 +67,11 @@ class ReportsController extends Controller
                 ->get();    
 
             
-            $contracts2 = DB::table('vista_full') //vista que muestra los datos
+            $contracts2 = DB::table('vista_full_rep10') //vista que muestra los datos
                 ->select([
+                    'sub_items_oi_description',
                     'items_orders_item_number',
-                    'rubros_id',
+                    'rubros_code',
                     'rubros_description',
                     'items_orders_quantity',
                     'order_presentations_description',
@@ -79,7 +80,8 @@ class ReportsController extends Controller
                     'items_orders_tot_price_mo',
                     'items_orders_tot_price_mat',                    
                 ])
-                ->where('orders_id', '=', $order_id)                
+                ->where('orders_id', '=', $order_id)
+                ->Orderby('items_orders_id')
                 ->get();        
         // }
 
