@@ -183,9 +183,9 @@ class OrdersEjecsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para agregar órdenes.');
         }
 
-        // Chequeamos que haya Fiscal asignado para proceder        
+        // Chequeamos que haya Fiscal asignado para proceder
         // if($contract->fiscal1_id != null ){
-        
+
         // }else{
         //     return back()->with('error', 'Para generar una Orden debe asignar un Fiscal');
         // }
@@ -238,7 +238,7 @@ class OrdersEjecsController extends Controller
         $rules = array(
             // 'number' => 'numeric|required|orders,number',
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
-            'sign_date' => 'date_format:d/m/Y|required|',
+            'sign_date' => 'date_format:d/m/Y',
             'component_id' => 'required|numeric',
             'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
@@ -251,13 +251,13 @@ class OrdersEjecsController extends Controller
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
-        }        
+        }
 
         $order = new Order;
         $order->contract_id = $contract_id;
-        $order->number = $request->input('number');        
+        $order->number = $request->input('number');
         $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));
-        $order->locality = $request->input('locality');        
+        $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         $order->order_state_id = $request->input('order_state_id');
         $order->total_amount = 0;
@@ -330,11 +330,11 @@ class OrdersEjecsController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-        
+
         $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));
-        $order->locality = $request->input('locality');        
+        $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
-        $order->order_state_id = $request->input('order_state_id');        
+        $order->order_state_id = $request->input('order_state_id');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
         $order->district_id = $request->input('district_id');
@@ -342,7 +342,7 @@ class OrdersEjecsController extends Controller
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -366,7 +366,7 @@ class OrdersEjecsController extends Controller
         //     return response()->json(['status' => 'error', 'message' => 'Orden no puede eliminarse, posee carga de rubros, verificar ', 'code' => 200], 200);
         // }
 
-        // Cambia a estado 5 = "eliminado" /no mostrara en listado de ordenes /no piere nro secuencial de ordenes            
+        // Cambia a estado 5 = "eliminado" /no mostrara en listado de ordenes /no piere nro secuencial de ordenes
         $order->order_state_id = 5;
         $order->save();
         // $order->delete();

@@ -315,7 +315,7 @@
                                                                 <td>{{ $i + 1 }}</td>
                                                                 <td style="max-width: 800px">
                                                                     {{ $user_files_eval[$i]->description }}</td>
-                                                                <td style="max-width: 500px">                                                                    
+                                                                <td style="max-width: 500px">
                                                                     {{-- {{ $user_files_eval[$i]->creator_user_id }} --}}
                                                                     {{ $user_files_eval[$i]->dependency->description }}
                                                                 </td>
@@ -379,7 +379,7 @@
                                                             <th>Fecha</th>
                                                             <th>Monto Orden</th>
                                                             <th>Localidad</th>
-                                                            <th>Referencia (Compon.)</th>
+                                                            <th>Referencia (Componente)</th>
                                                             <th>Estado</th>
                                                             <th>Observación</th>
                                                             <th style="width: 190px; text-align: center;">Acciones</th>
@@ -387,13 +387,13 @@
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
-                                                            <tr>                                                                
+                                                            <tr>
                                                                 <td style="text-align: center;">{{ $order->number }}</td>
                                                                 <td>{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
                                                                 {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
                                                                 <td style="text-align: center;"> {{ $order->totalAmountFormat() }}</td>
                                                                 <td>{{ $order->locality }}</td>
-                                                                <td>{{ $order->component->description }}</td>
+                                                                <td>{{ $order->component->code }}-{{ $order->component->description }}</td>
                                                                 {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
                                                                 @if (in_array($order->orderState->id, [5]))
                                                                     <td style="color:#ff0000">
@@ -423,29 +423,29 @@
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="anuleOrder({{ $order->id }})">
                                                                                     <i class="fa fa-ban"></i>
-                                                                                </button>                                                                                
+                                                                                </button>
                                                                             @endif
-                                                                            
+
                                                                             @if ($order->items->count() > 0)
                                                                                 <button type="button" title="Orden con Rubros"
                                                                                     class="btn btn-primary btn-icon"
                                                                                     onclick="itemOrder({{ $order->id }})">
                                                                                     <i class="fa fa-list"></i>
                                                                                 </button>
-                                                                                {{-- MOSTRAR PDF DE ORDEN --}}                                                                                
+                                                                                {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
-                                                                                
+
                                                                                 <button type="button" title="Anular"
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="anuleOrder({{ $order->id }})">
                                                                                     <i class="fa fa-ban"></i>
                                                                                 </button>
                                                                             @else
-                                                                                <a href="{{ route('orders.items.uploadExcel', $order->id)}}" 
+                                                                                <a href="{{ route('orders.items.uploadExcel', $order->id)}}"
                                                                                     title="Importar Rubros EXCEL" class="btn btn-success btn-icon">
                                                                                     <i class="fa fa-upload text-white"></i>
                                                                             @endif
-                                                                            
+
                                                                         @endif
                                                                     @endif
                                                                 </td>
@@ -539,7 +539,7 @@
                                                             <th>Descripción</th>
                                                             <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>
-                                                            <th>Acciones</th>                                                            
+                                                            <th>Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -690,7 +690,7 @@
             };
 
             itemOrder = function(order) {
-                //lleva a index de ItemsOrdersController                
+                //lleva a index de ItemsOrdersController
                 location.href = '/orders/'+order+'/items_orders';
 
             }
