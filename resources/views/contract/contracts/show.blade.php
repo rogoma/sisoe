@@ -170,6 +170,13 @@
                                                     role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
                                                 <div class="slide"></div>
                                             </li>
+                                            @if (Auth::user()->hasPermission(['contracts.items.create']))
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
+                                                            class="fa fa-file-excel-o"></i> Cargar Rubros </a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
                                             @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
@@ -306,7 +313,7 @@
                                                             <th>Descripción de la Evaluación</th>
                                                             <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>
-                                                            <th>Acciones</th>
+                                                            <th style="width: 150px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -529,9 +536,84 @@
                                                 </div>
                                             </div>
 
+                                            <div class="tab-pane" id="tab5" role="tabpanel">
+                                                <label class="col-form-label f-w-400">Componentes:</label>
+                                                <table class="table table-striped table-bcontracted">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Nombre del Componente</th>
+                                                            <th>Archivo importado por:</th>
+                                                            <th>Fecha/Hora</th>
+                                                            <th style="width: 190px; text-align: center;">Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for ($i = 0; $i < count($user_files_rubros); $i++)
+                                                            <tr>
+                                                                <td>{{ $i + 1 }}</td>
+                                                                <td >
+                                                                    {{ $user_files_rubros[$i]->description }}</td>
+                                                                <td >
+                                                                    {{ $user_files_rubros[$i]->dependency->description }}
+                                                                </td>
+                                                                <td >
+                                                                    {{ $user_files_rubros[$i]->updated_atDateFormat() }}</td>
+                                                                <td>
+                                                                    {{-- <a href="{{ asset('storage/files/' . $user_files_rubros[$i]->file) }}"
+                                                                        title="Ver Archivo" target="_blank"
+                                                                        class="btn btn-primary"><i
+                                                                            class="fa fa-eye"></i></a> --}}
+                                                                    <a href="{{ route('contracts.files.download', $user_files_rubros[$i]->id) }}"
+                                                                        title="Descargar Archivo" class="btn btn-info"><i
+                                                                            class="fa fa-download"></i></a>
+                                                                    <button title="Eliminar Archivo"
+                                                                        onclick="deleteFile({{ $user_files_rubros[$i]->id }})"
+                                                                        class="btn btn-danger"><i
+                                                                            class="fa fa-trash"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        @endfor
+
+                                                        @for ($i = 0; $i < count($other_files_rubros); $i++)
+                                                            <tr>
+                                                                <td>{{ $i + 1 }}</td>
+                                                                <td>{{ $other_files_rubros[$i]->description }}</td>
+                                                                <td>{{ $other_files_rubros[$i]->dependency->description }}
+                                                                </td>
+                                                                <td>{{ $other_files_rubros[$i]->updated_atDateFormat() }}
+                                                                </td>
+                                                                <td>
+                                                                    {{-- <a href="{{ asset('storage/files/' . $other_files_rubros[$i]->file) }}"
+                                                                        title="Ver Archivo" target="_blank"
+                                                                        class="btn btn-primary"><i
+                                                                            class="fa fa-eye"></i></a> --}}
+                                                                    <a href="{{ route('contracts.files.download', $other_files_rubros[$i]->id) }}"
+                                                                        title="Descargar Archivo" class="btn btn-info"><i
+                                                                            class="fa fa-download"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        @endfor
+                                                    </tbody>
+                                                </table>
+                                                <br>
+                                                <div class="text-center">
+                                                    @if (Auth::user()->hasPermission(['admin.contracts.create', 'contracts.items.create' ]))
+                                                        @if (in_array($contract->contract_state_id, [1, 2]))
+                                                            <a href="{{ route('contracts.files.upload_rubros', $contract->id) }}"
+                                                                class="btn btn-primary">Cargar Planillas con Rubros (Excel)</a>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                                <br><br>
+                                            <div class="float-rigth">
+                                                <h6  style="color:blue">Modelos de Archivos Excel de Componentes para Descargar y realizar importación de rubros <a href="excel/pedidos" title="Descargar Planillas Excel de Rubros.xlsx" class="btn btn-danger" target="_blank">Archivos</a></h6>
+                                            </div>
+                                            </div>
+
+
                                             <div class="tab-pane" id="tab6" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al
-                                                    llamado:</label>
+                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al  llamado:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>

@@ -4,12 +4,12 @@
 
 @section('content')
 <head>
-    <title>Create Order</title>
+    <title>Crear Orden</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<div class="pcoded-content">    
+<div class="pcoded-content">
     <div class="page-header card">
         <div class="row align-items-end">
             <div class="col-lg-8">
@@ -17,7 +17,7 @@
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
                         <h5>Órdenes</h5>
-                        <span>Agregar Orden</span>                        
+                        <span>Agregar Orden</span>
                     </div>
                 </div>
             </div>
@@ -52,18 +52,18 @@
                                 <div class="card-block">
                                     <form method="POST" action="{{ route('contracts.orders.store', $contract->id) }}" enctype="multipart/form-data">
                                         @csrf
-                                        <div class="container">                                            
+                                        <div class="container">
 
-                                            <div class="form-group row">                                                
+                                            <div class="form-group row">
                                                 <div class="col-sm-6">
-                                                    <label for="number" class="col-form-label">N° de Orden</label>                                                    
+                                                    <label for="number" class="col-form-label">N° de Orden</label>
                                                     <input type="text" id="number" name="number_display" class="form-control @error('number') is-invalid @enderror" value="{{ old('number', $nextContractNumber) }}" maxlength="23" disabled>
                                                     <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $nextContractNumber) }}">
                                                     @error('number')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            
+
                                                 <div class="col-sm-6">
                                                     <label for="total_amount" class="col-form-label">Monto</label>
                                                     <input type="text" id="total_amount" name="total_amount" class="form-control @error('total_amount') is-invalid @enderror" value="{{ old('total_amount', 0) }}" maxlength="23" disabled>
@@ -72,7 +72,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            
+
 
                                             <div class="form-group row">
                                                 <div class="col-sm-6">
@@ -89,7 +89,7 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            
+
                                                 <div class="col-sm-6">
                                                     <label for="district_id" class="col-form-label">Distrito</label>
                                                     <select id="district_id" name="district_id" class="form-control @error('district_id') is-invalid @enderror">
@@ -100,7 +100,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="form-group row">
                                                 <label for="locality" class="col-sm-6 col-form-label">Localidad (Hasta 200 caracteres)</label>
                                                 <div class="col-sm-12">
@@ -124,7 +124,7 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            
+
                                                 <div class="col-sm-6">
                                                     <label for="component_id" class="col-form-label">Componente</label>
                                                     <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
@@ -146,7 +146,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            
+
 
                                             <div class="form-group row">
                                                 <div class="col-sm-3">
@@ -161,7 +161,7 @@
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            
+
                                                 <div class="col-sm-9">
                                                     <label for="comments" class="col-form-label">Comentarios (Hasta 300 caracteres)</label>
                                                     <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror" maxlength="300">{{ old('comments') }}</textarea>
@@ -170,7 +170,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
                                         <br>
                                         <div class="text-center mt-4">

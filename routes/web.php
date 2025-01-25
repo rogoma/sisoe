@@ -141,7 +141,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/contracts/orders/{order}/edit', [ContractsController::class, 'asign'])->name('contracts.asign');
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
     Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.update.fiscal');
-    
+
 
     Route::get('/orders/create', [OrdersEjecsController::class, 'create']);
     Route::post('/orders', [OrdersEjecsController::class, 'store']);
@@ -160,10 +160,10 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //PARA IMPORTAR EXCEL EN ITEMS DE ORDENES DE EJECUCIÓN
     Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-    
+
     Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
     Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
-    
+
     // Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
 
@@ -206,7 +206,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('orders/anuleDerive/{order_id}', [OrdersController::class, 'anuleDerive'])->name('orders.anuleDerive');
 
 
-    
+
 
 
     Route::get('/orders/{id}/uploadExcelAw', [ItemsAdjudicaController::class, 'uploadExcelAw'])->name('orders.items_adjudica.uploadExcelAw');
@@ -286,7 +286,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //VISTA PARA ELEGIR DEPENDENCIA OPARA MOSTRAR ALERTAS DE VENCIMIENTOS DE PÓLIZAS
     Route::get('pdf/panel_contracts7/{dependency_id}', [ReportsController::class, 'generarContracts7'])->name('pdf.panel_contracts7');
-    
+
     //VISTA PARA ALERTAS POR DEPENDENCIA
     Route::get('pdf/panel_contracts9', [ReportsController::class, 'generarContracts9'])->name('pdf.panel_contracts9');
 
@@ -302,8 +302,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //REPORTE DE UNA ORDEN DE EJECUCIÓN EN ESPECÍFICO
     Route::get('pdf/panel_contracts10/{order_id}', [ReportsController::class, 'generarContracts10'])->name('pdf.panel_contracts10');
     // Route::get('pdf/panel_contracts10', [ReportsController::class, 'generarContracts10'])->name('pdf.panel_contracts10');
-    
-    
+
+
 
 
 
@@ -373,6 +373,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('contracts/files/{contract_id}/create_con', [ContractsFilesController::class, 'create_con'])->name('contracts.files.create_con');
     //carga archivos de evaluaciones
     Route::get('contracts/files/{contract_id}/create_eval', [ContractsFilesController::class, 'create_eval'])->name('contracts.files.create_eval');
+    //carga archivos de importación de archivos de rubros
+    Route::get('contracts/files/{contract_id}/upload_rubros', [ContractsFilesController::class, 'upload_rubros'])->name('contracts.files.upload_rubros');
+
 
     //almacena archivos de pólizas
     Route::post('contracts/files/{contract_id}/store', [ContractsFilesController::class, 'store'])->name('contracts.files.store');
@@ -380,6 +383,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('contracts/files/{contract_id}/store_con', [ContractsFilesController::class, 'store_con'])->name('contracts.files.store_con');
     //almacena archivos de evaluaciones
     Route::post('contracts/files/{contract_id}/store_eval', [ContractsFilesController::class, 'store_eval'])->name('contracts.files.store_eval');
+    //almacena importación de archivos excel con rubros de obras
+    Route::post('contracts/files/{contract_id}/store_rubros', [ContractsFilesController::class, 'store_rubros'])->name('contracts.files.store_rubros');
 
 
     Route::get('contracts/files/{file_id}/download', [ContractsFilesController::class, 'download'])->name('contracts.files.download');

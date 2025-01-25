@@ -71,7 +71,7 @@ class ContractsController extends Controller
     public function index(Request $request)
     {
         // if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
-        if($request->user()->hasPermission(['admin.contracts.index'])){
+        if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.index'])){
             //NO SE MUESTRAN LOS PEDIDOS ANULADOS
             $contracts = Contract::where('contract_state_id', '>=', 1)
                     ->where('contract_type_id', '=', 2)//solo muestra contratos de obras
@@ -88,7 +88,7 @@ class ContractsController extends Controller
             ->where('contract_state_id', '>=', 1)
             ->orderBy('iddncp', 'asc')
             ->get();
-            
+
         }
         return view('contract.contracts.index', compact('contracts'));
     }
@@ -276,10 +276,24 @@ class ContractsController extends Controller
             ->get();
         // }
 
+        // Obtenemos los archivos excel cargados por usuarios con tipo de archivos 6-evaluaciones
+        $user_files_rubros = $contract->files()->where('dependency_id', $user_dependency)
+            ->whereIn('file_type', [7])//7-archivos excel de rubros
+            ->orderBy('created_at','asc')
+            ->get();
+
+        // if($role_user == 1){
+            $other_files_rubros = $contract->files()->where('dependency_id', '!=', $user_dependency)
+            ->whereIn('file_type', [7])//7-archivos excel de rubros
+            ->orderBy('created_at','asc')
+            ->get();
+        // }
+
         // chequeamos que el usuario tenga permisos para visualizar el pedido
-        if($request->user()->hasPermission(['admin.contracts.show', 'process_contracts.contracts.show',
+        if($request->user()->hasPermission(['admin.contracts.show', 'contracts.contracts.show','process_contracts.contracts.show',
         'contracts.contracts.index','derive_contracts.contracts.index']) || $contract->dependency_id == $request->user()->dependency_id){
-            return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con','user_files_eval','other_files_pol','other_files_con','other_files_eval'));
+            return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con',
+            'user_files_eval','other_files_pol','other_files_con','other_files_eval','user_files_rubros','other_files_rubros'));
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
@@ -385,7 +399,7 @@ class ContractsController extends Controller
         }else{
             $contract->iddncp = $iddncp_fin;
         }
-       
+
         $contract->linkdncp=$request->input('linkdncp');
         $contract->number_year=$request->input('number_year');
 
@@ -456,13 +470,13 @@ class ContractsController extends Controller
                 },
             ],
         ];
-        
+
 
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-       
+
         // PARA ASIGNAR Y REASIGNAR FISCALES DE OBRAS
         $fiscal1_id = $request->input('fiscal1_id');
         if (empty($fiscal1_id) || $fiscal1_id === '0') {
@@ -496,7 +510,7 @@ class ContractsController extends Controller
             $contract->fiscal3_id = $request->input('fiscal3_id');
             $contract->fiscal3_date = now();
         }
-        
+
         $contract->creator_user_id = $request->user()->id;  // usuario logueado
         $contract->save();
         return redirect()->route('contracts.show', $contract->id)->with('success', 'Fiscal agregado correctamente');
