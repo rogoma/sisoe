@@ -223,6 +223,7 @@ class OrdersEjecsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
+        // return view('order.items.uploadExcel', compact('order'));
         return view('order.items.uploadExcel', compact('order'));
     }
 
@@ -238,7 +239,7 @@ class OrdersEjecsController extends Controller
         $rules = array(
             // 'number' => 'numeric|required|orders,number',
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
-            'sign_date' => 'date_format:d/m/Y',
+            // 'sign_date' => 'date_format:d/m/Y',
             'component_id' => 'required|numeric',
             'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',

@@ -190,7 +190,63 @@ class ContractsFilesController extends Controller
         $components = Component::orderBy('id')->get();//ordenado por id componente
         $post_max_size = $this->postMaxSize;
 
+        // return view('contract.files.create_rubros', compact('contract', 'components','post_max_size'));
         return view('contract.files.create_rubros', compact('contract', 'components','post_max_size'));
+    }
+
+    /**
+     * Funcionalidad de agregar imprtación de archivos excel de rubros de obras
+     *    *
+     * @return \Illuminate\Http\Response
+     */
+    public function store_rubros(Request $request, $contract_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+
+        $rules = array(
+            'component_id' => 'numeric|required',
+        );
+
+        $validator =  Validator::make($request->input(), $rules);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        if(!$request->hasFile('file')){
+            $validator = Validator::make($request->input(), []);
+            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo EXCEL.');
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // chequeamos la extension del archivo subido
+        $extension = $request->file('file')->getClientOriginalExtension();
+        if(!in_array($extension, array('xls', 'xlsx'))){
+            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+            $validator->errors()->add('file', 'El archivo introducido debe corresponder a  formatos:  xls, xlsx.'); // Agregamos el error
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Pasó todas las validaciones, guardamos el archivo
+        // $fileName = time().'-contract-file.'.$extension; // nombre a guardar
+        // $fileName = 'contrato_nro_'.$request->input($contract->number_year).'.'.$extension; // nombre a guardar
+        $fileName = 'evaluación'.time().'.'.$extension; // nombre a guardar
+        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
+        $path = $request->file('file')->storeAs('public/files', $fileName);
+
+        $file = new File;
+        $file->description = $request->input('component_id');
+        $file->file = $fileName;
+        $file->file_type = 7;//rubros de obras
+        $file->contract_id = $contract_id;
+        $file->contract_state_id = $contract->contract_state_id;
+        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
+        $file->save();
+
+        //ACA SE DEBE CARGAR EL ARCHIVO EXCEL A LA TABLA ITEMS_CONTRACTS
+        //storeExcel DE ItemsOrdersController
+
+        return redirect()->route('contracts.show', $contract_id);
     }
 
     /**
@@ -297,60 +353,7 @@ class ContractsFilesController extends Controller
         return redirect()->route('contracts.show', $contract_id);
     }
 
-    /**
-     * Funcionalidad de agregar imprtación de archivos excel de rubros de obras
-     *    *
-     * @return \Illuminate\Http\Response
-     */
-    public function store_rubros(Request $request, $contract_id)
-    {
-        $contract = Contract::findOrFail($contract_id);
 
-        $rules = array(
-            'component_id' => 'numeric|required',
-        );
-
-        $validator =  Validator::make($request->input(), $rules);
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        if(!$request->hasFile('file')){
-            $validator = Validator::make($request->input(), []);
-            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo EXCEL.');
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // chequeamos la extension del archivo subido
-        $extension = $request->file('file')->getClientOriginalExtension();
-        if(!in_array($extension, array('xls', 'xlsx'))){
-            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a  formatos:  xls, xlsx.'); // Agregamos el error
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // Pasó todas las validaciones, guardamos el archivo
-        // $fileName = time().'-contract-file.'.$extension; // nombre a guardar
-        // $fileName = 'contrato_nro_'.$request->input($contract->number_year).'.'.$extension; // nombre a guardar
-        $fileName = 'evaluación'.time().'.'.$extension; // nombre a guardar
-        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
-        $path = $request->file('file')->storeAs('public/files', $fileName);
-
-        $file = new File;
-        $file->description = $request->input('description');
-        $file->file = $fileName;
-        $file->file_type = 7;//rubros de obras
-        $file->contract_id = $contract_id;
-        $file->contract_state_id = $contract->contract_state_id;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
-        $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
-        $file->save();
-
-        //ACA SE DEBE CARGAR EL ARCHIVO EXCEL A LA TABLA ITEMS_CONTRACTS
-        //storeExcel DE ItemsOrdersController
-
-        return redirect()->route('contracts.show', $contract_id);
-    }
 
     /**
      * Funcionalidad de agregar de archivo.

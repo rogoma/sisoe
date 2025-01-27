@@ -543,8 +543,8 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Nombre del Componente</th>
-                                                            <th>Archivo importado por:</th>
-                                                            <th>Fecha/Hora</th>
+                                                            {{-- <th>Archivo importado por:</th>
+                                                            <th>Fecha/Hora</th> --}}
                                                             <th style="width: 190px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
@@ -555,10 +555,10 @@
                                                                 <td >
                                                                     {{ $user_files_rubros[$i]->description }}</td>
                                                                 <td >
-                                                                    {{ $user_files_rubros[$i]->dependency->description }}
+                                                                    {{-- {{ $user_files_rubros[$i]->dependency->description }} --}}
                                                                 </td>
                                                                 <td >
-                                                                    {{ $user_files_rubros[$i]->updated_atDateFormat() }}</td>
+                                                                    {{-- {{ $user_files_rubros[$i]->updated_atDateFormat() }}</td> --}}
                                                                 <td>
                                                                     {{-- <a href="{{ asset('storage/files/' . $user_files_rubros[$i]->file) }}"
                                                                         title="Ver Archivo" target="_blank"
@@ -579,9 +579,9 @@
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
                                                                 <td>{{ $other_files_rubros[$i]->description }}</td>
-                                                                <td>{{ $other_files_rubros[$i]->dependency->description }}
+                                                                {{-- <td>{{ $other_files_rubros[$i]->dependency->description }} --}}
                                                                 </td>
-                                                                <td>{{ $other_files_rubros[$i]->updated_atDateFormat() }}
+                                                                {{-- <td>{{ $other_files_rubros[$i]->updated_atDateFormat() }} --}}
                                                                 </td>
                                                                 <td>
                                                                     {{-- <a href="{{ asset('storage/files/' . $other_files_rubros[$i]->file) }}"
@@ -600,7 +600,8 @@
                                                 <div class="text-center">
                                                     @if (Auth::user()->hasPermission(['admin.contracts.create', 'contracts.items.create' ]))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
-                                                            <a href="{{ route('contracts.files.upload_rubros', $contract->id) }}"
+                                                                {{-- <a href="{{ route('orders.items.uploadExcel', $contract->id) }}" --}}
+                                                                <a href="{{ route('contracts.files.upload_rubros', $contract->id) }}"
                                                                 class="btn btn-primary">Cargar Planillas con Rubros (Excel)</a>
                                                         @endif
                                                     @endif
