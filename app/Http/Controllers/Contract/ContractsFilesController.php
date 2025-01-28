@@ -5,6 +5,7 @@ namespace App\Http\Controllers\contract;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use App\Models\Contract;
 use App\Models\File;
 use App\Models\Component;
@@ -270,7 +271,13 @@ class ContractsFilesController extends Controller
                 
                 // creamos las reglas de validacion
                 $rules = array(                    
-                    'component_id' => 'numeric|required',                    
+                    'component_id' => [
+                    'numeric','required','max:2147483647',
+                        Rule::unique('items_contracts')->where(function ($query) use ($contract_id) {
+                        return $query->where('contract_id', $contract_id);
+                        })
+                    ],
+                    // 'component_id' => 'numeric|required',                    
                     'subItem_id' => 'numeric|required',
                     'rubro_id' => 'numeric|required',
                     'item_number' => 'numeric|required',                    
@@ -305,12 +312,12 @@ class ContractsFilesController extends Controller
                 // Chequea si el código del componente del excel sea el mismo de la orden
                 // $compo = $request->component_id;
                 $compo = intval($request->component_id);
-                $item['component_id']; 
+                $compo2 = intval($item['component_id']);                
                 // var_dump($compo);
                 // var_dump($item['component_id']);exit();
 
-                if ($item['component_id'] !== $compo) {                
-                    $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente del Formulario, verifique....');
+                if ($compo !== $compo2) {                
+                    $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente del Formulario, verifique que el valor del Componente en la planilla sea numérica....');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);   
                 }
 
@@ -346,8 +353,8 @@ class ContractsFilesController extends Controller
                 }                 
                 
                 $new_item->quantity = $item['quantity'];
-                $new_item->unit_price_mo = $item['unit_price_mo'];
-                $new_item->unit_price_mat = $item['unit_price_mat'];
+                $new_item->unit_price_mo = intval($item['unit_price_mo']);
+                $new_item->unit_price_mat = intval($item['unit_price_mat']);
                 // $new_item->tot_price_mo = $item['tot_price_mo'];
                 // $new_item->tot_price_mat = $item['tot_price_mat'];
                 $new_item->creator_user_id = $request->user()->id;  // usuario logueado

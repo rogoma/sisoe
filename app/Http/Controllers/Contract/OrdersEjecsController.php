@@ -27,6 +27,9 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Illuminate\Support\Facades\DB;
+use App\Exports\OrdersExport;
+use App\Exports\OrdersExport2;
+use App\Exports\OrdersExport3;
 
 class OrdersEjecsController extends Controller
 {
@@ -39,15 +42,9 @@ class OrdersEjecsController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.orders.index',
-                            'orders.orders.index',
-                            'process_orders.orders.index',
-                            'derive_orders.orders.index',
-                            'plannings.orders.index'];
-        $create_permissions = ['admin.orders.create',
-                            'orders.orders.create'];
-        $update_permissions = ['admin.orders.update',
-                            'orders.orders.update'];
+        $index_permissions = ['admin.orders.index','orders.orders.index'];
+        $create_permissions = ['admin.orders.create', 'orders.orders.create'];
+        $update_permissions = ['admin.orders.update', 'orders.orders.update'];
 
         $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index
         $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create
@@ -100,15 +97,18 @@ class OrdersEjecsController extends Controller
         return view('order.items.index', compact('order', 'items'));
     }
 
-    //Para mostrar un archivo EXCEL guardado en el Proyecto
+    //Para mostrar Planillas EXCEL Región Oriental guardado en el Proyecto con formato ZIP
     public function ArchivoPedido(){
         header("Content-type: application/zip");
-        header("Content-Disposition: inline; filename=1-Planilla 1.1. Pozo Tipo A.zip");
-        readfile("files/1-Planilla 1.1. Pozo Tipo A.zip");
+        header("Content-Disposition: inline; filename=Planillas Región Oriental.zip");        
+        readfile("files/Planillas Región Oriental.zip");
+    }
 
-        // header("Content-type: application/xlsx");
-        // header("Content-Disposition: inline; filename=1-Planilla 1.1. Pozo Tipo A.xlsx");
-        // readfile("files/1-Planilla 1.1. Pozo Tipo A.xlsx");
+    //Para mostrar Planillas EXCEL Región Occidental guardado en el Proyecto con formato ZIP
+    public function ArchivoPedido2(){
+        header("Content-type: application/zip");
+        header("Content-Disposition: inline; filename=Planillas Región Occidental.zip");        
+        readfile("files/Planillas Región Occidental.zip");
     }
     /**
      * BUscar codigos de catalogo 5

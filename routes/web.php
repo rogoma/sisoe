@@ -46,8 +46,6 @@ use App\Http\Controllers\Contract\OrdersEjecsController;
 use App\Http\Controllers\Dgaf\DgafsController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Contract\ItemsOrdersController;
-use App\Http\Controllers\Contract\TableController;
-
 
 // use App\Http\Controllers\Report\PdfsController;
 use App\Http\Controllers\Report\ReportsController;
@@ -85,8 +83,6 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/users/change_pass', [UsersController::class, 'change_pass'])->name('users.change_pass');
 
     Route::resource('users', UsersController::class);   // index, create, update, delete
-
-    Route::resource('tables', TableController::class);
 
     //ORDER_PRESENTATIONS A EXCEL - //PARA GENERAR ARCHIVOS EXCEL PRIMERO SE COLOCA EL GET ANTES DEL RESOURCE
     Route::get('/order_presentations/exportarexcel', [OrderPresentationsController::class, 'exportarExcel']);
@@ -244,7 +240,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::get('orders/files/{file_id}/download', [OrdersFilesController::class, 'download'])->name('orders.files.download');
 
-    Route::get('excel/pedidos', [OrdersEjecsController::class, 'ArchivoPedido'])->name('excel.pedidos');
+    //Llama desde la ruta contracts/excel/pedidos 
+    Route::get('contracts/excel/pedidos', [OrdersEjecsController::class, 'ArchivoPedido'])->name('excel.pedidos');
+    Route::get('contracts/excel/pedidos2', [OrdersEjecsController::class, 'ArchivoPedido2'])->name('excel.pedidos2');
     // Route::get('excel/items', [OrdersController::class, 'ArchivoItem'])->name('excel.items');
     // Route::get('excel/items2', [OrdersController::class, 'ArchivoItem2'])->name('excel.items2');
     // Route::get('excel/items3', [OrdersController::class, 'ArchivoItem3'])->name('excel.items3');

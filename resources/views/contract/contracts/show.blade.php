@@ -88,7 +88,7 @@
                         <div class="d-inline">
                             <h5>Visualizar Contratos</h5>
                             <span>Contrato Nº {{ $contract->number_year }}</span>
-                            <br><br>
+                            <br><br>                            
                             <h5>
                                 <p style="font-size: 17px; font-weight: bold; color:#FF0000;">Estado Actual:
                                     {{ $contract->contractState->id . ' - ' . $contract->contractState->description }}</p>
@@ -129,6 +129,7 @@
                                                 <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia
                                                     Responsable: {{ $contract->dependency->description }}</h5>
                                             </div>
+                                            
                                             <div class="col-sm-2">
                                                 @if (Auth::user()->hasPermission(['admin.contracts.update']))
                                                     {{-- @if (in_array($contract->contract_state_id, [1, 2])) --}}
@@ -180,8 +181,7 @@
                                             @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
-                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está
-                                                        en Curso)</a>
+                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está en Curso)</a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -587,28 +587,13 @@
                                                         @endif
                                                     @endif
                                                 </div>
-                                                <br><br>
+                                                <br><br><br>
                                             <div class="float-rigth">
-                                                <h6  style="color:blue">Modelos de Archivos Excel de Componentes para Descargar y realizar importación de rubros <a href="excel/pedidos" title="Descargar Planillas Excel de Rubros.xlsx" class="btn btn-danger" target="_blank">Archivos</a></h6>
-                                                <a href="pdf/panel_contracts1" target="_blank">EN CURSO</a>
-                                                <a href="excel/pedidos" title="Descargar Modelo Pedido.xlsx" class="btn btn-danger" target="_blank">0-Pedidos</a>
-                                                <a href="excel/items" title="Descargar Modelo Items.xlsx" class="btn btn-danger" target="_blank">1-Items Contrato Abierto</a>
-                                                <a href="excel/items2" title="Descargar Modelo Items.xlsx" class="btn btn-danger" target="_blank">2-Items Contrato Cerrado</a>
-                                                <a href="excel/items3" title="Descargar Modelo Items.xlsx" class="btn btn-danger" target="_blank">3-Items Contrato Abierto MMin/MMáx</a>
-                                            </div>
-                                            <br><br>
-                                            <table id="example" class="display nowrap" style="width:100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Título</th>
-                                                        <th>Acción</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
-
-                                            </div>
-
+                                                <h6  style="color:blue">Archivos Excel de Componentes (Formato Zip) para Descargar y realizar importación de rubros </h6>
+                                                <a href="excel/pedidos" title="Descargar Planillas Reg. Oriental" class="btn btn-danger" target="_blank">Planillas Región Oriental</a>
+                                                <a href="excel/pedidos2" title="Descargar Planillas Reg. Occidental" class="btn btn-danger" target="_blank">Planillas Región Occidental</a>
+                                            </div>                                          
+                                        </div>
 
                                             <div class="tab-pane" id="tab6" role="tabpanel">
                                                 <label class="col-form-label f-w-600">Archivos de contratos cargados al  llamado:</label>

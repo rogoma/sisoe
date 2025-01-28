@@ -41,7 +41,7 @@ p.centrado {
                             <a href="pdf/panel_contracts1" class="btn btn-outline-warning" target="_blank">EN CURSO</a>
                             <a href="pdf/panel_contracts6" class="btn btn-outline-success" target="_blank">EN PROCESO RESCISIÓN</a>
                             <a href="pdf/panel_contracts2" class="btn btn-outline-warning" target="_blank">RESCINDIDOS</a>
-                            <a href="pdf/panel_contracts3" class="btn btn-outline-danger" target="_blank">CERRADOS</a> --}}
+                            <a href="pdf/panel_contracts3" class="btn btn-outline-danger" target="_blank">CERRADOS</a> --}}                            
                     </div>
                 </div>
             </div>
