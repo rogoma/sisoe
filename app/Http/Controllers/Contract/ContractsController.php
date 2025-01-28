@@ -163,7 +163,7 @@ class ContractsController extends Controller
             'description' => 'string|required|max:300',
             'iddncp' => 'string|required|max:999999|min:7',
             'linkdncp' => 'string|required|max:300',
-            'number_year' => 'string|required|max:9',
+            'number_year' => 'string|required|max:9|unique:contracts,number_year',
             'year_adj' => 'numeric|required|max:9999',
             'sign_date' => 'date_format:d/m/Y|required',
             'provider_id' => 'numeric|required|max:999999',
@@ -233,25 +233,25 @@ class ContractsController extends Controller
     public function show(Request $request, $contract_id)
     {
         $contract = Contract::findOrFail($contract_id);
-        
-        // para mostrar agrupados los componentes de items_contracts agregados         
+
+        // para mostrar agrupados los componentes de items_contracts agregados
         $items_contract = ItemContract::with('component') // Carga la relación 'component'
+        ->where('contract_id', $contract_id) // Filtra directamente en la consulta según el $contract_id
         ->get()
         ->groupBy('component_id') // Agrupa los elementos por component_id
         ->map(function ($group) {
-            // Retorna el primer elemento del grupo
+            // Retorna el primer elemento del grupo ordenado
             return $group->sortBy(function ($item) {
                 return $item->component->code . ' ' . $item->component->description; // Ordena por combinación de code y description
             })->first(); // Mantiene solo un registro por grupo
-            })
-                ->sortBy(function ($item) {
-                return $item->component->code; // Ordena los grupos por component->code
-            });
-
+        })
+        ->sortBy(function ($item) {
+            return $item->component->code; // Ordena los grupos por component->code
+        });
 
         // $user_files_rubros = ItemContract::findOrFail($contract_id);
         $user_dependency = $request->user()->dependency_id;
-        $role_user = $request->user()->role_id;        
+        $role_user = $request->user()->role_id;
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 1 pólizas
         $user_files_pol = $contract->files()->where('dependency_id', $user_dependency)
@@ -386,7 +386,7 @@ class ContractsController extends Controller
             'description' => 'string|required|max:300',
             'iddncp' => 'string|required|max:999999|min:7',
             'linkdncp' => 'string|required|max:300',
-            'number_year' => 'string|required|max:9',
+            'number_year' => 'string|required|max:9|unique:contracts,number_year',
             'year_adj' => 'numeric|required|max:9999',
             'sign_date' => 'date_format:d/m/Y|required',
             'provider_id' => 'numeric|required|max:999999',

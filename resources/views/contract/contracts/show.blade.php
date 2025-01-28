@@ -541,11 +541,11 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Nombre de Componente con rubros cargados</th>                                                            
+                                                            <th>Nombre de Componente con rubros cargados</th>
                                                             <th style="width: 120px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>                                                        
+                                                    <tbody>
                                                         @php $counter = 1; @endphp
                                                         @foreach ($items_contract as $item)
                                                             <tr>
@@ -559,7 +559,7 @@
                                                                 <td>
                                                                     <button type="button" title="Componente con Rubros"
                                                                                     class="btn btn-primary btn-icon"
-                                                                                    onclick="itemOrder({{ $order->id }})">
+                                                                                    onclick="itemOrder({{ $contract->id }})">
                                                                                     <i class="fa fa-list"></i>
                                                                                 </button>
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
@@ -568,13 +568,13 @@
                                                                                 {{-- OJO -> Si no tiene movimiento en Orden --}}
                                                                                 <button type="button" title="Eliminar Componente"
                                                                                     class="btn btn-danger btn-icon"
-                                                                                    onclick="anuleOrder({{ $order->id }})">
+                                                                                    onclick="anuleOrder({{ $contract->id }})">
                                                                                     <i class="fa fa-ban"></i>
                                                                                 </button>
                                                                 </td>
                                                             </tr>
                                                             @php $counter++; @endphp
-                                                        @endforeach                                                        
+                                                        @endforeach
                                                     </tbody>
                                                 </table>
                                                 <br>
@@ -590,7 +590,23 @@
                                                 <br><br>
                                             <div class="float-rigth">
                                                 <h6  style="color:blue">Modelos de Archivos Excel de Componentes para Descargar y realizar importación de rubros <a href="excel/pedidos" title="Descargar Planillas Excel de Rubros.xlsx" class="btn btn-danger" target="_blank">Archivos</a></h6>
+                                                <a href="pdf/panel_contracts1" target="_blank">EN CURSO</a>
+                                                <a href="excel/pedidos" title="Descargar Modelo Pedido.xlsx" class="btn btn-danger" target="_blank">0-Pedidos</a>
+                                                <a href="excel/items" title="Descargar Modelo Items.xlsx" class="btn btn-danger" target="_blank">1-Items Contrato Abierto</a>
+                                                <a href="excel/items2" title="Descargar Modelo Items.xlsx" class="btn btn-danger" target="_blank">2-Items Contrato Cerrado</a>
+                                                <a href="excel/items3" title="Descargar Modelo Items.xlsx" class="btn btn-danger" target="_blank">3-Items Contrato Abierto MMin/MMáx</a>
                                             </div>
+                                            <br><br>
+                                            <table id="example" class="display nowrap" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Título</th>
+                                                        <th>Acción</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+
                                             </div>
 
 
@@ -698,6 +714,31 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+
+            const table = $('#example').DataTable({
+        ajax: '/tables', // URL que devuelve los datos JSON
+        columns: [
+            { data: 'title', title: 'Título' },
+            {
+                data: null,
+                title: 'Acción',
+                render: function(data, type, row) {
+                    return `
+                        <button class="btn btn-primary toggle-files" data-id="${row.id}">Ver Archivos</button>
+                        <div id="files-${row.id}" class="files-container" style="display: none; margin-top: 10px;">
+                            ${row.files.map(file => `<a href="${file.url}" target="_blank">${file.name}</a><br>`).join('')}
+                        </div>
+                    `;
+                }
+            }
+        ]
+    });
+
+    // Manejar el despliegue de archivos
+    $('#example').on('click', '.toggle-files', function() {
+        const id = $(this).data('id');
+        $(`#files-${id}`).toggle(); // Mostrar/Ocultar contenedor de archivos
+    });
 
             updateOrder = function(order) {
                 location.href = '/contracts/{{ $contract->id }}/orders/' + order + '/edit/';
@@ -945,46 +986,6 @@
                     });
             }
 
-            // deleteContract = function(id){
-            //   swal({
-            //         title: "Atención",
-            //         text: "Está seguro que desea eliminar el llamado?",
-
-            //         type: "warning",
-            //         showCancelButton: true,
-            //         confirmButtonColor: "#DD6B55",
-            //         confirmButtonText: "Sí, eliminar",
-            //         cancelButtonText: "Cancelar",
-            //     },
-            //     function(isConfirm){
-            //       if(isConfirm){
-            //         $.ajax({
-            //         //   url : '/contracts/contract/'+id+'/delete/',
-            //           url : '{{ route('contracts.delete', ['contract_id' => ':id']) }}'.replace(':id', id),
-            //           method : 'POST',
-            //           data: {_method: 'DELETE', _token: '{{ csrf_token() }}'},
-            //           success: function(data){
-            //             try{
-            //                 response = (typeof data == "object") ? data : JSON.parse(data);
-            //                 if(response.status == "success"){
-            //                     location.reload();
-            //                 }else{
-            //                     swal("Error!", response.message, "error");
-            //                 }
-            //             }catch(error){
-            //                 swal("Error!", "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina", "error");
-            //                 console.log(error);
-            //             }
-            //           },
-            //           error: function(error){
-            //             swal("Error!", "Ocurrió 1 error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina", "error");
-            //             console.log(error);
-            //           }
-            //         });
-            //       }
-            //     }
-            //   );
-            // };
 
             deleteFile = function(file) {
                 swal({

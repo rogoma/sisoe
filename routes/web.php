@@ -37,7 +37,6 @@ use App\Http\Controllers\DeriveOrder\DeriveOrdersController;
 use App\Http\Controllers\Order\SimeseOrdersController;
 use App\Http\Controllers\Order\OrdersFilesController;
 
-
 //DESDE ACA SE USA PARA EL SISTEMA DE CONTRATOS Y POLIZAS
 use App\Http\Controllers\Contract\ContractsController;
 use App\Http\Controllers\Contract\ContractsFilesController;
@@ -47,6 +46,7 @@ use App\Http\Controllers\Contract\OrdersEjecsController;
 use App\Http\Controllers\Dgaf\DgafsController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Contract\ItemsOrdersController;
+use App\Http\Controllers\Contract\TableController;
 
 
 // use App\Http\Controllers\Report\PdfsController;
@@ -86,6 +86,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::resource('users', UsersController::class);   // index, create, update, delete
 
+    Route::resource('tables', TableController::class);
 
     //ORDER_PRESENTATIONS A EXCEL - //PARA GENERAR ARCHIVOS EXCEL PRIMERO SE COLOCA EL GET ANTES DEL RESOURCE
     Route::get('/order_presentations/exportarexcel', [OrderPresentationsController::class, 'exportarExcel']);
@@ -133,6 +134,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::resource('catalog_level5s', Level5CatalogCodeController::class);
     Route::get('catalog_level5s/{id}/edit_c5', [Level5CatalogCodeController::class, 'edit_c5'])->name('catalog_level5s.edit_c5');
+
 
 
     //RECURSOS PARA MANEJAR CONTRACTS (CONTRATOS)
@@ -251,7 +253,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //excel/itemsAw
 
 
-    
+
 
     /*************** REPORTES DOMPDF **************/
     //REPORTE DE CONTRATOS TODOS
@@ -388,7 +390,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::put('contracts/orders/{order_id}/edit', [ContractsController::class, 'update'])->name('contracts.orders.update');
     // Route::post('contracts/derive_order/{order_id}', [ContractsController::class, 'deriveOrder'])->name('contracts.deriveOrder');
 
-  
+
 
     // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
 
