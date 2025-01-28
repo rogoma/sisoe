@@ -557,7 +557,7 @@
                                                                 </td>
 
                                                                 <td>
-                                                                    <button type="button" title="Orden con Rubros"
+                                                                    <button type="button" title="Componente con Rubros"
                                                                                     class="btn btn-primary btn-icon"
                                                                                     onclick="itemOrder({{ $order->id }})">
                                                                                     <i class="fa fa-list"></i>
@@ -565,7 +565,8 @@
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 {{-- <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a> --}}
 
-                                                                                <button type="button" title="Anular"
+                                                                                {{-- OJO -> Si no tiene movimiento en Orden --}}
+                                                                                <button type="button" title="Eliminar Componente"
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="anuleOrder({{ $order->id }})">
                                                                                     <i class="fa fa-ban"></i>
