@@ -251,22 +251,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //excel/itemsAw
 
 
-    /********** MODULO DERIVAR PEDIDOS **********/
-    Route::get('derive_orders/{order_id}/create', [DeriveOrdersController::class, 'create'])->name('derive_orders.create');
-    Route::post('derive_orders/{order_id}/create', [DeriveOrdersController::class, 'store'])->name('derive_orders.store');
-    Route::get('derive_orders/{order_id}/edit', [DeriveOrdersController::class, 'edit'])->name('derive_orders.edit');
-    Route::put('derive_orders/{order_id}/edit', [DeriveOrdersController::class, 'update'])->name('derive_orders.update');
-
-    Route::post('derive_orders/derivePbc/{order_id}', [DeriveOrdersController::class, 'derivePbc'])->name('derive_orders.derivePbc');
-
-    Route::post('derive_orders/deriveDictamen/{order_id}', [DeriveOrdersController::class, 'deriveDictamen'])->name('derive_orders.deriveDictamen');
-    Route::post('derive_orders/deriveDictamenEVAL/{order_id}', [DeriveOrdersController::class, 'deriveDictamenEVAL'])->name('derive_orders.deriveDictamenEVAL');
-    Route::post('derive_orders/deriveExcepciones/{order_id}', [DeriveOrdersController::class, 'deriveExcepciones'])->name('derive_orders.deriveExcepciones');
-
-    Route::post('derive_orders/deriveInforme/{order_id}', [DeriveOrdersController::class, 'deriveInforme'])->name('derive_orders.deriveInforme');
-
-    Route::post('derive_orders/deriveInformeUTA/{order_id}', [DeriveOrdersController::class, 'deriveInformeUTA'])->name('derive_orders.deriveInformeUTA');
-
+    
 
     /*************** REPORTES DOMPDF **************/
     //REPORTE DE CONTRATOS TODOS
@@ -374,7 +359,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //carga archivos de evaluaciones
     Route::get('contracts/files/{contract_id}/create_eval', [ContractsFilesController::class, 'create_eval'])->name('contracts.files.create_eval');
     //carga archivos de importación de archivos de rubros
-    Route::get('contracts/files/{contract_id}/upload_rubros', [ContractsFilesController::class, 'upload_rubros'])->name('contracts.files.upload_rubros');
+    Route::get('contracts/files/{contract_id}/uploadExcelRubros', [ContractsFilesController::class, 'uploadExcelRubros'])->name('contracts.files.uploadExcelRubros');
 
 
     //almacena archivos de pólizas
@@ -403,25 +388,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::put('contracts/orders/{order_id}/edit', [ContractsController::class, 'update'])->name('contracts.orders.update');
     // Route::post('contracts/derive_order/{order_id}', [ContractsController::class, 'deriveOrder'])->name('contracts.deriveOrder');
 
-
-    /********** MODULO DE DGAF **********/
-    Route::resource('dgafs', DgafsController::class);
-
-    Route::resource('dgafs.objections', App\Http\Controllers\Dgaf\ObjectionsController::class);
-    Route::resource('dgafs.objections_responses', App\Http\Controllers\Dgaf\ObjectionsResponsesController::class);
-
-    Route::post('dgafs/recibeOrder/{order_id}', [DgafsController::class, 'recibeOrder'])->name('dgafs.recibeOrder');
-    Route::post('dgafs/recibeOrderDGAF/{order_id}', [DgafsController::class, 'recibeOrderDGAF'])->name('dgafs.recibeOrderDGAF');
-    Route::post('dgafs/deriveOrderDGAF/{order_id}', [DgafsController::class, 'deriveOrderDGAF'])->name('dgafs.deriveOrderDGAF');
-
-    Route::post('dgafs/deriveDictamen/{order_id}', [DgafsController::class, 'deriveDictamen'])->name('dgafs.deriveDictamen');
-
-    Route::post('dgafs/recibeOrderEVAL/{order_id}', [DgafsController::class, 'recibeOrderEVAL'])->name('dgafs.recibeOrderEVAL');
-    Route::post('dgafs/recibeOrderCVE/{order_id}', [DgafsController::class, 'recibeOrderCVE'])->name('dgafs.recibeOrderCVE');
-
-    Route::post('dgafs/deriveDictamenEVAL/{order_id}', [DgafsController::class, 'deriveDictamenEVAL'])->name('dgafs.deriveDictamenEVAL');
-    Route::post('dgafs/deriveDictamenCVE/{order_id}', [DgafsController::class, 'deriveDictamenCVE'])->name('dgafs.deriveDictamenCVE');
-
+  
 
     // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');
 

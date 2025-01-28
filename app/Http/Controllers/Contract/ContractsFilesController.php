@@ -10,6 +10,13 @@ use App\Models\File;
 use App\Models\Component;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Models\SubItem;
+use App\Models\Rubro;
+use App\Models\ItemContract;
+
+
 
 class ContractsFilesController extends Controller
 {
@@ -184,69 +191,184 @@ class ContractsFilesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function upload_rubros(Request $request, $contract_id)
+    public function uploadExcelRubros(Request $request, $contract_id)
     {
         $contract = Contract::findOrFail($contract_id);
         $components = Component::orderBy('id')->get();//ordenado por id componente
-        $post_max_size = $this->postMaxSize;
+        
 
         // return view('contract.files.create_rubros', compact('contract', 'components','post_max_size'));
-        return view('contract.files.create_rubros', compact('contract', 'components','post_max_size'));
+        return view('contract.files.uploadExcel', compact('contract', 'components'));
     }
 
+        
     /**
-     * Funcionalidad de agregar imprtación de archivos excel de rubros de obras
-     *    *
+     * Formulario de agregacion de ítems Archivo Excel a un CONTRATO ABIERTO.
+     *
      * @return \Illuminate\Http\Response
      */
     public function store_rubros(Request $request, $contract_id)
     {
         $contract = Contract::findOrFail($contract_id);
+        
+        //capturamos el id del contrato para enviar a la vista show de contrato al finalizar
+        // $contract_id = $order->contract_id;
 
-        $rules = array(
-            'component_id' => 'numeric|required',
-        );
+        //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
+        // $cant_item = 0;
+        // if ($order->items->count() > 0){
+        //     $cant_item = 1;
+        // }
+        
+        if($request->hasFile('excel')){
+            // chequeamos la extension del archivo subido
+            if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+                $validator->errors()->add('excel', 'El archivo introducido debe ser un excel de tipo: xls o xlsx'); // Agregamos el error
+                return back()->withErrors($validator)->withInput();
+            }
 
-        $validator =  Validator::make($request->input(), $rules);
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
+            // creamos un array de indices de las columnas
+            $header = array('component_id','subItem_id','rubro_id', 'item_number','rubro','quantity', 
+            'unid','unit_price_mo','unit_price_mat', 'tot_price_mo', 'tot_price_mat');
 
-        if(!$request->hasFile('file')){
+            // accedemos al archivo excel cargado
+            $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
+            $reader->setReadDataOnly(true); 
+            $reader->setReadEmptyCells(false);
+            $spreadsheet = $reader->load($request->excel->path());  // cargamos el archivo
+            // variable que guarda la plantilla activa
+            $worksheet = $spreadsheet->getActiveSheet();    
+
+            $rows = $worksheet->getHighestRow();    // cantidad de filas
+            $columns = count($header);  // cantidad de columnas que debe tener el archivo
+            $last_column = Coordinate::stringFromColumnIndex($columns);
+
+            // Recorremos cada fila del archivo excel y sumamos el total de los totales de ítemes
+            
+            //ceramos la variable que guarda la suma de los totales de los ítems
+            // $order_amount_items = 0;
+            // $tot_tot_price_mo = 0;
+            // $tot_tot_price_mat = 0;
+
+            for ($row = 2; $row <= $rows; ++$row) {
+                $data = $spreadsheet->getActiveSheet()->rangeToArray(
+                    'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
+                    NULL,        // Value that should be returned for empty cells
+                    TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
+                    TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
+                    TRUE         // Should the array be indexed by cell row and cell column
+                );
+
+                // Manejando BUG de la librería phpspreadsheet para archivos con formato xlsx
+                if(empty(trim(implode("", $data[$row])))){
+                    continue;
+                }
+
+                // creamos un array con indices igual al array de columnas y valores igual a los obtenidos en el archivo excel
+                $item = array_combine($header, $data[$row]);
+                
+                // creamos las reglas de validacion
+                $rules = array(                    
+                    'component_id' => 'numeric|required',                    
+                    'subItem_id' => 'numeric|required',
+                    'rubro_id' => 'numeric|required',
+                    'item_number' => 'numeric|required',                    
+                    'quantity' => 'numeric|required',
+                    'unid' => 'string|required',
+                    'unit_price_mo' => 'numeric|required|max:2147483647',                    
+                    'unit_price_mat' => 'numeric|required|max:2147483647',
+                    'tot_price_mo' => 'numeric|required|max:2147483647',
+                    'tot_price_mat' => 'numeric|required|max:2147483647'
+                );
+                // validamos los datos
+                $validator = Validator::make($item, $rules); // Creamos un objeto validator
+                if ($validator->fails()) {
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                
+                // Chequea si existe el código o id del componente                
+                $component = Component::where('id', $item['component_id'])->get()->first();
+                if (is_null($component)) {
+                    $validator->errors()->add('component', 'No existe id de Componente ingresado. Por favor ingrese un componenente registrado en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);                
+                }
+
+                // Chequea si existe el código o id del SubItem
+                $subItem = SubItem::where('id', $item['subItem_id'])->get()->first();
+                if (is_null($subItem)) {
+                    $validator->errors()->add('subItem', 'No existe SubItem ingresado. Por favor ingrese un subItem registrado en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);                
+                }
+
+                // Chequea si el código del componente del excel sea el mismo de la orden
+                // $compo = $request->component_id;
+                $compo = intval($request->component_id);
+                $item['component_id']; 
+                // var_dump($compo);
+                // var_dump($item['component_id']);exit();
+
+                if ($item['component_id'] !== $compo) {                
+                    $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente del Formulario, verifique....');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);   
+                }
+
+                // Chequea si existe el código o id del rubro
+                $rubro = Rubro::where('id', $item['rubro_id'])->get()->first();
+                if (is_null($rubro)) {
+                    $validator->errors()->add('rubro', 'No existe id de rubro ingresado. Por favor ingrese un rubro registrado en el sistema.');
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
+                }
+
+                $item['rubro_id'] = $rubro->id;
+                // agregamos la fila al array de pedidos
+                $items[] = $item;
+
+                //ACUMULA LOS TOTALES DE PRECIOS DE ITEMES                                
+                // $tot_tot_price_mo = $tot_tot_price_mo + $item['tot_price_mo'];
+                // $tot_tot_price_mat = $tot_tot_price_mat + $item['tot_price_mat'];                
+            }
+           
+            // En caso de haber pasado todas las validaciones guardamos los datos
+            foreach ($items as $item) {
+                $new_item = new ItemContract; 
+                $new_item->contract_id = $contract_id;
+                $new_item->component_id = $compo;
+                // $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
+                $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
+                $new_item->rubro_id = $item['rubro_id'];
+
+                if ($item['rubro_id'] == 9999){
+                    $new_item->subitem_id = $item['subItem_id'];
+                }else{
+                    $new_item->subitem_id = NULL;
+                }                 
+                
+                $new_item->quantity = $item['quantity'];
+                $new_item->unit_price_mo = $item['unit_price_mo'];
+                $new_item->unit_price_mat = $item['unit_price_mat'];
+                // $new_item->tot_price_mo = $item['tot_price_mo'];
+                // $new_item->tot_price_mat = $item['tot_price_mat'];
+                $new_item->creator_user_id = $request->user()->id;  // usuario logueado
+                $new_item->save();
+            }       
+            
+            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
+            
+             // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
+            //  $order = Order::findOrFail($order_id);
+             //CALCULA EL TOTAL GRAL PARA GRABAR EN ORDERS
+            //  $order->total_amount = $tot_tot_price_mo + $tot_tot_price_mat;
+            //  $order->save(); 
+
+            return redirect()->route('contracts.show', $contract_id)->with('success', 'Archivo de rubros importado correctamente'); // Caso usuario posee rol pedidos            
+
+        }else{
             $validator = Validator::make($request->input(), []);
-            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo EXCEL.');
+            $validator->errors()->add('excel', 'El campo es requerido');
             return back()->withErrors($validator)->withInput();
         }
-
-        // chequeamos la extension del archivo subido
-        $extension = $request->file('file')->getClientOriginalExtension();
-        if(!in_array($extension, array('xls', 'xlsx'))){
-            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a  formatos:  xls, xlsx.'); // Agregamos el error
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // Pasó todas las validaciones, guardamos el archivo
-        // $fileName = time().'-contract-file.'.$extension; // nombre a guardar
-        // $fileName = 'contrato_nro_'.$request->input($contract->number_year).'.'.$extension; // nombre a guardar
-        $fileName = 'evaluación'.time().'.'.$extension; // nombre a guardar
-        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
-        $path = $request->file('file')->storeAs('public/files', $fileName);
-
-        $file = new File;
-        $file->description = $request->input('component_id');
-        $file->file = $fileName;
-        $file->file_type = 7;//rubros de obras
-        $file->contract_id = $contract_id;
-        $file->contract_state_id = $contract->contract_state_id;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
-        $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
-        $file->save();
-
-        //ACA SE DEBE CARGAR EL ARCHIVO EXCEL A LA TABLA ITEMS_CONTRACTS
-        //storeExcel DE ItemsOrdersController
-
-        return redirect()->route('contracts.show', $contract_id);
     }
 
     /**

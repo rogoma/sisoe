@@ -17,4 +17,8 @@ class Component extends Model
     public function orders(){
         return $this->hasMany('App\Models\Order');
     }
+
+    public function itemsContract(){
+        return $this->hasMany('App\Models\ItemContract');
+    }
 }

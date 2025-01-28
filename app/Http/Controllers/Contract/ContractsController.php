@@ -22,6 +22,7 @@ use App\Models\OrderOrderState;
 use App\Models\ContractState;
 use App\Models\ContractType;
 use App\Models\User;
+use App\Models\ItemContract;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -232,9 +233,25 @@ class ContractsController extends Controller
     public function show(Request $request, $contract_id)
     {
         $contract = Contract::findOrFail($contract_id);
+        
+        // para mostrar agrupados los componentes de items_contracts agregados         
+        $items_contract = ItemContract::with('component') // Carga la relación 'component'
+        ->get()
+        ->groupBy('component_id') // Agrupa los elementos por component_id
+        ->map(function ($group) {
+            // Retorna el primer elemento del grupo
+            return $group->sortBy(function ($item) {
+                return $item->component->code . ' ' . $item->component->description; // Ordena por combinación de code y description
+            })->first(); // Mantiene solo un registro por grupo
+            })
+                ->sortBy(function ($item) {
+                return $item->component->code; // Ordena los grupos por component->code
+            });
+
+
+        // $user_files_rubros = ItemContract::findOrFail($contract_id);
         $user_dependency = $request->user()->dependency_id;
-        $role_user = $request->user()->role_id;
-        // $user = $request->user()->id;
+        $role_user = $request->user()->role_id;        
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 1 pólizas
         $user_files_pol = $contract->files()->where('dependency_id', $user_dependency)
@@ -277,23 +294,23 @@ class ContractsController extends Controller
         // }
 
         // Obtenemos los archivos excel cargados por usuarios con tipo de archivos 6-evaluaciones
-        $user_files_rubros = $contract->files()->where('dependency_id', $user_dependency)
-            ->whereIn('file_type', [7])//7-archivos excel de rubros
-            ->orderBy('created_at','asc')
-            ->get();
+        // $user_files_rubros = $contract->files()->where('dependency_id', $user_dependency)
+        //     ->whereIn('file_type', [7])//7-archivos excel de rubros
+        //     ->orderBy('created_at','asc')
+        //     ->get();
 
-        // if($role_user == 1){
-            $other_files_rubros = $contract->files()->where('dependency_id', '!=', $user_dependency)
-            ->whereIn('file_type', [7])//7-archivos excel de rubros
-            ->orderBy('created_at','asc')
-            ->get();
-        // }
+        // // if($role_user == 1){
+        //     $other_files_rubros = $contract->files()->where('dependency_id', '!=', $user_dependency)
+        //     ->whereIn('file_type', [7])//7-archivos excel de rubros
+        //     ->orderBy('created_at','asc')
+        //     ->get();
+        // // }
 
         // chequeamos que el usuario tenga permisos para visualizar el pedido
         if($request->user()->hasPermission(['admin.contracts.show', 'contracts.contracts.show','process_contracts.contracts.show',
         'contracts.contracts.index','derive_contracts.contracts.index']) || $contract->dependency_id == $request->user()->dependency_id){
             return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con',
-            'user_files_eval','other_files_pol','other_files_con','other_files_eval','user_files_rubros','other_files_rubros'));
+            'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract'));
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }

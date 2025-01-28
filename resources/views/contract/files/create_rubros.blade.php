@@ -46,6 +46,7 @@
                                 </div>
                                 <div class="card-block">
                                     <form method="POST" action="{{ route('contracts.files.store_rubros', $contract->id) }}" enctype="multipart/form-data">
+                                    
                                     @csrf
 
                                     <div class="col-sm-6">
@@ -99,19 +100,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-    $('#component_id').select2();
-
-    $('#file').bind('change', function() {
-        max_upload_size = {{ $post_max_size }};
-        if(this.files[0].size > max_upload_size){
-            $('#guardar').attr("disabled", "disabled");
-            file_size = Math.ceil((this.files[0].size/1024)/1024);
-            max_allowed = Math.ceil((max_upload_size/1024)/1024);
-            swal("Error!", "El tamaño del archivo seleccionado ("+file_size+" Mb) supera el tamaño maximo de carga permitido ("+max_allowed+" Mb).", "error");
-        }else{
-            $('#guardar').removeAttr("disabled");
-        }
-    });
+    $('#component_id').select2();    
 
 });
 </script>

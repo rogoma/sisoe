@@ -77,6 +77,14 @@ class Contract extends Model
     }
 
     /**
+     * Para obtener el vinculo con la tabla items que equivalen a pólizas de cada llamado
+     */
+    public function itemsContracts(){
+        return $this->hasMany('App\Models\ItemContract');
+    }
+
+
+    /**
      * Para obtener el vinculo con la tabla orders_oi que equivalen a órdenes de ejecución de inicio de obras
      */
     public function orders(){

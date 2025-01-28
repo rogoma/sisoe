@@ -500,8 +500,7 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab3" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Asignación de Fiscales del
-                                                    Contrato:</label>
+                                                <label class="col-form-label f-w-600">Asignación de Fiscales del Contrato:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -537,63 +536,44 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab5" role="tabpanel">
-                                                <label class="col-form-label f-w-400">Componentes:</label>
+                                                {{-- <label class="col-form-label f-w-400">Componentes:</label> --}}
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Nombre del Componente</th>
-                                                            {{-- <th>Archivo importado por:</th>
-                                                            <th>Fecha/Hora</th> --}}
-                                                            <th style="width: 190px; text-align: center;">Acciones</th>
+                                                            <th>Nombre de Componente con rubros cargados</th>                                                            
+                                                            <th style="width: 120px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        @for ($i = 0; $i < count($user_files_rubros); $i++)
+                                                    <tbody>                                                        
+                                                        @php $counter = 1; @endphp
+                                                        @foreach ($items_contract as $item)
                                                             <tr>
-                                                                <td>{{ $i + 1 }}</td>
-                                                                <td >
-                                                                    {{ $user_files_rubros[$i]->description }}</td>
-                                                                <td >
-                                                                    {{-- {{ $user_files_rubros[$i]->dependency->description }} --}}
-                                                                </td>
-                                                                <td >
-                                                                    {{-- {{ $user_files_rubros[$i]->updated_atDateFormat() }}</td> --}}
                                                                 <td>
-                                                                    {{-- <a href="{{ asset('storage/files/' . $user_files_rubros[$i]->file) }}"
-                                                                        title="Ver Archivo" target="_blank"
-                                                                        class="btn btn-primary"><i
-                                                                            class="fa fa-eye"></i></a> --}}
-                                                                    <a href="{{ route('contracts.files.download', $user_files_rubros[$i]->id) }}"
-                                                                        title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
-                                                                    <button title="Eliminar Archivo"
-                                                                        onclick="deleteFile({{ $user_files_rubros[$i]->id }})"
-                                                                        class="btn btn-danger"><i
-                                                                            class="fa fa-trash"></i></a>
+                                                                    <p>{{ $counter }}</p>
                                                                 </td>
-                                                            </tr>
-                                                        @endfor
+                                                                <td>
+                                                                <p>{{ $item->component->code }} - {{ $item->component->description }} - {{ $item->description }}</p>
+                                                                </td>
 
-                                                        @for ($i = 0; $i < count($other_files_rubros); $i++)
-                                                            <tr>
-                                                                <td>{{ $i + 1 }}</td>
-                                                                <td>{{ $other_files_rubros[$i]->description }}</td>
-                                                                {{-- <td>{{ $other_files_rubros[$i]->dependency->description }} --}}
-                                                                </td>
-                                                                {{-- <td>{{ $other_files_rubros[$i]->updated_atDateFormat() }} --}}
-                                                                </td>
                                                                 <td>
-                                                                    {{-- <a href="{{ asset('storage/files/' . $other_files_rubros[$i]->file) }}"
-                                                                        title="Ver Archivo" target="_blank"
-                                                                        class="btn btn-primary"><i
-                                                                            class="fa fa-eye"></i></a> --}}
-                                                                    <a href="{{ route('contracts.files.download', $other_files_rubros[$i]->id) }}"
-                                                                        title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                    <button type="button" title="Orden con Rubros"
+                                                                                    class="btn btn-primary btn-icon"
+                                                                                    onclick="itemOrder({{ $order->id }})">
+                                                                                    <i class="fa fa-list"></i>
+                                                                                </button>
+                                                                                {{-- MOSTRAR PDF DE ORDEN --}}
+                                                                                {{-- <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a> --}}
+
+                                                                                <button type="button" title="Anular"
+                                                                                    class="btn btn-danger btn-icon"
+                                                                                    onclick="anuleOrder({{ $order->id }})">
+                                                                                    <i class="fa fa-ban"></i>
+                                                                                </button>
                                                                 </td>
                                                             </tr>
-                                                        @endfor
+                                                            @php $counter++; @endphp
+                                                        @endforeach                                                        
                                                     </tbody>
                                                 </table>
                                                 <br>
@@ -601,8 +581,8 @@
                                                     @if (Auth::user()->hasPermission(['admin.contracts.create', 'contracts.items.create' ]))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
                                                                 {{-- <a href="{{ route('orders.items.uploadExcel', $contract->id) }}" --}}
-                                                                <a href="{{ route('contracts.files.upload_rubros', $contract->id) }}"
-                                                                class="btn btn-primary">Cargar Planillas con Rubros (Excel)</a>
+                                                                <a href="{{ route('contracts.files.uploadExcelRubros', $contract->id) }}"
+                                                                class="btn btn-primary">Importar Planillas con Rubros (Excel)</a>
                                                         @endif
                                                     @endif
                                                 </div>
