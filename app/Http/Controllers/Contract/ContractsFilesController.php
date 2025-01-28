@@ -278,8 +278,8 @@ class ContractsFilesController extends Controller
                     'unid' => 'string|required',
                     'unit_price_mo' => 'numeric|required|max:2147483647',                    
                     'unit_price_mat' => 'numeric|required|max:2147483647',
-                    'tot_price_mo' => 'numeric|required|max:2147483647',
-                    'tot_price_mat' => 'numeric|required|max:2147483647'
+                    // 'tot_price_mo' => 'numeric|required|max:2147483647',
+                    // 'tot_price_mat' => 'numeric|required|max:2147483647'
                 );
                 // validamos los datos
                 $validator = Validator::make($item, $rules); // Creamos un objeto validator
