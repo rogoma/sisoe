@@ -590,8 +590,10 @@
                                                 <br><br><br>
                                             <div class="float-rigth">
                                                 <h6  style="color:blue">Archivos Excel de Componentes (Formato Zip) para Descargar y realizar importación de rubros </h6>
-                                                <a href="excel/pedidos" title="Descargar Planillas Reg. Oriental" class="btn btn-danger" target="_blank">Planillas Región Oriental</a>
-                                                <a href="excel/pedidos2" title="Descargar Planillas Reg. Occidental" class="btn btn-danger" target="_blank">Planillas Región Occidental</a>
+                                                <a href="excel/pedidos" title="Descargar Planillas Reg. Oriental" class="btn btn-danger" target="_blank">Planillas Reg. Oriental</a>
+                                                <a href="excel/pedidos2" title="Descargar Planillas Reg. Occidental" class="btn btn-danger" target="_blank">Planillas Reg. Occidental</a>
+                                                <a href="excel/pedidos3" title="Descargar Planilla Todos los Componentes Reg. Oriental" class="btn btn-danger" target="_blank">Planilla Todos los Componentes Reg. Oriental</a>
+                                                <a href="excel/pedidos4" title="Descargar Planilla Todos los Componentes Reg. Occidental" class="btn btn-danger" target="_blank">Planilla Todos los Componentes Reg. Occidental</a>
                                             </div>                                          
                                         </div>
 
@@ -782,6 +784,12 @@
             itemOrder = function(order) {
                 //lleva a index de ItemsOrdersController
                 location.href = '/orders/'+order+'/items_orders';
+
+            }
+
+            itemRubro = function(contract) {
+                //lleva a index de ItemsOrdersController
+                location.href = '/contracts/'+contract+'/items_orders';
 
             }
 

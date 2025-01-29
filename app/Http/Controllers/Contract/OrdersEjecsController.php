@@ -98,18 +98,18 @@ class OrdersEjecsController extends Controller
     }
 
     //Para mostrar Planillas EXCEL Región Oriental guardado en el Proyecto con formato ZIP
-    public function ArchivoPedido(){
-        header("Content-type: application/zip");
-        header("Content-Disposition: inline; filename=Planillas Región Oriental.zip");        
-        readfile("files/Planillas Región Oriental.zip");
-    }
+    // public function ArchivoPedido(){
+    //     header("Content-type: application/zip");
+    //     header("Content-Disposition: inline; filename=Planillas Región Oriental.zip");        
+    //     readfile("files/Planillas Región Oriental.zip");
+    // }
 
     //Para mostrar Planillas EXCEL Región Occidental guardado en el Proyecto con formato ZIP
-    public function ArchivoPedido2(){
-        header("Content-type: application/zip");
-        header("Content-Disposition: inline; filename=Planillas Región Occidental.zip");        
-        readfile("files/Planillas Región Occidental.zip");
-    }
+    // public function ArchivoPedido2(){
+    //     header("Content-type: application/zip");
+    //     header("Content-Disposition: inline; filename=Planillas Región Occidental.zip");        
+    //     readfile("files/Planillas Región Occidental.zip");
+    // }
     /**
      * BUscar codigos de catalogo 5
      *

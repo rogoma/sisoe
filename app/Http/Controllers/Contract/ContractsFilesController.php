@@ -309,16 +309,20 @@ class ContractsFilesController extends Controller
                     return back()->withErrors($validator)->withInput()->with('fila', $row);                
                 }
 
-                // Chequea si el código del componente del excel sea el mismo de la orden
-                // $compo = $request->component_id;
+                // Chequea si el código del componente del excel sea el mismo de la orden                
                 $compo = intval($request->component_id);
                 $compo2 = intval($item['component_id']);                
                 // var_dump($compo);
                 // var_dump($item['component_id']);exit();
 
-                if ($compo !== $compo2) {                
-                    $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente del Formulario, verifique que el valor del Componente en la planilla sea numérica....');
-                    return back()->withErrors($validator)->withInput()->with('fila', $row);   
+                //Controlamos que si $compo = 9999 permita agregar archivo masivo de excel
+                if ($compo == 9999) {                
+                    //no controla si el componente es igual al componente del formulario
+                }else{
+                    if ($compo !== $compo2) {
+                        $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente del Formulario, verifique que el valor del Componente en la planilla sea numérica....');
+                        return back()->withErrors($validator)->withInput()->with('fila', $row);
+                    }
                 }
 
                 // Chequea si existe el código o id del rubro
@@ -341,7 +345,7 @@ class ContractsFilesController extends Controller
             foreach ($items as $item) {
                 $new_item = new ItemContract; 
                 $new_item->contract_id = $contract_id;
-                $new_item->component_id = $compo;
+                $new_item->component_id = $item['component_id'];
                 // $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
                 $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
                 $new_item->rubro_id = $item['rubro_id'];
@@ -617,6 +621,35 @@ class ContractsFilesController extends Controller
             return redirect()->route('contracts.show', $contract_id)->with('success', 'Archivo agregado correctamente');
         }
     }
+
+    //Para mostrar Planillas EXCEL Región Oriental guardado en el Proyecto con formato ZIP
+    public function ArchivoPedido(){
+        header("Content-type: application/zip");
+        header("Content-Disposition: inline; filename=Planillas Región Oriental.zip");        
+        readfile("files/Planillas Región Oriental.zip");
+    }
+
+    //Para mostrar Planillas EXCEL Región Occidental guardado en el Proyecto con formato ZIP
+    public function ArchivoPedido2(){
+        header("Content-type: application/zip");
+        header("Content-Disposition: inline; filename=Planillas Región Occidental.zip");        
+        readfile("files/Planillas Región Occidental.zip");
+    }
+
+    //Para mostrar Planilla EXCEL Región Oriental con todos los rubros
+    public function ArchivoPedido3(){
+        header("Content-type: application/xlsx");
+        header("Content-Disposition: inline; filename=Todos los Componentes Reg. Oriental.xlsx");        
+        readfile("files/Todos los Componentes Reg. Oriental.xlsx");
+    }
+
+    //Para mostrar Planilla EXCEL Región Occidental con todos los rubros
+    public function ArchivoPedido4(){
+        header("Content-type: application/xlsx");
+        header("Content-Disposition: inline; filename=Todos los Componentes Reg. Occidental.xlsx");        
+        readfile("files/Todos los Componentes Reg. Occidental.xlsx");
+    }
+    
 
     /**
      * Funcionalidad de agregar de archivo.
