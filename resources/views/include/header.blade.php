@@ -36,9 +36,7 @@
                             <div class="dropdown-primary dropdown">
                                 <div class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="{{ asset('img/user.png') }}" class="img-radius" alt="User-Profile-Image">
-                                    <span style="color:blue">{{ Auth::user()->getFullName() }} </span>
-                                    {{-- <span style="color:#ff0000">{{ Auth::user()->role->description }}</span> --}}
-
+                                    <span style="color:red; font-size: 16px;">{{ Auth::user()->getFullName() }} - {{ Auth::user()->role->description }} </span>
                                     <i class="feather icon-chevron-down"></i>
                                 </div>
                                 <ul class="show-notification profile-notification dropdown-menu" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
@@ -73,23 +71,23 @@
             </div>
         </nav>
 
-        @if (Auth::user()->role_id == 1)
+        @if (Auth::user()->role_id == 1)//administrador del sistema
             @include('include.menus.admin')
-        @elseif(Auth::user()->role_id == 2)
+        @elseif(Auth::user()->role_id == 2)//dosapas
             @include('include.menus.orders')
-        @elseif(Auth::user()->role_id == 3)
+        @elseif(Auth::user()->role_id == 3)//fiscal
             @include('include.menus.orders')
-        @elseif(Auth::user()->role_id == 4)
+        @elseif(Auth::user()->role_id == 4)//contratista
             @include('include.menus.orders')
-        @elseif(Auth::user()->role_id == 5)
+        {{-- @elseif(Auth::user()->role_id == 5)
             @include('include.menus.plannings')
         @elseif(Auth::user()->role_id == 6)
             @include('include.menus.minor_purchases')
         @elseif(Auth::user()->role_id == 7)
-            @include('include.menus.awards')
-        @elseif(Auth::user()->role_id == 8 || Auth::user()->role_id == 26)
+            @include('include.menus.awards') --}}
+        @elseif(Auth::user()->role_id == 8 || Auth::user()->role_id == 26)//contratos y garantias y derivar contratos
             @include('include.menus.contracts')
-        @elseif(Auth::user()->role_id == 9)
+        {{-- @elseif(Auth::user()->role_id == 9)
             @include('include.menus.tenders')
         @elseif(Auth::user()->role_id == 10)
             @include('include.menus.exceptions')
@@ -100,16 +98,16 @@
         @elseif(Auth::user()->role_id == 21)
             @include('include.menus.legal_advices')
         @elseif(Auth::user()->role_id == 23)
-            @include('include.menus.coordinations')
-        @elseif(Auth::user()->role_id == 24)
+            @include('include.menus.coordinations') --}}
+        @elseif(Auth::user()->role_id == 24)//dgaf
             @include('include.menus.dgafs')
-        @elseif(Auth::user()->role_id == 25)
-            @include('include.menus.documentals')
-        @elseif(Auth::user()->role_id == 27)
+        {{-- @elseif(Auth::user()->role_id == 25)
+            @include('include.menus.documentals') --}}
+        @elseif(Auth::user()->role_id == 27)//administrador de usuarios
             @include('include.menus.admin_users')
-        @elseif(Auth::user()->role_id == 30)
+        @elseif(Auth::user()->role_id == 30)//uoc2
             @include('include.menus.uoc2')
-        @elseif(Auth::user()->role_id == 31)
+        @elseif(Auth::user()->role_id == 31)//DPP
             @include('include.menus.orders')
         @endif
 

@@ -31,15 +31,10 @@ class ItemsOrdersController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.items.index',
-                            'orders.items.index',
-                            'process_orders.items.index',
-                            'derive_orders.items.index',
-                            'plannings.items.index'];
-        $create_permissions = ['admin.items.create',
-                            'orders.items.create'];
-        $update_permissions = ['admin.items.update',
-                            'orders.items.update'];
+        $index_permissions = ['admin.items.index','orders.items.index'];
+        // $index_permissions = ['admin.items.index','orders.items.index', 'process_orders.items.index'];
+        $create_permissions = ['admin.items.create','orders.items.create'];
+        $update_permissions = ['admin.items.update', 'orders.items.update'];
 
         $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index 
         $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create

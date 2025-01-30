@@ -135,8 +135,8 @@
                                                 <tr>
                                                     <td colspan="6"></td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
-                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
-                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td>
+                                                    {{-- <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td> --}}
                                                     <td colspan="3"></td>
                                                 </tr>
                                             </tfoot>

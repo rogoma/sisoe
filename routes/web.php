@@ -46,6 +46,7 @@ use App\Http\Controllers\Contract\OrdersEjecsController;
 use App\Http\Controllers\Dgaf\DgafsController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Contract\ItemsOrdersController;
+use App\Http\Controllers\Contract\ItemsContractsController;
 
 // use App\Http\Controllers\Report\PdfsController;
 use App\Http\Controllers\Report\ReportsController;
@@ -158,6 +159,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //PARA IMPORTAR EXCEL EN ITEMS DE ORDENES DE EJECUCIÓN
     Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+
+    //PARA IMPORTAR EXCEL EN RUBROS DE CONTRATOS
+    Route::resource('contracts.items_orders', ItemsContractsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
     Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
     Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');

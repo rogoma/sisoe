@@ -34,16 +34,16 @@
                                     <span class="pcoded-mtext">Listado de Contratos</span>
                                     </a>
                                 </li>
-                                <li class="@if(Route::currentRouteName() == 'contracts.create') active @endif">
+                                {{-- <li class="@if(Route::currentRouteName() == 'contracts.create') active @endif">
                                     <a href="{{ route('contracts.create') }}" class="waves-effect waves-dark">
                                     <span class="pcoded-mtext">Agregar Contrato</span>
                                     </a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </li>
                     </ul>
 
-                    <div class="pcoded-navigation-label">Panel de Administración</div>
+                    {{-- <div class="pcoded-navigation-label">Panel de Administración</div>
                     <ul class="pcoded-item pcoded-left-item">
                         <li class="pcoded-hasmenu">
                             <a href="javascript:void(0)" class="waves-effect waves-dark">
@@ -60,7 +60,7 @@
                                 </li>
                             </ul>
                         </li>
-                    </ul>
+                    </ul> --}}
                 </div>
             </div>
         </nav>

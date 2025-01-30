@@ -171,14 +171,14 @@
                                                     role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
                                                 <div class="slide"></div>
                                             </li>
-                                            @if (Auth::user()->hasPermission(['contracts.items.create']))
+                                            @if (Auth::user()->hasPermission(['contracts.items.index']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
                                                             class="fa fa-file-excel-o"></i> Cargar Rubros </a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
-                                            @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.index']))
+                                            @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.show']))
                                             {{-- @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.index'])) --}}
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
@@ -567,14 +567,14 @@
                                                                 <td>
                                                                     <button type="button" title="Componente con Rubros"
                                                                                     class="btn btn-primary btn-icon"
-                                                                                    onclick="itemOrder({{ $contract->id }})">
+                                                                                    onclick="itemRubro({{ $contract->id }})">
                                                                                     <i class="fa fa-list"></i>
                                                                                 </button>
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 {{-- <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a> --}}
 
                                                                                 {{-- OJO -> Si no tiene movimiento en Orden --}}
-                                                                                @if (Auth::user()->hasPermission(['contracts.items.create']))
+                                                                                @if (Auth::user()->hasPermission(['admin.items.delete','contracts.items.delete']))
                                                                                     <button type="button" title="Eliminar Componente"
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="anuleOrder({{ $contract->id }})">
@@ -589,7 +589,7 @@
                                                 </table>
                                                 <br>
                                                 <div class="text-center">
-                                                    @if (Auth::user()->hasPermission(['contracts.items.create' ]))
+                                                    @if (Auth::user()->hasPermission(['admin.items.create','contracts.items.create' ]))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
                                                                 {{-- <a href="{{ route('orders.items.uploadExcel', $contract->id) }}" --}}
                                                                 <a href="{{ route('contracts.files.uploadExcelRubros', $contract->id) }}"
