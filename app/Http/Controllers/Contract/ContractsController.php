@@ -49,7 +49,7 @@ class ContractsController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.contracts.index','contracts.contracts.index','derive_contracts.contracts.show'];
+        $index_permissions = ['admin.contracts.index','contracts.contracts.index','contracts.items.index','derive_contracts.contracts.show'];
         $create_permissions = ['admin.contracts.create','contracts.contracts.create'];
         $update_permissions = ['admin.contracts.update', 'contracts.contracts.update'];
 
@@ -72,7 +72,7 @@ class ContractsController extends Controller
     public function index(Request $request)
     {
         // if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
-        if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.index'])){
+        if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.show'])){
             //NO SE MUESTRAN LOS PEDIDOS ANULADOS
             $contracts = Contract::where('contract_state_id', '>=', 1)
                     ->where('contract_type_id', '=', 2)//solo muestra contratos de obras
@@ -80,16 +80,17 @@ class ContractsController extends Controller
                     ->get();
             $dependency = $request->user()->dependency_id;
         }else{
-            // Para ver contratos no anulados asignados a usuarios fiscales
-            $contracts = Contract::where(function ($query) use ($request) {
-                $query->where('fiscal1_id', $request->user()->id)
-                      ->orWhere('fiscal2_id', $request->user()->id)
-                      ->orWhere('fiscal3_id', $request->user()->id);
-            })
-            ->where('contract_state_id', '>=', 1)
-            ->orderBy('iddncp', 'asc')
-            ->get();
-
+            // if($request->user()->hasPermission(['contracts.items.index'])){
+                // Para ver contratos no anulados asignados a usuarios fiscales
+                $contracts = Contract::where(function ($query) use ($request) {
+                    $query->where('fiscal1_id', $request->user()->id)
+                        ->orWhere('fiscal2_id', $request->user()->id)
+                        ->orWhere('fiscal3_id', $request->user()->id);
+                })
+                ->where('contract_state_id', '>=', 1)
+                ->orderBy('iddncp', 'asc')
+                ->get();
+            // }
         }
         return view('contract.contracts.index', compact('contracts'));
     }

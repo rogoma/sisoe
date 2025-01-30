@@ -65,7 +65,7 @@
                                             <div class="form-group @error('description') has-danger @enderror">
                                                 <label class="col-form-label">Descripción <br></label>
                                                 <br>
-                                                <label for="comments">{{ old('comments',$contract->description) }}</label> 
+                                                <label for="comments">{{ old('comments',$contract->description) }}</label>
                                                 {{-- <textarea rows="2" id="description" name="description" class="form-control">{{ old('description', $contract->description) }}</textarea> --}}
                                                 @error('description')
                                                     <div class="col-form-label">{{ $message }}</div>
@@ -76,26 +76,26 @@
                                             <div class="form-group @error('iddncp') has-danger @enderror">
                                                 <label class="col-form-label">ID DNCP</label>
                                                 <br>
-                                                <label for="comments">{{ old('iddncp', number_format($contract->iddncp, 0, ',', '.')) }}</label> 
+                                                <label for="comments">{{ old('iddncp', number_format($contract->iddncp, 0, ',', '.')) }}</label>
                                                 {{-- <input type="text" id="iddncp" name="iddncp" value="{{ old('iddncp', number_format($contract->iddncp, 0, ',', '.')) }}" class="form-control iddncp autonumber" data-a-sep="."> --}}
 
                                                 @error('iddncp')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>                                        
+                                        </div>
                                         <div class="col-sm-2">
                                             <div class="form-group @error('number_year') has-danger @enderror">
                                                 <label class="col-form-label">N° Contrato/Año</label>
                                                 <br>
-                                                <label for="comments">{{ old('comments',$contract->number_year) }}</label> 
+                                                <label for="comments">{{ old('comments',$contract->number_year) }}</label>
                                                 {{-- <input type="text" id="number_year" name="number_year" maxlength="9" value= "{{ old('number_year', $contract->number_year) }}" class="form-control"> --}}
                                                 @error('number_year')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                                                                
+
                                         <div class="col-sm-3">
                                             <div class="form-group @error('provider_id') has-danger @enderror">
                                                 <label class="col-form-label">Contratista</label>
@@ -174,7 +174,7 @@
                                             <div class="form-group @error('total_amount') has-danger @enderror">
                                                 <label class="col-form-label">Monto Total <br></label>
                                                 <br>
-                                                <label for="comments">{{ old('total_amount', number_format($contract->total_amount, 0, ',', '.')) }}</label> 
+                                                <label for="comments">{{ old('total_amount', number_format($contract->total_amount, 0, ',', '.')) }}</label>
                                                 {{-- <input disabled="true" type="text" id="total_amount" name="total_amount" value="{{ old('total_amount', number_format($contract->total_amount, 0, ',', '.')) }}" class="form-control total_amount autonumber" data-a-sep="." data-a-dec=","> --}}
                                                 @error('total_amount')
                                                     <div class="col-form-label">{{ $message }}</div>
@@ -236,10 +236,11 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="card-header">                                            
-                                            <br>                                            
-                                            <h3 class="text-center">Asignar Fiscal al Contrato</h3>                                            
-                                        </div>                                        
+
+                                        <div class="col-sm-12">
+                                            <br><br><br>
+                                            <h3 class="text-center">Asignar Fiscal al Contrato</h3>
+                                        </div>
 
                                         <div class="col-sm-3">
                                             <div class="form-group @error('fiscal1_id') has-danger @enderror">
@@ -287,7 +288,7 @@
                                         </div>
 
                                         <div class="container">
-                                        <br><br>                                        
+                                        <br><br>
                                         <div class="col-sm-12">
                                             <div class="form-group text-center">
                                                 <button type="submit" class="btn btn-danger m-b-0 f-12">Asignar Fiscal</button>
@@ -323,7 +324,7 @@ $(document).ready(function(){
     $('#open_contract').select2();
     $('#fiscal1_id').select2();
     $('#fiscal2_id').select2();
-    $('#fiscal3_id').select2();   
+    $('#fiscal3_id').select2();
 
 
 

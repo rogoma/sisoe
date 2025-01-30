@@ -88,7 +88,7 @@
                         <div class="d-inline">
                             <h5>Visualizar Contratos</h5>
                             <span>Contrato Nº {{ $contract->number_year }}</span>
-                            <br><br>                            
+                            <br><br>
                             <h5>
                                 <p style="font-size: 17px; font-weight: bold; color:#FF0000;">Estado Actual:
                                     {{ $contract->contractState->id . ' - ' . $contract->contractState->description }}</p>
@@ -129,7 +129,7 @@
                                                 <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia
                                                     Responsable: {{ $contract->dependency->description }}</h5>
                                             </div>
-                                            
+
                                             <div class="col-sm-2">
                                                 @if (Auth::user()->hasPermission(['admin.contracts.update']))
                                                     {{-- @if (in_array($contract->contract_state_id, [1, 2])) --}}
@@ -175,6 +175,14 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
                                                             class="fa fa-file-excel-o"></i> Cargar Rubros </a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
+                                            @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.index']))
+                                            {{-- @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.index'])) --}}
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
+                                                            class="fa fa-file-excel-o"></i> Rubros Cargados </a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -313,7 +321,7 @@
                                                             <th>Descripción de la Evaluación</th>
                                                             <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>
-                                                            <th style="width: 150px; text-align: center;">Acciones</th>
+                                                            <th style="width: 190px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -367,7 +375,7 @@
                                                 </table>
                                                 <br>
                                                 <div class="text-center">
-                                                    @if (Auth::user()->hasPermission(['admin.orders.create', 'contracts.orders.create', 'orders.orders.create']))
+                                                    @if (Auth::user()->hasPermission(['admin.evals.create', 'contracts.evals.create']))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
                                                             <a href="{{ route('contracts.files.create_eval', $contract->id) }}"
                                                                 class="btn btn-primary">Cargar Evaluación</a>
@@ -521,7 +529,7 @@
                                                     </tbody>
                                                 </table>
                                                 <div class="text-center">
-                                                    @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
+                                                    @if (Auth::user()->hasPermission(['admin.fiscales.create', 'contracts.fiscales.create']))
                                                         @if (in_array($contract->contract_state_id, [1]))
                                                             @if ($contract->fiscal1_id === null)
                                                                 <a href="{{ route('contracts.asign', $contract->id) }}"
@@ -566,11 +574,13 @@
                                                                                 {{-- <a href="/pdf/panel_contracts10/{{ $order->id }}" title="Ver Orden" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a> --}}
 
                                                                                 {{-- OJO -> Si no tiene movimiento en Orden --}}
-                                                                                <button type="button" title="Eliminar Componente"
+                                                                                @if (Auth::user()->hasPermission(['contracts.items.create']))
+                                                                                    <button type="button" title="Eliminar Componente"
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="anuleOrder({{ $contract->id }})">
                                                                                     <i class="fa fa-ban"></i>
-                                                                                </button>
+                                                                                    </button>
+                                                                                @endif
                                                                 </td>
                                                             </tr>
                                                             @php $counter++; @endphp
@@ -579,7 +589,7 @@
                                                 </table>
                                                 <br>
                                                 <div class="text-center">
-                                                    @if (Auth::user()->hasPermission(['admin.contracts.create', 'contracts.items.create' ]))
+                                                    @if (Auth::user()->hasPermission(['contracts.items.create' ]))
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
                                                                 {{-- <a href="{{ route('orders.items.uploadExcel', $contract->id) }}" --}}
                                                                 <a href="{{ route('contracts.files.uploadExcelRubros', $contract->id) }}"
@@ -589,12 +599,14 @@
                                                 </div>
                                                 <br><br><br>
                                             <div class="float-rigth">
-                                                <h6  style="color:blue">Archivos Excel de Componentes (Formato Zip) para Descargar y realizar importación de rubros </h6>
-                                                <a href="excel/pedidos" title="Descargar Planillas Reg. Oriental" class="btn btn-danger" target="_blank">Planillas Reg. Oriental</a>
-                                                <a href="excel/pedidos2" title="Descargar Planillas Reg. Occidental" class="btn btn-danger" target="_blank">Planillas Reg. Occidental</a>
-                                                <a href="excel/pedidos3" title="Descargar Planilla Todos los Componentes Reg. Oriental" class="btn btn-danger" target="_blank">Planilla Todos los Componentes Reg. Oriental</a>
-                                                <a href="excel/pedidos4" title="Descargar Planilla Todos los Componentes Reg. Occidental" class="btn btn-danger" target="_blank">Planilla Todos los Componentes Reg. Occidental</a>
-                                            </div>                                          
+                                                @if (Auth::user()->hasPermission(['contracts.items.create' ]))
+                                                    <h6  style="color:blue">Archivos Excel de Componentes (Formato Zip) para Descargar y realizar importación de rubros </h6>
+                                                    <a href="excel/pedidos" title="Descargar Planillas Reg. Oriental" class="btn btn-danger" target="_blank">Planillas Reg. Oriental</a>
+                                                    <a href="excel/pedidos2" title="Descargar Planillas Reg. Occidental" class="btn btn-danger" target="_blank">Planillas Reg. Occidental</a>
+                                                    <a href="excel/pedidos3" title="Descargar Planilla Todos los Componentes Reg. Oriental" class="btn btn-danger" target="_blank">Planilla Todos los Componentes Reg. Oriental</a>
+                                                    <a href="excel/pedidos4" title="Descargar Planilla Todos los Componentes Reg. Occidental" class="btn btn-danger" target="_blank">Planilla Todos los Componentes Reg. Occidental</a>
+                                                @endif
+                                            </div>
                                         </div>
 
                                             <div class="tab-pane" id="tab6" role="tabpanel">
