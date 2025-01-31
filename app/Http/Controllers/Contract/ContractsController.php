@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\Contract;
 use App\Models\Order;
+use Illuminate\Validation\Rule;
 use App\Models\OrderMultiYear;
 use App\Models\Dependency;
 use App\Models\Modality;
@@ -387,7 +388,14 @@ class ContractsController extends Controller
             'description' => 'string|required|max:300',
             'iddncp' => 'string|required|max:999999|min:7',
             'linkdncp' => 'string|required|max:300',
-            'number_year' => 'string|required|max:9|unique:contracts,number_year',
+
+            'number_year' => [
+                'string',
+                'required',
+                Rule::unique('contracts')->ignore($contract->id),
+            ],
+            // 'number_year' => 'string|required|max:9|unique:contracts,number_year',
+
             'year_adj' => 'numeric|required|max:9999',
             'sign_date' => 'date_format:d/m/Y|required',
             'provider_id' => 'numeric|required|max:999999',

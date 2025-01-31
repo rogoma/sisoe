@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 use App\Models\ItemOrder;
 use App\Models\Rubro;
 use App\Models\Component;
@@ -25,7 +25,7 @@ use App\Models\SubItem;
 class ItemsOrdersController extends Controller
 {
     /**
-     * Create a new controller instance. 
+     * Create a new controller instance.
      *
      * @return void
      */
@@ -36,25 +36,24 @@ class ItemsOrdersController extends Controller
         $create_permissions = ['admin.items.create','orders.items.create'];
         $update_permissions = ['admin.items.update', 'orders.items.update'];
 
-        $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index 
+        $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index
         $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create
         $this->middleware('checkPermission:'.implode(',',$update_permissions))->only(['edit', 'update']);   // Permiso para update
     }
 
-     
+
     public function index(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
-                
         $contracts = $order->contracts;
         $items = $order->items;
-        
+
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if(!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
-        return view('order.items.index', compact('order', 'items','contracts'));        
+        return view('order.items.index', compact('order', 'items','contracts'));
     }
 
 
@@ -63,16 +62,16 @@ class ItemsOrdersController extends Controller
         $order = Order::findOrFail($order_id);
 
         $contracts = $order->contracts;
-        
+
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if(!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
-        return view('order.items.uploadExcel', compact('order', 'contracts'));        
+        return view('order.items.uploadExcel', compact('order', 'contracts'));
     }
 
-        
+
     /**
      * Funcionalidad de guardado del pedido de ítemes Contrato Abierto.
      *
@@ -88,9 +87,9 @@ class ItemsOrdersController extends Controller
             'technical_specifications' => 'string|required|max:100',
             'order_presentation_id' => 'numeric|required|max:32767',
             'order_measurement_unit_id' => 'numeric|required|max:32767',
-            'unit_price' => 'numeric|required|max:2147483647',            
+            'unit_price' => 'numeric|required|max:2147483647',
             'min_quantity' => 'numeric|required|max:2147483647',
-            'max_quantity' => 'numeric|required|max:2147483647',                    
+            'max_quantity' => 'numeric|required|max:2147483647',
             'total_amount_min' => 'numeric|required|max:9223372036854775807',
             'total_amount' => 'numeric|required|max:9223372036854775807',
         );
@@ -100,7 +99,7 @@ class ItemsOrdersController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $item = new ItemOrder; 
+        $item = new ItemOrder;
         $item->order_id = $order_id;
         $item->batch = $request->input('batch');
         $item->item_number = $request->input('item_number');
@@ -108,7 +107,7 @@ class ItemsOrdersController extends Controller
         $item->technical_specifications = $request->input('technical_specifications');
         $item->order_presentation_id = $request->input('order_presentation_id');
         $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
-        $item->unit_price = $request->input('unit_price');         
+        $item->unit_price = $request->input('unit_price');
         $item->min_quantity = $item['min_quantity'];
         $item->max_quantity = $item['max_quantity'];
         $item->total_amount_min = $item['total_amount_min'];
@@ -127,7 +126,7 @@ class ItemsOrdersController extends Controller
     public function storeExcel(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
-        
+
         //capturamos el id del contrato para enviar a la vista show de contrato al finalizar
         $contract_id = $order->contract_id;
 
@@ -136,7 +135,7 @@ class ItemsOrdersController extends Controller
         if ($order->items->count() > 0){
             $cant_item = 1;
         }
-        
+
         if($request->hasFile('excel')){
             // chequeamos la extension del archivo subido
             if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
@@ -146,23 +145,23 @@ class ItemsOrdersController extends Controller
             }
 
             // creamos un array de indices de las columnas
-            $header = array('component_id','subItem_id','rubro_id', 'item_number','rubro','quantity', 
+            $header = array('component_id','subItem_id','rubro_id', 'item_number','rubro','quantity',
             'unid','unit_price_mo','unit_price_mat', 'tot_price_mo', 'tot_price_mat');
 
             // accedemos al archivo excel cargado
             $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
-            $reader->setReadDataOnly(true); 
+            $reader->setReadDataOnly(true);
             $reader->setReadEmptyCells(false);
             $spreadsheet = $reader->load($request->excel->path());  // cargamos el archivo
             // variable que guarda la plantilla activa
-            $worksheet = $spreadsheet->getActiveSheet();    
+            $worksheet = $spreadsheet->getActiveSheet();
 
             $rows = $worksheet->getHighestRow();    // cantidad de filas
             $columns = count($header);  // cantidad de columnas que debe tener el archivo
             $last_column = Coordinate::stringFromColumnIndex($columns);
 
             // Recorremos cada fila del archivo excel y sumamos el total de los totales de ítemes
-            
+
             //ceramos la variable que guarda la suma de los totales de los ítems
             $order_amount_items = 0;
             $tot_tot_price_mo = 0;
@@ -184,16 +183,16 @@ class ItemsOrdersController extends Controller
 
                 // creamos un array con indices igual al array de columnas y valores igual a los obtenidos en el archivo excel
                 $item = array_combine($header, $data[$row]);
-                
+
                 // creamos las reglas de validacion
-                $rules = array(                    
-                    'component_id' => 'numeric|required',                    
+                $rules = array(
+                    'component_id' => 'numeric|required',
                     'subItem_id' => 'numeric|required',
                     'rubro_id' => 'numeric|required',
-                    'item_number' => 'numeric|required',                    
+                    'item_number' => 'numeric|required',
                     'quantity' => 'numeric|required',
                     'unid' => 'string|required',
-                    'unit_price_mo' => 'numeric|required|max:2147483647',                    
+                    'unit_price_mo' => 'numeric|required|max:2147483647',
                     'unit_price_mat' => 'numeric|required|max:2147483647',
                     'tot_price_mo' => 'numeric|required|max:2147483647',
                     'tot_price_mat' => 'numeric|required|max:2147483647'
@@ -204,30 +203,30 @@ class ItemsOrdersController extends Controller
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
 
-                
-                // Chequea si existe el código o id del componente                
+
+                // Chequea si existe el código o id del componente
                 $component = Component::where('id', $item['component_id'])->get()->first();
                 if (is_null($component)) {
                     $validator->errors()->add('component', 'No existe id de Componente ingresado. Por favor ingrese un componenente registrado en el sistema.');
-                    return back()->withErrors($validator)->withInput()->with('fila', $row);                
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
 
                 // Chequea si existe el código o id del SubItem
                 $subItem = SubItem::where('id', $item['subItem_id'])->get()->first();
                 if (is_null($subItem)) {
                     $validator->errors()->add('subItem', 'No existe SubItem ingresado. Por favor ingrese un subItem registrado en el sistema.');
-                    return back()->withErrors($validator)->withInput()->with('fila', $row);                
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
 
                 // Chequea si el código del componente del excel sea el mismo de la orden
                 $compo = $order->component->id;
-                $item['component_id']; 
+                $item['component_id'];
                 // var_dump($compo);
                 // var_dump($item['component_id']);exit();
 
-                if ($item['component_id'] !== $compo) {                
+                if ($item['component_id'] !== $compo) {
                     $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente de la Orden de Ejecución, verifique....');
-                    return back()->withErrors($validator)->withInput()->with('fila', $row);   
+                    return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
 
                 // Chequea si existe el código o id del rubro
@@ -241,14 +240,14 @@ class ItemsOrdersController extends Controller
                 // agregamos la fila al array de pedidos
                 $items[] = $item;
 
-                //ACUMULA LOS TOTALES DE PRECIOS DE ITEMES                                
+                //ACUMULA LOS TOTALES DE PRECIOS DE ITEMES
                 $tot_tot_price_mo = $tot_tot_price_mo + $item['tot_price_mo'];
-                $tot_tot_price_mat = $tot_tot_price_mat + $item['tot_price_mat'];                
+                $tot_tot_price_mat = $tot_tot_price_mat + $item['tot_price_mat'];
             }
-           
+
             // En caso de haber pasado todas las validaciones guardamos los datos
             foreach ($items as $item) {
-                $new_item = new ItemOrder; 
+                $new_item = new ItemOrder;
                 $new_item->order_id = $order_id;
                 // $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
                 $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
@@ -258,8 +257,8 @@ class ItemsOrdersController extends Controller
                     $new_item->subitem_id = $item['subItem_id'];
                 }else{
                     $new_item->subitem_id = NULL;
-                }                 
-                
+                }
+
                 $new_item->quantity = $item['quantity'];
                 $new_item->unit_price_mo = $item['unit_price_mo'];
                 $new_item->unit_price_mat = $item['unit_price_mat'];
@@ -267,17 +266,17 @@ class ItemsOrdersController extends Controller
                 $new_item->tot_price_mat = $item['tot_price_mat'];
                 $new_item->creator_user_id = $request->user()->id;  // usuario logueado
                 $new_item->save();
-            }       
-            
-            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
-            
+            }
+
+            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL
+
              // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
              $order = Order::findOrFail($order_id);
              //CALCULA EL TOTAL GRAL PARA GRABAR EN ORDERS
              $order->total_amount = $tot_tot_price_mo + $tot_tot_price_mat;
-             $order->save(); 
+             $order->save();
 
-            return redirect()->route('contracts.show', $contract_id)->with('success', 'Archivo de rubros importado correctamente'); // Caso usuario posee rol pedidos            
+            return redirect()->route('contracts.show', $contract_id)->with('success', 'Archivo de rubros importado correctamente'); // Caso usuario posee rol pedidos
 
         }else{
             $validator = Validator::make($request->input(), []);
@@ -312,15 +311,15 @@ class ItemsOrdersController extends Controller
             }
 
             // creamos un array de indices de las columnas
-            $header = array('type','batch', 'item_number', 'level5_catalog_code', 
-            'technical_specifications', 'order_presentation','order_measurement_unit', 
-            'quantity', 'unit_price', 'total_amount');            
+            $header = array('type','batch', 'item_number', 'level5_catalog_code',
+            'technical_specifications', 'order_presentation','order_measurement_unit',
+            'quantity', 'unit_price', 'total_amount');
             // 'unit_price','min_quantity','max_quantity','total_amount_min','total_amount');
 
 
             // accedemos al archivo excel cargado
             $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
-            $reader->setReadDataOnly(true); 
+            $reader->setReadDataOnly(true);
             $reader->setReadEmptyCells(false);
             $spreadsheet = $reader->load($request->excel->path());  // cargamos el archivo
             // variable que guarda la plantilla activa
@@ -348,7 +347,7 @@ class ItemsOrdersController extends Controller
 
                 // creamos un array con indices igual al array de columnas y valores igual a los obtenidos en el archivo excel
                 $item = array_combine($header, $data[$row]);
-                
+
                 // creamos las reglas de validacion
                 $rules = array(
                     // 'type' => 'numeric|required|max:2',
@@ -367,7 +366,7 @@ class ItemsOrdersController extends Controller
                 if ($validator->fails()) {
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
-                
+
                 //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
                 if ($item['type'] <> 2){
                     $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO CERRADO');
@@ -394,15 +393,15 @@ class ItemsOrdersController extends Controller
                 $item['order_presentation_id'] = $order_presentation->id;
                 $item['order_measurement_unit_id'] = $order_measurement_unit->id;
                 // agregamos la fila al array de pedidos
-                $items[] = $item;    
-                
-                //ACUMULAR LOS TOTALES DE ITEMES                
+                $items[] = $item;
+
+                //ACUMULAR LOS TOTALES DE ITEMES
                 $order_amount_items = $order_amount_items + $item['total_amount'];
-            }                
+            }
 
             // En caso de haber pasado todas las validaciones guardamos los datos
             foreach ($items as $item) {
-                $new_item = new ItemOrder; 
+                $new_item = new ItemOrder;
                 $new_item->order_id = $order_id;
                 $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
                 $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
@@ -416,22 +415,22 @@ class ItemsOrdersController extends Controller
                 $new_item->creator_user_id = $request->user()->id;  // usuario logueado
                 $new_item->save();
             }
-            
-            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
-            
+
+            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL
+
             //capturamos valor del pedido
             $order_amount = $order->total_amount;
-            // var_dump($order['total_amount']);exit();            
+            // var_dump($order['total_amount']);exit();
 
-            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
-            if ($cant_item == 1){               
-                $order->total_amount = $order_amount + $order_amount_items;       
+            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item
+            if ($cant_item == 1){
+                $order->total_amount = $order_amount + $order_amount_items;
                 $order->save();
             }else{
-                $order->total_amount = $order_amount_items;                
+                $order->total_amount = $order_amount_items;
                 $order->save();
             }
-            
+
             return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
 
         }else{
@@ -465,15 +464,15 @@ class ItemsOrdersController extends Controller
             }
 
             // creamos un array de indices de las columnas
-            $header = array('type','batch', 'item_number', 'level5_catalog_code', 
-            'technical_specifications', 'order_presentation','order_measurement_unit', 
-            'quantity', 'unit_price', 'total_amount_min','total_amount');            
+            $header = array('type','batch', 'item_number', 'level5_catalog_code',
+            'technical_specifications', 'order_presentation','order_measurement_unit',
+            'quantity', 'unit_price', 'total_amount_min','total_amount');
             // max_quuantity es igual a quantity
 
 
             // accedemos al archivo excel cargado
             $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
-            $reader->setReadDataOnly(true); 
+            $reader->setReadDataOnly(true);
             $reader->setReadEmptyCells(false);
             $spreadsheet = $reader->load($request->excel->path());  // cargamos el archivo
             // variable que guarda la plantilla activa
@@ -501,7 +500,7 @@ class ItemsOrdersController extends Controller
 
                 // creamos un array con indices igual al array de columnas y valores igual a los obtenidos en el archivo excel
                 $item = array_combine($header, $data[$row]);
-                
+
                 // creamos las reglas de validacion
                 $rules = array(
                     // 'type' => 'numeric|required|max:3',
@@ -511,7 +510,7 @@ class ItemsOrdersController extends Controller
                     'technical_specifications' => 'string|required|max:250',
                     'order_presentation' => 'string|required|max:100',
                     'order_measurement_unit' => 'string|required|max:100',
-                    'quantity' => 'numeric|required|max:2147483647',                    
+                    'quantity' => 'numeric|required|max:2147483647',
                     'unit_price' => 'numeric|required|max:2147483647',
                     'total_amount_min' => 'numeric|required|max:2147483647',
                     'total_amount' => 'numeric|required|max:9223372036854775807',
@@ -550,23 +549,23 @@ class ItemsOrdersController extends Controller
                 // agregamos la fila al array de pedidos
                 $items[] = $item;
 
-                //ACUMULAR LOS TOTALES DE ITEMES                
+                //ACUMULAR LOS TOTALES DE ITEMES
                 $order_amount_items = $order_amount_items + $item['total_amount'];
             }
 
             // COMPARA EL MONTO TOTAL DEL PEDIDO VERSUS EL MONTO TOTAL DE LOS ÍTEMS
             $order = Order::findOrFail($order_id);
-            // $order_amount = $order->total_amount;            
+            // $order_amount = $order->total_amount;
 
             // CONTROLAMOS SI MONTO DE TOTAL ES IGUAL A TOTAL SUMATORIA DE ITEMS
             // if ($order_amount <> $order_amount_items) {
             //     $validator->errors()->add('order_measurement_unit', 'Monto de Ítems: '.$order_amount_items.', no es igual a monto del Pedido, VERIFIQUE ARCHIVO EXCEL');
-            //     return back()->withErrors($validator)->withInput()->with('fila', $row);                
-            // }            
-            
+            //     return back()->withErrors($validator)->withInput()->with('fila', $row);
+            // }
+
             // En caso de haber pasado todas las validaciones guardamos los datos
             foreach ($items as $item) {
-                $new_item = new ItemOrder; 
+                $new_item = new ItemOrder;
                 $new_item->order_id = $order_id;
                 $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
                 $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
@@ -574,7 +573,7 @@ class ItemsOrdersController extends Controller
                 $new_item->technical_specifications = $item['technical_specifications'];
                 $new_item->order_presentation_id = $item['order_presentation_id'];
                 $new_item->order_measurement_unit_id = $item['order_measurement_unit_id'];
-                $new_item->quantity = $item['quantity'];                
+                $new_item->quantity = $item['quantity'];
                 $new_item->unit_price = $item['unit_price'];
                 $new_item->total_amount_min = $item['total_amount_min'];
                 $new_item->total_amount = $item['total_amount'];
@@ -582,18 +581,18 @@ class ItemsOrdersController extends Controller
                 $new_item->save();
             }
 
-            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL           
-            
+            // GRABAMOS COMO TOTAL EN ORDERS LA SUMATORIA DE ITEMS + EL MONTO TOTAL DEL PEDIDO ANTES DE AGREGAR LOS NUEVOS REGISTROS DEL EXCEL
+
             //capturamos valor del pedido
             $order_amount = $order->total_amount;
-            // var_dump($order['total_amount']);exit();            
+            // var_dump($order['total_amount']);exit();
 
-            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item           
-            if ($cant_item == 1){               
-                $order->total_amount = $order_amount + $order_amount_items;       
+            //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item
+            if ($cant_item == 1){
+                $order->total_amount = $order_amount + $order_amount_items;
                 $order->save();
             }else{
-                $order->total_amount = $order_amount_items;                
+                $order->total_amount = $order_amount_items;
                 $order->save();
             }
 
@@ -615,7 +614,7 @@ class ItemsOrdersController extends Controller
     public function edit(Request $request, $order_id, $item_id)
     {
         $order = Order::findOrFail($order_id);
-        
+
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if(!$request->user()->hasPermission(['admin.items.update']) &&
         $order->dependency_id != $request->user()->dependency_id){
@@ -647,9 +646,9 @@ class ItemsOrdersController extends Controller
             'technical_specifications' => 'string|required|max:250',
             'order_presentation_id' => 'numeric|required|max:32767',
             'order_measurement_unit_id' => 'numeric|required|max:32767',
-            'unit_price' => 'numeric|required|max:2147483647',            
+            'unit_price' => 'numeric|required|max:2147483647',
             'min_quantity' => 'numeric|required|max:2147483647',
-            'max_quantity' => 'numeric|required|max:2147483647',                    
+            'max_quantity' => 'numeric|required|max:2147483647',
             'total_amount_min' => 'numeric|required|max:9223372036854775807',
             'total_amount' => 'numeric|required|max:9223372036854775807',
         );
@@ -663,13 +662,13 @@ class ItemsOrdersController extends Controller
         $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
         $item->technical_specifications = $request->input('technical_specifications');
         $item->order_presentation_id = $request->input('order_presentation_id');
-        $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');        
-        $item->unit_price = $request->input('unit_price');        
+        $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
+        $item->unit_price = $request->input('unit_price');
         $item->min_quantity = $request->input('min_quantity');
         $item->max_quantity = $request->input('max_quantity');
         $item->total_amount_min = $request->input('total_amount_min');
         $item->total_amount = $request->input('total_amount');
-        $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+        $item->modifier_user_id = $request->user()->id;  // usuario logueado
         $item->save();
 
         // Si usuario es de Plannings direcciona a plannings.show sino direcciona a orders
@@ -692,14 +691,14 @@ class ItemsOrdersController extends Controller
         $item = ItemOrder::findOrFail($item_id);
 
         //CONTROLAR SI AL CAMBIAR EL MONTO DE ITEM A MODIFICAR SOBREPASA MONTO CDP (SI YA TIENE CDP)
-        // $cdp_amount = $order->cdp_amount;            
+        // $cdp_amount = $order->cdp_amount;
         // if ($total_amountitems > $cdp_amount) {
-        //     $validator = Validator::make($request->input(), []); // Creamos un objeto validator            
+        //     $validator = Validator::make($request->input(), []); // Creamos un objeto validator
         //     $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, VERIFIQUE...');
         //     return back()->withErrors($validator)->withInput();
-        // } 
+        // }
 
-        
+
         // ACTUALIZA TIPO DE CONTRATO 1 ABIERTO
         if ($order->open_contract == 1){
             $rules = array(
@@ -710,9 +709,9 @@ class ItemsOrdersController extends Controller
                 'order_presentation_id' => 'numeric|required|max:32767',
                 'order_measurement_unit_id' => 'numeric|required|max:32767',
                 'min_quantity' => 'numeric|required|max:2147483647',
-                'max_quantity' => 'numeric|required|max:2147483647',                    
-                'total_amount_min' => 'numeric|required|max:9223372036854775807',                
-                'unit_price' => 'numeric|required|max:2147483647', 
+                'max_quantity' => 'numeric|required|max:2147483647',
+                'total_amount_min' => 'numeric|required|max:9223372036854775807',
+                'unit_price' => 'numeric|required|max:2147483647',
                 'total_amount' => 'numeric|required|max:9223372036854775807'
             );
             $validator =  Validator::make($request->input(), $rules);
@@ -725,15 +724,15 @@ class ItemsOrdersController extends Controller
             $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
             $item->technical_specifications = $request->input('technical_specifications');
             $item->order_presentation_id = $request->input('order_presentation_id');
-            $item->order_measurement_unit_id = $request->input('order_measurement_unit_id'); 
+            $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
             $item->min_quantity = $request->input('min_quantity');
             $item->max_quantity = $request->input('max_quantity');
             $item->total_amount_min = $request->input('total_amount_min');
-            $item->unit_price = $request->input('unit_price'); 
+            $item->unit_price = $request->input('unit_price');
             $item->total_amount = $request->input('total_amount');
-            $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+            $item->modifier_user_id = $request->user()->id;  // usuario logueado
             $item->save();
-        }    
+        }
 
         // ACTUALIZA TIPO DE CONTRATO 2 CERRADO
         if ($order->open_contract == 2){
@@ -745,7 +744,7 @@ class ItemsOrdersController extends Controller
                 'order_presentation_id' => 'numeric|required|max:32767',
                 'order_measurement_unit_id' => 'numeric|required|max:32767',
                 'quantity' => 'numeric|required|max:2147483647',
-                'unit_price' => 'numeric|required|max:2147483647', 
+                'unit_price' => 'numeric|required|max:2147483647',
                 'total_amount' => 'numeric|required|max:9223372036854775807'
             );
             $validator =  Validator::make($request->input(), $rules);
@@ -758,13 +757,13 @@ class ItemsOrdersController extends Controller
             $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
             $item->technical_specifications = $request->input('technical_specifications');
             $item->order_presentation_id = $request->input('order_presentation_id');
-            $item->order_measurement_unit_id = $request->input('order_measurement_unit_id'); 
+            $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
             $item->quantity = $request->input('quantity');
             $item->unit_price = $request->input('unit_price');
-            $item->total_amount = $request->input('total_amount');            
-            $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+            $item->total_amount = $request->input('total_amount');
+            $item->modifier_user_id = $request->user()->id;  // usuario logueado
             $item->save();
-        }    
+        }
 
         // ACTUALIZA TIPO DE CONTRATO 3 ABIERTOMM
         if ($order->open_contract == 3){
@@ -776,7 +775,7 @@ class ItemsOrdersController extends Controller
                 'order_presentation_id' => 'numeric|required|max:32767',
                 'order_measurement_unit_id' => 'numeric|required|max:32767',
                 'quantity' => 'numeric|required|max:2147483647',
-                'unit_price' => 'numeric|required|max:2147483647',                  
+                'unit_price' => 'numeric|required|max:2147483647',
                 'total_amount_min' => 'numeric|required|max:9223372036854775807',
                 'total_amount' => 'numeric|required|max:9223372036854775807'
             );
@@ -791,19 +790,19 @@ class ItemsOrdersController extends Controller
             $item->technical_specifications = $request->input('technical_specifications');
             $item->order_presentation_id = $request->input('order_presentation_id');
             $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
-            $item->quantity = $request->input('quantity');                   
-            $item->unit_price = $request->input('unit_price'); 
-            $item->total_amount_min = $request->input('total_amount_min');            
+            $item->quantity = $request->input('quantity');
+            $item->unit_price = $request->input('unit_price');
+            $item->total_amount_min = $request->input('total_amount_min');
             $item->total_amount = $request->input('total_amount');
-            $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+            $item->modifier_user_id = $request->user()->id;  // usuario logueado
             $item->save();
-        } 
+        }
 
 
         // AQUI RECORRER LOS ITEMS DEL PEDIDO Y CARGAR COMO NUEVO TOTAL_AMOUNT EN ORDERS COMO PLURIANUAL
         $total_amountitems = 0;
-        for ($i = 0; $i < count($order->items); $i++){                            
-            $total_amountitems += $order->items[$i]->total_amount;                           
+        for ($i = 0; $i < count($order->items); $i++){
+            $total_amountitems += $order->items[$i]->total_amount;
         }
 
         //CERAMOS VALOR DEL MONTO DE ORDER Y CARGAMOS VALOR NUEVO
@@ -812,16 +811,16 @@ class ItemsOrdersController extends Controller
         $order->save();
 
 
-        //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)        
-        $cdp_amount = $order->cdp_amount;            
+        //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)
+        $cdp_amount = $order->cdp_amount;
         if ($cdp_amount > 0) {
             if ($total_amountitems > $cdp_amount) {
-                $validator = Validator::make($request->input(), []); // Creamos un objeto validator            
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
                 $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, DEBE ACTUALIZAR CDP...');
                 return back()->withErrors($validator)->withInput();
             }
         }
-          
+
 
         // Si usuario es de Plannings direcciona a plannings.show sino direcciona a orders
         if(($request->user()->dependency_id == 59)){
@@ -850,9 +849,9 @@ class ItemsOrdersController extends Controller
             'technical_specifications' => 'string|required|max:250',
             'order_presentation_id' => 'numeric|required|max:32767',
             'order_measurement_unit_id' => 'numeric|required|max:32767',
-            'unit_price' => 'numeric|required|max:2147483647',            
+            'unit_price' => 'numeric|required|max:2147483647',
             'min_quantity' => 'numeric|required|max:2147483647',
-            'max_quantity' => 'numeric|required|max:2147483647',                    
+            'max_quantity' => 'numeric|required|max:2147483647',
             'total_amount_min' => 'numeric|required|max:9223372036854775807',
             'total_amount' => 'numeric|required|max:9223372036854775807',
         );
@@ -866,13 +865,13 @@ class ItemsOrdersController extends Controller
         $item->level5_catalog_code_id = $request->input('level5_catalog_code_id');
         $item->technical_specifications = $request->input('technical_specifications');
         $item->order_presentation_id = $request->input('order_presentation_id');
-        $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');        
-        $item->unit_price = $request->input('unit_price');        
+        $item->order_measurement_unit_id = $request->input('order_measurement_unit_id');
+        $item->unit_price = $request->input('unit_price');
         $item->min_quantity = $request->input('min_quantity');
         $item->max_quantity = $request->input('max_quantity');
         $item->total_amount_min = $request->input('total_amount_min');
         $item->total_amount = $request->input('total_amount');
-        $item->modifier_user_id = $request->user()->id;  // usuario logueado        
+        $item->modifier_user_id = $request->user()->id;  // usuario logueado
         $item->save();
 
         // Si usuario es de Plannings direcciona a plannings.show sino direcciona a orders
@@ -904,21 +903,21 @@ class ItemsOrdersController extends Controller
         if($item->itemAwardHistories->count() > 0){
             return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el item debido a que se encuentra vinculado con históricos de precios referenciales, debe eliminarlos primero para continuar. ', 'code' => 200], 200);
         }
-        
+
         // Eliminamos en caso de no existir registros referenciando al item
         $item->delete();
 
-        // AQUI RECORRER LOS ITEMS DEL PEDIDO Y CARGAR COMO NUEVO TOTAL_AMOUNT 
+        // AQUI RECORRER LOS ITEMS DEL PEDIDO Y CARGAR COMO NUEVO TOTAL_AMOUNT
         $total_amountitems = 0;
-        for ($i = 0; $i < count($order->items); $i++){                            
-            $total_amountitems += $order->items[$i]->total_amount;                           
+        for ($i = 0; $i < count($order->items); $i++){
+            $total_amountitems += $order->items[$i]->total_amount;
         }
 
-        //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)        
-        $cdp_amount = $order->cdp_amount;            
+        //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)
+        $cdp_amount = $order->cdp_amount;
         if ($cdp_amount > 0) {
             if ($total_amountitems > $cdp_amount) {
-                $validator = Validator::make($request->input(), []); // Creamos un objeto validator            
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
                 $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, DEBE ACTUALIZAR CDP...');
                 return back()->withErrors($validator)->withInput();
             }
@@ -928,7 +927,7 @@ class ItemsOrdersController extends Controller
         //CERAMOS VALOR DEL MONTO DE ORDER Y CARGAMOS VALOR NUEVO
         $order->total_amount = 0;
         $order->total_amount = $total_amountitems;
-        
+
         $order->save();
 
         return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el ítem ', 'code' => 200], 200);

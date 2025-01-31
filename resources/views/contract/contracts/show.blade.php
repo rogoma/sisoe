@@ -567,7 +567,7 @@
                                                                 <td>
                                                                     <button type="button" title="Componente con Rubros"
                                                                                     class="btn btn-primary btn-icon"
-                                                                                    onclick="itemRubro({{ $contract->id }})">
+                                                                                    onclick="itemRubro({{ $item->component->id }})">
                                                                                     <i class="fa fa-list"></i>
                                                                                 </button>
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
@@ -796,12 +796,11 @@
             itemOrder = function(order) {
                 //lleva a index de ItemsOrdersController
                 location.href = '/orders/'+order+'/items_orders';
-
             }
 
-            itemRubro = function(contract) {
+            itemRubro = function(component) {
                 //lleva a index de ItemsOrdersController
-                location.href = '/contracts/'+contract+'/items_orders';
+                location.href = '/items_contracts/'+component+'/items';
 
             }
 

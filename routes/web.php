@@ -157,11 +157,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
-    //PARA IMPORTAR EXCEL EN ITEMS DE ORDENES DE EJECUCIÓN
+    //PARA MANEJAR DATOS EN ITEMS DE ORDENES DE EJECUCIÓN
     Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
-    //PARA IMPORTAR EXCEL EN RUBROS DE CONTRATOS
-    Route::resource('contracts.items_orders', ItemsContractsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+    //PARA MANEJAR DATOS DE RUBROS DE CONTRATOS
+    Route::resource('items_contracts.items', ItemsContractsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
     Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
     Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
@@ -244,7 +244,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::get('orders/files/{file_id}/download', [OrdersFilesController::class, 'download'])->name('orders.files.download');
 
-    //Llama desde la ruta contracts/excel/pedidos 
+    //Llama desde la ruta contracts/excel/pedidos
     Route::get('contracts/excel/pedidos', [ContractsFilesController::class, 'ArchivoPedido'])->name('excel.pedidos');
     Route::get('contracts/excel/pedidos2', [ContractsFilesController::class, 'ArchivoPedido2'])->name('excel.pedidos2');
     Route::get('contracts/excel/pedidos3', [ContractsFilesController::class, 'ArchivoPedido3'])->name('excel.pedidos3');
