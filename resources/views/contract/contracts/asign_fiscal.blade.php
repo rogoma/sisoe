@@ -170,9 +170,21 @@
                                                 @enderror
                                             </div>
                                         </div>
+                                        
+                                        <div class="col-sm-2">
+                                            <div class="form-group @error('minim_amount') has-danger @enderror">
+                                                <label class="col-form-label">Monto Mínimo <br></label>
+                                                <br>
+                                                <label for="comments">{{ old('minim_amount', number_format($contract->minim_amount, 0, ',', '.')) }}</label>                                                
+                                                @error('minim_amount')
+                                                    <div class="col-form-label">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
                                         <div class="col-sm-2">
                                             <div class="form-group @error('total_amount') has-danger @enderror">
-                                                <label class="col-form-label">Monto Total <br></label>
+                                                <label class="col-form-label">Monto Máximo <br></label>
                                                 <br>
                                                 <label for="comments">{{ old('total_amount', number_format($contract->total_amount, 0, ',', '.')) }}</label>
                                                 {{-- <input disabled="true" type="text" id="total_amount" name="total_amount" value="{{ old('total_amount', number_format($contract->total_amount, 0, ',', '.')) }}" class="form-control total_amount autonumber" data-a-sep="." data-a-dec=","> --}}
@@ -196,7 +208,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-2">
                                             <div class="form-group @error('dependency_id') has-danger @enderror">
                                                 <label class="col-form-label">Depedendencia Responsable </label>
                                                 <select id="dependency_id" name="dependency_id" class="form-control">
@@ -211,7 +223,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-2">
                                             <div class="form-group @error('contract_admin_id') has-danger @enderror">
                                                 <label class="col-form-label">Administrador del Contrato</label>
                                                 <select id="contract_admin_id" name="contract_admin_id" class="form-control">
@@ -287,6 +299,21 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-sm-3">
+                                            <div class="form-group @error('fiscal4_id') has-danger @enderror">
+                                                <label class="col-form-label">Fiscal N° 4<br></small></label>
+                                                <select id="fiscal4_id" name="fiscal4_id" class="form-control">
+                                                    <option value="">Seleccionar Usuario Fiscal</option>
+                                                @foreach ($users as $user)
+                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal4_id', $contract->fiscal4_id)) selected @endif>{{ $user->name }} {{ $user->lastname }}</option>
+                                                @endforeach
+                                                </select>
+                                                @error('fiscal4_id')
+                                                    <div class="col-form-label">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
                                         <div class="container">
                                         <br><br>
                                         <div class="col-sm-12">
@@ -325,6 +352,7 @@ $(document).ready(function(){
     $('#fiscal1_id').select2();
     $('#fiscal2_id').select2();
     $('#fiscal3_id').select2();
+    $('#fiscal4_id').select2();
 
 
 

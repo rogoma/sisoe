@@ -189,7 +189,7 @@
                                             </div>
                                         </div>
                                         {{-- #11 --}}
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-2">
                                             <div class="form-group @error('contract_type_id') has-danger @enderror">
                                                 <label class="col-form-label">Tipo</label>
                                                 <select id="contract_type_id" name="contract_type_id" class="form-control">
@@ -204,9 +204,19 @@
                                             </div>
                                         </div>
                                         {{-- #12 --}}
-                                        <div class="col-sm-3" style="padding-bottom: 10px;">
+                                        <div class="col-sm-2" style="padding-bottom: 10px;">
+                                            <div class="form-group @error('minim_amount') has-danger @enderror">
+                                                <label class="col-form-label">Monto Mínimo</label>
+                                                <input type="text" id="minim_amount" name="minim_amount" value="{{ old('minim_amount') }}" class="form-control minim_amount autonumber" data-a-sep="." data-a-dec=",">
+                                                @error('minim_amount')
+                                                    <div class="col-form-label">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-2" style="padding-bottom: 10px;">
                                             <div class="form-group @error('total_amount') has-danger @enderror">
-                                                <label class="col-form-label">Monto Total</label>
+                                                <label class="col-form-label">Monto Máximo</label>
                                                 <input type="text" id="total_amount" name="total_amount" value="{{ old('total_amount') }}" class="form-control total_amount autonumber" data-a-sep="." data-a-dec=",">
                                                 @error('total_amount')
                                                     <div class="col-form-label">{{ $message }}</div>
@@ -242,7 +252,8 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
+                                        {{-- ORIGINAL NO BORRAR --}}
+                                        {{-- <div class="col-sm-4">
                                             <div class="form-group @error('contract_admin_id') has-danger @enderror">
                                                 <label class="col-form-label">Administrador del Contrato</label>
                                                 <select id="contract_admin_id" name="contract_admin_id" class="form-control">
@@ -255,7 +266,24 @@
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> --}}
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group @error('contract_admin_id') has-danger @enderror">
+                                                <label class="col-form-label">Administrador del Contrato</label>
+                                                <select id="contract_admin_id" name="contract_admin_id" class="form-control">
+                                                    <option value="">Seleccionar Administrador del Contrato</option>
+                                                    @foreach ($users_admin as $user)
+                                                        <option value="{{ $user->id}}" @if ($user->id == old('contract_admin_id')) selected @endif>{{ $user->name }} {{ $user->lastname }}</option>
+                                                        
+                                                    @endforeach
+                                                </select>
+                                                @error('contract_admin_id')
+                                                    <div class="col-form-label">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>                                        
+
                                         {{-- #13 --}}
                                         <div class="col-sm-12">
                                             <div class="form-group @error('comments') has-danger @enderror">
@@ -300,7 +328,17 @@ document.getElementById('iddncp').addEventListener('input', function(event) {
     event.target.value = monto;
 });
 
-// Script para formatear el valor con separador de miles mientras se ingresa TOTAL AMOUNT
+// Script para formatear el valor con separador de miles mientras se ingresa MONTO MINIMO
+document.getElementById('minim_amount').addEventListener('input', function(event) {
+    // Obtenemos el valor ingresado y eliminamos los separadores de miles existentes
+    let monto = event.target.value.replace(/\./g, '');
+    // Formateamos el valor con separador de miles
+    monto = parseFloat(monto).toLocaleString('es-ES');
+    // Actualizamos el valor en el input text
+    event.target.value = monto;
+});
+
+// Script para formatear el valor con separador de miles mientras se ingresa MONTO MAXIMO
 document.getElementById('total_amount').addEventListener('input', function(event) {
     // Obtenemos el valor ingresado y eliminamos los separadores de miles existentes
     let monto = event.target.value.replace(/\./g, '');

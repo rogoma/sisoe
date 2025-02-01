@@ -55,6 +55,16 @@ class Contract extends Model
         return $this->belongsTo(User::class, 'fiscal3_id');
     }
 
+    public function fiscal4()
+    {
+        return $this->belongsTo(User::class, 'fiscal4_id');
+    }
+
+    public function contractAdmin()
+    {
+        return $this->belongsTo(User::class, 'contract_admin_id');
+    }
+
     /**
      * Para obtener el vinculo con la tabla financial_organisms
      */
@@ -217,6 +227,10 @@ class Contract extends Model
         }else{
             return date('d/m/Y', strtotime($this->advance_validity));
         }
+    }
+
+    public function minimAmountFormat(){
+        return number_format($this->minim_amount,0,",",".");
     }
 
     public function totalAmountFormat(){

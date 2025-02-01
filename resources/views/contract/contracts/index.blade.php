@@ -108,7 +108,7 @@ p.centrado {
                                                     <tr>
                                                         <td style="max-width: 10px"> {{ ($i+1) }}</td>
                                                         <td> {{ $contracts[$i]->dependency->description }}</td>
-                                                        <td style="max-width: 800px"> {{ $contracts[$i]->description }}</td>
+                                                        <td style="max-width: 2500px"> {{ $contracts[$i]->description }}</td>
                                                         <td> {{ number_format($contracts[$i]->iddncp,'0', ',','.') }} </td>
                                                         <td> {{ number_format($contracts[$i]->year_adj,'0', ',','.') }} </td>
                                                         <td style="color:#ff0000">{{ $contracts[$i]->linkdncp }}</td>
@@ -121,7 +121,7 @@ p.centrado {
                                                             <td>Contrato Cerrado</td>
                                                         @endif
 
-                                                        <td style="max-width: 200px"> Gs.{{ number_format($contracts[$i]->total_amount,'0', ',','.') }} </td>
+                                                        <td style="max-width: 150px"> Gs.{{ number_format($contracts[$i]->total_amount,'0', ',','.') }} </td>
 
                                                         <td>{{ $contracts[$i]->provider->description }}</td>
 

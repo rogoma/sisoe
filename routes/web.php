@@ -161,8 +161,12 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
     //MUESTRA LOS DETALLES DE ITEMSCONTRACTS DE ACUERDO A UN CONTRATO Y UN COMPONENTE
-    Route::get('/items_contracts/{contract}/component/{component}/items', [ItemsContractsController::class, 'index'])
-    ->name('items_contracts.items');
+    Route::get('/items_contracts/{contract}/component/{component}/items', [ItemsContractsController::class, 'index'])->name('items_contracts.items');
+    
+    //ELIMINA UN COMPONENTE DE UN CONTRATO SI ES QUE NO TUVO MOVIMIENTOS
+    Route::delete('/items_contracts/{contract}/component/{component}/delete', [ItemsContractsController::class, 'destroy'])->name('items_contracts.delete');
+
+    // Route::delete('orders/files/{file_id}/delete', [OrdersFilesController::class, 'destroy'])->name('orders.files.delete');
 
 
     //PARA MANEJAR DATOS DE RUBROS DE CONTRATOS

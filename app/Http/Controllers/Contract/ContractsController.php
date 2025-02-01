@@ -74,7 +74,8 @@ class ContractsController extends Controller
     {
         // if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
         if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.show'])){
-            //NO SE MUESTRAN LOS PEDIDOS ANULADOS
+            //SE DEBEN MOSTRAR TODOS LOS PEDIDOS SI ES DE UOC NO IMPORTAN LOS ESTADOS
+            //DETERMINAR QUE DEPENDENCIAS DEBEN SOLO VER CONTRATOS DE OBRAS
             $contracts = Contract::where('contract_state_id', '>=', 1)
                     ->where('contract_type_id', '=', 2)//solo muestra contratos de obras
                     ->orderBy('iddncp','asc')
@@ -86,13 +87,15 @@ class ContractsController extends Controller
                 $contracts = Contract::where(function ($query) use ($request) {
                     $query->where('fiscal1_id', $request->user()->id)
                         ->orWhere('fiscal2_id', $request->user()->id)
-                        ->orWhere('fiscal3_id', $request->user()->id);
+                        ->orWhere('fiscal3_id', $request->user()->id)
+                        ->orWhere('fiscal4_id', $request->user()->id);
                 })
                 ->where('contract_state_id', '>=', 1)
                 ->orderBy('iddncp', 'asc')
                 ->get();
             // }
         }
+        
         return view('contract.contracts.index', compact('contracts'));
     }
 
@@ -140,9 +143,11 @@ class ContractsController extends Controller
         $expenditure_objects = ExpenditureObject::where('level', 3)->get();
         $providers = Provider::all();//se podria filtrar por estado sólo activo
         $contr_states = ContractState::all();
-        $contract_types = ContractType::all();
+        $contract_types = ContractType::all();        
+        $users_admin = User::where('contract_admin', 1)->get();
+
         return view('contract.contracts.create', compact('dependencies', 'modalities','sub_programs', 'funding_sources', 'financial_organisms',
-        'expenditure_objects', 'providers', 'contr_states','contract_types'));
+        'expenditure_objects', 'providers', 'contr_states','contract_types', 'users_admin'));
     }
 
     /**
@@ -173,13 +178,20 @@ class ContractsController extends Controller
             'modality_id' => 'numeric|required|max:999999',
             'financial_organism_id' => 'numeric|required|max:999999',
             'contract_type_id' => 'numeric|required|max:999999',
-            'total_amount' => 'string|required|max:9223372036854775807',
+            'minim_amount' => 'string|required|max:9223372036854775807',
+            'total_amount' => 'string|required|max:9223372036854775807',            
             'open_contract' => 'numeric|required',
-            'dependency_id' => 'numeric|required|max:999999',
-            'contract_admin_id' => 'numeric|required|max:999999',
+            'dependency_id' => 'numeric|required',
+            'contract_admin_id' => 'numeric|required',
             'comments' => 'nullable|max:300',
         );
 
+        // $messages = [
+        //     'total_amount.gt' => 'El monto total debe ser mayor que el monto mínimo.',
+        // ];
+
+        // $this->validate($request, $rules, $messages);
+        
         $validator =  Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
@@ -209,6 +221,14 @@ class ContractsController extends Controller
         $contract->financial_organism_id=$request->input('financial_organism_id');
         $contract->contract_type_id=$request->input('contract_type_id');
 
+        $minim_amount_fin = str_replace('.', '',($request->input('minim_amount')));
+        if ($minim_amount_fin <= 0 ) {
+            $validator->errors()->add('minim_amount', 'Monto no puede ser cero ni negativo');
+            return back()->withErrors($validator)->withInput();
+        }else{
+            $contract->minim_amount = $minim_amount_fin;
+        }
+        
         $total_amount_fin = str_replace('.', '',($request->input('total_amount')));
         if ($total_amount_fin <= 0 ) {
             $validator->errors()->add('total_amount', 'Monto no puede ser cero ni negativo');
@@ -217,8 +237,19 @@ class ContractsController extends Controller
             $contract->total_amount = $total_amount_fin;
         }
 
+        //controlamos que monto máximo sea mayor a montominimo
+        $total_amount_fin = str_replace('.', '',($request->input('total_amount')));
+        $minim_amount_fin = str_replace('.', '',($request->input('minim_amount')));
+        if ($total_amount_fin <= $minim_amount_fin ) {
+            $validator->errors()->add('total_amount', 'Monto Máximo no puede ser menor o igual a Monto Mínimo, verifique');
+            return back()->withErrors($validator)->withInput();
+        }else{
+            $contract->total_amount = $total_amount_fin;
+        }
+
         $contract->open_contract = $request->input('open_contract');
         $contract->dependency_id = $request->input('dependency_id');
+        $contract->contract_admin_id = $request->input('contract_admin_id');
         $contract->comments=$request->input('comments');
         $contract->creator_user_id = $request->user()->id;  // usuario logueado
 
@@ -338,9 +369,11 @@ class ContractsController extends Controller
             $providers = Provider::all();//se podria filtrar por estado sólo activo
             $contr_states = ContractState::all();
             $contract_types = ContractType::all();
-            $users = User::all();
+            $users_admin = User::where('contract_admin', 1)->get();
+            // $users = User::all();
+
             return view('contract.contracts.update', compact('contract','dependencies', 'modalities','sub_programs', 'funding_sources', 'financial_organisms',
-                'expenditure_objects', 'providers', 'contr_states','contract_types','users'));
+                'expenditure_objects', 'providers', 'contr_states','contract_types','users_admin'));
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para editar el llamado.');
         }
@@ -356,7 +389,7 @@ class ContractsController extends Controller
     {
         $contract = Contract::findOrFail($contract_id);
         // chequeamos que el usuario tenga permisos para editar el llamado
-        if($request->user()->hasPermission(['admin.contracts.update','contracts.contracts.update'])){
+        if($request->user()->hasPermission(['admin.contracts.update','contracts.contracts.update', 'contracts.fiscales.create'])){
             $dependencies = Dependency::all();
             $modalities = Modality::all();
             $sub_programs = SubProgram::all();
@@ -403,10 +436,11 @@ class ContractsController extends Controller
             'modality_id' => 'numeric|required|max:999999',
             'financial_organism_id' => 'numeric|required|max:999999',
             'contract_type_id' => 'numeric|required|max:999999',
+            'minim_amount' => 'string|required|max:9223372036854775807',
             'total_amount' => 'string|required|max:9223372036854775807',
             'open_contract' => 'numeric|required',
-            'dependency_id' => 'numeric|required|max:999999',
-            'contract_admin_id' => 'numeric|required|max:999999',
+            'dependency_id' => 'numeric|required',
+            'contract_admin_id' => 'numeric|required',
             'comments' => 'nullable|max:300',
         );
 
@@ -439,6 +473,14 @@ class ContractsController extends Controller
         $contract->financial_organism_id=$request->input('financial_organism_id');
         $contract->contract_type_id=$request->input('contract_type_id');
 
+        $minim_amount_fin = str_replace('.', '',($request->input('minim_amount')));
+        if ($minim_amount_fin <= 0 ) {
+            $validator->errors()->add('minim_amount', 'Monto no puede ser cero ni negativo');
+            return back()->withErrors($validator)->withInput();
+        }else{
+            $contract->minim_amount = $minim_amount_fin;
+        }
+        
         $total_amount_fin = str_replace('.', '',($request->input('total_amount')));
         if ($total_amount_fin <= 0 ) {
             $validator->errors()->add('total_amount', 'Monto no puede ser cero ni negativo');
@@ -446,8 +488,20 @@ class ContractsController extends Controller
         }else{
             $contract->total_amount = $total_amount_fin;
         }
+
+        //controlamos que monto máximo sea mayor a montominimo
+        $total_amount_fin = str_replace('.', '',($request->input('total_amount')));
+        $minim_amount_fin = str_replace('.', '',($request->input('minim_amount')));
+        if ($total_amount_fin <= $minim_amount_fin ) {
+            $validator->errors()->add('total_amount', 'Monto Máximo no puede ser menor o igual a Monto Mínimo, verifique');
+            return back()->withErrors($validator)->withInput();
+        }else{
+            $contract->total_amount = $total_amount_fin;
+        }
+
         $contract->open_contract = $request->input('open_contract');
         $contract->dependency_id = $request->input('dependency_id');
+        $contract->contract_admin_id = $request->input('contract_admin_id');
         $contract->comments=$request->input('comments');
         $contract->creator_user_id = $request->user()->id;  // usuario logueado
         $contract->save();
@@ -467,11 +521,11 @@ class ContractsController extends Controller
         $rules = [
             'fiscal1_id' => [
                 'numeric',
-                'nullable',
+                'required',
                 'max:999999',
                 function ($attribute, $value, $fail) {
-                    if ($value == request()->input('fiscal2_id') || $value == request()->input('fiscal3_id')) {
-                        $fail('El campo ' . $attribute . ' no puede ser igual a fiscal2_id ni fiscal3_id.');
+                    if ($value == request()->input('fiscal2_id') || $value == request()->input('fiscal3_id') || $value == request()->input('fiscal4_id')) {
+                        $fail('El campo ' . $attribute . ' no puede ser igual a fiscal2_id ni fiscal3_id ni fiscal4_id.');
                     }
                 },
             ],
@@ -480,8 +534,8 @@ class ContractsController extends Controller
                 'nullable',
                 'max:999999',
                 function ($attribute, $value, $fail) {
-                    if ($value && ($value == request()->input('fiscal1_id') || $value == request()->input('fiscal3_id'))) {
-                        $fail('El campo ' . $attribute . ' no puede ser igual a fiscal1_id ni fiscal3_id.');
+                    if ($value && ($value == request()->input('fiscal1_id') || $value == request()->input('fiscal3_id')) || $value == request()->input('fiscal4_id')) {
+                        $fail('El campo ' . $attribute . ' no puede ser igual a fiscal1_id ni fiscal3_id ni fiscal4_id.');
                     }
                 },
             ],
@@ -490,8 +544,18 @@ class ContractsController extends Controller
                 'nullable',
                 'max:999999',
                 function ($attribute, $value, $fail) {
-                    if ($value && ($value == request()->input('fiscal1_id') || $value == request()->input('fiscal2_id'))) {
-                        $fail('El campo ' . $attribute . ' no puede ser igual a fiscal1_id ni fiscal2_id.');
+                    if ($value && ($value == request()->input('fiscal1_id') || $value == request()->input('fiscal2_id')) || $value == request()->input('fiscal4_id')) {
+                        $fail('El campo ' . $attribute . ' no puede ser igual a fiscal1_id ni fiscal2_id ni fiscal4_id.');
+                    }
+                },
+            ],
+            'fiscal4_id' => [
+                'numeric',
+                'nullable',
+                'max:999999',
+                function ($attribute, $value, $fail) {
+                    if ($value && ($value == request()->input('fiscal1_id') || $value == request()->input('fiscal2_id')) || $value == request()->input('fiscal3_id')) {
+                        $fail('El campo ' . $attribute . ' no puede ser igual a fiscal1_id ni fiscal2_id ni fiscal3_id.');
                     }
                 },
             ],
@@ -535,6 +599,17 @@ class ContractsController extends Controller
             // Acción si fiscal3_id tiene un valor válido
             $contract->fiscal3_id = $request->input('fiscal3_id');
             $contract->fiscal3_date = now();
+        }
+
+        $fiscal4_id = $request->input('fiscal4_id');
+        if (empty($fiscal4_id) || $fiscal4_id === '0') {
+            // Acción si fiscal4_id está vacío o es igual a 0
+            $contract->fiscal4_id = null;
+            $contract->fiscal4_date = now(); // Por ejemplo, asignar un valor nulo
+        } else {
+            // Acción si fiscal4_id tiene un valor válido
+            $contract->fiscal4_id = $request->input('fiscal4_id');
+            $contract->fiscal4_date = now();
         }
 
         $contract->creator_user_id = $request->user()->id;  // usuario logueado

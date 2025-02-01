@@ -886,54 +886,127 @@ class ItemsContractsController extends Controller
         }
     }
 
+
+    public function index2(Request $request, $contract_id, $component_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+
+        $items = ItemContract::where('contract_id', $contract_id)
+                ->where('component_id', $component_id)
+                ->get();
+
+        // Chequeamos permisos del usuario
+        if(!$request->user()->hasPermission(['admin.items.index', 'contracts.items.index','contracts.items.show'])){
+            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        }
+
+        return view('contract.itemscontracts.index', compact('items','contract'));
+    }
+
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, $contract_id, $component_id)
+        {
+    
+        if(!$request->user()->hasPermission(['admin.items.delete', 'contracts.items.delete'])){
+            return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
+        }
+
+        $item = ItemContract::where('contract_id', $contract_id)
+            ->where('component_id', $component_id)
+            ->get();
+
+        // Chequeamos si existen item_award_histories referenciando al item
+        // if($item->orders->count() > 0){
+        //     return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el item debido a que se encuentra vinculado con históricos de precios referenciales, debe eliminarlos primero para continuar. ', 'code' => 200], 200);
+        // }
+    
+        //PARA BORRAR LOS REGISTROS
+        // ItemContract::where('contract_id', $contract_id)
+        // ->where('component_id', $component_id)
+        // ->delete();
+        
+        // AQUI RECORRER LOS ITEMS DEL PEDIDO Y CARGAR COMO NUEVO TOTAL_AMOUNT
+        // $total_amountitems = 0;
+        // for ($i = 0; $i < count($order->items); $i++){
+        //     $total_amountitems += $order->items[$i]->total_amount;
+        // }
+
+        //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)
+        // $cdp_amount = $order->cdp_amount;
+        // if ($cdp_amount > 0) {
+        //     if ($total_amountitems > $cdp_amount) {
+        //         $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+        //         $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, DEBE ACTUALIZAR CDP...');
+        //         return back()->withErrors($validator)->withInput();
+        //     }
+        // }
+
+
+        //CERAMOS VALOR DEL MONTO DE ORDER Y CARGAMOS VALOR NUEVO
+        // $order->total_amount = 0;
+        // $order->total_amount = $total_amountitems;
+        // $order->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el ítem ', 'code' => 200], 200);
+
+    }
+
+    
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $order_id, $item_id)
+    
+    public function destroy_orig(Request $request, $contract_id, $component_id)
     {
-        $order = Order::findOrFail($order_id);
-        $item = ItemOrder::find($item_id);
+        $contract = Contract::findOrFail($contract_id);
 
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.items.delete']) &&
-        $item->order->dependency_id != $request->user()->dependency_id){
+        $item = ItemContract::where('contract_id', $contract_id)
+                ->where('component_id', $component_id)
+                ->get();
+
+        // Chequeamos permisos del usuario para borrar el registro
+        if(!$request->user()->hasPermission(['admin.items.delete', 'contracts.items.delete'])){
             return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
         }
 
         // Chequeamos si existen item_award_histories referenciando al item
-        if($item->itemAwardHistories->count() > 0){
-            return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el item debido a que se encuentra vinculado con históricos de precios referenciales, debe eliminarlos primero para continuar. ', 'code' => 200], 200);
-        }
+        // if($item->itemAwardHistories->count() > 0){
+        //     return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el item debido a que se encuentra vinculado con históricos de precios referenciales, debe eliminarlos primero para continuar. ', 'code' => 200], 200);
+        // }
 
         // Eliminamos en caso de no existir registros referenciando al item
-        $item->delete();
+        //  $item->delete();
 
         // AQUI RECORRER LOS ITEMS DEL PEDIDO Y CARGAR COMO NUEVO TOTAL_AMOUNT
-        $total_amountitems = 0;
-        for ($i = 0; $i < count($order->items); $i++){
-            $total_amountitems += $order->items[$i]->total_amount;
-        }
+        // $total_amountitems = 0;
+        // for ($i = 0; $i < count($order->items); $i++){
+        //     $total_amountitems += $order->items[$i]->total_amount;
+        // }
 
         //CONTROLAMOS PARA AVISAR QUE MONTO DE SUMATORIA DE ITEMS SOBREPASA MONTO CDP (SI YA TIENE CDP)
-        $cdp_amount = $order->cdp_amount;
-        if ($cdp_amount > 0) {
-            if ($total_amountitems > $cdp_amount) {
-                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-                $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, DEBE ACTUALIZAR CDP...');
-                return back()->withErrors($validator)->withInput();
-            }
-        }
+        // $cdp_amount = $order->cdp_amount;
+        // if ($cdp_amount > 0) {
+        //     if ($total_amountitems > $cdp_amount) {
+        //         $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+        //         $validator->errors()->add('order_measurement_unit', 'Con este cambio Monto total de Ítems: '.$total_amountitems.', es MAYOR a: '.$cdp_amount.' monto de CDP del Pedido, DEBE ACTUALIZAR CDP...');
+        //         return back()->withErrors($validator)->withInput();
+        //     }
+        // }
 
 
         //CERAMOS VALOR DEL MONTO DE ORDER Y CARGAMOS VALOR NUEVO
-        $order->total_amount = 0;
-        $order->total_amount = $total_amountitems;
+        // $order->total_amount = 0;
+        // $order->total_amount = $total_amountitems;
+        // $order->save();
 
-        $order->save();
-
-        return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el ítem ', 'code' => 200], 200);
+        // return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el ítem ', 'code' => 200], 200);
     }
 }

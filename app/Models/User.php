@@ -76,7 +76,7 @@ class User extends Authenticatable
     public function contracts(){
         return $this->hasMany('App\Models\Contract');
     }
-
+    
     /**
      * Para obtener el vinculo con la tabla orders
      */

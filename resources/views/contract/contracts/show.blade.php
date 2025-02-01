@@ -221,95 +221,94 @@
 
                                         <div class="tab-content card-block">
                                             <div class="tab-pane active" id="tab0" role="tabpanel">
-                                                <h5 class="text-center">Datos del Contrato</h5>
-                                                <table class="table table-striped table-bcontracted">
+                                                <h5 class="text-center fw-bold">Datos del Contrato</h5>
+                                                <br>
+                                                <table class="table table-striped table-bordered table-hover">
+                                                    <thead class="table-info text-center">
+                                                        <tr>
+                                                            <th>Nombre del Llamado</th>
+                                                            <th>Tipo Llamado</th>
+                                                            <th>IDDNCP</th>
+                                                            <th class="w-25 text-center">Link DNCP</th>
+                                                            <th>N° Contrato/Año</th>
+                                                            <th>AÑO</th>
+                                                            <th colspan="2">Fecha firma contrato</th> <!-- Abarca dos columnas -->
+                                                        </tr>
+                                                    </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td><label>Nombre del Llamado:</label></td>
-                                                            <td><label>Tipo Llamado:</label></td>
-                                                            <td><label>IDDNCP:</label></td>
-                                                            <td><label>Link DNCP:</label></td>
-                                                            <td><label>N° Contrato/Año:</label></td>
-                                                            <td><label>AÑO:</label></td>
-                                                            <td><label>Fecha firma contrato:</label></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td style="max-width: 800px">{{ $contract->description }}</td>
-                                                            <td>{{ $contract->modality->description }}</td>
-                                                            <td> {{ number_format($contract->iddncp, '0', ',', '.') }} </td>
-                                                            <td style="color:blue; width: 100px;">{{ $contract->linkdncp }}
-                                                            </td>
+                                                            <td style="max-width: 900px">{{ $contract->description }}</td>
+                                                            <td style="max-width: 900px">{{ $contract->modality->description }}</td>
+                                                            <td>{{ number_format($contract->iddncp, '0', ',', '.') }}</td>
+                                                            <td class="w-25">{{ $contract->linkdncp }} </td>
                                                             <td>{{ $contract->number_year }}</td>
-                                                            <td> {{ number_format($contract->year_adj, '0', ',', '.') }}
-                                                            </td>
-                                                            <td>{{ $contract->signDateFormat() }}</td>
+                                                            <td>{{ number_format($contract->year_adj, '0', ',', '.') }}</td>
+                                                            <td colspan="2">{{ $contract->signDateFormat() }}</td> <!-- Abarca dos columnas -->
                                                         </tr>
+                                                    </tbody>
+                                                
+                                                    <thead class="table-info text-center">
                                                         <tr>
-                                                            <td><label class="col-form-label f-w-600">Contratista:</label>
-                                                            </td>
-                                                            <td><label class="col-form-label f-w-600">Estado:</label></td>
-                                                            <td><label class="col-form-label f-w-600">Modalidad:</label>
-                                                            </td>
-                                                            <td><label class="col-form-label f-w-600">Organismo
-                                                                    Finaciador:</label></td>
-                                                            <td><label
-                                                                    class="col-form-label f-w-600">Abierto/Cerrado:</label>
-                                                            </td>
-                                                            <td><label class="col-form-label f-w-600">Tipo:</label></td>
-                                                            <td><label class="col-form-label f-w-500">Monto Total:</label>
-                                                            </td>
-                                                            {{-- <td><label class="col-form-label f-w-600">Dependencia Responsable:</label></td> --}}
+                                                            <th>Contratista</th>
+                                                            <th>Estado</th>
+                                                            <th>Modalidad</th>
+                                                            <th>Organismo Financiador</th>
+                                                            <th>Abierto/Cerrado</th>
+                                                            <th>Tipo</th>
+                                                            <th>Monto Mínimo</th>
+                                                            <th>Monto Máximo</th>
                                                         </tr>
+                                                    </thead>
+                                                    <tbody>
                                                         <tr>
                                                             <td>{{ $contract->provider->description }}</td>
-
-                                                            {{-- SI ESTADO ESTA ANULADO, RESCINDIDO O CANCELADO --}}
-                                                            @if (in_array($contract->contract_state_id, [2, 3, 4, 6]))
-                                                                <td style="color:#ff0000">
-                                                                    {{ $contract->contractState->description }}</td>
-                                                            @else
-                                                                <td style="color:green">
-                                                                    {{ $contract->contractState->description }}</td>
-                                                            @endif
-
+                                                            <td class="{{ in_array($contract->contract_state_id, [2, 3, 4, 6]) ? 'text-danger' : 'text-success' }}">
+                                                                {{ $contract->contractState->description }}
+                                                            </td>
                                                             <td>{{ $contract->modality->description }}</td>
                                                             <td>{{ $contract->financialOrganism->description }}</td>
-
-                                                            @if ($contract->open_contract == 1)
-                                                                <td>Contrato Abierto</td>
-                                                            @else
-                                                                <td>Contrato Cerrado</td>
-                                                            @endif
-
+                                                            <td>{{ $contract->open_contract == 1 ? 'Contrato Abierto' : 'Contrato Cerrado' }}</td>
                                                             <td>{{ $contract->contractType->description }}</td>
-                                                            <td colspan="3"
-                                                                style="font-size: 16px;color:blue;font-weight: bold">
-                                                                {{ 'Gs. ' . $contract->totalAmountFormat() }}</td>
+                                                            <td class="fw-bold text-primary">Gs. {{ $contract->minimAmountFormat() }}</td>
+                                                            <td class="fw-bold text-primary">Gs. {{ $contract->totalAmountFormat() }}</td>
                                                         </tr>
+                                                    </tbody>
+                                                
+                                                    <thead class="table-info text-center">
                                                         <tr>
-                                                            <td><label class="col-form-label f-w-600">Dependencia
-                                                                    Responsable:</label></td>
-                                                            <td><label class="col-form-label f-w-1600">Comentarios:</label>
-                                                            </td>
-                                                            <td><label class="col-form-label f-w-1600">Fiscal 1:</label>
-                                                            </td>
-                                                            <td><label class="col-form-label f-w-1600">Fiscal 2:</label>
-                                                            </td>
-                                                            <td><label class="col-form-label f-w-1600">Fiscal 3:</label>
-                                                            </td>
+                                                            <th colspan="2">Dependencia Responsable</th>                                                            
+                                                            <th colspan="2">Administrador del Contrato</th>
+                                                            <th colspan="4">Comentarios</th>
                                                         </tr>
+                                                    </thead>
+                                                    <tbody>
                                                         <tr>
-                                                            <td>{{ $contract->dependency->description }}</td>
-                                                            <td>{{ $contract->comments }}</td>
-                                                            <td>{{ $contract->fiscal1->name ?? '-' }}
-                                                                {{ $contract->fiscal1->lastname ?? '-' }} </td>
-                                                            <td>{{ $contract->fiscal2->name ?? '-' }}
-                                                                {{ $contract->fiscal2->lastname ?? '-' }} </td>
-                                                            <td>{{ $contract->fiscal3->name ?? '-' }}
-                                                                {{ $contract->fiscal3->lastname ?? '-' }} </td>
+                                                            <td colspan="2">{{ $contract->dependency->description }}</td>
+                                                            <td colspan="2">{{ $contract->contractAdmin->name ?? '-' }} {{ $contract->contractAdmin->lastname ?? '-' }}</td>                                                            
+                                                            <td colspan="4">{{ $contract->comments }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                
+                                                    <thead class="table-info text-center">
+                                                        <tr>
+                                                            <th>Fiscal 1</th>
+                                                            <th>Fiscal 2</th>
+                                                            <th>Fiscal 3</th>
+                                                            <th>Fiscal 4</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal4->name ?? '-' }} {{ $contract->fiscal4->lastname ?? '-' }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
+                                                
+                                                
                                             </div>
 
                                             <div class="tab-pane" id="tab1" role="tabpanel">
@@ -514,6 +513,7 @@
                                                             <th>Nombre del Fiscal 1</th>
                                                             <th>Nombre del Fiscal 2</th>
                                                             <th>Nombre del Fiscal 3</th>
+                                                            <th>Nombre del Fiscal 4</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -524,6 +524,8 @@
                                                                 {{ $contract->fiscal2->lastname ?? '-' }} </td>
                                                             <td>{{ $contract->fiscal3->name ?? '-' }}
                                                                 {{ $contract->fiscal3->lastname ?? '-' }} </td>
+                                                            <td>{{ $contract->fiscal4->name ?? '-' }}
+                                                                {{ $contract->fiscal4->lastname ?? '-' }} </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -552,6 +554,7 @@
                                                             <th style="width: 120px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
+                                                    {{-- php para contar totales de rubros x contratos --}}
                                                     <tbody>
                                                         @php $counter = 1; @endphp
                                                         @foreach ($items_contract as $item)
@@ -576,7 +579,7 @@
                                                                                 @if (Auth::user()->hasPermission(['admin.items.delete','contracts.items.delete']))
                                                                                     <button type="button" title="Eliminar Componente"
                                                                                     class="btn btn-danger btn-icon"
-                                                                                    onclick="anuleOrder({{ $contract->id }})">
+                                                                                    onclick="anuleRubro ({{ $item->contract->id.','.$item->component->id }})">
                                                                                     <i class="fa fa-ban"></i>
                                                                                     </button>
                                                                                 @endif
@@ -596,7 +599,10 @@
                                                         @endif
                                                     @endif
                                                 </div>
-                                                <br><br><br>
+                                                <br>
+                                                <span style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SUMATORIA DE RUBROS CARGADOS: {{ $contract->totalAmountFormat() }}</span>
+                                                 
+                                                <br><br><br><br>
                                             <div class="float-rigth">
                                                 @if (Auth::user()->hasPermission(['contracts.items.create' ]))
                                                     <h6  style="color:blue">Archivos Excel de Componentes (Formato Zip) para Descargar y realizar importación de rubros </h6>
@@ -792,14 +798,59 @@
                 );
             };
 
+            anuleRubro = function(contract, component) {
+    swal({
+            title: "Atención",
+            text: "¿Está seguro que desea eliminar el componente cargado?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sí, anular",
+            cancelButtonText: "Cancelar",
+        },
+        function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({                    
+                    url: `/items_contracts/${contract}/component/${component}/delete`,
+                    method: 'POST',
+                    data: {
+                        _method: 'DELETE',
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        try {
+                            let response = (typeof data === "object") ? data : JSON.parse(data);
+                            if (response.status === "success") {
+                                swal("Éxito!", "Componente anulado correctamente", "success");
+                                location.reload();
+                            } else {
+                                swal("Error!", response.message, "error");
+                            }
+                        } catch (error) {
+                            swal("Error!", "1-Ocurrió un error al procesar la solicitud.", "error");
+                            console.log(error);
+                        }
+                    },
+                    error: function(error) {
+                        swal("Error!", "2-Ocurrió un error al procesar la solicitud.", "error");
+                        console.log(error);
+                    }
+                });
+            }
+        }
+    );
+};
+
+
+
+
             itemOrder = function(order) {
                 //lleva a index de ItemsOrdersController
                 location.href = '/orders/'+order+'/items_orders';
             }
 
             //lleva a index de ItemsOrdersController
-            itemRubro = function(contract, component) {                
-                // location.href = '/items_contracts/'+contract+/component+'/items';
+            itemRubro = function(contract, component) {                                
                 location.href = '/items_contracts/' + contract + '/component/' + component + '/items';
 
             }
@@ -956,8 +1007,7 @@
                     function(isConfirm) {
                         if (isConfirm) {
                             $.ajax({
-                                url: '{{ route('contracts.delete', ['contract_id' => ':id']) }}'
-                                    .replace(':id', id),
+                                url: '{{ route('contracts.delete', ['contract_id' => ':id']) }}' .replace(':id', id),
                                 method: 'POST',
                                 data: {
                                     _method: 'DELETE',
