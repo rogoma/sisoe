@@ -496,11 +496,10 @@
                                                         @if ($contract->items->count() > 0)
                                                             <tr>
                                                                 <td>1</td>
-                                                                <td>Reporte Pólizas del Llamado</td>
+                                                                <td>Componentes de Sistemas</td>
                                                                 <td><a href="/pdf/panel_contracts/{{ $contract->id }}"
                                                                         class="btn btn-default" target="_blank"><i
-                                                                            class="fa fa-file-pdf-o"></i> &nbsp;Informe de
-                                                                        Pólizas</a></td>
+                                                                            class="fa fa-file-pdf-o"></i> &nbsp;Componentes de Sistemas de Abastecimiento de Agua</a></td>
                                                             </tr>
                                                         @endif
                                                     </tbody>
@@ -549,7 +548,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Nombre de Componente con rubros cargados</th>
+                                                            <th>Nombre de Componente con rubros cargados</th>                                                            
                                                             <th style="width: 120px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
@@ -561,13 +560,13 @@
                                                                     <p>{{ $counter }}</p>
                                                                 </td>
                                                                 <td>
-                                                                <p>{{ $item->component->code }} - {{ $item->component->description }} - {{ $item->description }}</p>
+                                                                <p>{{ $item->component->code }} - {{ $item->component->description }}</p>
                                                                 </td>
 
                                                                 <td>
                                                                     <button type="button" title="Componente con Rubros"
                                                                                     class="btn btn-primary btn-icon"
-                                                                                    onclick="itemRubro({{ $item->component->id }})">
+                                                                                    onclick="itemRubro({{ $item->contract->id.','.$item->component->id }})">
                                                                                     <i class="fa fa-list"></i>
                                                                                 </button>
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
@@ -798,9 +797,10 @@
                 location.href = '/orders/'+order+'/items_orders';
             }
 
-            itemRubro = function(component) {
-                //lleva a index de ItemsOrdersController
-                location.href = '/items_contracts/'+component+'/items';
+            //lleva a index de ItemsOrdersController
+            itemRubro = function(contract, component) {                
+                // location.href = '/items_contracts/'+contract+/component+'/items';
+                location.href = '/items_contracts/' + contract + '/component/' + component + '/items';
 
             }
 

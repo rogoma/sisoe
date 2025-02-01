@@ -160,6 +160,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //PARA MANEJAR DATOS EN ITEMS DE ORDENES DE EJECUCIÓN
     Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
+    //MUESTRA LOS DETALLES DE ITEMSCONTRACTS DE ACUERDO A UN CONTRATO Y UN COMPONENTE
+    Route::get('/items_contracts/{contract}/component/{component}/items', [ItemsContractsController::class, 'index'])
+    ->name('items_contracts.items');
+
+
     //PARA MANEJAR DATOS DE RUBROS DE CONTRATOS
     Route::resource('items_contracts.items', ItemsContractsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
@@ -168,8 +173,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     // Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
-
-    // Route::get('/contracts/{order_id}', [ContractsController::class, 'show'])->name('contracts.show');
+    //PARA VOLVER A VER UN CONTRATO ESPECÍFICO
+    Route::get('/contracts/{contract_id}', [ContractsController::class, 'volver'])->name('contracts.volver');
 
 
 

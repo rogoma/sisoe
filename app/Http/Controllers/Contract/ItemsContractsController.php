@@ -44,18 +44,20 @@ class ItemsContractsController extends Controller
     }
 
 
-    public function index(Request $request, $component_id)
+    public function index(Request $request, $contract_id, $component_id)
     {
-        $items = ItemContract::findOrFail($component_id);
-        // $items = ItemContract::findOrFail($contract_id);
-        // $items = $contract->items;
+        $contract = Contract::findOrFail($contract_id);
+
+        $items = ItemContract::where('contract_id', $contract_id)
+                ->where('component_id', $component_id)
+                ->get();
 
         // Chequeamos permisos del usuario
         if(!$request->user()->hasPermission(['admin.items.index', 'contracts.items.index','contracts.items.show'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
-        return view('contract.items.index', compact('items'));
+        return view('contract.itemscontracts.index', compact('items','contract'));
     }
 
 
