@@ -90,47 +90,62 @@
                                                     $tot_price_mat = 0;    
                                                 @endphp
                                                 
-                                                @for ($i = 0; $i < count($items); $i++)
-                                                    <tr>                                                        
-                                                        @if($items[$i]->rubro_id == '9999')
+                                                @foreach ($items as $i => $item)
+                                                    <tr>
+                                                        @if($item->rubro_id == '9999')
                                                             <td></td>
                                                             <td></td>
-                                                            <td style="font-size: 16px; font-weight: bold;">{{ $items[$i]->subitem->description }}</td>
-                                                            {{-- <td>{{ $items[$i]->rubro->subitems->description }}</td> --}}
+                                                            <td style="font-size: 16px; font-weight: bold;">{{ $item->subitem->description }}</td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
                                                         @else
-                                                            <td style="text-align: center;">{{ $items[$i]->item_number }}</td>
-                                                            <td style="text-align: center;">{{ $items[$i]->rubro->code }}</td>
-                                                            <td>{{ $items[$i]->rubro->description }}</td>                                                        
-                                                            <td style="text-align: center;">{{ $items[$i]->quantity }}</td>
-                                                            <td style="text-align: center;">{{ $items[$i]->rubro->orderPresentations->description }}</td>
-                                                            <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mo, '0', ',', '.') }}</td>
-                                                            <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mat, '0', ',', '.') }}</td>
-                                                            <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mo, '0', ',', '.') }}</td>
-                                                            <td style="text-align: center;">{{ number_format($items[$i]->tot_price_mat, '0', ',', '.') }}</td>
-                                    
+                                                            <td style="text-align: center;">{{ $item->item_number }}</td>
+                                                            <td style="text-align: center;">{{ $item->rubro->code }}</td>
+                                                            <td>{{ $item->rubro->description }}</td>
+                                            
+                                                            {{-- Campo editable para la cantidad --}}
+                                                            <td style="text-align: center;">
+                                                                <input type="number" step="0.01" min="0" 
+                                                                       value="{{ $item->quantity }}" 
+                                                                       class="form-control quantity-input" 
+                                                                       data-index="{{ $i }}"
+                                                                       oninput="updateTotal({{ $i }})">
+                                                            </td>
+                                            
+                                                            <td style="text-align: center;">{{ $item->rubro->orderPresentations->description }}</td>
+                                                            <td style="text-align: center;">{{ number_format($item->unit_price_mo, 0, ',', '.') }}</td>
+                                                            <td style="text-align: center;">{{ number_format($item->unit_price_mat, 0, ',', '.') }}</td>
+                                                            
+                                                            {{-- Campo calculado para Precio TOT. MO --}}
+                                                            <td style="text-align: center;" id="total_mo_{{ $i }}">
+                                                                {{ number_format($item->quantity * $item->unit_price_mo, 0, ',', '.') }}
+                                                            </td>
+                                            
+                                                            <td style="text-align: center;">{{ number_format($item->tot_price_mat, 0, ',', '.') }}</td>
+                                            
                                                             @php
-                                                                $tot_price_mo += $items[$i]->tot_price_mo;
-                                                                $tot_price_mat += $items[$i]->tot_price_mat;
+                                                                $tot_price_mo += $item->quantity * $item->unit_price_mo;
+                                                                $tot_price_mat += $item->tot_price_mat;
                                                             @endphp
-                                    
-                                                            <td style="text-align: center;">                                                            
-                                                                <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $items[$i]->id }})">
+                                            
+                                                            <td style="text-align: center;">
+                                                                <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $item->id }})">
                                                                     <i class="fa fa-pencil"></i>
                                                                 </button>
-
-                                                                <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItemAwardHistories({{$items[$i]->id }})">
+                                            
+                                                                <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItemAwardHistories({{ $item->id }})">
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>
                                                             </td>
-                                                        @endif                                                        
+                                                        @endif
                                                     </tr>
-                                                @endfor
+                                                @endforeach
                                             </tbody>
+                                            
+                                            
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="6"></td>
@@ -156,6 +171,16 @@
 
 @push('scripts')
     <script type="text/javascript">
+
+    function updateTotal(index) {
+        let quantity = parseFloat(document.querySelector(`.quantity-input[data-index="${index}"]`).value) || 0;
+        let unitPriceMO = parseFloat(document.getElementById(`total_mo_${index}`).dataset.unitPrice) || 0;
+        
+        let totalMO = quantity * unitPriceMO;
+        
+        document.getElementById(`total_mo_${index}`).innerText = totalMO.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
         // $(document).ready(function() {
         //     $('#contracts').DataTable({
         //         "columnDefs": [

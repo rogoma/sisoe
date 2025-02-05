@@ -257,7 +257,7 @@ class OrdersEjecsController extends Controller
         $order = new Order;
         $order->contract_id = $contract_id;
         $order->number = $request->input('number');
-        $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));
+        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))): null;        
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         $order->order_state_id = $request->input('order_state_id');
@@ -288,7 +288,7 @@ class OrdersEjecsController extends Controller
         }
 
         $order = Order::findOrFail($order_id);
-        $components = Component::all();
+        $components = Component::orderBy('id')->get();//ordenado por id componente
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
@@ -311,7 +311,7 @@ class OrdersEjecsController extends Controller
         $rules = array(
             // 'number' => 'numeric|required|unique:orders,number',
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
-            'sign_date' => 'date_format:d/m/Y|required|',
+            // 'sign_date' => 'date_format:d/m/Y|required|',
             'component_id' => 'required|numeric',
             'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
@@ -332,7 +332,7 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));
+        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))): null;
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         $order->order_state_id = $request->input('order_state_id');
