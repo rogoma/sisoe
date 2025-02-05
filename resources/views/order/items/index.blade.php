@@ -107,7 +107,7 @@
                                                             <td style="text-align: center;">{{ $item->rubro->code }}</td>
                                                             <td>{{ $item->rubro->description }}</td>
                                             
-                                                            {{-- Campo editable para la cantidad --}}
+                                                            {{-- verificar este Campo editable para la cantidad --}}
                                                             <td style="text-align: center;">
                                                                 <input type="number" step="0.01" min="0" 
                                                                        value="{{ $item->quantity }}" 
