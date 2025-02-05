@@ -219,12 +219,13 @@ class ItemsOrdersController extends Controller
                 }
 
                 // Chequea si el código del componente del excel sea el mismo de la orden
-                $compo = $order->component->id;
-                $item['component_id'];
+                $compo = $order->component->id;  
+                $compo_2 = (int) $item['component_id'];
+                // $item['component_id'];
                 // var_dump($compo);
-                // var_dump($item['component_id']);exit();
+                // var_dump($item);exit();
 
-                if ($item['component_id'] !== $compo) {
+                if ($compo !== $compo_2) {
                     $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente de la Orden de Ejecución, verifique....');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }

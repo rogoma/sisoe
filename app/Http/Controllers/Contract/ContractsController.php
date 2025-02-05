@@ -303,12 +303,14 @@ class ContractsController extends Controller
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 3 contratos
         $user_files_con = $contract->files()->where('dependency_id', $user_dependency)
             ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas 5-dictamenes
+            ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
             ->get();
 
         // if($role_user == 1){
             $other_files_con = $contract->files()->where('dependency_id', '!=', $user_dependency)
             ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas  5-dictamenes
+            ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
             ->get();
         // }
@@ -316,12 +318,14 @@ class ContractsController extends Controller
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 6-evaluaciones
         $user_files_eval = $contract->files()->where('dependency_id', $user_dependency)
             ->whereIn('file_type', [6])//1-polizas 3-contratos 4-addendas 5-dictamenes 6-evaluaciones
+            ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
             ->get();
 
         // if($role_user == 1){
             $other_files_eval = $contract->files()->where('dependency_id', '!=', $user_dependency)
             ->whereIn('file_type', [6])//1-polizas 3-contratos 4-addendas  5-dictamenes 6-evaluaciones
+            ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
             ->get();
         // }

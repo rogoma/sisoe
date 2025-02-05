@@ -623,7 +623,8 @@
                                                             <th>Descripción</th>
                                                             <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>
-                                                            <th>Acciones</th>
+                                                            {{-- <th>Acciones</th> --}}
+                                                            <th style="width: 200px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -1044,12 +1045,12 @@
             deleteFile = function(file) {
                 swal({
                         title: "Atención",
-                        text: "Está seguro que desea eliminar el registro?",
+                        text: "Está seguro que desea anular el Archivo?",
 
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Sí, eliminar",
+                        confirmButtonText: "Sí, anular",
                         cancelButtonText: "Cancelar",
                     },
                     function(isConfirm) {

@@ -20,7 +20,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.show', $contract->id) }}">Llamado Nº {{ $contract->id }}</a>
+                            <a href="{{ route('contracts.show', $contract->id) }}">Contrato Nº {{ $contract->number_year}}</a>
                         </li>
                     </ul>
                 </div>

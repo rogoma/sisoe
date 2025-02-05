@@ -30,84 +30,12 @@ class ContractsFilesController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.files.index',
-                            'contracts.files.index',
-                            'process_contracts.files.index',
-                            'derive_contracts.files.index',
-                            'plannings.files.index',
-                            'tenders.files.index',
-                            'minor_purchases.files.index',
-                            'awards.files.index',
-                            'exceptions.files.index',
-                            'contracts.files.index',
-                            'utas.files.index',
-                            'legal_advices.files.index',
-                            'comites.files.index',
-                            'coordinations.files.index',
-                            'dgafs.files.index',
-                            'documentals.files.index'];
-        $create_permissions = ['admin.files.create',
-                            'contracts.files.create',
-                            'derive_contracts.files.create',
-                            'plannings.files.create',
-                            'tenders.files.create',
-                            'minor_purchases.files.create',
-                            'awards.files.create',
-                            'exceptions.files.create',
-                            'contracts.files.create',
-                            'utas.files.create',
-                            'legal_advices.files.create',
-                            'comites.files.create',
-                            'coordinations.files.create',
-                            'dgafs.files.create',
-                            'documentals.files.create'];
-        $show_permissions = ['admin.files.show',
-                            'contracts.files.show',
-                            'process_contracts.files.show',
-                            'derive_contracts.files.show',
-                            'plannings.files.show',
-                            'tenders.files.show',
-                            'minor_purchases.files.show',
-                            'awards.files.show',
-                            'exceptions.files.show',
-                            'contracts.files.show',
-                            'utas.files.show',
-                            'legal_advices.files.show',
-                            'comites.files.show',
-                            'coordinations.files.show',
-                            'dgafs.files.show',
-                            'documentals.files.show'];
+        $index_permissions = ['admin.files.index','contracts.files.index'];
+        $create_permissions = ['admin.files.create','contracts.files.create'];
+        $show_permissions = ['admin.files.show', 'contracts.files.show'];
         $download_permissions = ['admin.files.download',
-                            'contracts.files.download',
-                            'process_contracts.files.download',
-                            'derive_contracts.files.download',
-                            'plannings.files.download',
-                            'tenders.files.download',
-                            'minor_purchases.files.download',
-                            'awards.files.download',
-                            'exceptions.files.download',
-                            'contracts.files.download',
-                            'utas.files.download',
-                            'legal_advices.files.download',
-                            'comites.files.download',
-                            'coordinations.files.download',
-                            'dgafs.files.download',
-                            'documentals.files.download'];
-        $update_permissions = ['admin.files.update',
-                            'contracts.files.update',
-                            'derive_contracts.files.update',
-                            'plannings.files.update',
-                            'tenders.files.update',
-                            'minor_purchases.files.update',
-                            'awards.files.update',
-                            'exceptions.files.update',
-                            'contracts.files.update',
-                            'utas.files.update',
-                            'legal_advices.files.update',
-                            'comites.files.update',
-                            'coordinations.files.update',
-                            'dgafs.files.update',
-                            'documentals.files.update'];
+                            'contracts.files.download'];
+        $update_permissions = ['admin.files.update', 'contracts.files.update'];
 
         $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index
         $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create
@@ -435,7 +363,7 @@ class ContractsFilesController extends Controller
     }
 
     /**
-     * Funcionalidad de agregar de archivo.
+     * Funcionalidad para agregar archivo pestaña Archivos.
      *
      * @return \Illuminate\Http\Response
      */
@@ -477,6 +405,7 @@ class ContractsFilesController extends Controller
         $file->description = $request->input('description');
         $file->file = $fileName;
         $file->file_type = 3;//contratos
+        $file->file_state = 1;//activo
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->contract_state_id;
         $file->creator_user_id = $request->user()->id;  // usuario logueado
@@ -531,6 +460,7 @@ class ContractsFilesController extends Controller
         $file->description = $request->input('description');
         $file->file = $fileName;
         $file->file_type = 6;//evaluaciones
+        $file->file_state = 1;//activo
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->contract_state_id;
         $file->creator_user_id = $request->user()->id;  // usuario logueado
@@ -834,13 +764,8 @@ class ContractsFilesController extends Controller
      */
     public function destroy(Request $request, $file_id)
     {
-        // Chequeamos que el usuario actual disponga de permisos de eliminacion
-        // if(!$request->user()->hasPermission(['admin.files.delete', 'contracts.files.delete',
-        //     'process_contracts.files.delete', 'derive_contracts.files.delete',
-        //     'plannings.files.delete','tenders.files.delete','minor_purchases.files.delete',
-        //     'exceptions.files.delete','awards.files.delete','contracts.files.delete',
-        //     'utas.files.delete','legal_advices.files.delete','comites.files.delete',
-        //     'coordinations.files.delete','dgafs.files.delete','documentals.files.delete'])){
+        // Chequeamos que el usuario actual disponga permisos de anular
+        // if(!$request->user()->hasPermission(['admin.files.delete', 'contracts.files.delete'])){
         //     return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
         // }
 
@@ -848,13 +773,16 @@ class ContractsFilesController extends Controller
 
         // Capturamos nombre del archivo almacenado en la tabla
         $filename = $file->file;
-        // var_dump($filename);exit;
 
         // Eliminamos el archivo
-        Storage::delete('public/files/'.$filename);
+        // Storage::delete('public/files/'.$filename);
 
         // Eliminamos el registro del archivo
-        $file->delete();
-        return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el archivo ', 'code' => 200], 200);
+        // $file->delete();
+
+        $file->file_state = 2;//inactivo
+        $file->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Se ha anulado el archivo ', 'code' => 200], 200);
     }
 }
