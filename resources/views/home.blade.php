@@ -10,7 +10,7 @@
                     <i class="feather icon-shield bg-c-blue"></i>
                     <div class="d-inline">
                         <h5>Página de inicio</h5>
-                        <span>Bienvenido</span>
+                        <span>Bienvenidos</span>
                     </div>
                 </div>
             </div>
