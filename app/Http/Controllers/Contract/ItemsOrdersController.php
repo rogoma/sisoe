@@ -224,6 +224,7 @@ class ItemsOrdersController extends Controller
                 // $item['component_id'];
                 // var_dump($compo);
                 // var_dump($item);exit();
+                //dsdsd
 
                 if ($compo !== $compo_2) {
                     $validator->errors()->add('component', 'Componente del Archivo Excel no es igual a Componente de la Orden de Ejecución, verifique....');
