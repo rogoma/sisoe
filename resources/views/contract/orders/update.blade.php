@@ -120,17 +120,19 @@
                                                         <div class="input-group">
                                                             <input type="text" id="sign_date" name="sign_date"
                                                                 class="form-control @error('sign_date') is-invalid @enderror"
-                                                                value="{{ old('sign_date', date('d/m/Y', strtotime($order->sign_date)))}}" autocomplete="off">
+                                                                value="{{ old('sign_date', !empty($order->sign_date) ? date('d/m/Y', strtotime($order->sign_date)) : '') }}"
+                                                                autocomplete="off">
                                                             <span class="input-group-append">
                                                                 <button type="button" class="btn btn-outline-secondary"
-                                                                    onclick="show('sign_date');"><i
-                                                                        class="fa fa-calendar"></i></button>
+                                                                    onclick="show('sign_date');" {{ empty($order->sign_date) ? 'disabled' : '' }}>
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </button>
                                                             </span>
                                                         </div>
                                                         @error('sign_date')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
-                                                    </div>
+                                                    </div>                                                    
                                                 
                                                     <div class="col-sm-6">
                                                         <label for="component_id" class="col-form-label">Componente</label>
@@ -139,7 +141,7 @@
                                                             @foreach ($components as $component)
                                                                 <option value="{{ $component->id }}"
                                                                     @if ($component->id == old('component_id',$order->component_id)) selected @endif>
-                                                                    {{ $component->description }}</option>
+                                                                    {{ $component->code }}-{{ $component->description }}</option>
                                                             @endforeach
                                                         </select>
                                                         @error('component_id')
