@@ -357,8 +357,8 @@ class OrdersEjecsController extends Controller
 
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.orders.delete','contracts.orders.delete']) && $order->contract->dependency_id != $request->user()->dependency_id){
-            return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para eliminar la póliza.', 'code' => 200], 200);
+        if(!$request->user()->hasPermission(['admin.orders.delete','orders.orders.delete']) && $order->contract->dependency_id != $request->user()->dependency_id){
+            return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para anular la orden.', 'code' => 200], 200);
         }
 
         //ARREGLAR ESTO PARA QUE NO ELIMINE SI EXISTEN ITEMS O RUBROS
@@ -367,20 +367,37 @@ class OrdersEjecsController extends Controller
         //     return response()->json(['status' => 'error', 'message' => 'Orden no puede eliminarse, posee carga de rubros, verificar ', 'code' => 200], 200);
         // }
 
-        // Cambia a estado 5 = "eliminado" /no mostrara en listado de ordenes /no piere nro secuencial de ordenes
-        $order->order_state_id = 5;
-        $order->save();
-        // $order->delete();
+        // ANULAR Cambia a estado 5 = "Anulado" si es que Estado de la orden está en 1 (En curso)
+        // if ($order->order_state_id = 1) {
 
-        session()->flash('status', 'success');
-        session()->flash('message', 'Se ha eliminado la orden ' . $order->number);
+        //     $order->order_state_id = 5;
+        //     $order->save();    
 
-        return response()->json([
+        //     session()->flash('status', 'success');
+        //     session()->flash('message', 'Orden anulada' . $order->number);
+
+        //     return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Orden anulada correctamente'. $order->number,
+        //     'code' => 200
+        //     ], 200);
+        // }
+        
+        // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
+        if ($order->order_state_id = 5) {
+            
+            $order->order_state_id = 1;
+            $order->save();    
+
+            session()->flash('status', 'success');
+            session()->flash('message', 'Orden Desanulada' . $order->number);
+
+            return response()->json([
             'status' => 'success',
-            'message' => 'Se ha eliminado la póliza'. $order->number,
+            'message' => 'Orden Desanulada correctamente'. $order->number,
             'code' => 200
-        ], 200);
-
+            ], 200);
+        }
         //return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza eliminada correctamente'); // Caso usuario posee rol pedidos
         // return response()->json(['status' => 'success', 'message' => 'Póliza eliminada correctamente', 'code' => 200], 200);
         //return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza modificada correctamente'); // Caso usuario posee rol pedidos

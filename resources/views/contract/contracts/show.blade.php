@@ -413,16 +413,23 @@
                                                                     <td style="color:#ff0000">
                                                                         {{ $order->orderState->description }}</td>
                                                                 @else
-                                                                    <td>{{ $order->orderState->description }}</td>
+                                                                    <td style="color:rgb(41, 128, 0)">
+                                                                        {{ $order->orderState->description }}</td>                                                                    
                                                                 @endif
 
                                                                 <td style="max-width: 200px">{{ $order->comments }}</td>
                                                                 {{-- Muestra si estado de llamado es En curso --}}
                                                                 <td>
-                                                                    {{-- PREGUNTAR SI TAMBIEN AL ANULARSE EL CONTRATO NO DEBE MOSTRAR DATOS --}}
-                                                                    {{-- @if (in_array($contract->contract_state_id, [1])) --}}
+                                                                    {{-- Para Desanular si estado = 5 (anulado)--}}
+                                                                    @if (in_array($order->orderState->id, [5]))
+                                                                        @if (Auth::user()->hasPermission(['admin.orders.desanule']))
+                                                                            <button type="button" title="Desanular"
+                                                                            class="btn btn-success btn-icon"
+                                                                            onclick="DesanuleOrder({{ $order->id }})"><i class="fa fa-check"></i></button>                                                                            
+                                                                        @endif
+                                                                    @endif
 
-                                                                    {{-- NO MUESTRA BOTONES SI LA ORDEN SE ANULÓ --}}
+                                                                    {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
                                                                     @if (in_array($order->orderState->id, [1,2,3,4]))
                                                                         {{-- @if (Auth::user()->hasPermission(['admin.contracts.create'])) --}}
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
@@ -430,15 +437,12 @@
                                                                                 class="btn btn-warning btn-icon"
                                                                                 onclick="updateOrder({{ $order->id }})">
                                                                                 <i class="fa fa-pencil"></i>
-                                                                            </button>
-                                                                            {{-- @if (Auth::user()->hasPermission(['admin.orders.delete']) && ($order->items->count() == 0)) --}}
+                                                                            </button>                                                                            
                                                                             @if (($order->items->count() == 0))
                                                                                 <button type="button" title="Anular"
                                                                                     class="btn btn-danger btn-icon"
-                                                                                    onclick="anuleOrder({{ $order->id }})">
-                                                                                    <i class="fa fa-ban"></i>
-                                                                                </button>
-                                                                            @endif
+                                                                                    onclick="anuleOrder({{ $order->id }})"><i class="fa fa-ban"></i></button>
+                                                                            @endif                                                                           
 
                                                                             @if ($order->items->count() > 0)
                                                                                 <button type="button" title="Orden con Rubros"
@@ -451,15 +455,12 @@
 
                                                                                 <button type="button" title="Anular"
                                                                                     class="btn btn-danger btn-icon"
-                                                                                    onclick="anuleOrder({{ $order->id }})">
-                                                                                    <i class="fa fa-ban"></i>
-                                                                                </button>
+                                                                                    onclick="anuleOrder({{ $order->id }})"><i class="fa fa-ban"></i></button>
                                                                             @else
                                                                                 <a href="{{ route('orders.items.uploadExcel', $order->id)}}"
                                                                                     title="Importar Rubros EXCEL" class="btn btn-success btn-icon">
                                                                                     <i class="fa fa-upload text-white"></i>
-                                                                            @endif
-
+                                                                            @endif                                                                            
                                                                         @endif
                                                                     @endif
                                                                 </td>
@@ -774,7 +775,57 @@
                                         response = (typeof data == "object") ? data : JSON
                                             .parse(data);
                                         if (response.status == "success") {
-                                            swal("Éxito!", "Orden anulada correctamente",
+                                            swal("Éxito!", "Orden Anulada correctamente",
+                                                "success");
+                                            location.reload();
+                                        } else {
+                                            swal("Error!", response.message, "error");
+                                        }
+                                    } catch (error) {
+                                        swal("Error!",
+                                            "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina",
+                                            "error");
+                                        console.log(error);
+                                    }
+                                },
+                                error: function(error) {
+                                    swal("Error!",
+                                        "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina",
+                                        "error");
+                                    console.log(error);
+                                }
+                            });
+                        }
+                    }
+                );
+            };
+
+            DesanuleOrder = function(order) {
+                swal({
+                        title: "Atención",
+                        text: "Está seguro que desea Desanular la orden?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Sí, anular",
+                        cancelButtonText: "Cancelar",
+                    },
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            $.ajax({
+                                url: '/contracts/{{ $contract->id }}/orders/' + order,
+
+                                method: 'POST',
+                                data: {
+                                    _method: 'DELETE',
+                                    _token: '{{ csrf_token() }}'
+                                },
+                                success: function(data) {
+                                    try {
+                                        response = (typeof data == "object") ? data : JSON
+                                            .parse(data);
+                                        if (response.status == "success") {
+                                            swal("Éxito!", "Orden Desanulada correctamente",
                                                 "success");
                                             location.reload();
                                         } else {
