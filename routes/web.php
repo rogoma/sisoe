@@ -147,6 +147,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/fetch-districts', [OrdersEjecsController::class, 'fetchDistricts']);
 
 
+    Route::get('/get-items', [ItemsContractsController::class, 'getItems'])->name('get.items');
+
+
 
     //RECURSOS DE CONTRACTS PARA MANEJAR ITEMS (POLIZAS)
     Route::resource('contracts.items', ItemsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}

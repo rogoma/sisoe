@@ -84,138 +84,50 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group row">
-                                                    <div class="col-sm-6">
-                                                        <label for="department_id"
-                                                            class="col-form-label">Departamento</label>
-                                                        <select id="department_id" name="department_id"
-                                                            class="form-control @error('department_id') is-invalid @enderror">
-                                                            <option value="">--- Seleccionar Departamento ---</option>
-                                                            @foreach ($departments as $department)
-                                                                <option value="{{ $department->id }}"
-                                                                    @if ($department->id == old('department_id')) selected @endif>
-                                                                    {{ $department->description }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('department_id')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="col-sm-6">
-                                                        <label for="district_id" class="col-form-label">Distrito</label>
-                                                        <select id="district_id" name="district_id"
-                                                            class="form-control @error('district_id') is-invalid @enderror">
-                                                            <option value="">--- Seleccionar Distrito ---</option>
-                                                        </select>
-                                                        @error('district_id')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label for="locality" class="col-sm-6 col-form-label">Localidad (Hasta
-                                                        200 caracteres)</label>
-                                                    <div class="col-sm-12">
-                                                        <input type="text" id="locality" name="locality"
-                                                            class="form-control @error('locality') is-invalid @enderror"
-                                                            value="{{ old('locality') }}" maxlength="200">
-                                                        @error('locality')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <div class="col-sm-3">
-                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo
-                                                            Contratista</label>
-                                                        <div class="input-group">
-                                                            <input type="text" id="sign_date" name="sign_date"
-                                                                class="form-control @error('sign_date') is-invalid @enderror"
-                                                                value="{{ old('sign_date') }}" autocomplete="off">
-                                                            <span class="input-group-append">
-                                                                <button type="button" class="btn btn-outline-secondary"
-                                                                    onclick="show('sign_date');"><i
-                                                                        class="fa fa-calendar"></i></button>
-                                                            </span>
-                                                        </div>
-                                                        @error('sign_date')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="col-sm-6">
-                                                        <label for="component_id"
-                                                            class="col-form-label">Componente</label>
-                                                        <select id="component_id" name="component_id"
-                                                            class="form-control @error('component_id') is-invalid @enderror">
-                                                            <option value="">--- Seleccionar Componente ---</option>
-                                                            @foreach ($components as $component)
-                                                                <option value="{{ $component->id }}"
-                                                                    @if ($component->id == old('component_id')) selected @endif>
-                                                                    {{ $component->code }}-{{ $component->description }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('component_id')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="col-sm-3">
-                                                        <label for="plazo" class="col-form-label">Plazo de ejecución
-                                                            (En días)</label>
-                                                        <input type="text" id="plazo" name="plazo"
-                                                            class="form-control @error('plazo') is-invalid @enderror"
-                                                            value="{{ old('plazo') }}" maxlength="3">
-                                                        @error('plazo')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="form-group row">
-                                                    <div class="col-sm-3">
-                                                        <label for="order_state_id" class="col-form-label">Estado de la
-                                                            Orden</label>
-                                                        <select id="order_state_id" name="order_state_id"
-                                                            class="form-control @error('order_state_id') is-invalid @enderror">
-                                                            <option value="">--- Seleccionar Estado ---</option>
-                                                            @foreach ($order_states as $order_state)
-                                                                <option value="{{ $order_state->id }}"
-                                                                    @if ($order_state->id == old('order_state_id')) selected @endif>
-                                                                    {{ $order_state->description }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('order_state_id')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
-
-                                                    <div class="col-sm-9">
-                                                        <label for="comments" class="col-form-label">Comentarios (Hasta
-                                                            300 caracteres)</label>
-                                                        <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
-                                                            maxlength="300">{{ old('comments') }}</textarea>
-                                                        @error('comments')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
+                                                <div class="col-sm-6">
+                                                    <label for="component_id" class="col-form-label">Componente</label>
+                                                    <select id="component_id" name="component_id"
+                                                        class="form-control @error('component_id') is-invalid @enderror">
+                                                        <option value="">--- Seleccionar Componente ---</option>
+                                                        @foreach ($components as $component)
+                                                            <option value="{{ $component->id }}"
+                                                                @if ($component->id == old('component_id')) selected @endif>
+                                                                {{ $component->code }}-{{ $component->description }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('component_id')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
-                                            <br>
-                                            <div class="text-center mt-4">
-                                                <button id="saveButton1" type="submit" class="btn btn-primary">Grabar
-                                                    Orden</button>
-                                                {{-- <button id="saveButton1" type="submit" class="btn btn-primary">Ajuntar Rubros</button> --}}
-                                            </div>
-                                            <br>
-                                        </form>
                                     </div>
+
+                                    <div class="text-center mt-4">
+                                        <button id="showItemsButton" type="button" class="btn btn-primary">Mostrar Rubros</button>
+                                    </div>
+                                    <br>
+
+                                    {{-- <div class="text-center mt-4">                                        
+                                        <button id="saveButton1" type="submit" class="btn btn-primary">Grabar Orden</button>
+                                    </div> --}}
+                                    <br>
+                                    </form>
+                                </div>
+
+                                <!-- Tabla para mostrar los items -->
+                                <div class="container mt-4">
+                                    <table id="itemsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -224,8 +136,13 @@
             </div>
         </div>
     </div>
+    </div>
 @endsection
 
+<!-- Agregar jQuery y DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
 @push('scripts')
     <script type="text/javascript">
@@ -254,6 +171,31 @@
                         }
                     });
                 }
+            });
+
+            let table = $('#itemsTable').DataTable();
+
+            $('#showItemsButton').on('click', function() {
+                let componentId = $('#component_id').val();
+
+                if (!componentId) {
+                    alert('Seleccione un componente primero.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ route('get.items') }}',
+                    type: 'GET',
+                    data: {
+                        component_id: componentId
+                    },
+                    success: function(response) {
+                        table.clear().rows.add(response.data).draw();
+                    },
+                    error: function() {
+                        alert('Error al obtener los datos.');
+                    }
+                });
             });
 
             // Validar antes de guardar

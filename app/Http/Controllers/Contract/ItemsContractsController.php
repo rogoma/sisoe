@@ -61,6 +61,16 @@ class ItemsContractsController extends Controller
     }
 
 
+    public function getItems(Request $request)
+    {
+        $items = ItemContract::where('component_id', $request->component_id)
+            ->select('id', 'description', 'quantity', 'price')
+            ->get();
+
+        return response()->json(['data' => $items]);
+    }
+
+
     public function uploadExcel(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
