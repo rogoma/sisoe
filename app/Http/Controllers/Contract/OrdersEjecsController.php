@@ -21,6 +21,7 @@ use App\Models\OrderPresentation;
 use App\Models\OrderMeasurementUnit;
 use App\Models\OrderState;
 use App\Models\Component;
+use App\Models\ItemContract;
 use Brick\Math\Internal\Calculator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use App\Exports\OrdersExport;
 use App\Exports\OrdersExport2;
 use App\Exports\OrdersExport3;
+
 
 class OrdersEjecsController extends Controller
 {
@@ -173,8 +175,6 @@ class OrdersEjecsController extends Controller
         $order = Order::where('contract_id', $contract_id)->count();
         $nextContractNumber = $order + 1;
 
-        $post_max_size = $this->postMaxSize;
-
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         // if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create']) || $contract->dependency_id == $request->user()->dependency_id){
         if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create'])){
@@ -182,22 +182,14 @@ class OrdersEjecsController extends Controller
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para agregar órdenes.');
         }
-
-        // Chequeamos que haya Fiscal asignado para proceder
-        // if($contract->fiscal1_id != null ){
-
-        // }else{
-        //     return back()->with('error', 'Para generar una Orden debe asignar un Fiscal');
-        // }
-
-        // $components = Component::all();
+        
         $components = Component::orderBy('id')->get();//ordenado por id componente
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
+        $item_contract = ItemContract::where('contract_id', $contract_id)->get();
 
-        return view('contract.orders.create', compact('contract','order_states','components',
-        'post_max_size', 'nextContractNumber', 'departments','districts'));
+        return view('contract.orders.create', compact('contract','order_states','components', 'nextContractNumber', 'departments','districts'));
     }
 
     // PARA ANIDAR COMBOS

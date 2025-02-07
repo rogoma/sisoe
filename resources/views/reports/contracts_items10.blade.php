@@ -9,7 +9,7 @@
     @page {
         size: legal portrait;
         /* Define tamaño oficio (legal) en orientación vertical */
-        margin: 100px 25px 100px 80px;
+        margin: 100px 25px 100px 60px;
         /* Márgenes: superior, derecho, inferior, izquierdo */
     }
 
@@ -47,6 +47,7 @@
         border: 1px solid black;
         width: 100%;
         font-size: 8px;
+        line-height: 1; /* Reduce el espacio entre líneas */
     }
 
     td,
@@ -184,7 +185,7 @@
                         style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
                         OBSERVACIÓN: {{ $contracts1[0]->orders_comments }}
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
-                            {{ $contracts1[0]->orders_plazo }} días.</span>
+                            {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo por parte del Contratista.</span>
                     </td>
                 </tr>
 
