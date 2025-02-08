@@ -46,8 +46,6 @@ class ItemsContractsController extends Controller
 
     public function index(Request $request, $contract_id, $component_id)
     {
-        // $order = Order::findOrFail($request->order_id);
-
         $contract = Contract::findOrFail($contract_id);
 
         $items = ItemContract::where('contract_id', $contract_id)
@@ -60,8 +58,7 @@ class ItemsContractsController extends Controller
         }
 
         return view('contract.itemscontracts.index', compact('items','contract'));
-        // return view('order.items.index', compact('items','contract'));
-        
+        // return view('order.items.index', compact('items','contract'));        
     }
 
 

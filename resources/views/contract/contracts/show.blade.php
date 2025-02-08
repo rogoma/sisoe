@@ -171,14 +171,14 @@
                                                     role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
                                                 <div class="slide"></div>
                                             </li>
-                                            @if (Auth::user()->hasPermission(['contracts.items.index']))
+                                            @if (Auth::user()->hasPermission(['admin.items.create','contracts.rubros.import']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
                                                             class="fa fa-file-excel-o"></i> Cargar Rubros </a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
-                                            @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.show']))
+                                            @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.rubros.show']))
                                             {{-- @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.index'])) --}}
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i

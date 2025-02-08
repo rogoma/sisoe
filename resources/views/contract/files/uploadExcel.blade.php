@@ -50,7 +50,8 @@
                                         @csrf
 
                                         <div class="col-sm-6">
-                                            <label for="component_id" class="col-form-label">Componente</label>
+                                            <label for="component_id" class="col-form-label">Componente:</label>
+                                            <label style="font-size: 14px; font-weight: bold; color:red" class="col-form-label">(Seleccione 9999-A determinar para importar todos los rubros)</label>
                                             <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
                                                 <option value="">--- Seleccionar Componente ---</option>
                                                 @foreach ($components as $component)

@@ -32,8 +32,7 @@
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Detalle de Rubros de Componente: {{ $contract->description }}</h5>
-                        {{-- <h5>Detalle de Rubros de Componente: {{ $items->id }}</h5> --}}
+                        <h5>Detalle de Rubros de Componente: {{ $items[0]->component->description}}</h5>                        
                     </div>
                 </div>
             </div>
@@ -44,7 +43,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.volver', $contract->id) }}">Contratos</a>                            
+                            <a href="{{ route('contracts.volver', $contract->id) }}">Contratos</a>
                         </li>
                     </ul>
                 </div>
