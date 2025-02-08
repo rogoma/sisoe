@@ -183,7 +183,7 @@ class OrdersEjecsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para agregar órdenes.');
         }
         
-        $components = Component::orderBy('id')->get();//ordenado por id componente
+        $components = Component::orderBy('id')->get();//ordenado por id componente        
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();

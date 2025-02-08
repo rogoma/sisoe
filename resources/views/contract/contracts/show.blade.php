@@ -457,9 +457,18 @@
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="anuleOrder({{ $order->id }})"><i class="fa fa-ban"></i></button>
                                                                             @else
-                                                                                <a href="{{ route('orders.items.uploadExcel', $order->id)}}"
+                                                                                {{-- <a href="{{ route('orders.items.uploadExcel', $order->id)}}"
+                                                                                title="Importar Rubros de Contrato" class="btn btn-success btn-icon">
+                                                                                <i class="fa fa-download text-white"></i> --}}
+                                                                                
+                                                                                <button type="button" title="Importar Rubros de Contrato"
+                                                                                    class="btn btn-primary btn-icon"                                                                                    
+                                                                                    onclick="itemContraRubro({{ $order->contract->id.','.$order->component->id }})"> 
+                                                                                    <i class="fa fa-download text-white"></i>
+                                                                                </button>
+                                                                                {{-- <a href="{{ route('orders.items.uploadExcel', $order->id)}}"
                                                                                     title="Importar Rubros EXCEL" class="btn btn-success btn-icon">
-                                                                                    <i class="fa fa-upload text-white"></i>
+                                                                                    <i class="fa fa-upload text-white"></i> --}}
                                                                             @endif                                                                            
                                                                         @endif
                                                                     @endif
@@ -894,17 +903,20 @@
 };
 
 
-
-
             itemOrder = function(order) {
                 //lleva a index de ItemsOrdersController
                 location.href = '/orders/'+order+'/items_orders';
             }
 
-            //lleva a index de ItemsOrdersController
-            itemRubro = function(contract, component) {                                
+            //lleva a index de ItemsContractsController
+            itemContraRubro = function(contract, component) {
+                //lleva a index de ItemsOrdersController
                 location.href = '/items_contracts/' + contract + '/component/' + component + '/items';
+            }
 
+            //lleva a index de ItemsContractsController
+            itemRubro = function(contract, component) {                 
+                location.href = '/items_contracts/' + contract + '/component/' + component + '/items';
             }
 
             updateItem = function(item) {

@@ -46,6 +46,8 @@ class ItemsContractsController extends Controller
 
     public function index(Request $request, $contract_id, $component_id)
     {
+        // $order = Order::findOrFail($request->order_id);
+
         $contract = Contract::findOrFail($contract_id);
 
         $items = ItemContract::where('contract_id', $contract_id)
@@ -58,16 +60,20 @@ class ItemsContractsController extends Controller
         }
 
         return view('contract.itemscontracts.index', compact('items','contract'));
+        // return view('order.items.index', compact('items','contract'));
+        
     }
 
 
     public function getItems(Request $request)
-    {
+    {        
         $items = ItemContract::where('component_id', $request->component_id)
-            ->select('id', 'description', 'quantity', 'price')
+            ->where('contract_id', $request->contract_id)
+            ->where('rubro_id', '!=', 9999)
+            ->select('id', 'quantity', 'unit_price_mo', 'unit_price_mat')
             ->get();
 
-        return response()->json(['data' => $items]);
+        return response()->json(['data' => $items]);        
     }
 
 

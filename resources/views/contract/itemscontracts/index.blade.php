@@ -32,7 +32,8 @@
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">
-                        {{-- <h5>Orden de Ejecución N° {{ $order->number }}</h5> --}}
+                        <h5>Detalle de Rubros de Componente: {{ $contract->description }}</h5>
+                        {{-- <h5>Detalle de Rubros de Componente: {{ $items->id }}</h5> --}}
                     </div>
                 </div>
             </div>
@@ -60,6 +61,7 @@
                                 <div class="card-header">
                                     <div class="float-left">
                                         <h5>Rubro de Componentes</h5>
+
                                     </div>
                                     <div class="float-right">
                                     </div>
@@ -113,13 +115,13 @@
                                             </tbody>                                            
                                                 
                                             <tfoot>
-                                                <tr>
+                                                {{-- <tr>
                                                     <td colspan="4"></td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td>
                                                     <td colspan="3"></td>
-                                                </tr>                                                
+                                                </tr>                                                 --}}
                                             </tfoot>                                            
                                         </table>
                                         <div class="text-center">

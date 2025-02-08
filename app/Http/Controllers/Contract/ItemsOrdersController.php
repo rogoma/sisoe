@@ -52,8 +52,10 @@ class ItemsOrdersController extends Controller
         if(!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
-
+        
         return view('order.items.index', compact('order', 'items','contracts'));
+        // return view('contract.itemscontracts.index', compact('order', 'items','contracts'));
+        
     }
 
 
