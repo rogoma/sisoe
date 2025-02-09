@@ -77,7 +77,9 @@ class ItemsContractsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
-        return view('contract.itemscontracts.index2', compact('items','contract', 'order'));        
+        // return view('order.items.index', compact('items','contract', 'order'));
+        return view('contract.itemscontracts.index2', compact('items','contract', 'order'));
+
     }
 
 

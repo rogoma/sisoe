@@ -37,7 +37,7 @@
                         </h5>                        
                     </div>
                     <br>
-                    <div class="d-inline">                        
+                    <div class="d-inline">
                         <h5 style="color: red;">Detalle de Rubros de Componente: {{ $items[0]->component->code }} - {{ $items[0]->component->description }} </h5>
                         <br>
                         <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>
