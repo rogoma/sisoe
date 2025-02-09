@@ -51,7 +51,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">                            
-                            <a href="{{ route('contracts.volver', $contract->id) }}">Contratos</a>                            
+                            <a href="{{ route('contracts.volver', $contract->id) }}">Órdenes</a>                            
                         </li>
                     </ul>
                 </div>
@@ -67,7 +67,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="float-left">
-                                        <h4>Rubros para procesar en la Orden de Ejecución N°: {{$order->number}}
+                                        <h4 style="color: blue;">Rubros para procesar en la Orden de Ejecución N°: {{$order->number}}
                                     </div>
                                     <div class="float-right">
                                     </div>
