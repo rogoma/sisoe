@@ -86,7 +86,7 @@
                                                 </tr>
                                             </thead>
                                             
-                                            <tbody>
+                                            {{-- <tbody>
                                                 @php
                                                     $tot_price_mo = 0; 
                                                     $tot_price_mat = 0;    
@@ -108,7 +108,7 @@
                                                             <td style="text-align: center;">{{ $item->rubro->code }}</td>
                                                             <td>{{ $item->rubro->description }}</td>
                                             
-                                                            {{-- verificar este Campo editable para la cantidad --}}
+                                                            
                                                             <td style="text-align: center;">
                                                                 <input type="number" step="0.01" min="0" 
                                                                        value="{{ $item->quantity }}" 
@@ -121,7 +121,7 @@
                                                             <td style="text-align: center;">{{ number_format($item->unit_price_mo, 2, ',', '.') }}</td>
                                                             <td style="text-align: center;">{{ number_format($item->unit_price_mat, 2, ',', '.') }}</td>
                                                             
-                                                            {{-- Campo calculado para Precio TOT. MO --}}
+                                                            
                                                             <td style="text-align: center;" id="total_mo_{{ $i }}">
                                                                 {{ number_format($item->quantity * $item->unit_price_mo, 2, ',', '.') }}
                                                             </td>
@@ -145,9 +145,9 @@
                                                         @endif
                                                     </tr>
                                                 @endforeach
-                                            </tbody>
+                                            </tbody> --}}
                                             
-                                            {{-- <tbody>
+                                            <tbody>
                                                 @php
                                                     $tot_price_mo = 0; 
                                                     $tot_price_mat = 0;    
@@ -204,7 +204,7 @@
                                                         @endif
                                                     </tr>
                                                 @endforeach
-                                            </tbody> --}}
+                                            </tbody>
                                             
                                             
                                             <tfoot>
