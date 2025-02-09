@@ -61,6 +61,25 @@ class ItemsContractsController extends Controller
         // return view('order.items.index', compact('items','contract'));        
     }
 
+    public function indexRubros(Request $request, $order_id, $contract_id, $component_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+
+        $order = Order::findOrFail($order_id);
+        // var_dump($order->number);exit();
+       
+        $items = ItemContract::where('contract_id', $contract_id)
+                ->where('component_id', $component_id)
+                ->get();
+
+        // Chequeamos permisos del usuario
+        if(!$request->user()->hasPermission(['admin.items.index', 'contracts.items.index','contracts.items.show'])){
+            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        }
+
+        return view('contract.itemscontracts.index2', compact('items','contract', 'order'));        
+    }
+
 
     public function getItems(Request $request)
     {        

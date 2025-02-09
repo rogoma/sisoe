@@ -158,9 +158,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-
-    //PARA MANEJAR DATOS EN ITEMS DE ORDENES DE EJECUCIÓN
-    Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+    
+    //************* ITEMS CONTRACTS **************
 
     //MUESTRA LOS DETALLES DE ITEMSCONTRACTS DE ACUERDO A UN CONTRATO Y UN COMPONENTE
     Route::get('/items_contracts/{contract}/component/{component}/items', [ItemsContractsController::class, 'index'])->name('items_contracts.items');
@@ -168,35 +167,30 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //ELIMINA UN COMPONENTE DE UN CONTRATO SI ES QUE NO TUVO MOVIMIENTOS
     Route::delete('/items_contracts/{contract}/component/{component}/delete', [ItemsContractsController::class, 'destroy'])->name('items_contracts.delete');
 
-    // Route::delete('orders/files/{file_id}/delete', [OrdersFilesController::class, 'destroy'])->name('orders.files.delete');
-
-
     //PARA MANEJAR DATOS DE RUBROS DE CONTRATOS
     Route::resource('items_contracts.items', ItemsContractsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
-    Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
-    Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
+    //PARA MOSTRAR DATOS DE ITEMSCONTRACTS Y GENERAR RUBROS EN ORDENES    
+    Route::get('/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('items_contracts.itemsRubros');
+    // Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('items_contracts.itemsRubros');
 
-    // Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+    Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('itemsRubros.import');
+
+    
 
     //PARA VOLVER A VER UN CONTRATO ESPECÍFICO
     Route::get('/contracts/{contract_id}', [ContractsController::class, 'volver'])->name('contracts.volver');
+    
 
 
+    //************* ITEMS ORDERS **************
 
-    // Route::get('/orders/{id}/uploadExcelItem', [ItemsController::class, 'uploadExcel'])->name('orders.items.uploadExcel');
-    // Contrato Abierto
-    // Route::post('/orders/{id}/uploadExcel', [ItemsController::class, 'storeExcel'])->name('orders.items.storeExcel');
-    // Contrato Cerrado
-    // Route::post('/orders/{id}/uploadExcel2', [ItemsController::class, 'storeExcel2'])->name('orders.items.storeExcel2');
-    // Contrato Abierto con Mmin y Mmax
-    // Route::post('/orders/{id}/uploadExcel3', [ItemsController::class, 'storeExcel3'])->name('orders.items.storeExcel3');
+    //PARA MANEJAR DATOS EN ITEMS DE ORDENES DE EJECUCIÓN
+    Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+    Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');    
+    Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
 
-
-
-
-
-
+    
 
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');

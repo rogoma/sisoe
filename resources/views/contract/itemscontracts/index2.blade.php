@@ -32,7 +32,15 @@
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Orden de Ejecución N° {{ $order->number }}</h5>
+                        <h5 style="color: red;">
+                            Contrato N°: {{ $contract->description }}                            
+                        </h5>                        
+                    </div>
+                    <br>
+                    <div class="d-inline">                        
+                        <h5 style="color: red;">Detalle de Rubros de Componente: {{ $items[0]->component->code }} - {{ $items[0]->component->description }} </h5>
+                        <br>
+                        <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>
                     </div>
                 </div>
             </div>
@@ -42,9 +50,8 @@
                         <li class="breadcrumb-item">
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.index',$order->id ) }}">Contratos</a>
-                            {{-- <a href="{{ route('contracts.volver', $contract->id) }}">Contratos</a>                                                         --}}
+                        <li class="breadcrumb-item">                            
+                            <a href="{{ route('contracts.volver', $contract->id) }}">Contratos</a>                            
                         </li>
                     </ul>
                 </div>
@@ -60,7 +67,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="float-left">
-                                        <h5>Items de la Orden de Ejecución</h5>
+                                        <h4>Rubros para procesar en la Orden de Ejecución N°: {{$order->number}}
                                     </div>
                                     <div class="float-right">
                                     </div>

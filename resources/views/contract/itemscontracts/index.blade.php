@@ -32,7 +32,9 @@
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Detalle de Rubros de Componente: {{ $items[0]->component->description}}</h5>                        
+                        <h5 style="color: red;">
+                            Detalle de Rubros de Componente: {{ $items[0]->component->description }}
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -59,11 +61,8 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="float-left">
-                                        <h5>Rubro de Componentes</h5>
-
-                                    </div>
-                                    <div class="float-right">
-                                    </div>
+                                        <h5>Rubros del Componente</h5>
+                                    </div>                                    
                                 </div>                                
                                 <div class="card-block">
                                     <div class="dt-responsive table-responsive">
