@@ -159,6 +159,12 @@
                                                     </tr>
                                                 </tfoot>
                                             </table>
+                                            <div class="text-center">                                                
+                                                    @if (in_array($contract->contract_state_id, [1, 2]))
+                                                        <a href="{{ route('contracts.files.create_eval', $contract->id) }}"
+                                                            class="btn btn-primary">Grabar Rubros de Orden</a>
+                                                    @endif                                                
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
