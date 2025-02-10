@@ -43,6 +43,7 @@
                             <h5 style="color: red;">Detalle de Rubros de Componente: {{ $items[0]->component->code }} - {{ $items[0]->component->description }} </h5>
                             <br>
                             <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>
+                            index2
                         </div>
                     </div>
                 </div>

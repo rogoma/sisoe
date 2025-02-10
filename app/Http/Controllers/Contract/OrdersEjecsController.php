@@ -360,36 +360,55 @@ class OrdersEjecsController extends Controller
         // }
 
         // ANULAR Cambia a estado 5 = "Anulado" si es que Estado de la orden está en 1 (En curso)
-        // if ($order->order_state_id = 1) {
+        if ($order->order_state_id == 1) {
 
-        //     $order->order_state_id = 5;
-        //     $order->save();    
-
-        //     session()->flash('status', 'success');
-        //     session()->flash('message', 'Orden anulada' . $order->number);
-
-        //     return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'Orden anulada correctamente'. $order->number,
-        //     'code' => 200
-        //     ], 200);
-        // }
-        
-        // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
-        if ($order->order_state_id = 5) {
-            
-            $order->order_state_id = 1;
+            $order->order_state_id = 5;
             $order->save();    
 
             session()->flash('status', 'success');
-            session()->flash('message', 'Orden Desanulada' . $order->number);
+            session()->flash('message', 'Orden anulada' . $order->number);
 
             return response()->json([
             'status' => 'success',
-            'message' => 'Orden Desanulada correctamente'. $order->number,
+            'message' => 'Orden anulada correctamente'. $order->number,
             'code' => 200
             ], 200);
+
+        }else{
+            // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
+            if ($order->order_state_id == 5) {
+                
+                $order->order_state_id = 1;
+                $order->save();    
+
+                session()->flash('status', 'success');
+                session()->flash('message', 'Orden Desanulada' . $order->number);
+
+                return response()->json([
+                'status' => 'success',
+                'message' => 'Orden Desanulada correctamente'. $order->number,
+                'code' => 200
+                ], 200);
+            }
         }
+        
+        
+        // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
+        // if ($order->order_state_id = 5) {
+            
+        //     $order->order_state_id = 1;
+        //     $order->save();    
+
+        //     session()->flash('status', 'success');
+        //     session()->flash('message', 'Orden Desanulada' . $order->number);
+
+        //     return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Orden Desanulada correctamente'. $order->number,
+        //     'code' => 200
+        //     ], 200);
+        // }
+
         //return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza eliminada correctamente'); // Caso usuario posee rol pedidos
         // return response()->json(['status' => 'success', 'message' => 'Póliza eliminada correctamente', 'code' => 200], 200);
         //return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza modificada correctamente'); // Caso usuario posee rol pedidos

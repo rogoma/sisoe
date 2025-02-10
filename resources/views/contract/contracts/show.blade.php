@@ -875,7 +875,7 @@
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Sí, anular",
+                        confirmButtonText: "Sí, desanular",
                         cancelButtonText: "Cancelar",
                     },
                     function(isConfirm) {
