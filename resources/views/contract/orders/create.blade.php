@@ -114,7 +114,7 @@
                                                 <div class="col-sm-3">
                                                     <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
                                                     <div class="input-group">
-                                                        <input type="text" id="sign_date" name="sign_date" class="form-control @error('sign_date') is-invalid @enderror" value="{{ old('sign_date') }}" autocomplete="off">
+                                                        <input type="text" id="sign_date" name="sign_date" class="form-control @error('sign_date') is-invalid @enderror" value="{{ old('sign_date') }}" autocomplete="off" disabled>
                                                         <span class="input-group-append">
                                                             <button type="button" class="btn btn-outline-secondary" onclick="show('sign_date');"><i class="fa fa-calendar"></i></button>
                                                         </span>
@@ -149,6 +149,12 @@
 
                                             <div class="form-group row">
                                                 <div class="col-sm-3">
+                                                    <label for="order_state_id" class="col-form-label">Estado de la Orden:</label>
+                                                    <br>                                                    
+                                                    <label for="order_state_id" class="col-form-label" style="color: red;">Pendiente Fecha Acuse recibo Contratista</label>                                                    
+                                                </div>
+
+                                                {{-- <div class="col-sm-3">
                                                     <label for="order_state_id" class="col-form-label">Estado de la Orden</label>
                                                     <select id="order_state_id" name="order_state_id" class="form-control @error('order_state_id') is-invalid @enderror">
                                                         <option value="">--- Seleccionar Estado ---</option>
@@ -159,7 +165,7 @@
                                                     @error('order_state_id')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="col-sm-9">
                                                     <label for="comments" class="col-form-label">Comentarios (Hasta 300 caracteres)</label>

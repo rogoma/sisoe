@@ -182,8 +182,16 @@ class OrdersEjecsController extends Controller
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para agregar órdenes.');
         }
-        
-        $components = Component::orderBy('id')->get();//ordenado por id componente        
+                
+        // Obtener los component_id asociados al contrato desde ItemContract
+        $componentIds = ItemContract::where('contract_id', $contract_id)
+            ->pluck('component_id'); // Extrae solo los IDs de los componentes
+
+        // Obtener los componentes filtrados por los IDs obtenidos
+        $components = Component::whereIn('id', $componentIds)
+            ->orderBy('id')
+            ->get();
+
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
@@ -233,7 +241,7 @@ class OrdersEjecsController extends Controller
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
             // 'sign_date' => 'date_format:d/m/Y',
             'component_id' => 'required|numeric',
-            'order_state_id'=> 'required|numeric',
+            // 'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
             'comments' => 'nullable|max:300',
             'plazo' => 'required|numeric',
@@ -252,7 +260,8 @@ class OrdersEjecsController extends Controller
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))): null;        
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
-        $order->order_state_id = $request->input('order_state_id');
+        //CUANDO SE GRABA POR VEZ PRIMERA ASUME ESTADO 10= Pendiente Fecha Acuse recibo Contratista
+        $order->order_state_id = 10;        
         $order->total_amount = 0;
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
@@ -325,9 +334,23 @@ class OrdersEjecsController extends Controller
         }
 
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))): null;
+        
+        $order_actual = $order->order_state_id = $request->input('order_state_id');
+        
+        //SI FECHA NO ES NULL Y ESTADO NO SE CAMBIO, SE CAMBIA A ESTADO 1 = "En curso"
+        if ($order->sign_date !== null && $order_actual == 10) {
+            $order->order_state_id = 1;
+        }else{
+            $order->order_state_id = $request->input('order_state_id');
+        }
+
+        //SI FECHA ES NULL Y ESTADO ES DIFERENTE A 10 , SE CAMBIA A ESTADO 10 = "En curso"
+        if ($order->sign_date == null && $order_actual != 10) {
+            $order->order_state_id = 10;        
+        }
+
         $order->locality = $request->input('locality');
-        $order->component_id = $request->input('component_id');
-        $order->order_state_id = $request->input('order_state_id');
+        $order->component_id = $request->input('component_id');        
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
         $order->district_id = $request->input('district_id');

@@ -174,7 +174,7 @@
                                                                        value="{{ $item->quantity }}" 
                                                                        class="form-control quantity-input" 
                                                                        data-index="{{ $i }}"
-                                                                       oninput="updateTotal({{ $i }})">
+                                                                       oninput="updateTotal({{ $i }})" readonly style="width: 60px";>
                                                             </td>
                                             
                                                             <td style="text-align: center;">{{ $item->rubro->orderPresentations->description }}</td>

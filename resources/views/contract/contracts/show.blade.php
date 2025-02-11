@@ -346,7 +346,7 @@
                                                                 <td style="max-width: 800px">
                                                                     {{ $user_files_eval[$i]->description }}</td>
                                                                 <td style="max-width: 500px">
-                                                                    {{-- {{ $user_files_eval[$i]->creator_user_id }} --}}
+                                                                    {{-- {{ $user_files_eval[$i]->users->id }} --}}                                                                    
                                                                     {{ $user_files_eval[$i]->dependency->description }}
                                                                 </td>
                                                                 <td style="max-width: 200px">
