@@ -73,11 +73,11 @@
 
         @if (Auth::user()->role_id == 1)//administrador del sistema
             @include('include.menus.admin')
-        @elseif(Auth::user()->role_id == 2)//dosapas
+        @elseif(Auth::user()->role_id == 2)//DOSAPAS
             @include('include.menus.orders')
-        @elseif(Auth::user()->role_id == 3)//fiscal
+        @elseif(Auth::user()->role_id == 3)//FISCAL
             @include('include.menus.orders')
-        @elseif(Auth::user()->role_id == 4)//contratista
+        @elseif(Auth::user()->role_id == 4)//CONTRATISTA
             @include('include.menus.orders')
         {{-- @elseif(Auth::user()->role_id == 5)
             @include('include.menus.plannings')
@@ -99,15 +99,21 @@
             @include('include.menus.legal_advices')
         @elseif(Auth::user()->role_id == 23)
             @include('include.menus.coordinations') --}}
-        @elseif(Auth::user()->role_id == 24)//dgaf
+        @elseif(Auth::user()->role_id == 24)//DGAF
             @include('include.menus.dgafs')
         {{-- @elseif(Auth::user()->role_id == 25)
             @include('include.menus.documentals') --}}
-        @elseif(Auth::user()->role_id == 27)//administrador de usuarios
+        @elseif(Auth::user()->role_id == 27)//ADMINISTRADOR DE USUARIOS
             @include('include.menus.admin_users')
-        @elseif(Auth::user()->role_id == 30)//uoc2
+        @elseif(Auth::user()->role_id == 30)//UOC2
             @include('include.menus.uoc2')
         @elseif(Auth::user()->role_id == 31)//DPP
+            @include('include.menus.orders')
+        @elseif(Auth::user()->role_id == 33)//FONDOS LOCALES
+            @include('include.menus.orders')
+        @elseif(Auth::user()->role_id == 34)//BID
+            @include('include.menus.orders')
+        @elseif(Auth::user()->role_id == 35)//FOCEM
             @include('include.menus.orders')
         @endif
 

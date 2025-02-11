@@ -54,8 +54,9 @@ class RolesController extends Controller
     public function store(Request $request)
     {
         $rules = array(
-            'name' => 'string|required|max:50',
-            'description' => 'string|required|max:100',
+            // 'number' => 'numeric|required|unique:orders,number',
+            'name' => 'string|required|unique:roles,name|max:50',
+            'description' => 'string|unique:roles,description|required|max:100',
             'permissions' => 'array|required'
         );
         $validator =  Validator::make($request->input(), $rules);

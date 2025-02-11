@@ -73,17 +73,28 @@ class ContractsController extends Controller
     public function index(Request $request)
     {
         // if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
-        if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.show'])){
+        if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.all'])){
             //SE DEBEN MOSTRAR TODOS LOS PEDIDOS SI ES DE UOC NO IMPORTAN LOS ESTADOS
             //DETERMINAR QUE DEPENDENCIAS DEBEN SOLO VER CONTRATOS DE OBRAS
-            $contracts = Contract::where('contract_state_id', '>=', 1)
+            $contracts = Contract::where('contract_state_id', '>=', 1)                    
                     ->where('contract_type_id', '=', 2)//solo muestra contratos de obras
                     ->orderBy('iddncp','asc')
                     ->get();
             $dependency = $request->user()->dependency_id;
-        }else{
-            // if($request->user()->hasPermission(['contracts.items.index'])){
-                // Para ver contratos no anulados asignados a usuarios fiscales
+        }else{                
+            $contracts = Contract::where('dependency_id', $request->user()->dependency_id)
+            ->where('contract_state_id', '>=', 1)
+            // $contracts = Contract::where('contract_state_id', '>=', 1)
+            ->where('contract_type_id', '=', 2)//solo muestra contratos de obras
+            ->orderBy('iddncp','asc')
+            ->get();
+
+            $dependency = $request->user()->dependency_id;            
+        }
+
+        //PARA MOSTRAR SE DEBEN MOSTRAR TODO SOLO A FISCALES
+        // Para ver contratos no anulados asignados a usuarios fiscales
+        if($request->user()->hasPermission(['contracts.contracts.fiscal'])){
                 $contracts = Contract::where(function ($query) use ($request) {
                     $query->where('fiscal1_id', $request->user()->id)
                         ->orWhere('fiscal2_id', $request->user()->id)
@@ -92,9 +103,9 @@ class ContractsController extends Controller
                 })
                 ->where('contract_state_id', '>=', 1)
                 ->orderBy('iddncp', 'asc')
-                ->get();
-            // }
+                ->get();            
         }
+
         
         return view('contract.contracts.index', compact('contracts'));
     }
