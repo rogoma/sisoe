@@ -431,8 +431,14 @@
                                                                     <td style="color:#ff0000">
                                                                         {{ $order->orderState->description }}</td>
                                                                 @else
-                                                                    <td style="color:rgb(41, 128, 0)">
-                                                                        {{ $order->orderState->description }}</td>
+                                                                     {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
+                                                                        @if (in_array($order->orderState->id, [10]))
+                                                                            <td style="color:#ff0000;background-color:yellow">
+                                                                            {{ $order->orderState->description }}</td>
+                                                                        @else
+                                                                            <td style="color:rgb(41, 128, 0)">
+                                                                            {{ $order->orderState->description }}</td>
+                                                                        @endif    
                                                                 @endif
 
                                                                 <td style="max-width: 200px">{{ $order->comments }}</td>
@@ -449,8 +455,7 @@
                                                                     @endif
 
                                                                     {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
-                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 4]))
-                                                                        {{-- @if (Auth::user()->hasPermission(['admin.contracts.create'])) --}}
+                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 4, 10]))                                                                        
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             <button type="button" title="Editar"
                                                                                 class="btn btn-warning btn-icon"
