@@ -204,15 +204,16 @@
                                                         class="fa fa-clone"></i> Órdenes de Ejec.</a>
                                                 <div class="slide"></div>
                                             </li>
+                                            {{-- <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#tab7" role="tab"><i
+                                                        class="fa fa-file-pdf-o"></i> Plazos/Prórrogas</a>
+                                                <div class="slide"></div>
+                                            </li> --}}
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i
                                                         class="fa fa-file-pdf-o"></i> Reportes</a>
                                                 <div class="slide"></div>
                                             </li>
-                                            {{-- <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i class="fa fa-folder-open-o"></i> Archivos de Pólizas</a>
-                                            <div class="slide"></div>
-                                        </li> --}}
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab6" role="tab"><i
                                                         class="fa fa-file-archive-o"></i> Archivos</a>
@@ -534,7 +535,73 @@
                                                     DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
                                             </div>
 
+                                            {{-- <div class="tab-pane" id="tab7" role="tabpanel">
+                                                <label class="col-form-label f-w-600">Eventos de Ordenes:</label>
+                                                <table class="table table-striped table-bcontracted">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Descripción</th>
+                                                            <th>Tipo de Evento:</th>
+                                                            <th>Fecha/Hora</th>                                                            
+                                                            <th style="width: 200px; text-align: center;">Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for ($i = 0; $i < count($user_files_con); $i++)
+                                                            <tr>
+                                                                <td>{{ $i + 1 }}</td>
+                                                                <td>{{ $user_files_con[$i]->description }}</td>
+                                                                <td>{{ $user_files_con[$i]->dependency->description }}</td>
+                                                                <td>{{ $user_files_con[$i]->updated_atDateFormat() }}</td>
+                                                                <td>
+                                                                    <a href="{{ asset('storage/files/' . $user_files_con[$i]->file) }}"
+                                                                        title="Ver Archivo" target="_blank"
+                                                                        class="btn btn-primary"><i
+                                                                            class="fa fa-eye"></i></a>
+                                                                    <a href="{{ route('contracts.files.download', $user_files_con[$i]->id) }}"
+                                                                        title="Descargar Archivo" class="btn btn-info"><i
+                                                                            class="fa fa-download"></i></a>
+                                                                    <button title="Eliminar Archivo"
+                                                                        onclick="deleteFile({{ $user_files_con[$i]->id }})"
+                                                                        class="btn btn-danger"><i
+                                                                            class="fa fa-trash"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        @endfor
+
+                                                        @for ($i = 0; $i < count($other_files_con); $i++)
+                                                            <tr>
+                                                                <td>{{ $i + 1 }}</td>
+                                                                <td>{{ $other_files_con[$i]->description }}</td>
+                                                                <td>{{ $other_files_con[$i]->dependency->description }}
+                                                                </td>
+                                                                <td>{{ $other_files_con[$i]->updated_atDateFormat() }}</td>
+                                                                <td>
+                                                                    <a href="{{ asset('storage/files/' . $other_files_con[$i]->file) }}"
+                                                                        title="Ver Archivo" target="_blank"
+                                                                        class="btn btn-primary"><i
+                                                                            class="fa fa-eye"></i></a>
+                                                                    <a href="{{ route('contracts.files.download', $other_files_con[$i]->id) }}"
+                                                                        title="Descargar Archivo" class="btn btn-info"><i
+                                                                            class="fa fa-download"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        @endfor
+                                                    </tbody>
+                                                </table>
+                                                <div class="text-right">
+                                                    @if (Auth::user()->hasPermission(['admin.files.create', 'contracts.files.create']))
+                                                        @if (in_array($contract->contract_state_id, [1, 2]))
+                                                            <a href="{{ route('contracts.files.create_con', $contract->id) }}"
+                                                                class="btn btn-primary">Cargar Evento</a>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div> --}}
+
                                             <div class="tab-pane" id="tab4" role="tabpanel">
+                                                <label class="col-form-label f-w-600">Reportes:</label>                                                
                                                 <table id="forms" class="table table-striped table-bordered">
                                                     <thead>
                                                         <tr>
@@ -543,8 +610,7 @@
                                                             <th>Acción</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        {{-- MUESTRA LINK DE RFEPORTE SI ESTA CARGADO ITEMS (POLIZAS) --}}
+                                                    <tbody>                                                        
                                                         @if ($contract->items->count() > 0)
                                                             <tr>
                                                                 <td>1</td>
@@ -560,8 +626,7 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab3" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Asignación de Fiscales del
-                                                    Contrato:</label>
+                                                <label class="col-form-label f-w-600">Asignación de Fiscales del Contrato:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -658,9 +723,24 @@
                                                 </div>
                                                 <br>
                                                 <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SUMATORIA
-                                                    DE RUBROS CARGADOS: {{ $contract->totalAmountFormat() }}</span>
-
+                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SUMATORIA DE RUBROS CARGADOS: {{ $contract->totalAmountFormat() }}</span>
+                                                
+                                                <br>
+                                                    Fuente: 30
+                                                <br>
+                                                Equipamiento: 30 
+                                                <br>
+                                                Tanque: 60
+                                                <br>
+                                                Caseta: 30
+                                                <br>
+                                                Extensión de línea: 45
+                                                <br>
+                                                Red de distribución: 30
+                                                <br>
+                                                Aductora: 30
+                                                <br>
+                                                Cercado Perim.: 30
                                                 <br><br><br><br>
                                                 <div class="float-rigth">
                                                     @if (Auth::user()->hasPermission(['contracts.items.create']))
@@ -686,8 +766,7 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab6" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al
-                                                    llamado:</label>
+                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al llamado:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>

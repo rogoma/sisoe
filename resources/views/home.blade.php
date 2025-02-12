@@ -47,6 +47,10 @@
                                         <span class="f-w-600">Rol:</span><br>                                        
                                         {{ Auth::user()->role->description }}
                                     </p>
+                                    <p>
+                                        <span class="f-w-600">Función:</span><br>                                        
+                                        {{ Auth::user()->position->description }}
+                                    </p>                                    
                                 </div>
                                 <div class="card-footer">
                                     <p class="p-t-30">
