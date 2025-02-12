@@ -70,9 +70,8 @@
                                         <table id="items" class="table table-striped table-bordered nowrap">
                                             <thead>
                                                 <tr>                                                    
-                                                    <th>N° item</th>
-                                                    <th>Cod_rubro</th>
-                                                    <th>Rubro</th>
+                                                    <th>N° item</th>                                                    
+                                                    <th>Rubro (Cod.- Descripción)</th>
                                                     <th>Cant.</th>
                                                     <th>Unid.</th>
                                                     <th>Precio UNIT. MO</th>
@@ -85,67 +84,7 @@
                                                     </th> --}}
                                                 </tr>
                                             </thead>
-                                            
-                                            {{-- <tbody>
-                                                @php
-                                                    $tot_price_mo = 0; 
-                                                    $tot_price_mat = 0;    
-                                                @endphp
-                                                
-                                                @foreach ($items as $i => $item)
-                                                    <tr>
-                                                        @if($item->rubro_id == '9999')
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td style="font-size: 16px; font-weight: bold;">{{ $item->subitem->description }}</td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        @else
-                                                            <td style="text-align: center;">{{ $item->item_number }}</td>
-                                                            <td style="text-align: center;">{{ $item->rubro->code }}</td>
-                                                            <td>{{ $item->rubro->description }}</td>
-                                            
-                                                            
-                                                            <td style="text-align: center;">
-                                                                <input type="number" step="0.01" min="0" 
-                                                                       value="{{ $item->quantity }}" 
-                                                                       class="form-control quantity-input" 
-                                                                       data-index="{{ $i }}"
-                                                                       oninput="updateTotal({{ $i }})">
-                                                            </td>
-                                            
-                                                            <td style="text-align: center;">{{ $item->rubro->orderPresentations->description }}</td>
-                                                            <td style="text-align: center;">{{ number_format($item->unit_price_mo, 2, ',', '.') }}</td>
-                                                            <td style="text-align: center;">{{ number_format($item->unit_price_mat, 2, ',', '.') }}</td>
-                                                            
-                                                            
-                                                            <td style="text-align: center;" id="total_mo_{{ $i }}">
-                                                                {{ number_format($item->quantity * $item->unit_price_mo, 2, ',', '.') }}
-                                                            </td>
-                                            
-                                                            <td style="text-align: center;">{{ number_format($item->tot_price_mat, 2, ',', '.') }}</td>
-                                            
-                                                            @php
-                                                                $tot_price_mo += $item->quantity * $item->unit_price_mo;
-                                                                $tot_price_mat += $item->tot_price_mat;
-                                                            @endphp
-                                            
-                                                            <td style="text-align: center;">
-                                                                <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $item->id }})">
-                                                                    <i class="fa fa-pencil"></i>
-                                                                </button>
-                                            
-                                                                <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteItemAwardHistories({{ $item->id }})">
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </td>
-                                                        @endif
-                                                    </tr>
-                                                @endforeach
-                                            </tbody> --}}
+                                                                                       
                                             
                                             <tbody>
                                                 @php
@@ -166,9 +105,8 @@
                                                             <td></td>
                                                         @else
                                                             <td style="text-align: center;">{{ $item->item_number }}</td>
-                                                            <td style="text-align: center;">{{ $item->rubro->code }}</td>
-                                                            <td>{{ $item->rubro->description }}</td>
-                                                                                                        
+                                                            <td style="text-align: left;">{{ $item->rubro->code }} - {{ $item->rubro->description }}</td>
+                                                                                                                                                                    
                                                             <td style="text-align: center;">
                                                                 <input type="number" step="0.01" min="0" 
                                                                        value="{{ $item->quantity }}" 
@@ -209,7 +147,7 @@
                                             
                                             <tfoot>
                                                 <tr>
-                                                    <td colspan="6"></td>
+                                                    <td colspan="5"></td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td>

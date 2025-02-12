@@ -80,9 +80,8 @@
                                             <table id="items" class="table table-striped table-bordered nowrap">
                                                 <thead>
                                                     <tr>                                                    
-                                                        <th>N° item</th>
-                                                        <th>Cod_rubro</th>
-                                                        <th>Rubro</th>
+                                                        <th>N° item</th>                                                        
+                                                        <th>Rubro (Cod. - Descripción)</th>
                                                         <th>Cant.</th>
                                                         <th>Unid.</th>
                                                         <th>Precio UNIT. MO</th>
@@ -113,9 +112,8 @@
                                                             @else
                                                                 <td style="text-align: center;">{{ $item->item_number }}
                                                                 </td>
-                                                                <td style="text-align: center;">{{ $item->rubro->code }}
-                                                                </td>
-                                                                <td>{{ $item->rubro->description }}</td>
+                                                                <td style="text-align: left;">{{ $item->rubro->code }} - {{ $item->rubro->description }}</td>
+                                                                {{-- <td>{{ $item->rubro->description }}</td> --}}
 
                                                                 {{-- verificar este Campo editable para la cantidad --}}
                                                                 <td style="text-align: center;">
@@ -152,7 +150,7 @@
 
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="6"></td>
+                                                        <td colspan="5"></td>
                                                             <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;"> TOTALES:</td>
                                                             <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mo"></td> 
                                                             <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mat"></td>                                                        

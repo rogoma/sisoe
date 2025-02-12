@@ -69,9 +69,8 @@
                                         <table id="items" class="table table-striped table-bordered nowrap">
                                             <thead>
                                                 <tr>                                                    
-                                                    <th>N° item</th>
-                                                    <th>Cod_rubro</th>
-                                                    <th>Rubros</th>
+                                                    <th>N° item</th>                                                    
+                                                    <th>Rubro (Cod. - Descripción)</th>
                                                     <th>Cant.</th>
                                                     <th>Unid.</th>
                                                     <th>Precio UNIT. Mano de Obra</th>
@@ -88,7 +87,7 @@
                                                     <tr>                                                        
                                                         @if($items[$i]->rubro_id == '9999')
                                                             <td></td>
-                                                            <td></td>
+                                                            {{-- <td></td> --}}
                                                             <td style="font-size: 16px; font-weight: bold;">{{ $items[$i]->subitem->description }}</td>                                                            
                                                             <td></td>
                                                             <td></td>
@@ -96,8 +95,8 @@
                                                             <td></td>                                                            
                                                         @else
                                                             <td style="text-align: center;">{{ $items[$i]->item_number }}</td>
-                                                            <td style="text-align: center;">{{ $items[$i]->rubro->code }}</td>
-                                                            <td>{{ $items[$i]->rubro->description }}</td>                                                        
+                                                            <td style="text-align: left;">{{ $items[$i]->rubro->code }} - {{ $items[$i]->rubro->description }}</td>
+                                                            {{-- <td>{{ $items[$i]->rubro->description }}</td>                                                         --}}
                                                             <td style="text-align: center;">{{ $items[$i]->quantity }}</td>
                                                             <td style="text-align: center;">{{ $items[$i]->rubro->orderPresentations->description }}</td>
                                                             <td style="text-align: center;">{{ number_format($items[$i]->unit_price_mo, '0', ',', '.') }}</td>

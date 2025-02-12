@@ -109,8 +109,8 @@
         <table>
             <tr>
                 <th style="text-align: center">N° item</th>
-                <th style="text-align: center">Cod.</th>
-                <th style="text-align: center; width: 250px;">Rubro</th>
+                {{-- <th style="text-align: center">Cod.</th> --}}
+                <th style="text-align: center; width: 280px;">Cod. - Rubro</th>
                 <th style="text-align: center">Cant.</th>
                 <th style="text-align: center">Unid.</th>
                 <th style="text-align: center; width: 60px;">Precio UNIT. MO</th>
@@ -128,7 +128,7 @@
                 <tr>
                     @if ($contracts2[$i]->rubros_code == '9999')
                         <td> </td>
-                        <td> </td>
+                        {{-- <td> </td> --}}
                         <td><b> {{ $contracts2[$i]->sub_items_oi_description }} </b></td>
                         <td> </td>
                         <td> </td>
@@ -138,8 +138,8 @@
                         <td> </td>
                     @else
                         <td style="text-align: center"> {{ $contracts2[$i]->items_orders_item_number }}</td>
-                        <td style="text-align: center"> {{ $contracts2[$i]->rubros_code }}</td>
-                        <td> {{ $contracts2[$i]->rubros_description }}</td>
+                        <td style="text-align: left"> {{ $contracts2[$i]->rubros_code }} - {{ $contracts2[$i]->rubros_description }}</td>
+                        {{-- <td> {{ $contracts2[$i]->rubros_description }}</td> --}}
                         <td style="text-align: center"> {{ $contracts2[$i]->items_orders_quantity }}</td>
                         <td style="text-align: center"> {{ $contracts2[$i]->order_presentations_description }}</td>
                         <td style="text-align: center">
@@ -160,7 +160,7 @@
             @endfor
             <tfoot>
                 <tr>
-                    <td colspan="4"></td>
+                    <td colspan="3"></td>
                     <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">SUB-TOTAL GS.:
                     </td>
                     <td style="font-size: 10px; text-align: center;"> {{ number_format($tot_price_mo, '0', ',', '.') }}
@@ -171,9 +171,8 @@
                 </tr>
 
                 <tr>
-                    <td colspan="4"></td>
-                    <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON
-                        IVA:</td>
+                    <td colspan="3"></td>
+                    <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON IVA:</td>
                     <td style="font-size: 10px; text-align: center;"> </td>
                     <td style="font-size: 10px; text-align: center;">
                         {{ number_format($contracts1[0]->orders_total_amount, '0', ',', '.') }} </td>
