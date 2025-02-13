@@ -57,8 +57,8 @@
                                             <div class="form-group row">
                                                 <div class="col-sm-6">
                                                     <label for="number" class="col-form-label">N° de Orden</label>
-                                                    <input type="text" id="number" name="number_display" class="form-control @error('number') is-invalid @enderror" value="{{ old('number', $nextContractNumber) }}" maxlength="23" disabled>
-                                                    <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $nextContractNumber) }}">
+                                                    <input type="text" id="number" name="number_display" class="form-control @error('number') is-invalid @enderror" value="{{ old('number', $nextOrderNumber) }}" maxlength="23" disabled>
+                                                    <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $nextOrderNumber) }}">
                                                     @error('number')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror

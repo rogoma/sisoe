@@ -173,7 +173,7 @@ class OrdersEjecsController extends Controller
 
         // PARA NUMERAR ORDENES DE ACUERDO A LA CANTIDAD
         $order = Order::where('contract_id', $contract_id)->count();
-        $nextContractNumber = $order + 1;
+        $nextOrderNumber = $order + 1;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         // if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create']) || $contract->dependency_id == $request->user()->dependency_id){
@@ -197,7 +197,7 @@ class OrdersEjecsController extends Controller
         $districts = District::all();
         $item_contract = ItemContract::where('contract_id', $contract_id)->get();
 
-        return view('contract.orders.create', compact('contract','order_states','components', 'nextContractNumber', 'departments','districts'));
+        return view('contract.orders.create', compact('contract','order_states','components', 'nextOrderNumber', 'departments','districts'));
     }
 
     // PARA ANIDAR COMBOS
