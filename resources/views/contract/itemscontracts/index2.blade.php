@@ -112,15 +112,15 @@
                                                             @else
                                                                 <td style="text-align: center;">{{ $item->item_number }}
                                                                 </td>
-                                                                <td style="text-align: left;">{{ $item->rubro->code }} - {{ $item->rubro->description }}</td>
-                                                                {{-- <td>{{ $item->rubro->description }}</td> --}}
+                                                                <td style="text-align: left;">{{ $item->rubro->code }} - {{ $item->rubro->description }}</td>                                                                
 
                                                                 {{-- verificar este Campo editable para la cantidad --}}
                                                                 <td style="text-align: center;">
                                                                     <input type="number" class="quantity"
                                                                         data-index="{{ $i }}" value="0"
                                                                         min="0" step="any"
-                                                                        style="width: 80px; text-align: center;">
+                                                                        style="width: 80px; text-align: center;"
+                                                                        oninput="this.value = Math.max(this.value, 0)">
                                                                 </td>                                                               
 
                                                                 <td style="text-align: center;">

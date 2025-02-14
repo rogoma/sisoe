@@ -206,6 +206,14 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/orders/exportarexcel2', [OrdersController::class, 'exportarExcel2']); // PONER DEBAJO DE LAS RUTAS /orders/uploadExcel para que funcione
 
     Route::resource('orders', OrdersEjecsController::class);    // PONER DEBAJO DE LAS RUTAS /orders/uploadExcel para que funcione
+    
+    //PARA BUSCAR EL MAYOR NÚMERO DE ORDEN DE EJECUCIÓN Y ASIGNARLO A UNA NUEVA ORDEN (GPT)
+    Route::get('/get-max-number', [OrdersEjecsController::class, 'getMaxNumber'])->name('getMaxNumber');
+
+    // Route::get('/get-max-order-number/{componentId}', [OrdersEjecsController::class, 'getMaxOrderNumber'])->name('getMaxOrderNumber');
+    
+
+
 
     Route::post('orders/derive/{order_id}', [OrdersController::class, 'derive'])->name('orders.derive');
     Route::post('orders/anuleOrder/{order_id}', [OrdersController::class, 'anuleOrder'])->name('orders.anuleOrder');

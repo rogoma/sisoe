@@ -44,18 +44,18 @@ class OrdersEjecsController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.orders.index','orders.orders.index'];
+        $index_permissions = ['admin.orders.index', 'orders.orders.index'];
         $create_permissions = ['admin.orders.create', 'orders.orders.create'];
         $update_permissions = ['admin.orders.update', 'orders.orders.update'];
 
-        $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index
-        $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create
-        $this->middleware('checkPermission:'.implode(',',$update_permissions))->only(['edit', 'update']);   // Permiso para update
+        $this->middleware('checkPermission:' . implode(',', $index_permissions))->only('index'); // Permiso para index
+        $this->middleware('checkPermission:' . implode(',', $create_permissions))->only(['create', 'store']);   // Permiso para create
+        $this->middleware('checkPermission:' . implode(',', $update_permissions))->only(['edit', 'update']);   // Permiso para update
 
         // obtenemos el tamaño permitido de subida de archivos del servidor
         if (is_numeric(ini_get('post_max_size'))) {
             $postMaxSize = ini_get('post_max_size');
-        }else{
+        } else {
             $metric = strtoupper(substr(ini_get('post_max_size'), -1));
             $postMaxSize = (int) ini_get('post_max_size');
 
@@ -89,8 +89,10 @@ class OrdersEjecsController extends Controller
         $order = Order::findOrFail($order_id);
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.items.index','process_orders.items.index','derive_orders.items.index','plannings.items.index']) &&
-        $order->dependency_id != $request->user()->dependency_id){
+        if (
+            !$request->user()->hasPermission(['admin.items.index', 'process_orders.items.index', 'derive_orders.items.index', 'plannings.items.index']) &&
+            $order->dependency_id != $request->user()->dependency_id
+        ) {
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
@@ -123,12 +125,12 @@ class OrdersEjecsController extends Controller
         $search = $request->input('search');
 
         // en caso de no haberse enviado nada retornamos
-        if(empty($search)){
+        if (empty($search)) {
             return response()->json([]);
         }
 
         // definimos la consulta sql y enlazamos el parametro
-        $search = '%'.$search.'%';
+        $search = '%' . $search . '%';
         $sql = "SELECT * FROM level5_catalog_codes WHERE code LIKE :search OR lower(description) LIKE lower(:search) LIMIT 10";
         $bindings = array("search" => $search);
         $codigos = DB::select($sql, $bindings);
@@ -148,12 +150,12 @@ class OrdersEjecsController extends Controller
         $search4 = $request->input('search4');
 
         // en caso de no haberse enviado nada retornamos
-        if(empty($search4)){
+        if (empty($search4)) {
             return response()->json([]);
         }
 
         // definimos la consulta sql y enlazamos el parametro
-        $search4 = '%'.$search4.'%';
+        $search4 = '%' . $search4 . '%';
         $sql = "SELECT * FROM level4_catalog_codes WHERE code LIKE :search4 OR lower(description) LIKE lower(:search4) LIMIT 10";
         $bindings = array("search4" => $search4);
         $codigos = DB::select($sql, $bindings);
@@ -173,16 +175,16 @@ class OrdersEjecsController extends Controller
 
         // PARA NUMERAR ORDENES DE ACUERDO A LA CANTIDAD
         $order = Order::where('contract_id', $contract_id)->count();
-        $nextOrderNumber = $order + 1;
+        // $nextOrderNumber = $order + 1;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         // if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create']) || $contract->dependency_id == $request->user()->dependency_id){
-        if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create'])){
+        if ($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create'])) {
             // return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con','other_files_pol','other_files_con'));
-        }else{
+        } else {
             return back()->with('error', 'No tiene los suficientes permisos para agregar órdenes.');
         }
-                
+
         // Obtener los component_id asociados al contrato desde ItemContract
         $componentIds = ItemContract::where('contract_id', $contract_id)
             ->pluck('component_id'); // Extrae solo los IDs de los componentes
@@ -197,7 +199,10 @@ class OrdersEjecsController extends Controller
         $districts = District::all();
         $item_contract = ItemContract::where('contract_id', $contract_id)->get();
 
-        return view('contract.orders.create', compact('contract','order_states','components', 'nextOrderNumber', 'departments','districts'));
+        return view('contract.orders.create', compact('contract', 'order_states', 
+        'components', 'departments', 'districts' ));
+        // return view('contract.orders.create', compact('contract', 'order_states', 
+        // 'components', 'departments', 'districts', 'nextOrderNumber'));
     }
 
     // PARA ANIDAR COMBOS
@@ -218,8 +223,10 @@ class OrdersEjecsController extends Controller
         $order = Order::findOrFail($order_id);
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.items.create']) &&
-        $order->dependency_id != $request->user()->dependency_id){
+        if (
+            !$request->user()->hasPermission(['admin.items.create']) &&
+            $order->dependency_id != $request->user()->dependency_id
+        ) {
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
@@ -236,8 +243,12 @@ class OrdersEjecsController extends Controller
      */
     public function store(Request $request, $contract_id)
     {
+        // $request->validate([            
+        //     'component_code' => 'required|string',
+        // ]);
+
         $rules = array(
-            // 'number' => 'numeric|required|orders,number',
+            'number' => 'required|integer|min:1', // Asegúrate de que sea un número válido
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
             // 'sign_date' => 'date_format:d/m/Y',
             'component_id' => 'required|numeric',
@@ -254,14 +265,19 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+
         $order = new Order;
         $order->contract_id = $contract_id;
+        $order->component_id = $request->input('component_id');
+            $component = Component::find($order->component_id);  // Assuming you have a Component model
+            $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
+        $order->component_code = $componentCode;
         $order->number = $request->input('number');
-        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))): null;        
+        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         //CUANDO SE GRABA POR VEZ PRIMERA ASUME ESTADO 10= Pendiente Fecha Acuse recibo Contratista
-        $order->order_state_id = 10;        
+        $order->order_state_id = 10;
         $order->total_amount = 0;
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
@@ -271,6 +287,23 @@ class OrdersEjecsController extends Controller
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden agregada correctamente'); // Caso usuario posee rol pedidos
     }
 
+    //PARA CALCULA NUMERO DE ORDEN DE ACUERDO AL COMPONENTE
+    public function getMaxNumber(Request $request)
+    {
+        $componentId = $request->query('component_id');
+
+        if (!$componentId) {
+            return response()->json(['success' => false, 'message' => 'Component ID no proporcionado.']);
+        }
+
+        $maxNumber = Order::where('component_id', $componentId)->max('number');
+
+
+        return response()->json([
+            'success' => true,
+            'number' => $maxNumber,
+        ]);
+    }
 
     /**
      * Formulario de modificacion de pedido
@@ -284,17 +317,17 @@ class OrdersEjecsController extends Controller
         // $post_max_size = $this->postMaxSize;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.orders.update','orders.orders.update']) &&  $contract->dependency_id != $request->user()->dependency_id){
+        if (!$request->user()->hasPermission(['admin.orders.update', 'orders.orders.update']) &&  $contract->dependency_id != $request->user()->dependency_id) {
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
         $order = Order::findOrFail($order_id);
-        $components = Component::orderBy('id')->get();//ordenado por id componente
+        $components = Component::orderBy('id')->get(); //ordenado por id componente
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
 
-        return view('contract.orders.update', compact('contract','order','components','order_states','departments','districts'));
+        return view('contract.orders.update', compact('contract', 'order', 'components', 'order_states', 'departments', 'districts'));
     }
 
 
@@ -314,7 +347,7 @@ class OrdersEjecsController extends Controller
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
             // 'sign_date' => 'date_format:d/m/Y|required|',
             'component_id' => 'required|numeric',
-            'order_state_id'=> 'required|numeric',
+            'order_state_id' => 'required|numeric',
             'locality' => 'required|string|max:100',
             'comments' => 'nullable|max:300',
             'plazo' => 'required|numeric',
@@ -333,24 +366,24 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))): null;
-        
+        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
+
         $order_actual = $order->order_state_id = $request->input('order_state_id');
-        
+
         //SI FECHA NO ES NULL Y ESTADO NO SE CAMBIO, SE CAMBIA A ESTADO 1 = "En curso"
         if ($order->sign_date !== null && $order_actual == 10) {
             $order->order_state_id = 1;
-        }else{
+        } else {
             $order->order_state_id = $request->input('order_state_id');
         }
 
         //SI FECHA ES NULL Y ESTADO ES DIFERENTE A 10 , SE CAMBIA A ESTADO 10 = "En curso"
         if ($order->sign_date == null && $order_actual != 10) {
-            $order->order_state_id = 10;        
+            $order->order_state_id = 10;
         }
 
         $order->locality = $request->input('locality');
-        $order->component_id = $request->input('component_id');        
+        $order->component_id = $request->input('component_id');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
         $order->district_id = $request->input('district_id');
@@ -372,7 +405,7 @@ class OrdersEjecsController extends Controller
 
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.orders.delete','orders.orders.delete']) && $order->contract->dependency_id != $request->user()->dependency_id){
+        if (!$request->user()->hasPermission(['admin.orders.delete', 'orders.orders.delete']) && $order->contract->dependency_id != $request->user()->dependency_id) {
             return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para anular la orden.', 'code' => 200], 200);
         }
 
@@ -386,39 +419,38 @@ class OrdersEjecsController extends Controller
         if ($order->order_state_id == 1) {
 
             $order->order_state_id = 5;
-            $order->save();    
+            $order->save();
 
             session()->flash('status', 'success');
             session()->flash('message', 'Orden anulada' . $order->number);
 
             return response()->json([
-            'status' => 'success',
-            'message' => 'Orden anulada correctamente'. $order->number,
-            'code' => 200
+                'status' => 'success',
+                'message' => 'Orden anulada correctamente' . $order->number,
+                'code' => 200
             ], 200);
-
-        }else{
+        } else {
             // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
             if ($order->order_state_id == 5) {
-                
+
                 $order->order_state_id = 1;
-                $order->save();    
+                $order->save();
 
                 session()->flash('status', 'success');
                 session()->flash('message', 'Orden Desanulada' . $order->number);
 
                 return response()->json([
-                'status' => 'success',
-                'message' => 'Orden Desanulada correctamente'. $order->number,
-                'code' => 200
+                    'status' => 'success',
+                    'message' => 'Orden Desanulada correctamente' . $order->number,
+                    'code' => 200
                 ], 200);
             }
         }
-        
-        
+
+
         // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
         // if ($order->order_state_id = 5) {
-            
+
         //     $order->order_state_id = 1;
         //     $order->save();    
 
@@ -448,22 +480,33 @@ class OrdersEjecsController extends Controller
 
         //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
         $cant_item = 0;
-        if ($order->items->count() > 0){
+        if ($order->items->count() > 0) {
             $cant_item = 1;
         }
 
-        if($request->hasFile('excel')){
+        if ($request->hasFile('excel')) {
             // chequeamos la extension del archivo subido
-            if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
+            if ($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx') {
                 $validator = Validator::make($request->input(), []); // Creamos un objeto validator
                 $validator->errors()->add('excel', 'El archivo introducido debe ser un excel de tipo: xls o xlsx'); // Agregamos el error
                 return back()->withErrors($validator)->withInput();
             }
 
             // creamos un array de indices de las columnas
-            $header = array('type','batch', 'item_number', 'level5_catalog_code',
-            'technical_specifications', 'order_presentation', 'order_measurement_unit',
-            'unit_price','min_quantity','max_quantity','total_amount_min','total_amount');
+            $header = array(
+                'type',
+                'batch',
+                'item_number',
+                'level5_catalog_code',
+                'technical_specifications',
+                'order_presentation',
+                'order_measurement_unit',
+                'unit_price',
+                'min_quantity',
+                'max_quantity',
+                'total_amount_min',
+                'total_amount'
+            );
 
             // accedemos al archivo excel cargado
             $reader = IOFactory::createReader(ucfirst($request->file('excel')->getClientOriginalExtension())); // pasamos la extension xls o xlsx
@@ -481,7 +524,7 @@ class OrdersEjecsController extends Controller
             $order_amount_items = 0;
             for ($row = 2; $row <= $rows; ++$row) {
                 $data = $spreadsheet->getActiveSheet()->rangeToArray(
-                    'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
+                    'A' . $row . ':' . $last_column . $row, //Ej: A2:L2 The worksheet range that we want to retrieve
                     NULL,        // Value that should be returned for empty cells
                     TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
                     TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
@@ -489,7 +532,7 @@ class OrdersEjecsController extends Controller
                 );
 
                 // Manejando BUG de la librería phpspreadsheet para archivos con formato xlsx
-                if(empty(trim(implode("", $data[$row])))){
+                if (empty(trim(implode("", $data[$row])))) {
                     continue;
                 }
 
@@ -517,7 +560,7 @@ class OrdersEjecsController extends Controller
                 }
 
                 //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
-                if ($item['type'] <> 1){
+                if ($item['type'] <> 1) {
                     $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO ABIERTO');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
@@ -563,8 +606,8 @@ class OrdersEjecsController extends Controller
             foreach ($items as $item) {
                 $new_item = new Item;
                 $new_item->order_id = $order_id;
-                $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
-                $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
+                $new_item->batch = empty($item['batch']) ? NULL : $item['batch'];
+                $new_item->item_number = empty($item['item_number']) ? NULL : $item['item_number'];
                 $new_item->level5_catalog_code_id = $item['level5_catalog_code_id'];
                 $new_item->technical_specifications = $item['technical_specifications'];
                 $new_item->order_presentation_id = $item['order_presentation_id'];
@@ -585,10 +628,10 @@ class OrdersEjecsController extends Controller
             // var_dump($order['total_amount']);exit();
 
             //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item
-            if ($cant_item == 1){
+            if ($cant_item == 1) {
                 $order->total_amount = $order_amount + $order_amount_items;
                 $order->save();
-            }else{
+            } else {
                 $order->total_amount = $order_amount_items;
                 //SI ITEM ES AGREGADO DESPUÉS DE PEDIDO EL MONTO DE ITEM QUEDA COMO MONTO TOTAL Y OG1
                 $order->amount1 = $order_amount_items;
@@ -597,7 +640,7 @@ class OrdersEjecsController extends Controller
 
             return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
 
-        }else{
+        } else {
             $validator = Validator::make($request->input(), []);
             $validator->errors()->add('excel', 'El campo es requerido');
             return back()->withErrors($validator)->withInput();
@@ -615,24 +658,33 @@ class OrdersEjecsController extends Controller
 
         //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
         $cant_item = 0;
-        if ($order->items->count() > 0){
+        if ($order->items->count() > 0) {
             $cant_item = 1;
         }
 
         // var_dump($order->items->count());exit();
 
-        if($request->hasFile('excel')){
+        if ($request->hasFile('excel')) {
             // chequeamos la extension del archivo subido
-            if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
+            if ($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx') {
                 $validator = Validator::make($request->input(), []); // Creamos un objeto validator
                 $validator->errors()->add('excel', 'El archivo introducido debe ser un excel de tipo: xls o xlsx'); // Agregamos el error
                 return back()->withErrors($validator)->withInput();
             }
 
             // creamos un array de indices de las columnas
-            $header = array('type','batch', 'item_number', 'level5_catalog_code',
-            'technical_specifications', 'order_presentation','order_measurement_unit',
-            'quantity', 'unit_price', 'total_amount');
+            $header = array(
+                'type',
+                'batch',
+                'item_number',
+                'level5_catalog_code',
+                'technical_specifications',
+                'order_presentation',
+                'order_measurement_unit',
+                'quantity',
+                'unit_price',
+                'total_amount'
+            );
             // 'unit_price','min_quantity','max_quantity','total_amount_min','total_amount');
 
 
@@ -652,7 +704,7 @@ class OrdersEjecsController extends Controller
             $order_amount_items = 0;
             for ($row = 2; $row <= $rows; ++$row) {
                 $data = $spreadsheet->getActiveSheet()->rangeToArray(
-                    'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
+                    'A' . $row . ':' . $last_column . $row, //Ej: A2:L2 The worksheet range that we want to retrieve
                     NULL,        // Value that should be returned for empty cells
                     TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
                     TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
@@ -660,7 +712,7 @@ class OrdersEjecsController extends Controller
                 );
 
                 // Manejando BUG de la librería phpspreadsheet para archivos con formato xlsx
-                if(empty(trim(implode("", $data[$row])))){
+                if (empty(trim(implode("", $data[$row])))) {
                     continue;
                 }
 
@@ -687,7 +739,7 @@ class OrdersEjecsController extends Controller
                 }
 
                 //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
-                if ($item['type'] <> 2){
+                if ($item['type'] <> 2) {
                     $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO CERRADO');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
@@ -722,8 +774,8 @@ class OrdersEjecsController extends Controller
             foreach ($items as $item) {
                 $new_item = new Item;
                 $new_item->order_id = $order_id;
-                $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
-                $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
+                $new_item->batch = empty($item['batch']) ? NULL : $item['batch'];
+                $new_item->item_number = empty($item['item_number']) ? NULL : $item['item_number'];
                 $new_item->level5_catalog_code_id = $item['level5_catalog_code_id'];
                 $new_item->technical_specifications = $item['technical_specifications'];
                 $new_item->order_presentation_id = $item['order_presentation_id'];
@@ -742,17 +794,17 @@ class OrdersEjecsController extends Controller
             // var_dump($order['total_amount']);exit();
 
             //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item
-            if ($cant_item == 1){
+            if ($cant_item == 1) {
                 $order->total_amount = $order_amount + $order_amount_items;
                 $order->save();
-            }else{
+            } else {
                 $order->total_amount = $order_amount_items;
                 $order->save();
             }
 
             return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
 
-        }else{
+        } else {
             $validator = Validator::make($request->input(), []);
             $validator->errors()->add('excel', 'El campo es requerido');
             return back()->withErrors($validator)->withInput();
@@ -770,22 +822,32 @@ class OrdersEjecsController extends Controller
 
         //VERIFICAMOS SI HAY ITEM EN EL PEDIDO, SI EXISTE ASUME VALOR 1, SINO EXISTE ASUME VALOR 0
         $cant_item = 0;
-        if ($order->items->count() > 0){
+        if ($order->items->count() > 0) {
             $cant_item = 1;
         }
 
-        if($request->hasFile('excel')){
+        if ($request->hasFile('excel')) {
             // chequeamos la extension del archivo subido
-            if($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx'){
+            if ($request->file('excel')->getClientOriginalExtension() != 'xls' && $request->file('excel')->getClientOriginalExtension() != 'xlsx') {
                 $validator = Validator::make($request->input(), []); // Creamos un objeto validator
                 $validator->errors()->add('excel', 'El archivo introducido debe ser un excel de tipo: xls o xlsx'); // Agregamos el error
                 return back()->withErrors($validator)->withInput();
             }
 
             // creamos un array de indices de las columnas
-            $header = array('type','batch', 'item_number', 'level5_catalog_code',
-            'technical_specifications', 'order_presentation','order_measurement_unit',
-            'quantity', 'unit_price', 'total_amount_min','total_amount');
+            $header = array(
+                'type',
+                'batch',
+                'item_number',
+                'level5_catalog_code',
+                'technical_specifications',
+                'order_presentation',
+                'order_measurement_unit',
+                'quantity',
+                'unit_price',
+                'total_amount_min',
+                'total_amount'
+            );
             // max_quuantity es igual a quantity
 
 
@@ -805,7 +867,7 @@ class OrdersEjecsController extends Controller
             $order_amount_items = 0;
             for ($row = 2; $row <= $rows; ++$row) {
                 $data = $spreadsheet->getActiveSheet()->rangeToArray(
-                    'A'.$row.':'.$last_column.$row, //Ej: A2:L2 The worksheet range that we want to retrieve
+                    'A' . $row . ':' . $last_column . $row, //Ej: A2:L2 The worksheet range that we want to retrieve
                     NULL,        // Value that should be returned for empty cells
                     TRUE,        // Should formulas be calculated (the equivalent of getCalculatedValue() for each cell)
                     TRUE,        // Should values be formatted (the equivalent of getFormattedValue() for each cell)
@@ -813,7 +875,7 @@ class OrdersEjecsController extends Controller
                 );
 
                 // Manejando BUG de la librería phpspreadsheet para archivos con formato xlsx
-                if(empty(trim(implode("", $data[$row])))){
+                if (empty(trim(implode("", $data[$row])))) {
                     continue;
                 }
 
@@ -841,7 +903,7 @@ class OrdersEjecsController extends Controller
                 }
 
                 //VERIFICAMOS EL TIPO DE CONTRATO EN EL EXCEL
-                if ($item['type'] <> 3){
+                if ($item['type'] <> 3) {
                     $validator->errors()->add('type', 'VERIFIQUE PLANILLA DE TIPO CONTRATO CERRADO MMIN Y MMAX.');
                     return back()->withErrors($validator)->withInput()->with('fila', $row);
                 }
@@ -886,8 +948,8 @@ class OrdersEjecsController extends Controller
             foreach ($items as $item) {
                 $new_item = new Item;
                 $new_item->order_id = $order_id;
-                $new_item->batch = empty($item['batch'])? NULL : $item['batch'];
-                $new_item->item_number = empty($item['item_number'])? NULL : $item['item_number'];
+                $new_item->batch = empty($item['batch']) ? NULL : $item['batch'];
+                $new_item->item_number = empty($item['item_number']) ? NULL : $item['item_number'];
                 $new_item->level5_catalog_code_id = $item['level5_catalog_code_id'];
                 $new_item->technical_specifications = $item['technical_specifications'];
                 $new_item->order_presentation_id = $item['order_presentation_id'];
@@ -907,21 +969,20 @@ class OrdersEjecsController extends Controller
             // var_dump($order['total_amount']);exit();
 
             //verificamos la variable capturada si hay valores en items al comenzar el método  $cant_item
-            if ($cant_item == 1){
+            if ($cant_item == 1) {
                 $order->total_amount = $order_amount + $order_amount_items;
                 $order->save();
-            }else{
+            } else {
                 $order->total_amount = $order_amount_items;
                 $order->save();
             }
 
             return redirect()->route('orders.show', $order_id)->with('success', 'Archivo de ítems importado correctamente'); // Caso usuario posee rol pedidos
 
-        }else{
+        } else {
             $validator = Validator::make($request->input(), []);
             $validator->errors()->add('excel', 'El campo es requerido');
             return back()->withErrors($validator)->withInput();
         }
     }
-
 }

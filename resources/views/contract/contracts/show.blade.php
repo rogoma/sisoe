@@ -419,7 +419,7 @@
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
                                                             <tr>
-                                                                <td style="text-align: center;">{{ $order->number }}</td>
+                                                                <td style="text-align: center;width: 60px;">{{ $order->component_code }} - {{ $order->number }}</td>
                                                                 <td>{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
                                                                 {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
                                                                 <td style="text-align: center;">
