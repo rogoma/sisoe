@@ -175,8 +175,7 @@ class OrdersEjecsController extends Controller
 
         // PARA NUMERAR ORDENES DE ACUERDO A LA CANTIDAD
         $order = Order::where('contract_id', $contract_id)->count();
-        // $nextOrderNumber = $order + 1;
-
+       
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         // if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create']) || $contract->dependency_id == $request->user()->dependency_id){
         if ($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create'])) {
@@ -190,9 +189,16 @@ class OrdersEjecsController extends Controller
             ->pluck('component_id'); // Extrae solo los IDs de los componentes
 
         // Obtener los componentes filtrados por los IDs obtenidos
-        $components = Component::whereIn('id', $componentIds)
+        if ($request->user()->position->id == 11) { //Fiscal de Geología id 11
+            $components = Component::whereIn('id', $componentIds)
+            ->whereIn('id', [1, 2]) // Filtra los IDs 1 y 2 (Componentes 1.1 Pozo A y 1.2 Pozo B)
             ->orderBy('id')
             ->get();
+        } else {//Otros Fiscales (Obras y Electromecánica)
+            $components = Component::whereIn('id', $componentIds)//Muestra todos los componentes
+            ->orderBy('id')
+            ->get();            
+        }
 
         $order_states = OrderState::all();
         $departments = Department::all();
@@ -201,8 +207,6 @@ class OrdersEjecsController extends Controller
 
         return view('contract.orders.create', compact('contract', 'order_states', 
         'components', 'departments', 'districts' ));
-        // return view('contract.orders.create', compact('contract', 'order_states', 
-        // 'components', 'departments', 'districts', 'nextOrderNumber'));
     }
 
     // PARA ANIDAR COMBOS
@@ -224,8 +228,7 @@ class OrdersEjecsController extends Controller
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if (
-            !$request->user()->hasPermission(['admin.items.create']) &&
-            $order->dependency_id != $request->user()->dependency_id
+            !$request->user()->hasPermission(['admin.items.create']) &&  $order->dependency_id != $request->user()->dependency_id
         ) {
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }

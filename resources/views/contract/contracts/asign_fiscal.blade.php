@@ -260,7 +260,7 @@
                                                 <select id="fiscal1_id" name="fiscal1_id" class="form-control">
                                                     <option value="">Seleccionar Usuario Fiscal</option>
                                                 @foreach ($users as $user)
-                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal1_id', $contract->fiscal1_id)) selected @endif>{{ $user->name }} {{ $user->lastname }}</option>
+                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal1_id', $contract->fiscal1_id)) selected @endif>{{ $user->name }} {{ $user->lastname }} - {{ $user->position->description }}</option>
                                                 @endforeach
                                                 </select>
                                                 @error('fiscal1_id')
@@ -275,7 +275,7 @@
                                                 <select id="fiscal2_id" name="fiscal2_id" class="form-control">
                                                     <option value="">Seleccionar Usuario Fiscal</option>
                                                 @foreach ($users as $user)
-                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal2_id', $contract->fiscal2_id)) selected @endif>{{ $user->name }} {{ $user->lastname }}</option>
+                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal2_id', $contract->fiscal2_id)) selected @endif>{{ $user->name }} {{ $user->lastname }} - {{ $user->position->description }}</option>
                                                 @endforeach
                                                 </select>
                                                 @error('fiscal2_id')
@@ -290,7 +290,7 @@
                                                 <select id="fiscal3_id" name="fiscal3_id" class="form-control">
                                                     <option value="">Seleccionar Usuario Fiscal</option>
                                                 @foreach ($users as $user)
-                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal3_id', $contract->fiscal3_id)) selected @endif>{{ $user->name }} {{ $user->lastname }}</option>
+                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal3_id', $contract->fiscal3_id)) selected @endif>{{ $user->name }} {{ $user->lastname }} - {{ $user->position->description }}</option>
                                                 @endforeach
                                                 </select>
                                                 @error('fiscal3_id')
@@ -305,7 +305,7 @@
                                                 <select id="fiscal4_id" name="fiscal4_id" class="form-control">
                                                     <option value="">Seleccionar Usuario Fiscal</option>
                                                 @foreach ($users as $user)
-                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal4_id', $contract->fiscal4_id)) selected @endif>{{ $user->name }} {{ $user->lastname }}</option>
+                                                    <option value="{{ $user->id }}" @if ($user->id == old('fiscal4_id', $contract->fiscal4_id)) selected @endif>{{ $user->name }} {{ $user->lastname }} - {{ $user->position->description }}</option>
                                                 @endforeach
                                                 </select>
                                                 @error('fiscal4_id')

@@ -312,14 +312,10 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td>{{ $contract->fiscal1->name ?? '-' }}
-                                                                {{ $contract->fiscal1->lastname ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal2->name ?? '-' }}
-                                                                {{ $contract->fiscal2->lastname ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal3->name ?? '-' }}
-                                                                {{ $contract->fiscal3->lastname ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal4->name ?? '-' }}
-                                                                {{ $contract->fiscal4->lastname ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} - {{ $contract->fiscal1->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} - {{ $contract->fiscal2->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} - {{ $contract->fiscal3->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal4->name ?? '-' }} {{ $contract->fiscal4->lastname ?? '-' }} - {{ $contract->fiscal4->position->description ?? '-' }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -637,15 +633,11 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>{{ $contract->fiscal1->name ?? '-' }}
-                                                                {{ $contract->fiscal1->lastname ?? '-' }} </td>
-                                                            <td>{{ $contract->fiscal2->name ?? '-' }}
-                                                                {{ $contract->fiscal2->lastname ?? '-' }} </td>
-                                                            <td>{{ $contract->fiscal3->name ?? '-' }}
-                                                                {{ $contract->fiscal3->lastname ?? '-' }} </td>
-                                                            <td>{{ $contract->fiscal4->name ?? '-' }}
-                                                                {{ $contract->fiscal4->lastname ?? '-' }} </td>
+                                                        <tr>                                                            
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} - {{ $contract->fiscal1->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} - {{ $contract->fiscal2->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} - {{ $contract->fiscal3->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal4->name ?? '-' }} {{ $contract->fiscal4->lastname ?? '-' }} - {{ $contract->fiscal4->position->description ?? '-' }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
