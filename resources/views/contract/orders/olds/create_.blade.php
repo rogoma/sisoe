@@ -125,7 +125,7 @@
                                                 </div>
 
                                                 <div class="col-sm-6">
-                                                    <label for="component_id" class="col-form-label">Componente</label>
+                                                    <label for="component_id" class="col-form-label">Sub-Componente</label>
                                                     <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
                                                         <option value="">--- Seleccionar Componente ---</option>
                                                         @foreach ($components as $component)
@@ -162,7 +162,7 @@
                                                 </div>
 
                                                 <div class="col-sm-9">
-                                                    <label for="comments" class="col-form-label">Comentarios (Hasta 300 caracteres)</label>
+                                                    <label for="comments" class="col-form-label">Referencias (Hasta 300 caracteres)</label>
                                                     <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror" maxlength="300">{{ old('comments') }}</textarea>
                                                     @error('comments')
                                                     <div class="invalid-feedback">{{ $message }}</div>

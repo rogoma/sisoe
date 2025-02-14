@@ -196,6 +196,7 @@ class OrdersEjecsController extends Controller
             ->get();
         } else {//Otros Fiscales (Obras y Electromecánica)
             $components = Component::whereIn('id', $componentIds)//Muestra todos los componentes
+            ->whereNotIn('id', [1, 2]) // Excluye los IDs 1 y 2
             ->orderBy('id')
             ->get();            
         }

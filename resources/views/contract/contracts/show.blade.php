@@ -312,10 +312,18 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} - {{ $contract->fiscal1->position->description ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} - {{ $contract->fiscal2->position->description ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} - {{ $contract->fiscal3->position->description ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal4->name ?? '-' }} {{ $contract->fiscal4->lastname ?? '-' }} - {{ $contract->fiscal4->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }}
+                                                                {{ $contract->fiscal1->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal1->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }}
+                                                                {{ $contract->fiscal2->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal2->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }}
+                                                                {{ $contract->fiscal3->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal3->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal4->name ?? '-' }}
+                                                                {{ $contract->fiscal4->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal4->position->description ?? '-' }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -343,7 +351,7 @@
                                                                 <td style="max-width: 800px">
                                                                     {{ $user_files_eval[$i]->description }}</td>
                                                                 <td style="max-width: 500px">
-                                                                    {{-- {{ $user_files_eval[$i]->users->id }} --}}                                                                    
+                                                                    {{-- {{ $user_files_eval[$i]->users->id }} --}}
                                                                     {{ $user_files_eval[$i]->dependency->description }}
                                                                 </td>
                                                                 <td style="max-width: 200px">
@@ -406,16 +414,18 @@
                                                             <th>Fecha</th>
                                                             <th>Monto Orden</th>
                                                             <th>Localidad</th>
-                                                            <th>Referencia (Componente)</th>
+                                                            <th>Sub-Componente</th>
                                                             <th>Estado</th>
-                                                            <th>Observación</th>
+                                                            <th>Referencia</th>
                                                             <th style="width: 190px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
                                                             <tr>
-                                                                <td style="text-align: center;width: 60px;">{{ $order->component_code }} - {{ $order->number }}</td>
+                                                                <td style="text-align: center;width: 60px;">
+                                                                    {{ $order->component_code }} - {{ $order->number }}
+                                                                </td>
                                                                 <td>{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
                                                                 {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
                                                                 <td style="text-align: center;">
@@ -428,14 +438,14 @@
                                                                     <td style="color:#ff0000">
                                                                         {{ $order->orderState->description }}</td>
                                                                 @else
-                                                                     {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
-                                                                        @if (in_array($order->orderState->id, [10]))
-                                                                            <td style="color:#ff0000;background-color:yellow">
+                                                                    {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
+                                                                    @if (in_array($order->orderState->id, [10]))
+                                                                        <td style="color:#ff0000;background-color:yellow">
                                                                             {{ $order->orderState->description }}</td>
-                                                                        @else
-                                                                            <td style="color:rgb(41, 128, 0)">
+                                                                    @else
+                                                                        <td style="color:rgb(41, 128, 0)">
                                                                             {{ $order->orderState->description }}</td>
-                                                                        @endif    
+                                                                    @endif
                                                                 @endif
 
                                                                 <td style="max-width: 200px">{{ $order->comments }}</td>
@@ -452,7 +462,7 @@
                                                                     @endif
 
                                                                     {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
-                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 4, 10]))                                                                        
+                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 4, 10]))
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             <button type="button" title="Editar"
                                                                                 class="btn btn-warning btn-icon"
@@ -484,18 +494,6 @@
                                                                                     onclick="anuleOrder({{ $order->id }})"><i
                                                                                         class="fa fa-ban"></i></button>
                                                                             @else
-                                                                                {{-- <a href="{{ route('orders.items.uploadExcel', $order->id)}}"
-                                                                                title="Importar Rubros de Contrato" class="btn btn-success btn-icon">
-                                                                                <i class="fa fa-download text-white"></i> --}}
-
-                                                                                {{-- ORIGINAL --}}
-                                                                                {{-- <button type="button" title="Importar Rubros de Contrato"
-                                                                                    class="btn btn-primary btn-icon"                                                                                    
-                                                                                    onclick="itemContraRubro({{ $order->contract->id.','.$order->component->id.','.$order->id }})"> 
-                                                                                    <i class="fa fa-download text-white"></i>
-                                                                                </button> --}}
-
-                                                                                {{-- ARREGLADO CHAT --}}
                                                                                 <button type="button"
                                                                                     title="Importar Rubros de Contrato"
                                                                                     class="btn btn-primary btn-icon"
@@ -503,13 +501,26 @@
                                                                                     <i
                                                                                         class="fa fa-download text-white"></i>
                                                                                 </button>
+                                                                            @endif
+                                                                        @endif
 
-                                                                                {{-- <a href="{{ route('orders.items.uploadExcel', $order->id)}}"
-                                                                                    title="Importar Rubros EXCEL" class="btn btn-success btn-icon">
-                                                                                    <i class="fa fa-upload text-white"></i> --}}
+                                                                        @if (Auth::user()->hasPermission(['admin.orders.show', 'orders.orders.show']))
+                                                                            @if ($order->items->count() > 0)
+                                                                                <button type="button"
+                                                                                    title="Orden con Rubros"
+                                                                                    class="btn btn-primary btn-icon"
+                                                                                    onclick="itemOrder({{ $order->id }})">
+                                                                                    <i class="fa fa-list"></i>
+                                                                                </button>
+                                                                                {{-- MOSTRAR PDF DE ORDEN --}}
+                                                                                <a href="/pdf/panel_contracts10/{{ $order->id }}"
+                                                                                    title="Ver Orden" target="_blank"
+                                                                                    class="btn btn-success btn-icon"><i
+                                                                                        class="fa fa-eye"></i></a>                                                                                
                                                                             @endif
                                                                         @endif
                                                                     @endif
+
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -597,7 +608,7 @@
                                             </div> --}}
 
                                             <div class="tab-pane" id="tab4" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Reportes:</label>                                                
+                                                <label class="col-form-label f-w-600">Reportes:</label>
                                                 <table id="forms" class="table table-striped table-bordered">
                                                     <thead>
                                                         <tr>
@@ -606,7 +617,7 @@
                                                             <th>Acción</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>                                                        
+                                                    <tbody>
                                                         @if ($contract->items->count() > 0)
                                                             <tr>
                                                                 <td>1</td>
@@ -622,7 +633,8 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab3" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Asignación de Fiscales del Contrato:</label>
+                                                <label class="col-form-label f-w-600">Asignación de Fiscales del
+                                                    Contrato:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -633,11 +645,19 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>                                                            
-                                                            <td>{{ $contract->fiscal1->name ?? '-' }} {{ $contract->fiscal1->lastname ?? '-' }} - {{ $contract->fiscal1->position->description ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal2->name ?? '-' }} {{ $contract->fiscal2->lastname ?? '-' }} - {{ $contract->fiscal2->position->description ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal3->name ?? '-' }} {{ $contract->fiscal3->lastname ?? '-' }} - {{ $contract->fiscal3->position->description ?? '-' }}</td>
-                                                            <td>{{ $contract->fiscal4->name ?? '-' }} {{ $contract->fiscal4->lastname ?? '-' }} - {{ $contract->fiscal4->position->description ?? '-' }}</td>
+                                                        <tr>
+                                                            <td>{{ $contract->fiscal1->name ?? '-' }}
+                                                                {{ $contract->fiscal1->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal1->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal2->name ?? '-' }}
+                                                                {{ $contract->fiscal2->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal2->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal3->name ?? '-' }}
+                                                                {{ $contract->fiscal3->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal3->position->description ?? '-' }}</td>
+                                                            <td>{{ $contract->fiscal4->name ?? '-' }}
+                                                                {{ $contract->fiscal4->lastname ?? '-' }} -
+                                                                {{ $contract->fiscal4->position->description ?? '-' }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -715,24 +735,8 @@
                                                 </div>
                                                 <br>
                                                 <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SUMATORIA DE RUBROS CARGADOS: {{ $contract->totalAmountFormat() }}</span>
-                                                
-                                                <br>
-                                                    Fuente: 30
-                                                <br>
-                                                Equipamiento: 30 
-                                                <br>
-                                                Tanque: 60
-                                                <br>
-                                                Caseta: 30
-                                                <br>
-                                                Extensión de línea: 45
-                                                <br>
-                                                Red de distribución: 30
-                                                <br>
-                                                Aductora: 30
-                                                <br>
-                                                Cercado Perim.: 30
+                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SUMATORIA
+                                                    DE RUBROS CARGADOS: {{ $contract->totalAmountFormat() }}</span>
                                                 <br><br><br><br>
                                                 <div class="float-rigth">
                                                     @if (Auth::user()->hasPermission(['contracts.items.create']))
@@ -758,7 +762,8 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab6" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al llamado:</label>
+                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al
+                                                    llamado:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -775,7 +780,8 @@
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
                                                                 <td>{{ $user_files_con[$i]->description }}</td>
-                                                                <td>{{ $user_files_con[$i]->dependency->description }}</td>
+                                                                <td>{{ $user_files_con[$i]->dependency->description }}
+                                                                </td>
                                                                 <td>{{ $user_files_con[$i]->updated_atDateFormat() }}</td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $user_files_con[$i]->file) }}"
@@ -799,7 +805,8 @@
                                                                 <td>{{ $other_files_con[$i]->description }}</td>
                                                                 <td>{{ $other_files_con[$i]->dependency->description }}
                                                                 </td>
-                                                                <td>{{ $other_files_con[$i]->updated_atDateFormat() }}</td>
+                                                                <td>{{ $other_files_con[$i]->updated_atDateFormat() }}
+                                                                </td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $other_files_con[$i]->file) }}"
                                                                         title="Ver Archivo" target="_blank"
@@ -1049,8 +1056,9 @@
             }
 
             //lleva a indexRubros de ItemsContractsController
-            itemContraRubro = function(order, contract, component) {                
-                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' + component + '/itemsRubros';                
+            itemContraRubro = function(order, contract, component) {
+                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' +
+                    component + '/itemsRubros';
             }
 
             //lleva a index de ItemsContractsController
