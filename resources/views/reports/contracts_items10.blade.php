@@ -105,6 +105,16 @@
                 </tr>
             @endfor
         </table>
+        <br>
+        <table id="orders_items">
+            @for ($i = 0; $i < count($contracts1); $i = $i + 3)
+                <tr>
+                    <td> Referencia: {{ $contracts1[$i]->orders_comments }} </td>                    
+                    </th>
+                </tr>
+            @endfor
+        </table>        
+
         <h2>DETALLE DE RUBROS</h2>
         <table>
             <tr>

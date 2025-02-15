@@ -417,42 +417,33 @@
                                                             <th>Localidad</th>
                                                             <th>Sub-Componente</th>
                                                             <th>Estado</th>
-                                                            <th>Referencia</th>
+                                                            {{-- <th>Referencia</th> --}}
                                                             <th style="width: 190px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
                                                             <tr>
-                                                                <td style="text-align: center;width: 100px;">
-                                                                    {{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }} 
-                                                                </td>
-                                                                <td style="text-align: center;width: 60px;">
-                                                                    {{ $order->component_code }} - {{ $order->number }}
-                                                                </td>
-                                                                <td>{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
+                                                                <td style="color:#ff0000;text-align: left;width: 150px;">{{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }}-{{ $order->creatorUser->position->description }} </td>
+                                                                <td style="text-align: center;width: 60px;">{{ $order->component_code }} - {{ $order->number }}</td>
+                                                                <td style="text-align: center;width: 30px;">{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
                                                                 {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
-                                                                <td style="text-align: center;">
-                                                                    {{ $order->totalAmountFormat() }}</td>
-                                                                <td>{{ $order->locality }}</td>
-                                                                <td>{{ $order->component->code }}-{{ $order->component->description }}
-                                                                </td>
+                                                                <td style="text-align: center;width: 100px;">{{ $order->totalAmountFormat() }}</td>
+                                                                <td style="text-align: left;width: 120px;">{{ $order->locality }}</td>
+                                                                <td style="text-align: left;width: 350px;">{{ $order->component->code }}-{{ $order->component->description }}</td>
                                                                 {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
                                                                 @if (in_array($order->orderState->id, [5]))
-                                                                    <td style="color:#ff0000">
-                                                                        {{ $order->orderState->description }}</td>
+                                                                    <td style="color:#ff0000;text-align: left;width: 120px;"> {{ $order->orderState->description }}</td>
                                                                 @else
                                                                     {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
                                                                     @if (in_array($order->orderState->id, [10]))
-                                                                        <td style="color:#ff0000;background-color:yellow">
-                                                                            {{ $order->orderState->description }}</td>
+                                                                        <td style="color:#ff0000;background-color:yellow;width: 120px;">{{ $order->orderState->description }}</td>
                                                                     @else
-                                                                        <td style="color:rgb(41, 128, 0)">
-                                                                            {{ $order->orderState->description }}</td>
+                                                                        <td style="color:rgb(41, 128, 0)">{{ $order->orderState->description }}</td>
                                                                     @endif
                                                                 @endif
+                                                                {{-- <td style="max-width: 200px">{{ $order->comments }}</td> --}}
 
-                                                                <td style="max-width: 200px">{{ $order->comments }}</td>
                                                                 {{-- Muestra si estado de llamado es En curso --}}
                                                                 <td>
                                                                     {{-- Para Desanular si estado = 5 (anulado) --}}
@@ -468,16 +459,21 @@
                                                                     {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
                                                                     @if (in_array($order->orderState->id, [1, 2, 3, 4, 10]))
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
-                                                                            <button type="button" title="Editar"
-                                                                                class="btn btn-warning btn-icon"
-                                                                                onclick="updateOrder({{ $order->id }})">
-                                                                                <i class="fa fa-pencil"></i>
-                                                                            </button>
-                                                                            @if ($order->items->count() == 0)
-                                                                                <button type="button" title="Anular"
-                                                                                    class="btn btn-danger btn-icon"
-                                                                                    onclick="anuleOrder({{ $order->id }})"><i
-                                                                                        class="fa fa-ban"></i></button>
+                                                                            
+                                                                            {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
+                                                                            @if (Auth::user()->id == $order->creator_user_id)
+                                                                                <button type="button" title="Editar"
+                                                                                    class="btn btn-warning btn-icon"
+                                                                                    onclick="updateOrder({{ $order->id }})">
+                                                                                    <i class="fa fa-pencil"></i>
+                                                                                </button>
+                                                                                
+                                                                                @if ($order->items->count() == 0)
+                                                                                    <button type="button" title="Anular"
+                                                                                        class="btn btn-danger btn-icon"
+                                                                                        onclick="anuleOrder({{ $order->id }})"><i
+                                                                                            class="fa fa-ban"></i></button>
+                                                                                @endif
                                                                             @endif
 
                                                                             @if ($order->items->count() > 0)
@@ -493,18 +489,23 @@
                                                                                     class="btn btn-success btn-icon"><i
                                                                                         class="fa fa-eye"></i></a>
 
-                                                                                <button type="button" title="Anular"
+                                                                                {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
+                                                                                @if (Auth::user()->id == $order->creator_user_id)
+                                                                                    <button type="button" title="Anular"
                                                                                     class="btn btn-danger btn-icon"
                                                                                     onclick="anuleOrder({{ $order->id }})"><i
                                                                                         class="fa fa-ban"></i></button>
+                                                                                @endif
                                                                             @else
-                                                                                <button type="button"
+                                                                                {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}    
+                                                                                @if (Auth::user()->id == $order->creator_user_id)
+                                                                                    <button type="button"
                                                                                     title="Importar Rubros de Contrato"
                                                                                     class="btn btn-primary btn-icon"
                                                                                     onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
-                                                                                    <i
-                                                                                        class="fa fa-download text-white"></i>
-                                                                                </button>
+                                                                                    <i class="fa fa-download text-white"></i>
+                                                                                    </button>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
 
@@ -569,7 +570,7 @@
                                                 <br> --}}
                                             </div>
 
-                                            {{-- <div class="tab-pane" id="tab7" role="tabpanel">
+                                            <div class="tab-pane" id="tab7" role="tabpanel">
                                                 <label class="col-form-label f-w-600">Eventos de Ordenes:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
@@ -632,7 +633,7 @@
                                                         @endif
                                                     @endif
                                                 </div>
-                                            </div> --}}
+                                            </div>
 
                                             <div class="tab-pane" id="tab4" role="tabpanel">
                                                 <label class="col-form-label f-w-600">Reportes:</label>
@@ -641,7 +642,7 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Reporte</th>
-                                                            <th>Acción</th>
+                                                            <th>Detalle del Reporte</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -649,10 +650,10 @@
                                                             <tr>
                                                                 <td>1</td>
                                                                 <td>Componentes de Sistemas</td>
-                                                                <td><a href="/pdf/panel_contracts/{{ $contract->id }}"
+                                                                {{-- <td><a href="/pdf/panel_contracts/{{ $contract->id }}"
                                                                         class="btn btn-default" target="_blank"><i
                                                                             class="fa fa-file-pdf-o"></i> &nbsp;Componentes
-                                                                        de Sistemas de Abastecimiento de Agua</a></td>
+                                                                        de Sistemas de Abastecimiento de Agua</a></td> --}}
                                                             </tr>
                                                         @endif
                                                     </tbody>
