@@ -37,10 +37,8 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
+                                    <h5><p style="font-size: 17px; font-weight: bold; color:blue">Contrato: {{ $contract->description}} - <u>Contratista:</u> {{ $contract->provider->description}}</p></h5>
                                     <h5><p style="font-size: 17px; font-weight: bold; color:blue">Agregar Rubros al Contrato Nº {{ $contract->number_year}}</p></h5>
-                                    <br>
-                                    {{-- <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Componente: {{ $order->component->code }} - {{ $order->component->description }}</p></h5> --}}
-                                    {{-- <h5><p style="font-size: 17px; font-weight: bold; color:#FF0000">Localidad: {{ $order->locality }}</p></h5> --}}
                                 </div>
                                 <div class="card-block">
                                         {{-- <form method="POST" action="{{ route('orders.items.storeExcel', $order->id) }}" enctype="multipart/form-data"> --}}

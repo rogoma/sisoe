@@ -188,7 +188,7 @@
                                                     </div>
 
                                                     <div class="col-sm-9">
-                                                        <label for="comments" class="col-form-label">Referencias (Hasta 300 caracteres)</label>
+                                                        <label for="comments" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
                                                             maxlength="300">{{ old('comments') }}</textarea>
                                                         @error('comments')

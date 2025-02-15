@@ -204,11 +204,11 @@
                                                         class="fa fa-clone"></i> Órdenes de Ejec.</a>
                                                 <div class="slide"></div>
                                             </li>
-                                            {{-- <li class="nav-item">
+                                            <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab7" role="tab"><i
                                                         class="fa fa-file-pdf-o"></i> Plazos/Prórrogas</a>
                                                 <div class="slide"></div>
-                                            </li> --}}
+                                            </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i
                                                         class="fa fa-file-pdf-o"></i> Reportes</a>
@@ -410,6 +410,7 @@
                                                     <thead>
                                                         <tr>
                                                             {{-- <th>#</th> --}}
+                                                            <th>Fiscal</th>
                                                             <th>N° OE</th>
                                                             <th>Fecha</th>
                                                             <th>Monto Orden</th>
@@ -423,6 +424,9 @@
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
                                                             <tr>
+                                                                <td style="text-align: center;width: 100px;">
+                                                                    {{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }} 
+                                                                </td>
                                                                 <td style="text-align: center;width: 60px;">
                                                                     {{ $order->component_code }} - {{ $order->number }}
                                                                 </td>
@@ -504,7 +508,8 @@
                                                                             @endif
                                                                         @endif
 
-                                                                        @if (Auth::user()->hasPermission(['admin.orders.show', 'orders.orders.show']))
+                                                                        {{-- Muestra botones si no son fiscales --}}
+                                                                        @if (Auth::user()->hasPermission(['admin.orders.show', 'orders.orders.view']))
                                                                             @if ($order->items->count() > 0)
                                                                                 <button type="button"
                                                                                     title="Orden con Rubros"
@@ -516,11 +521,12 @@
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                                     title="Ver Orden" target="_blank"
                                                                                     class="btn btn-success btn-icon"><i
-                                                                                        class="fa fa-eye"></i></a>                                                                                
+                                                                                        class="fa fa-eye"></i></a>
+                                                                            @else
+                                                                                <span style="color:#ff0000;background-color:yellow">Falta agregar rubros </span> 
                                                                             @endif
                                                                         @endif
                                                                     @endif
-
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -537,9 +543,30 @@
                                                         @endif
                                                     @endif
                                                 </div>
-                                                <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SALDO
-                                                    DE CONTRATO: {{ $contract->totalAmountFormat() }}</span>
+                                                <br><br><br>
+                                                {{-- ACA DEBEN IR VALORES CALCULADOS DE ACUERDO A LA GENERACIÓN DE ORDENES --}}
+                                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
+                                                        <u>MONTO DEL CONTRATO:</u> {{ $contract->totalAmountFormat() }}
+                                                    </div>
+                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
+                                                        <u>MONTO COMPROMETIDO:</u> 1.500.000.000
+                                                    </div>
+                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: red; background-color: white; padding: 10px;">
+                                                        <u>MONTO UTILIZADO:</u> 657.000.000
+                                                    </div>
+                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
+                                                        <u>SALDO DEL CONTRATO:</u> 2.343.000
+                                                        {{-- SALDO DEL CONTRATO: {{ $contract->totalAmountFormat() }} --}}
+                                                    </div>
+                                                </div>                                                
+                                                {{-- <br>
+                                                <span style="font-size: 16px; font-weight: bold; color:WHITE;background-color:GREEN;">MONTO DEL CONTRATO: {{ $contract->totalAmountFormat() }}</span>
+                                                <br>
+                                                <span style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">MONTO COMPROMETIDO: 0 </span>
+                                                <br>
+                                                <span style="font-size: 16px; font-weight: bold; color:WHITE;background-color:BLUE;">SALDO DEL CONTRATO: {{ $contract->totalAmountFormat() }}</span>
+                                                <br> --}}
                                             </div>
 
                                             {{-- <div class="tab-pane" id="tab7" role="tabpanel">
@@ -734,9 +761,7 @@
                                                     @endif
                                                 </div>
                                                 <br>
-                                                <span
-                                                    style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SUMATORIA
-                                                    DE RUBROS CARGADOS: {{ $contract->totalAmountFormat() }}</span>
+                                                {{-- <span style="font-size: 16px; font-weight: bold; color:red;background-color:yellow;">SUMATORIA DE RUBROS CARGADOS: {{ $contract->totalAmountFormat() }}</span> --}}
                                                 <br><br><br><br>
                                                 <div class="float-rigth">
                                                     @if (Auth::user()->hasPermission(['contracts.items.create']))

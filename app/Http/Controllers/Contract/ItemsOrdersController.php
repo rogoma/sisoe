@@ -31,8 +31,7 @@ class ItemsOrdersController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.items.index','orders.items.index'];
-        // $index_permissions = ['admin.items.index','orders.items.index', 'process_orders.items.index'];
+        $index_permissions = ['admin.items.index','orders.items.index', 'admin.orders.view', 'orders.orders.view'];        
         $create_permissions = ['admin.items.create','orders.items.create'];
         $update_permissions = ['admin.items.update', 'orders.items.update'];
 
@@ -48,8 +47,8 @@ class ItemsOrdersController extends Controller
         $contracts = $order->contracts;
         $items = $order->items;
 
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])){
+        // Chequeamos permisos del usuario par mostrar datos de rubros en modo view only
+        if(!$request->user()->hasPermission(['admin.orders.view', 'orders.items.create', 'orders.orders.view'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
         

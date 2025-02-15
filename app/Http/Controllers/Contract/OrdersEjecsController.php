@@ -247,9 +247,18 @@ class OrdersEjecsController extends Controller
      */
     public function store(Request $request, $contract_id)
     {
-        // $request->validate([            
-        //     'component_code' => 'required|string',
-        // ]);
+        $request->validate([
+            'component_id' => 'required|integer',
+            'plazo' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (($request->input('component_id') == 1 || $request->input('component_id') == 2) && $value > 30) {
+                        $fail('El plazo no puede ser mayor a 30 si el componente es 1 o 2.');
+                    }
+                },
+            ],
+        ]);
 
         $rules = array(
             'number' => 'required|integer|min:1', // Asegúrate de que sea un número válido
@@ -258,7 +267,7 @@ class OrdersEjecsController extends Controller
             'component_id' => 'required|numeric',
             // 'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
-            'comments' => 'nullable|max:300',
+            'comments' => 'nullable|max:500',
             'plazo' => 'required|numeric',
             'department_id' => 'required',
             'district_id' => 'required|numeric'
@@ -353,7 +362,7 @@ class OrdersEjecsController extends Controller
             'component_id' => 'required|numeric',
             'order_state_id' => 'required|numeric',
             'locality' => 'required|string|max:100',
-            'comments' => 'nullable|max:300',
+            'comments' => 'nullable|max:500',
             'plazo' => 'required|numeric',
             // 'department_id' => 'required',
             'district_id' => 'required|numeric'
