@@ -101,9 +101,9 @@
                                                         <tr>
                                                             @if ($item->rubro_id == '9999')
                                                                 <td></td>
-                                                                <td></td>
                                                                 <td style="font-size: 16px; font-weight: bold;">
                                                                     {{ $item->subitem->description }}</td>
+                                                                <td></td>    
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td></td>

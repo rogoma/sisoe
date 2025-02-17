@@ -176,9 +176,18 @@
                                                     </div>
                                                 
                                                     <div class="col-sm-9">
-                                                        <label for="comments" class="col-form-label">Referencias (Hasta 500 caracteres)</label>
+                                                        <label for="references" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
+                                                        <textarea id="references" name="references" class="form-control @error('references') is-invalid @enderror"
+                                                        maxlength="500">{{ old('references',$order->references) }}</textarea>
+                                                        @error('references')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="col-sm-12">
+                                                        <label for="comments" class="col-form-label">Referencias (Hasta 200 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
-                                                        maxlength="300">{{ old('comments',$order->comments) }}</textarea>
+                                                        maxlength="200">{{ old('comments',$order->comments) }}</textarea>
                                                         @error('comments')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror

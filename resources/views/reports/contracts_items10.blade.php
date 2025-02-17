@@ -97,7 +97,7 @@
                         {{ number_format($contracts1[$i]->contracts_iddncp, '0', ',', '.') }}</td>
                     <th> Empresa Contratista: <br><br> {{ $contracts1[$i]->providers_description }}</th>
                     <th> Dependencia Responsable: <br><br> {{ $contracts1[$i]->dependencies_description }}</th>
-                    <th> Componente de la obra: {{ $contracts1[$i]->components_description }}</th>
+                    {{-- <th> Componente de la obra: {{ $contracts1[$i]->components_description }}</th> --}}
                     <th> Modalidad: {{ $contracts1[$i]->modalities_description }}</th>
                     <th> Localidad(es): {{ $contracts1[$i]->orders_locality }}</th>
                     <th> Monto de la Orden: {{ number_format($contracts1[$i]->orders_total_amount, '0', ',', '.') }}
@@ -109,8 +109,8 @@
         <table id="orders_items">
             @for ($i = 0; $i < count($contracts1); $i = $i + 3)
                 <tr>
-                    <td> Referencia: {{ $contracts1[$i]->orders_comments }} </td>                    
-                    </th>
+                    <td> Referencia: {{ $contracts1[$i]->components_description }}</td>                
+                    <td> {{ $contracts1[$i]->orders_references }} </td>                    
                 </tr>
             @endfor
         </table>        
@@ -168,6 +168,7 @@
                     @endif
                 </tr>
             @endfor
+
             <tfoot>
                 <tr>
                     <td colspan="3"></td>
@@ -205,11 +206,11 @@
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Firma Fiscalización:
+                        Firma Fiscalización
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Aclaración Firma:
+                        {{$user->name}} {{$user->lastname}} <br> Aclaración Firma  Fiscal
                     </td>
                     <td colspan="3"></td> <!-- Espacio para balancear si es necesario -->
                 </tr>
@@ -220,11 +221,11 @@
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Firma Contratista:
+                        Firma Contratista
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Aclaración Firma:
+                        Aclaración Firma Contratista
                     </td>
                     <td colspan="3"></td> <!-- Espacio para balancear si es necesario -->
                 </tr>

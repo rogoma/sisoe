@@ -55,11 +55,13 @@ class ReportsController extends Controller
         
         // if ($request->user()->hasPermission(['orders.reports.show'])) {
             //Donde contracts es una vista
-            
+            $user = auth()->user();
+            $data = ['userName' => $user->name];// Pasar el nombre del usuario           
+
             $contracts1 = DB::table('vista_full')
                 ->select(DB::raw('DISTINCT ON (orders_id) orders_id, orders_number,
                     contracts_description,contracts_iddncp, contracts_number_year,
-                    providers_description, orders_number,
+                    providers_description, orders_number, orders_references,
                     orders_locality,orders_date, dependencies_description,
                     components_description,orders_total_amount,modalities_description, orders_comments, orders_plazo'))
                 ->where('orders_id', '=', $order_id)                
@@ -85,7 +87,7 @@ class ReportsController extends Controller
                 ->get();        
         // }
 
-        $view = View::make('reports.contracts_items10', compact('contracts1', 'contracts2'))->render();
+        $view = View::make('reports.contracts_items10', compact('contracts1', 'contracts2', 'user'))->render();
         // $view = View::make('reports.contracts_items', compact('contracts1', 'contracts2', 'contracts3'))->render();
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
