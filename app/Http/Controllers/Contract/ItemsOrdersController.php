@@ -73,13 +73,36 @@ class ItemsOrdersController extends Controller
     }
 
 
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'items.*.rubro_id' => 'required|integer',
+        'items.*.quantity' => 'required|numeric|min:0',
+        'items.*.unit_price_mo' => 'required|numeric',
+        'items.*.unit_price_mat' => 'required|numeric',
+        'items.*.tot_price_mo' => 'required|numeric',
+        'items.*.tot_price_mat' => 'required|numeric',
+        'items.*.order_id' => 'required|integer',
+        'items.*.item_state' => 'required|integer',
+    ]);
+
+    foreach ($validated['items'] as $item) {
+        ItemOrder::create($item);
+    }
+
+    return response()->json(['success' => true, 'message' => 'Datos guardados correctamente']);
+}
+
+    
+    
+    
     /**
      * Funcionalidad de guardado del pedido de ítemes Contrato Abierto.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $order_id)
+    public function store_orig(Request $request, $order_id)
     {
         $rules = array(
             'batch' => 'numeric|nullable|max:2147483647',

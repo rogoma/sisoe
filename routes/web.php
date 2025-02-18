@@ -189,8 +189,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
     Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');    
     Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
-
-    
+    // PARA GRABAR RUBROS EN ITEMS_ORDERS
+    Route::post('items_orders/store', [ItemsOrdersController::class, 'store'])->name('items_orders.store');
+       
 
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');

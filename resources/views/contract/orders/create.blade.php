@@ -188,10 +188,10 @@
                                                     </div>
 
                                                     <div class="col-sm-9">
-                                                        <label for="references" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
-                                                        <textarea id="references" name="references" class="form-control @error('references') is-invalid @enderror"
-                                                            maxlength="500">{{ old('references') }}</textarea>
-                                                        @error('references')
+                                                        <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
+                                                        <textarea id="reference" name="reference" class="form-control @error('reference') is-invalid @enderror"
+                                                            maxlength="500">{{ old('reference') }}</textarea>
+                                                        @error('reference')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
@@ -206,28 +206,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <br>
+                                            {{-- <br> --}}
                                             <div class="text-center mt-4">
                                                 <button id="saveButton1" type="submit" class="btn btn-primary">Grabar
                                                     Orden</button>
                                                 {{-- <button id="saveButton1" type="submit" class="btn btn-primary">Ajuntar Rubros</button> --}}
                                             </div>
                                             <br>
-                                            <br>
-                                                    Fuente: 30
-                                                <br>
-                                                Equipamiento: 30 
-                                                <br>
-                                                Tanque: 60
-                                                <br>
-                                                Caseta: 30
-                                                <br>
-                                                Extensión de línea: 45
-                                                <br>
-                                                Red de distribución: 30
-                                                <br>
-                                                Aductora: 30
-                                                <br>
+                                            <br>REFERENCIAS: PLAZO EN DIAS:
+                                                * Fuente de Provisión: 30 *
+                                                Equipamiento: 30 *                                               
+                                                Tanque: 60 *                                              
+                                                Caseta: 30 *
+                                                Extensión de línea: 45 *
+                                                Red de distribución: 30 *
+                                                Aductora: 30 *
                                                 Cercado Perim.: 30
                                         </form>
                                     </div>

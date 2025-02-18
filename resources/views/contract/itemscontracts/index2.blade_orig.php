@@ -174,8 +174,8 @@
 
             $(".quantity").each(function () {
                 let index = $(this).data("index");
-
-                // Validar existencia de elementos
+                
+                // Verificar que los elementos existan antes de acceder a ellos
                 let totalMoText = $("#total_mo_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
                 let totalMatText = $("#total_mat_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
 
@@ -183,6 +183,7 @@
                 totalMat += parseFloat(totalMatText) || 0;
             });
 
+            // Actualizar totales en el footer
             $("#tot_price_mo").text(totalMo.toLocaleString('es-ES'));
             $("#tot_price_mat").text(totalMat.toLocaleString('es-ES'));
         }
@@ -190,36 +191,44 @@
         $(".quantity").on("input", function () {
             let index = $(this).data("index");
             let quantity = parseFloat($(this).val()) || 0;
-
+            
+            // Verificar que los precios unitarios existan antes de acceder a ellos
             let unitPriceText = $("#unit_price_mo_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
             let unitPrice2Text = $("#unit_price_mat_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
 
             let unitPrice = parseFloat(unitPriceText) || 0;
             let unitPrice2 = parseFloat(unitPrice2Text) || 0;
 
+            // Calcular los totales por fila
             let total = Math.round(quantity * unitPrice);
             let total2 = Math.round(quantity * unitPrice2);
 
+            // Actualizar los valores de las celdas de total
             $("#total_mo_" + index).text(total.toLocaleString('es-ES'));
             $("#total_mat_" + index).text(total2.toLocaleString('es-ES'));
 
+            // Actualizar los totales generales
             updateTotals();
         });
 
+        // Llamar a la función para calcular totales al cargar la página
         updateTotals();
 
+        // Guardar datos al hacer clic en el botón
         $("#guardarDatos").on("click", function () {
             let items = [];
-            let orderId = $("#order_id").val();
+            let rows = document.querySelectorAll("#items tbody tr");
+            let orderId = $("#order_id").val(); // Obtener el order_id desde un input hidden
 
-            $("#items tbody tr").each(function () {
-                let rubroId = $(this).find("td:nth-child(2)").text()?.trim(); // ID Rubro
-                let quantity = $(this).find(".quantity").val() || 0;
-                let unitPriceMO = $(this).find(`[id^="unit_price_mo_"]`).text()?.replace(/\./g, '').replace(',', '.') || "0";
-                let unitPriceMat = $(this).find(`[id^="unit_price_mat_"]`).text()?.replace(/\./g, '').replace(',', '.') || "0";
-                let totalMO = $(this).find(`[id^="total_mo_"]`).text()?.replace(/\./g, '').replace(',', '.') || "0";
-                let totalMat = $(this).find(`[id^="total_mat_"]`).text()?.replace(/\./g, '').replace(',', '.') || "0";
+            rows.forEach((row) => {
+                let rubroId = row.querySelector("td:nth-child(2)")?.textContent.trim(); // ID Rubro
+                let quantity = row.querySelector(".quantity")?.value || 0; // Cantidad (input)
+                let unitPriceMO = row.querySelector(`[id^="unit_price_mo_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
+                let unitPriceMat = row.querySelector(`[id^="unit_price_mat_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
+                let totalMO = row.querySelector(`[id^="total_mo_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
+                let totalMat = row.querySelector(`[id^="total_mat_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
 
+                // Verificar que los datos sean válidos
                 if (rubroId && rubroId !== "9999") {
                     items.push({
                         rubro_id: rubroId,
@@ -229,11 +238,12 @@
                         tot_price_mo: parseFloat(totalMO),
                         tot_price_mat: parseFloat(totalMat),
                         order_id: orderId,
-                        item_state: 1,
+                        item_state: 1, // Estado fijo
                     });
                 }
             });
 
+            // Validar que haya datos para enviar
             if (items.length > 0) {
                 fetch("{{ route('items_orders.store') }}", {
                     method: "POST",
@@ -243,22 +253,16 @@
                     },
                     body: JSON.stringify({ items: items }),
                 })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("Error en el servidor");
-                        }
-                        return response.json();
-                    })
+                    .then((response) => response.json())
                     .then((data) => {
                         alert("Datos guardados correctamente");
-                        console.log("Respuesta del servidor:", data);
+                        console.log(data);
                     })
                     .catch((error) => {
                         console.error("Error:", error);
-                        alert("Error al guardar los datos. Intenta nuevamente.");
                     });
             } else {
-                alert("No hay datos válidos para guardar.");
+                alert("No hay datos para guardar");
             }
         });
     });

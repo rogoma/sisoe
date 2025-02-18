@@ -10,6 +10,17 @@ class ItemOrder extends Model
     use HasFactory;
 
     protected $table = 'items_orders';
+
+    protected $fillable = [
+        'rubro_id',
+        'quantity',
+        'unit_price_mo',
+        'unit_price_mat',
+        'tot_price_mo',
+        'tot_price_mat',
+        'order_id', // Nuevo campo
+        'item_state', // Nuevo campo
+    ];  
     
     /*** Para obtener el vinculo con la tabla orders */
     public function order(){

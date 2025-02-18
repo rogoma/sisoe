@@ -275,7 +275,8 @@ class OrdersEjecsController extends Controller
             'component_id' => 'required|numeric',
             // 'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
-            'comments' => 'nullable|max:500',
+            'references' => 'nullable|max:500',
+            'comments' => 'nullable|max:200',
             'plazo' => 'required|numeric',
             'department_id' => 'required',
             'district_id' => 'required|numeric'
@@ -300,6 +301,7 @@ class OrdersEjecsController extends Controller
         //CUANDO SE GRABA POR VEZ PRIMERA ASUME ESTADO 10= Pendiente Fecha Acuse recibo Contratista
         $order->order_state_id = 10;
         $order->total_amount = 0;
+        $order->reference = $request->input('references');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
         $order->district_id = $request->input('district_id');
@@ -370,7 +372,8 @@ class OrdersEjecsController extends Controller
             'component_id' => 'required|numeric',
             'order_state_id' => 'required|numeric',
             'locality' => 'required|string|max:100',
-            'comments' => 'nullable|max:500',
+            'references' => 'nullable|max:500',
+            'comments' => 'nullable|max:200',
             'plazo' => 'required|numeric',
             // 'department_id' => 'required',
             'district_id' => 'required|numeric'
@@ -405,6 +408,7 @@ class OrdersEjecsController extends Controller
 
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
+        $order->reference = $request->input('references');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
         $order->district_id = $request->input('district_id');

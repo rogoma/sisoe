@@ -176,16 +176,16 @@
                                                     </div>
                                                 
                                                     <div class="col-sm-9">
-                                                        <label for="references" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
-                                                        <textarea id="references" name="references" class="form-control @error('references') is-invalid @enderror"
-                                                        maxlength="500">{{ old('references',$order->references) }}</textarea>
-                                                        @error('references')
+                                                        <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
+                                                        <textarea id="reference" name="reference" class="form-control @error('reference') is-invalid @enderror"
+                                                        maxlength="500">{{ old('reference',$order->reference) }}</textarea>
+                                                        @error('reference')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
 
                                                     <div class="col-sm-12">
-                                                        <label for="comments" class="col-form-label">Referencias (Hasta 200 caracteres)</label>
+                                                        <label for="comments" class="col-form-label">COmentarios (Hasta 200 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
                                                         maxlength="200">{{ old('comments',$order->comments) }}</textarea>
                                                         @error('comments')
@@ -201,6 +201,16 @@
                                                         class="btn btn-primary">Modificar Orden</button>
                                                 </div>
                                             </div>
+                                            <br>
+                                            <br>REFERENCIAS: PLAZO EN DIAS:
+                                                * Fuente de Provisión: 30 *
+                                                Equipamiento: 30 *                                               
+                                                Tanque: 60 *                                              
+                                                Caseta: 30 *
+                                                Extensión de línea: 45 *
+                                                Red de distribución: 30 *
+                                                Aductora: 30 *
+                                                Cercado Perim.: 30
                                         </form>
                                     </div>
                                 </div>
