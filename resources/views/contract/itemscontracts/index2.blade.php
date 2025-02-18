@@ -1,4 +1,106 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataTable Example</title>
+    <!-- Agregar enlaces a DataTables y jQuery -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+
+<body>
+    <h3>Agregar Items para la Orden</h3>
+    <div>
+        <label for="order_id">Order ID:</label>
+        <input type="text" id="order_id" value="{{ $order->id }}" readonly>
+    </div>
+
+    <table id="myDataTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Rubro ID</th>
+                <th>Cantidad</th>
+                <th>Precio UNIT MO</th>
+                <th>Precio UNIT MAT</th>
+                <th>Precio Total MO</th>
+                <th>Precio Total MAT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="rubro-id">101</td>
+                <td class="quantity">2</td>
+                <td class="price-unit-mo">50.00</td>
+                <td class="price-unit-mat">30.00</td>
+                <td class="price-total-mo">100.00</td>
+                <td class="price-total-mat">60.00</td>
+            </tr>
+            <tr>
+                <td class="rubro-id">102</td>
+                <td class="quantity">3</td>
+                <td class="price-unit-mo">40.00</td>
+                <td class="price-unit-mat">25.00</td>
+                <td class="price-total-mo">120.00</td>
+                <td class="price-total-mat">75.00</td>
+            </tr>
+            <!-- Más filas aquí -->
+        </tbody>
+    </table>
+
+    <button id="saveButton">Guardar Items</button>
+
+    <script>
+        // Inicializar DataTable
+        $(document).ready(function() {
+            $('#myDataTable').DataTable();
+        });
+
+        // Guardar datos con AJAX
+        $('#saveButton').click(function() {
+            const items = [];
+            const orderId = $('#order_id').val();
+
+            $('#myDataTable tbody tr').each(function() {
+                const row = $(this);
+                items.push({
+                    rubro_id: row.find('.rubro-id').text(),
+                    quantity: parseFloat(row.find('.quantity').text()),
+                    unit_price_mo: parseFloat(row.find('.price-unit-mo').text()),
+                    unit_price_mat: parseFloat(row.find('.price-unit-mat').text()),
+                    tot_price_mo: parseFloat(row.find('.price-total-mo').text()),
+                    tot_price_mat: parseFloat(row.find('.price-total-mat').text()),
+                });
+            });
+
+            $.ajax({
+                url: '/item-orders',
+                type: 'POST',
+                data: {
+                    items: items,
+                    order_id: orderId,
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                },
+                success: function(response) {
+                    alert(response.message);
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                },
+            });
+        });
+    </script>
+</body>
+
+</html>
+
+
+
+
+{{-- @extends('layouts.app')
 
 @push('styles')
     <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/datatables.bootstrap4.min.css') }}">
@@ -10,10 +112,8 @@
         #items th {
             padding: 4px 8px;
             vertical-align: middle;
-            border-left: 1px solid #ddd;
-            /* Línea vertical a la izquierda */
-            border-right: 1px solid #ddd;
-            /* Línea vertical a la derecha */   
+            border-left: 1px solid #ddd;            
+            border-right: 1px solid #ddd;            
         }
 
         #items {
@@ -139,7 +239,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="6"></td>
+                                                        <td colspan="5"></td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mo"></td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mat"></td>
@@ -148,9 +248,7 @@
                                             </table>
                                             <div class="text-center">                                                
                                                     @if (in_array($contract->contract_state_id, [1, 2]))
-                                                    <button id="guardarDatos" class="btn btn-primary">Guardar datos</button>
-                                                        {{-- <a href="{{ route('contracts.files.create_eval', $contract->id) }}"
-                                                            class="btn btn-primary">Grabar Rubros de Orden</a> --}}
+                                                    <button id="guardarDatos" class="btn btn-primary">Guardar datos</button>                                                       
                                                     @endif                                                
                                             </div>
                                         </div>
@@ -262,4 +360,4 @@
             }
         });
     });
-</script>
+</script> --}}

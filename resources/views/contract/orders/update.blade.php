@@ -36,6 +36,12 @@
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
+                                        <div class="col-sm-10 text-left">
+                                            <h5>Llamado:
+                                                {{ $contract->description . ' - ' . $contract->modality->description . ' - ' . $contract->provider->description }}
+                                            </h5>
+                                        </div>
+                                        
                                         <h5>Modificar Orden del Contrato N° {{ $contract->number_year }}</h5>
                                         <br><br>
                                         <label id="fecha_actual" name="fecha_actual"  style="font-size: 20px;color: #FF0000;float: left;" for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>

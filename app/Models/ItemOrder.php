@@ -18,9 +18,9 @@ class ItemOrder extends Model
         'unit_price_mat',
         'tot_price_mo',
         'tot_price_mat',
-        'order_id', // Nuevo campo
-        'item_state', // Nuevo campo
-    ];  
+        'item_state',
+        'order_id',
+    ];
     
     /*** Para obtener el vinculo con la tabla orders */
     public function order(){

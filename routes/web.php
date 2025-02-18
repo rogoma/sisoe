@@ -191,6 +191,10 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
     // PARA GRABAR RUBROS EN ITEMS_ORDERS
     Route::post('items_orders/store', [ItemsOrdersController::class, 'store'])->name('items_orders.store');
+
+
+    Route::post('/item-orders', [ItemsOrdersController::class, 'store']);
+
        
 
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
