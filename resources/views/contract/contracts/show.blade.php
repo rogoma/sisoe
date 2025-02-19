@@ -424,7 +424,8 @@
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
                                                             <tr>
-                                                                <td style="color:#ff0000;text-align: left;width: 150px;">{{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }}-{{ $order->creatorUser->position->description }} </td>
+                                                                
+                                                                <td style="color:black;text-align: left;width: 150px;">{{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }}-{{ $order->creatorUser->position->description }} </td>                                                                
                                                                 <td style="text-align: center;width: 60px;">{{ $order->component_code }} - {{ $order->number }}</td>
                                                                 <td style="text-align: center;width: 30px;">{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
                                                                 {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}

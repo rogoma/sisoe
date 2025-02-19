@@ -74,9 +74,11 @@ class ItemsOrdersController extends Controller
 
 
     public function store(Request $request)
-    {
+    {        
+        // SE DEBE HABILITAR EN EL MODEL PARA QUE SE PUEDAN AGREGAR ITEMS(CAMPOS)
         $data = $request->validate([
-            'items' => 'required|array',
+             'items' => 'required|array',            
+            'items.*.item_number' => 'required|integer',
             'items.*.rubro_id' => 'required|integer',
             'items.*.quantity' => 'required|numeric',
             'items.*.unit_price_mo' => 'required|numeric',
@@ -84,10 +86,12 @@ class ItemsOrdersController extends Controller
             'items.*.tot_price_mo' => 'required|numeric',
             'items.*.tot_price_mat' => 'required|numeric',
             'order_id' => 'required|integer',
+            'creator_user_id' => 'required|integer',
         ]);
 
         foreach ($data['items'] as $item) {
             ItemOrder::create([
+                'item_number' => $item['item_number'],
                 'rubro_id' => $item['rubro_id'],
                 'quantity' => $item['quantity'],
                 'unit_price_mo' => $item['unit_price_mo'],
@@ -96,6 +100,7 @@ class ItemsOrdersController extends Controller
                 'tot_price_mat' => $item['tot_price_mat'],
                 'item_state' => 1,
                 'order_id' => $data['order_id'],
+                'creator_user_id' => $data['creator_user_id'],
             ]);
         }
 

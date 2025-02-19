@@ -78,7 +78,8 @@ class ItemsContractsController extends Controller
         }
 
         // return view('order.items.index', compact('items','contract', 'order'));
-        return view('contract.itemscontracts.index2', compact('items','contract', 'order'));
+        // return view('contract.itemscontracts.index2', compact('items','contract', 'order'));
+        return view('contract.itemscontracts.index2_chat', compact('items','contract', 'order'));
 
     }
 

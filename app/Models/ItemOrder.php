@@ -12,6 +12,7 @@ class ItemOrder extends Model
     protected $table = 'items_orders';
 
     protected $fillable = [
+        'item_number',
         'rubro_id',
         'quantity',
         'unit_price_mo',
@@ -20,6 +21,7 @@ class ItemOrder extends Model
         'tot_price_mat',
         'item_state',
         'order_id',
+        'creator_user_id',
     ];
     
     /*** Para obtener el vinculo con la tabla orders */

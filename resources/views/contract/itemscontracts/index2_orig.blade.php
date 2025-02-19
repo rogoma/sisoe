@@ -44,8 +44,10 @@
                             <br>
                             <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>
                             index2
-                            <input type="text" id="order_id" value="{{ $order->id }}">
-
+                            <label for="order_id">Order ID:</label>
+                            <input type="text" id="order_id" value="{{ $order->id }}" readonly>
+                            <input type="text" id="creator_user_id" value="{{ Auth::user()->id }}" readonly>
+                            
                         </div>
                     </div>
                 </div>
@@ -82,15 +84,15 @@
                                             <table id="items" class="table table-striped table-bordered nowrap">
                                                 <thead>
                                                     <tr>
-                                                        <th>N° Item</th>
-                                                        <th style="display: none;">ID Rubro</th>
+                                                        <th class="item_number">N° Item</th>
+                                                        <th class="rubro-id" style="display: none;">ID Rubro</th>
                                                         <th>Rubro</th>
-                                                        <th>Cant.</th>
+                                                        <th class="quantity">Cant.</th>
                                                         <th>Unid.</th>
-                                                        <th>Precio UNIT. MO</th>
-                                                        <th>Precio UNIT. MAT</th>
-                                                        <th>Precio TOT. MO</th>
-                                                        <th>Precio TOT. MAT</th>
+                                                        <th class="price-unit-mo">Precio UNIT. MO</th>
+                                                        <th class="price-unit-mat">Precio UNIT. MAT</th>
+                                                        <th class="price-total-mo">Precio TOT. MO</th>
+                                                        <th class="price-total-mat">Precio TOT. MAT</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -104,9 +106,7 @@
                                                             @if ($item->rubro_id == '9999')
                                                                 <td></td>
                                                                 <td style="display: none;"></td>
-                                                                <td style="font-size: 16px; font-weight: bold;">
-                                                                    {{ $item->subitem->description }}
-                                                                </td>
+                                                                <td style="font-size: 16px; font-weight: bold;">{{ $item->subitem->description }}</td>
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td></td>
@@ -139,7 +139,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="6"></td>
+                                                        <td colspan="5"></td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mo"></td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mat"></td>
@@ -148,9 +148,7 @@
                                             </table>
                                             <div class="text-center">                                                
                                                     @if (in_array($contract->contract_state_id, [1, 2]))
-                                                    <button id="guardarDatos" class="btn btn-primary">Guardar datos</button>
-                                                        {{-- <a href="{{ route('contracts.files.create_eval', $contract->id) }}"
-                                                            class="btn btn-primary">Grabar Rubros de Orden</a> --}}
+                                                    <button id="saveButton" class="btn btn-primary">Guardar datos</button>                                                        
                                                     @endif                                                
                                             </div>
                                         </div>
@@ -165,7 +163,51 @@
     </div>
 @endsection
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+        // Inicializar DataTable
+        $(document).ready(function() {
+            $('#items').DataTable();
+        });
+
+        // Guardar datos con AJAX
+        $('#saveButton').click(function() {
+            const items = [];
+            const orderId = $('#order_id').val();
+            const creator_user_Id = $('#creator_user_id').val();
+
+            $('#items tbody tr').each(function() {
+                const row = $(this);
+                items.push({
+                    item_number: row.find('.item_number').text(),
+                    rubro_id: row.find('.rubro-id').text(),
+                    quantity: parseFloat(row.find('.quantity').text()),
+                    unit_price_mo: parseFloat(row.find('.price-unit-mo').text()),
+                    unit_price_mat: parseFloat(row.find('.price-unit-mat').text()),
+                    tot_price_mo: parseFloat(row.find('.price-total-mo').text()),
+                    tot_price_mat: parseFloat(row.find('.price-total-mat').text()),
+                });
+            });
+
+            $.ajax({
+                url: '/item-orders',
+                type: 'POST',
+                data: {
+                    items: items,
+                    order_id: orderId, 
+                    creator_user_id: creator_user_Id,
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                },
+                success: function(response) {
+                    alert(response.message);
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                },
+            });
+        });
+    </script>
+
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         function updateTotals() {
@@ -215,55 +257,7 @@
         updateTotals();
 
         // Guardar datos al hacer clic en el botón
-        $("#guardarDatos").on("click", function () {
-            let items = [];
-            let rows = document.querySelectorAll("#items tbody tr");
-            let orderId = $("#order_id").val(); // Obtener el order_id desde un input hidden
-
-            rows.forEach((row) => {
-                let rubroId = row.querySelector("td:nth-child(2)")?.textContent.trim(); // ID Rubro
-                let quantity = row.querySelector(".quantity")?.value || 0; // Cantidad (input)
-                let unitPriceMO = row.querySelector(`[id^="unit_price_mo_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
-                let unitPriceMat = row.querySelector(`[id^="unit_price_mat_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
-                let totalMO = row.querySelector(`[id^="total_mo_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
-                let totalMat = row.querySelector(`[id^="total_mat_"]`)?.textContent.replace(/\./g, '').replace(',', '.') || "0";
-
-                // Verificar que los datos sean válidos
-                if (rubroId && rubroId !== "9999") {
-                    items.push({
-                        rubro_id: rubroId,
-                        quantity: parseFloat(quantity),
-                        unit_price_mo: parseFloat(unitPriceMO),
-                        unit_price_mat: parseFloat(unitPriceMat),
-                        tot_price_mo: parseFloat(totalMO),
-                        tot_price_mat: parseFloat(totalMat),
-                        order_id: orderId,
-                        item_state: 1, // Estado fijo
-                    });
-                }
-            });
-
-            // Validar que haya datos para enviar
-            if (items.length > 0) {
-                fetch("{{ route('items_orders.store') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    },
-                    body: JSON.stringify({ items: items }),
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        alert("Datos guardados correctamente");
-                        console.log(data);
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                    });
-            } else {
-                alert("No hay datos para guardar");
-            }
-        });
+        
     });
-</script>
+
+</script> --}}
