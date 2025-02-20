@@ -141,7 +141,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
     Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.update.fiscal');
 
-
+    
+    //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
+    Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
     Route::get('/orders/create', [OrdersEjecsController::class, 'create']);
     Route::post('/orders', [OrdersEjecsController::class, 'store']);
     Route::get('/fetch-districts', [OrdersEjecsController::class, 'fetchDistricts']);
@@ -156,8 +158,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //RECURSOS PARA MANEJAR ITEMS AWARDS HISTORIES (ENDOSOS)
     Route::resource('items.item_award_histories', ItemAwardHistoriesController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
 
-    //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
-    Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
+   
     
     //************* ITEMS CONTRACTS **************
 

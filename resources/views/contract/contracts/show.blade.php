@@ -434,14 +434,18 @@
                                                                 <td style="text-align: left;width: 350px;">{{ $order->component->code }}-{{ $order->component->description }}</td>
                                                                 {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
                                                                 @if (in_array($order->orderState->id, [5]))
-                                                                    <td style="color:#ff0000;text-align: left;width: 120px;"> {{ $order->orderState->description }}</td>
+                                                                    <td style="color:#ff0000;text-align: left;width: 50px;"> {{ $order->orderState->description }}</td>
                                                                 @else
                                                                     {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
                                                                     @if (in_array($order->orderState->id, [10]))
-                                                                        <td style="color:#ff0000;background-color:yellow;width: 120px;">{{ $order->orderState->description }}</td>
+                                                                        <td style="color:white;background-color:red;width: 120px;">{{ $order->orderState->description }}</td>                                                                        
                                                                     @else
-                                                                        <td style="color:rgb(41, 128, 0)">{{ $order->orderState->description }}</td>
-                                                                    @endif
+                                                                        @if (in_array($order->orderState->id, [11]))
+                                                                            <td style="color:#ff0000;background-color:yellow;width: 120px;">{{ $order->orderState->description }}</td>
+                                                                        @else
+                                                                            <td style="color:rgb(41, 128, 0)">{{ $order->orderState->description }}</td>
+                                                                        @endif
+                                                                    @endif  
                                                                 @endif
                                                                 {{-- <td style="max-width: 200px">{{ $order->comments }}</td> --}}
 
@@ -458,9 +462,8 @@
                                                                     @endif
 
                                                                     {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
-                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 4, 10]))
-                                                                        @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
-                                                                            
+                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 4, 10, 11]))
+                                                                        @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))                                                                            
                                                                             {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                             @if (Auth::user()->id == $order->creator_user_id)
                                                                                 <button type="button" title="Editar"
@@ -469,12 +472,12 @@
                                                                                     <i class="fa fa-pencil"></i>
                                                                                 </button>
                                                                                 
-                                                                                @if ($order->items->count() == 0)
+                                                                                {{-- @if ($order->items->count() > 0)
                                                                                     <button type="button" title="Anular"
                                                                                         class="btn btn-danger btn-icon"
                                                                                         onclick="anuleOrder({{ $order->id }})"><i
                                                                                             class="fa fa-ban"></i></button>
-                                                                                @endif
+                                                                                @endif --}}
                                                                             @endif
 
                                                                             @if ($order->items->count() > 0)
@@ -524,8 +527,8 @@
                                                                                     title="Ver Orden" target="_blank"
                                                                                     class="btn btn-success btn-icon"><i
                                                                                         class="fa fa-eye"></i></a>
-                                                                            @else
-                                                                                <span style="color:#ff0000;background-color:yellow">Falta agregar rubros </span> 
+                                                                            {{-- @else
+                                                                                <span style="color:#ff0000;background-color:yellow">Falta agregar rubros </span>  --}}
                                                                             @endif
                                                                         @endif
                                                                     @endif
@@ -942,7 +945,6 @@
                         if (isConfirm) {
                             $.ajax({
                                 url: '/contracts/{{ $contract->id }}/orders/' + order,
-
                                 method: 'POST',
                                 data: {
                                     _method: 'DELETE',
