@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <h3>Agregaresss Items para la Orden</h3>
+    <h3>Agregar Items para la Orden</h3>
     <div>
         <label for="order_id">Order ID:</label>
         <input type="text" id="order_id" value="{{ $order->id }}" readonly>
@@ -21,6 +21,7 @@
     </div>
 
     <table id="myDataTable" class="display" style="width:100%">
+    {{-- <table id="myDataTable" class="table table-striped table-bordered"> --}}
         <thead>
             <tr>
                 <th>#Item</th>

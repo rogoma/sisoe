@@ -404,9 +404,13 @@
                                                 </div>
                                             </div>
 
-                                            {{-- ORDENES DE EJECUCIÓN --}}
-                                            <div class="tab-pane" id="tab2" role="tabpanel">
-                                                <table id="items" class="table table-striped table-bordered">
+                                            {{-- ORDENES DE EJECUCIÓN - MUESTRA CON SEARCH--}}                                                                                        
+                                            <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+                                            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                                            <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+                                               <div class="tab-pane" id="tab2" role="tabpanel">
+                                                <table id="items" class="display; table table-striped table-bordered" style="width:100%">
                                                     <thead>
                                                         <tr>
                                                             {{-- <th>#</th> --}}
@@ -470,8 +474,7 @@
                                                                                     class="btn btn-warning btn-icon"
                                                                                     onclick="updateOrder({{ $order->id }})">
                                                                                     <i class="fa fa-pencil"></i>
-                                                                                </button>
-                                                                                
+                                                                                </button>                                                                                
                                                                                 {{-- @if ($order->items->count() > 0)
                                                                                     <button type="button" title="Anular"
                                                                                         class="btn btn-danger btn-icon"
@@ -898,7 +901,10 @@
 
 @push('scripts')
     <script type="text/javascript">
+    
         $(document).ready(function() {
+
+            $('#items').DataTable();
 
             const table = $('#example').DataTable({
                 ajax: '/tables', // URL que devuelve los datos JSON

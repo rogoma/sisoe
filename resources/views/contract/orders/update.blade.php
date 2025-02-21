@@ -20,7 +20,8 @@
                                 <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                             </li>
                             <li class="breadcrumb-item">
-                                <a href="{{ route('contracts.show', $contract->id) }}">Contrato N° {{ $contract->number_year }}</a>
+                                <a href="{{ route('contracts.show', $contract->id) }}">Contrato N°
+                                    {{ $contract->number_year }}</a>
                             </li>
                         </ul>
                     </div>
@@ -41,10 +42,12 @@
                                                 {{ $contract->description . ' - ' . $contract->modality->description . ' - ' . $contract->provider->description }}
                                             </h5>
                                         </div>
-                                        
+
                                         <h5>Modificar Orden del Contrato N° {{ $contract->number_year }}</h5>
                                         <br><br>
-                                        <label id="fecha_actual" name="fecha_actual"  style="font-size: 20px;color: #FF0000;float: left;" for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>
+                                        <label id="fecha_actual" name="fecha_actual"
+                                            style="font-size: 20px;color: #FF0000;float: left;"
+                                            for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>
                                         <h3 style="text-align: center;">Modificar Orden</h3>
                                     </div>
                                     <div class="card-block">
@@ -55,82 +58,95 @@
                                             @method('PUT')
 
                                             <div class="container">
-                                                <div class="form-group row">                                                
+                                                <div class="form-group row">
                                                     <div class="col-sm-6">
-                                                        <label for="number" class="col-form-label">N° de Orden</label>                                                    
-                                                        <input type="text" id="number" name="number_display" class="form-control @error('number') is-invalid @enderror" value="{{ old('number', $order->number) }}" maxlength="23" disabled>
+                                                        <label for="number" class="col-form-label">N° de Orden</label>
+                                                        <input type="text" id="number" name="number_display"
+                                                            class="form-control @error('number') is-invalid @enderror"
+                                                            value="{{ old('number', $order->number) }}" maxlength="23"
+                                                            disabled>
                                                         {{-- <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $order->number) }}"> --}}
                                                         @error('number')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                
+
                                                     <div class="col-sm-6">
                                                         <label for="total_amount" class="col-form-label">Monto</label>
                                                         <input type="text" id="total_amount" name="total_amount"
                                                             class="form-control @error('total_amount') is-invalid @enderror"
-                                                            value="{{ old('total_amount', number_format($order->total_amount, 0, ',', '.')) }}" maxlength="23" disabled>
+                                                            value="{{ old('total_amount', number_format($order->total_amount, 0, ',', '.')) }}"
+                                                            maxlength="23" disabled>
                                                         @error('total_amount')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>                                                
-    
+                                                </div>
+
                                                 <div class="form-group row">
                                                     <div class="col-sm-6">
-                                                        <label for="department_id" class="col-form-label">Departamento</label>
-                                                        <select id="department_id" name="department_id" class="form-control @error('department_id') is-invalid @enderror">
+                                                        <label for="department_id"
+                                                            class="col-form-label">Departamento</label>
+                                                        <select id="department_id" name="department_id"
+                                                            class="form-control @error('department_id') is-invalid @enderror">
                                                             <option value="">--- Seleccionar Departamento ---</option>
                                                             @foreach ($departments as $department)
-                                                            <option value="{{ $department->id }}"
-                                                                @if ($department->id == old('department_id',$order->department_id)) selected @endif>
-                                                                {{ $department->description }}</option>
+                                                                <option value="{{ $department->id }}"
+                                                                    @if ($department->id == old('department_id', $order->department_id)) selected @endif>
+                                                                    {{ $department->description }}</option>
                                                             @endforeach
                                                         </select>
                                                         @error('department_id')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                
+
                                                     <div class="col-sm-6">
                                                         <label for="district_id" class="col-form-label">Distrito</label>
-                                                        <select id="district_id" name="district_id" class="form-control @error('district_id') is-invalid @enderror">
+                                                        <select id="district_id" name="district_id"
+                                                            class="form-control @error('district_id') is-invalid @enderror">
                                                             <option value="">--- Seleccionar Distrito ---</option>
                                                             @foreach ($districts as $district)
-                                                            <option value="{{ $district->id }}"
-                                                                @if ($district->id == old('district_id',$order->district_id)) selected @endif>
-                                                                {{ $district->description }}</option>
+                                                                <option value="{{ $district->id }}"
+                                                                    @if ($district->id == old('district_id', $order->district_id)) selected @endif>
+                                                                    {{ $district->description }}</option>
                                                             @endforeach
                                                         </select>
                                                         @error('district_id')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="form-group row">
-                                                    <label for="locality" class="col-sm-6 col-form-label">Localidad (Hasta 200 caracteres)</label>
+                                                    <label for="locality" class="col-sm-6 col-form-label">Localidad (Hasta
+                                                        200 caracteres)</label>
                                                     <div class="col-sm-12">
                                                         <input type="text" id="locality" name="locality"
                                                             class="form-control @error('locality') is-invalid @enderror"
-                                                            value="{{ old('locality',$order->locality) }}" maxlength="200">
+                                                            value="{{ old('locality', $order->locality) }}" maxlength="200">
                                                         @error('locality')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
                                                 </div>
-    
+
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
+                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo
+                                                            Contratista</label>
                                                         <div class="input-group">
+
                                                             <input type="text" id="sign_date" name="sign_date"
+                                                                {{-- DISABLED INGRESO DE FECHA SI LA ORDEN NO TIENE DETALLE DE RUBROS --}}
                                                                 class="form-control @error('sign_date') is-invalid @enderror"
                                                                 value="{{ old('sign_date', !empty($order->sign_date) ? date('d/m/Y', strtotime($order->sign_date)) : '') }}"
-                                                                autocomplete="off">
+                                                                autocomplete="off"
+                                                                @if ($order->items->count() == 0) disabled @endif>
                                                             <span class="input-group-append">
                                                                 <button type="button" class="btn btn-outline-secondary"
-                                                                    onclick="show('sign_date');" {{ empty($order->sign_date) ? 'disabled' : '' }}>
+                                                                    onclick="show('sign_date');"
+                                                                    {{ empty($order->sign_date) ? 'disabled' : '' }}>
                                                                     <i class="fa fa-calendar"></i>
                                                                 </button>
                                                             </span>
@@ -138,29 +154,35 @@
                                                         @error('sign_date')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
-                                                    </div>                                                    
-                                                
+                                                    </div>
+
                                                     <div class="col-sm-6">
-                                                        <label for="component_id" class="col-form-label">Sub-Componente</label>
-                                                        <select id="component_id" name="component_id" class="form-control @error('component_id') is-invalid @enderror">
-                                                            <option value="">--- Seleccionar Sub-Componente ---</option>
+                                                        <label for="component_id"
+                                                            class="col-form-label">Sub-Componente</label>
+                                                        <select id="component_id" name="component_id"
+                                                            class="form-control @error('component_id') is-invalid @enderror"
+                                                            @if ($order->items->count() > 0) disabled @endif>
+                                                            <option value="">--- Seleccionar Sub-Componente ---
+                                                            </option>
                                                             @foreach ($components as $component)
                                                                 <option value="{{ $component->id }}"
-                                                                    @if ($component->id == old('component_id',$order->component_id)) selected @endif>
-                                                                    {{ $component->code }}-{{ $component->description }}</option>
+                                                                    @if ($component->id == old('component_id', $order->component_id)) selected @endif>
+                                                                    {{ $component->code }}-{{ $component->description }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                         @error('component_id')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-    
+
                                                     <div class="col-sm-3">
                                                         <label for="plazo" class="col-form-label">Plazo de ejecución (En días)</label>
-                                                        <input type="text" id="plazo" name="plazo" class="form-control @error('plazo') is-invalid @enderror"
-                                                        value="{{ old('plazo', $order->plazo) }}" maxlength="3">
+                                                        <input type="text" id="plazo" name="plazo"
+                                                            class="form-control @error('plazo') is-invalid @enderror"                                                        
+                                                            value="{{ old('plazo', $order->plazo) }}" maxlength="3">                                                            
                                                         @error('plazo')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
                                                 </div>
@@ -168,34 +190,40 @@
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
                                                         <label for="order_state_id" class="col-form-label">Estado de la Orden</label>
-                                                        <select id="order_state_id" name="order_state_id" class="form-control @error('order_state_id') is-invalid @enderror">
+                                                        <select id="order_state_id" name="order_state_id"
+                                                            class="form-control @error('order_state_id') is-invalid @enderror"
+                                                            @if ($order->items->count() == 0) disabled @endif>
                                                             <option value="">--- Seleccionar Estado ---</option>
                                                             @foreach ($order_states as $order_state)
                                                                 <option value="{{ $order_state->id }}"
-                                                                    @if ($order_state->id == old('order_state_id',$order->order_state_id)) selected @endif>
-                                                                    {{ $order_state->description }}</option>
+                                                                    @if ($order_state->id == old('order_state_id', $order->order_state_id)) selected @endif>
+                                                                    {{ $order_state->description }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                         @error('order_state_id')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                
+                                                    
+
                                                     <div class="col-sm-9">
-                                                        <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
+                                                        <label for="reference" class="col-form-label">Referencia (Hasta
+                                                            500 caracteres)</label>
                                                         <textarea id="reference" name="reference" class="form-control @error('reference') is-invalid @enderror"
-                                                        maxlength="500">{{ old('reference',$order->reference) }}</textarea>
+                                                            maxlength="500">{{ old('reference', $order->reference) }}</textarea>
                                                         @error('reference')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
 
                                                     <div class="col-sm-12">
-                                                        <label for="comments" class="col-form-label">COmentarios (Hasta 200 caracteres)</label>
+                                                        <label for="comments" class="col-form-label">Comentarios (Hasta
+                                                            200 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
-                                                        maxlength="200">{{ old('comments',$order->comments) }}</textarea>
+                                                            maxlength="200">{{ old('comments', $order->comments) }}</textarea>
                                                         @error('comments')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
                                                 </div>
@@ -209,14 +237,14 @@
                                             </div>
                                             <br>
                                             <br>REFERENCIAS: PLAZO EN DIAS:
-                                                * Fuente de Provisión: 30 *
-                                                Equipamiento: 30 *                                               
-                                                Tanque: 60 *                                              
-                                                Caseta: 30 *
-                                                Extensión de línea: 45 *
-                                                Red de distribución: 30 *
-                                                Aductora: 30 *
-                                                Cercado Perim.: 30
+                                            * Fuente de Provisión: 30 *
+                                            Equipamiento: 30 *
+                                            Tanque: 60 *
+                                            Caseta: 30 *
+                                            Extensión de línea: 45 *
+                                            Red de distribución: 30 *
+                                            Aductora: 30 *
+                                            Cercado Perim.: 30
                                         </form>
                                     </div>
                                 </div>
@@ -230,12 +258,10 @@
 @endsection
 
 @push('scripts')
+    <script type="text/javascript">
+        $(document).ready(function() {
 
-<script type="text/javascript">
-
-$(document).ready(function(){
-
-    $('#department_id').on('change', function() {
+            $('#department_id').on('change', function() {
                 var departmentId = $(this).val();
                 $('#district_id').empty().append('<option value="">--- Seleccionar Distrito ---</option>');
 
@@ -248,7 +274,8 @@ $(document).ready(function(){
                         },
                         success: function(data) {
                             $.each(data, function(key, district) {
-                                $('#district_id').append('<option value="' + district.id +
+                                $('#district_id').append('<option value="' + district
+                                    .id +
                                     '">' + district.description + '</option>');
                             });
                         },
@@ -257,31 +284,31 @@ $(document).ready(function(){
                         }
                     });
                 }
-    });
+            });
 
-    // Validar antes de guardar
-    // $('#saveButton').on('click', function(event) {
-    //     var districtId = $('#district_id').val();
-    //     if (!districtId) {
-    //         event.preventDefault(); // Evita que el formulario se envíe
-    //         alert('Por favor, seleccione un distrito antes de guardar.');
-    //     } else {
-    //         // Aquí puedes agregar la lógica para proceder con el guardado
-    //         //console.log('Formulario válido. Procediendo con el guardado...');
-    //     }
-    // });
+            // Validar antes de guardar
+            // $('#saveButton').on('click', function(event) {
+            //     var districtId = $('#district_id').val();
+            //     if (!districtId) {
+            //         event.preventDefault(); // Evita que el formulario se envíe
+            //         alert('Por favor, seleccione un distrito antes de guardar.');
+            //     } else {
+            //         // Aquí puedes agregar la lógica para proceder con el guardado
+            //         //console.log('Formulario válido. Procediendo con el guardado...');
+            //     }
+            // });
 
-    $('#component_id').select2();
-    $('#order_state_id').select2();
-    $('#department_id').select2();
-    $('#district_id').select2();
+            $('#component_id').select2();
+            $('#order_state_id').select2();
+            $('#department_id').select2();
+            $('#district_id').select2();
 
-    $('#sign_date').datepicker({
-        language: 'es',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayHighlight: true,
-    });
-});
-</script>
+            $('#sign_date').datepicker({
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+            });
+        });
+    </script>
 @endpush

@@ -344,8 +344,25 @@ class OrdersEjecsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
+        // Obtener los component_id asociados al contrato desde ItemContract
+        $componentIds = ItemContract::where('contract_id', $contract_id)
+            ->pluck('component_id'); // Extrae solo los IDs de los componentes
+
+        // Obtener los componentes filtrados por los IDs obtenidos
+        if ($request->user()->position->id == 11) { //Fiscal de Geología id 11
+            $components = Component::whereIn('id', $componentIds)
+            ->whereIn('id', [1, 2]) // Filtra los IDs 1 y 2 (Componentes 1.1 Pozo A y 1.2 Pozo B)
+            ->orderBy('id')
+            ->get();
+        } else {//Otros Fiscales (Obras y Electromecánica)
+            $components = Component::whereIn('id', $componentIds)//Muestra todos los componentes
+            ->whereNotIn('id', [1, 2]) // Excluye los IDs 1 y 2
+            ->orderBy('id')
+            ->get();            
+        }
+
         $order = Order::findOrFail($order_id);
-        $components = Component::orderBy('id')->get(); //ordenado por id componente
+        // $components = Component::orderBy('id')->get(); //ordenado por id componente
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
@@ -362,6 +379,27 @@ class OrdersEjecsController extends Controller
      */
     public function update(Request $request, $contract_id, $order_id)
     {
+        $request->validate([
+            'component_id' => 'required|integer',
+            'plazo' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (in_array($request->input('component_id'), [1, 2, 3, 4, 5, 6, 7,10,11,14,15,16,17]) && $value > 30) {
+                        $fail('El plazo no puede ser mayor a 30 días para este Sub-componente');
+                    }
+                    
+                    if (in_array($request->input('component_id'), [12, 13]) && $value > 45) {
+                        $fail('El plazo no puede ser mayor a 45 días para este Sub-componente');
+                    }
+
+                    if (in_array($request->input('component_id'), [8, 9]) && $value > 60) {
+                        $fail('El plazo no puede ser mayor a 60 días para este Sub-componente');
+                    }
+                },
+            ],
+        ]);  
+        
         $contract = Contract::findOrFail($contract_id);
         $order = Order::findOrFail($order_id);
 
@@ -370,7 +408,7 @@ class OrdersEjecsController extends Controller
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
             // 'sign_date' => 'date_format:d/m/Y|required|',
             'component_id' => 'required|numeric',
-            'order_state_id' => 'required|numeric',
+            // 'order_state_id' => 'required|numeric',
             'locality' => 'required|string|max:100',
             'reference' => 'nullable|max:500',
             'comments' => 'nullable|max:200',
@@ -390,8 +428,6 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
-
         $order_actual = $order->order_state_id = $request->input('order_state_id');
 
         //SI FECHA NO ES NULL Y ESTADO NO SE CAMBIO, SE CAMBIA A ESTADO 1 = "En curso"
@@ -403,11 +439,16 @@ class OrdersEjecsController extends Controller
 
         //SI FECHA ES NULL Y ESTADO ES DIFERENTE A 10 , SE CAMBIA A ESTADO 10 = "En curso"
         if ($order->sign_date == null && $order_actual != 10) {
-            $order->order_state_id = 10;
+            $order->order_state_id = 11;
         }
 
+        $order->number = $request->input('number');
+        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
+            $component = Component::find($order->component_id);  // Assuming you have a Component model
+            $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
+        $order->component_code = $componentCode;        
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
