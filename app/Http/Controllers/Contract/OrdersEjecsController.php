@@ -175,7 +175,7 @@ class OrdersEjecsController extends Controller
 
         // PARA NUMERAR ORDENES DE ACUERDO A LA CANTIDAD
         $order = Order::where('contract_id', $contract_id)->count();
-       
+
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         // if($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create']) || $contract->dependency_id == $request->user()->dependency_id){
         if ($request->user()->hasPermission(['admin.orders.create', 'orders.orders.create'])) {
@@ -191,14 +191,14 @@ class OrdersEjecsController extends Controller
         // Obtener los componentes filtrados por los IDs obtenidos
         if ($request->user()->position->id == 11) { //Fiscal de Geología id 11
             $components = Component::whereIn('id', $componentIds)
-            ->whereIn('id', [1, 2]) // Filtra los IDs 1 y 2 (Componentes 1.1 Pozo A y 1.2 Pozo B)
-            ->orderBy('id')
-            ->get();
-        } else {//Otros Fiscales (Obras y Electromecánica)
-            $components = Component::whereIn('id', $componentIds)//Muestra todos los componentes
-            ->whereNotIn('id', [1, 2]) // Excluye los IDs 1 y 2
-            ->orderBy('id')
-            ->get();            
+                ->whereIn('id', [1, 2]) // Filtra los IDs 1 y 2 (Componentes 1.1 Pozo A y 1.2 Pozo B)
+                ->orderBy('id')
+                ->get();
+        } else { //Otros Fiscales (Obras y Electromecánica)
+            $components = Component::whereIn('id', $componentIds) //Muestra todos los componentes
+                ->whereNotIn('id', [1, 2]) // Excluye los IDs 1 y 2
+                ->orderBy('id')
+                ->get();
         }
 
         $order_states = OrderState::all();
@@ -206,8 +206,13 @@ class OrdersEjecsController extends Controller
         $districts = District::all();
         $item_contract = ItemContract::where('contract_id', $contract_id)->get();
 
-        return view('contract.orders.create', compact('contract', 'order_states', 
-        'components', 'departments', 'districts' ));
+        return view('contract.orders.create', compact(
+            'contract',
+            'order_states',
+            'components',
+            'departments',
+            'districts'
+        ));
     }
 
     // PARA ANIDAR COMBOS
@@ -253,10 +258,10 @@ class OrdersEjecsController extends Controller
                 'required',
                 'integer',
                 function ($attribute, $value, $fail) use ($request) {
-                    if (in_array($request->input('component_id'), [1, 2, 3, 4, 5, 6, 7,10,11,14,15,16,17]) && $value > 30) {
+                    if (in_array($request->input('component_id'), [1, 2, 3, 4, 5, 6, 7, 10, 11, 14, 15, 16, 17]) && $value > 30) {
                         $fail('El plazo no puede ser mayor a 30 días para este Sub-componente');
                     }
-                    
+
                     if (in_array($request->input('component_id'), [12, 13]) && $value > 45) {
                         $fail('El plazo no puede ser mayor a 45 días para este Sub-componente');
                     }
@@ -291,15 +296,15 @@ class OrdersEjecsController extends Controller
         $order = new Order;
         $order->contract_id = $contract_id;
         $order->component_id = $request->input('component_id');
-            $component = Component::find($order->component_id);  // Assuming you have a Component model
-            $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
+        $component = Component::find($order->component_id);  // Assuming you have a Component model
+        $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
         $order->component_code = $componentCode;
         $order->number = $request->input('number');
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         //CUANDO SE GRABA POR VEZ PRIMERA ASUME ESTADO 10= Pendiente Fecha Acuse recibo Contratista
-        $order->order_state_id = 11;// toma estado pendiente de carga de rubros
+        $order->order_state_id = 11; // toma estado pendiente de carga de rubros
         $order->total_amount = 0;
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
@@ -351,14 +356,14 @@ class OrdersEjecsController extends Controller
         // Obtener los componentes filtrados por los IDs obtenidos
         if ($request->user()->position->id == 11) { //Fiscal de Geología id 11
             $components = Component::whereIn('id', $componentIds)
-            ->whereIn('id', [1, 2]) // Filtra los IDs 1 y 2 (Componentes 1.1 Pozo A y 1.2 Pozo B)
-            ->orderBy('id')
-            ->get();
-        } else {//Otros Fiscales (Obras y Electromecánica)
-            $components = Component::whereIn('id', $componentIds)//Muestra todos los componentes
-            ->whereNotIn('id', [1, 2]) // Excluye los IDs 1 y 2
-            ->orderBy('id')
-            ->get();            
+                ->whereIn('id', [1, 2]) // Filtra los IDs 1 y 2 (Componentes 1.1 Pozo A y 1.2 Pozo B)
+                ->orderBy('id')
+                ->get();
+        } else { //Otros Fiscales (Obras y Electromecánica)
+            $components = Component::whereIn('id', $componentIds) //Muestra todos los componentes
+                ->whereNotIn('id', [1, 2]) // Excluye los IDs 1 y 2
+                ->orderBy('id')
+                ->get();
         }
 
         $order = Order::findOrFail($order_id);
@@ -385,10 +390,10 @@ class OrdersEjecsController extends Controller
                 'required',
                 'integer',
                 function ($attribute, $value, $fail) use ($request) {
-                    if (in_array($request->input('component_id'), [1, 2, 3, 4, 5, 6, 7,10,11,14,15,16,17]) && $value > 30) {
+                    if (in_array($request->input('component_id'), [1, 2, 3, 4, 5, 6, 7, 10, 11, 14, 15, 16, 17]) && $value > 30) {
                         $fail('El plazo no puede ser mayor a 30 días para este Sub-componente');
                     }
-                    
+
                     if (in_array($request->input('component_id'), [12, 13]) && $value > 45) {
                         $fail('El plazo no puede ser mayor a 45 días para este Sub-componente');
                     }
@@ -398,8 +403,8 @@ class OrdersEjecsController extends Controller
                     }
                 },
             ],
-        ]);  
-        
+        ]);
+
         $contract = Contract::findOrFail($contract_id);
         $order = Order::findOrFail($order_id);
 
@@ -442,13 +447,30 @@ class OrdersEjecsController extends Controller
             $order->order_state_id = 11;
         }
 
-        $order->number = $request->input('number');
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
         $order->locality = $request->input('locality');
+
         $order->component_id = $request->input('component_id');
-            $component = Component::find($order->component_id);  // Assuming you have a Component model
-            $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
-        $order->component_code = $componentCode;        
+        $component = Component::find($order->component_id);  // Assuming you have a Component model
+        $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
+        
+        
+        // var_dump($order->component_code);
+        // var_dump($order->number);exit;
+
+
+        $exists = Order::where('component_code', $componentCode)
+            ->where('number', $request->input('number'))
+            ->where('id', '!=', $order->id) // Excluir el registro actual
+            ->exists();
+            // return back()->withErrors(['error' => 'Ya existe un pedido con ese Component Code y Number.']);
+        
+        if ($exists) {
+            return back()->withErrors(['error' => 'Ya existe un pedido con ese Component Code y Number.']);
+        }
+
+        $order->component_code = $componentCode;
+        $order->number = $request->input('number');
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
@@ -535,4 +557,3 @@ class OrdersEjecsController extends Controller
         //return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza modificada correctamente'); // Caso usuario posee rol pedidos
     }
 }
-    

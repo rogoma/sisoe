@@ -65,11 +65,23 @@
                                                             class="form-control @error('number') is-invalid @enderror"
                                                             value="{{ old('number', $order->number) }}" maxlength="23"
                                                             disabled>
-                                                        {{-- <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $order->number) }}"> --}}
+                                                        <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $order->number) }}">
                                                         @error('number')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
+
+                                                    {{-- <div class="col-sm-6">
+                                                        <label for="number" class="col-form-label">N° de Orden</label>
+                                                        <input type="text" id="number" name="number_display"
+                                                            class="form-control @error('number') is-invalid @enderror"
+                                                            value="{{ old('number', $order->number) }}" maxlength="23" disabled>
+                                                        <input type="hidden" id="number_hidden" name="number"
+                                                            value="{{ old('number') }}">
+                                                        @error('number')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>   --}}
 
                                                     <div class="col-sm-6">
                                                         <label for="total_amount" class="col-form-label">Monto</label>
