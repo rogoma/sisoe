@@ -36,28 +36,6 @@
             </tr>
         </thead>
         <tbody>
-            {{-- <tr>
-                    <td class="item_number">1</td>
-                    <td class="rubro-id">101</td>
-                    <td class="rubro">Martillo</td>
-                    <td class="quantity">2</td>
-                    <td class="unidad">mts</td>
-                    <td class="price-unit-mo">550000</td>
-                    <td class="price-unit-mat">302500</td>
-                    <td class="price-total-mo">10074500</td>
-                    <td class="price-total-mat">695000</td>
-                </tr>
-                <tr>
-                    <td class="item_number">2</td>
-                    <td class="rubro-id">102</td>
-                    <td class="rubro">Pinza</td>
-                    <td class="quantity">3</td>
-                    <td class="unidad">lts</td>
-                    <td class="price-unit-mo">650000</td>
-                    <td class="price-unit-mat">258000</td>
-                    <td class="price-total-mo">185000</td>
-                    <td class="price-total-mat">785500</td>
-                </tr> --}}
 
             @php
                 $tot_price_mo = 0;
@@ -78,9 +56,10 @@
                             {{ $item->rubro->code }}-{{ $item->rubro->description }}</td>
 
                         <td class="quantity" style="text-align: center;">
-                            <input type="number" data-index="{{ $i }}" value="0" min="0"
-                                step="any" style="width: 80px; text-align: center;">
-                        </td>
+                                <input type="number" data-index="{{ $i }}" value="0" min="0" required
+                                    step="any" style="width: 80px; text-align: center;"
+                                    oninput="if (this.value === '' || this.value < 0) this.value = 0;">
+                        </td>                         
 
                         <td class="unidad" style="text-align: center;">
                             {{ $item->rubro->orderPresentations->description }}</td>
@@ -133,25 +112,26 @@
 
                 let item_number = parseInt(row.find('.item_number').text().trim());
                 let rubro_id = parseInt(row.find('.rubro-id').text().trim());
-                let quantity = parseInt(row.find('.quantity input').val());
+                let quantity = parseFloat(row.find('.quantity input').val());  // Cambiado parseInt a parseFloat para decimales                
                 let unit_price_mo = parseInt(row.find('.price-unit-mo').attr('data-value'));
                 let unit_price_mat = parseInt(row.find('.price-unit-mat').attr('data-value'));
                 let tot_price_mo = parseInt(row.find('.price-total-mo').attr('data-value'));
                 let tot_price_mat = parseInt(row.find('.price-total-mat').attr('data-value'));
 
                 // Verificar si item_number es válido antes de agregarlo al array
-                if (item_number !== null && item_number !== undefined && !isNaN(item_number) && item_number !== 0 && quantity !== 0) {
+                if (item_number !== null && item_number !== undefined && !isNaN(item_number) &&
+                    item_number !== 0 && quantity !== 0 && quantity !== "") {
                     items.push({
                         item_number: item_number,
                         rubro_id: rubro_id,
                         rubro: row.find('.rubro').text().trim(),
-                        quantity: quantity,                        
+                        quantity: quantity,
                         unit_price_mo: unit_price_mo,
                         unit_price_mat: unit_price_mat,
                         tot_price_mo: tot_price_mo,
                         tot_price_mat: tot_price_mat,
                     });
-                }
+                }                
             });
 
             console.log(items);

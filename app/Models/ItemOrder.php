@@ -23,6 +23,10 @@ class ItemOrder extends Model
         'order_id',
         'creator_user_id',
     ];
+
+    protected $casts = [
+        'quantity' => 'decimal:2',  // Esto asegura que la cantidad se maneje como decimal con 2 decimales
+    ];
     
     /*** Para obtener el vinculo con la tabla orders */
     public function order(){
