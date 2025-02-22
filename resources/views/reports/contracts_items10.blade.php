@@ -148,9 +148,8 @@
                         <td> </td>
                     @else
                         <td style="text-align: center"> {{ $contracts2[$i]->items_orders_item_number }}</td>
-                        <td style="text-align: left"> {{ $contracts2[$i]->rubros_code }} - {{ $contracts2[$i]->rubros_description }}</td>
-                        {{-- <td> {{ $contracts2[$i]->rubros_description }}</td> --}}
-                        <td style="text-align: center"> {{ $contracts2[$i]->items_orders_quantity }}</td>
+                        <td style="text-align: left"> {{ $contracts2[$i]->rubros_code }} - {{ $contracts2[$i]->rubros_description }}</td>                        
+                        <td style="text-align: center">{{ number_format($contracts2[$i]->items_orders_quantity, 2, ',', ',') }}</td>
                         <td style="text-align: center"> {{ $contracts2[$i]->order_presentations_description }}</td>
                         <td style="text-align: center">
                             {{ number_format($contracts2[$i]->items_orders_unit_price_mo, '0', ',', '.') }} </td>

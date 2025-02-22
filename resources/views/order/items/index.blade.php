@@ -105,14 +105,14 @@
                                                             <td></td>
                                                         @else
                                                             <td style="text-align: center;">{{ $item->item_number }}</td>
-                                                            <td style="text-align: left;">{{ $item->rubro->code }} - {{ $item->rubro->description }}</td>
-                                                                                                                                                                    
+                                                            <td style="text-align: left;">{{ $item->rubro->code }} - {{ $item->rubro->description }}</td>                                                                                                                                                                    
+                                                            
                                                             <td style="text-align: center;">
                                                                 <input type="number" step="0.01" min="0" 
-                                                                       value="{{ $item->quantity }}" 
+                                                                       value="{{ number_format($item->quantity, 2, '.', '') }}" 
                                                                        class="form-control quantity-input" 
                                                                        data-index="{{ $i }}"
-                                                                       oninput="updateTotal({{ $i }})" readonly style="width: 60px";>
+                                                                       oninput="updateTotal({{ $i }})" readonly style="width: 80px;">
                                                             </td>
                                             
                                                             <td style="text-align: center;">{{ $item->rubro->orderPresentations->description }}</td>

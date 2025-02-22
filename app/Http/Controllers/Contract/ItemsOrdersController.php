@@ -81,9 +81,7 @@ class ItemsOrdersController extends Controller
             'items.*.item_number' => 'required|integer',
             'items.*.rubro_id' => 'required|integer',
             // 'items.*.rubro' => 'required',
-
-            'items.*.quantity' => 'required|numeric',
-            
+            'items.*.quantity' => 'required|numeric',            
             // 'items.*.unidad' => 'required',
             'items.*.unit_price_mo' => 'required|numeric',
             'items.*.unit_price_mat' => 'required|numeric',
@@ -109,9 +107,6 @@ class ItemsOrdersController extends Controller
         }
         return response()->json(['message' => 'Items almacenados correctamente'], 200);
     }
-
-
-
 
     /**
      * Funcionalidad de guardado del pedido de ítemes Contrato Abierto.
