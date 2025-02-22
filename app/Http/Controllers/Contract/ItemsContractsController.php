@@ -70,6 +70,7 @@ class ItemsContractsController extends Controller
        
         $items = ItemContract::where('contract_id', $contract_id)
                 ->where('component_id', $component_id)
+                ->orderBy('id')
                 ->get();
 
         // Chequeamos permisos del usuario
@@ -77,10 +78,10 @@ class ItemsContractsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
 
-        // return view('order.items.index', compact('items','contract', 'order'));
+        // return view('contract.itemscontracts.index', compact('items','contract', 'order'));
         // return view('contract.itemscontracts.index2', compact('items','contract', 'order'));
         return view('contract.itemscontracts.index2_chat', compact('items','contract', 'order'));
-
+        // return view('contract.itemscontracts.index2_orig', compact('items','contract', 'order'));
     }
 
 

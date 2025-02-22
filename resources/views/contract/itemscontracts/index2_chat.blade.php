@@ -20,13 +20,15 @@
         <input type="text" id="creator_user_id" value="{{ Auth::user()->id }}" readonly>
     </div>
 
-    <table id="myDataTable" class="display" style="width:100%">
-    {{-- <table id="myDataTable" class="table table-striped table-bordered"> --}}
+    {{-- <table id="myDataTable" class="display" style="width:100%"> --}}
+    <table id="myDataTable" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>#Item</th>
                 <th>Rubro ID</th>
+                <th>Cod.- Rubro</th>
                 <th>Cantidad</th>
+                <th>Unidad Med.</th>
                 <th>Precio UNIT MO</th>
                 <th>Precio UNIT MAT</th>
                 <th>Precio Total MO</th>
@@ -34,36 +36,83 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="item_number">1</td>
-                <td class="rubro-id">101</td>
-                <td class="quantity">2</td>
-                <td class="price-unit-mo">550000</td>
-                <td class="price-unit-mat">302500</td>
-                <td class="price-total-mo">10074500</td>
-                <td class="price-total-mat">695000</td>
-            </tr>
-            <tr>
-                <td class="item_number">2</td>
-                <td class="rubro-id">102</td>
-                <td class="quantity">3</td>
-                <td class="price-unit-mo">650000</td>
-                <td class="price-unit-mat">258000</td>
-                <td class="price-total-mo">185000</td>
-                <td class="price-total-mat">785500</td>
-            </tr>
-            <tr>
-                <td class="item_number">3</td>
-                <td class="rubro-id">102</td>
-                <td class="quantity">3</td>
-                <td class="price-unit-mo">400000</td>
-                <td class="price-unit-mat">250000</td>
-                <td class="price-total-mo">1200000</td>
-                <td class="price-total-mat">750000</td>
-            </tr>
-            <!-- Más filas aquí -->
+            {{-- <tr>
+                    <td class="item_number">1</td>
+                    <td class="rubro-id">101</td>
+                    <td class="rubro">Martillo</td>
+                    <td class="quantity">2</td>
+                    <td class="unidad">mts</td>
+                    <td class="price-unit-mo">550000</td>
+                    <td class="price-unit-mat">302500</td>
+                    <td class="price-total-mo">10074500</td>
+                    <td class="price-total-mat">695000</td>
+                </tr>
+                <tr>
+                    <td class="item_number">2</td>
+                    <td class="rubro-id">102</td>
+                    <td class="rubro">Pinza</td>
+                    <td class="quantity">3</td>
+                    <td class="unidad">lts</td>
+                    <td class="price-unit-mo">650000</td>
+                    <td class="price-unit-mat">258000</td>
+                    <td class="price-total-mo">185000</td>
+                    <td class="price-total-mat">785500</td>
+                </tr> --}}
+
+            @php
+                $tot_price_mo = 0;
+                $tot_price_mat = 0;
+            @endphp
+
+            @foreach ($items as $i => $item)
+                <tr>
+                    @if ($item->rubro_id == '9999')
+                        <td colspan="2"></td>
+                        <td style="font-size: 16px; font-weight: bold;">{{ $item->subitem->description }}</td>
+                        <td colspan="6"></td>
+                    @else
+                        <td class="item_number" style="text-align: center;">{{ $item->item_number }}</td>
+                        <td class="rubro-id" style="text-align: center;">{{ $item->rubro->id }}</td>
+
+                        <td class="rubro" style="text-align: left;">
+                            {{ $item->rubro->code }}-{{ $item->rubro->description }}</td>
+
+                        <td class="quantity" style="text-align: center;">
+                            <input type="number" data-index="{{ $i }}" value="0" min="0"
+                                step="any" style="width: 80px; text-align: center;">
+                        </td>
+
+                        <td class="unidad" style="text-align: center;">
+                            {{ $item->rubro->orderPresentations->description }}</td>
+
+                        <td class="price-unit-mo" style="text-align: center;" class="unit_price_mo"
+                            data-value="{{ $item->unit_price_mo }}">
+                            {{ number_format($item->unit_price_mo, 0, ',', '.') }}
+                        </td>
+
+                        <td class="price-unit-mat" style="text-align: center;" class="unit_price_mat"
+                            data-value="{{ $item->unit_price_mat }}">
+                            {{ number_format($item->unit_price_mat, 0, ',', '.') }}
+                        </td>
+
+                        <td class="price-total-mo" style="text-align: center;" class="total_mo" data-value="0">0</td>
+
+                        <td class="price-total-mat"style="text-align: center;" class="total_mat" data-value="0">0</td>
+                    @endif
+                </tr>
+            @endforeach
+
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7" style="text-align: right; font-weight: bold;">Totales:</td>
+                <td style="text-align: center; font-weight: bold;" id="total_price_mo">0</td>
+                <td style="text-align: center; font-weight: bold;" id="total_price_mat">0</td>
+            </tr>
+        </tfoot>
     </table>
+
+
 
     <button id="saveButton">Guardar Items</button>
 
@@ -81,23 +130,38 @@
 
             $('#myDataTable tbody tr').each(function() {
                 const row = $(this);
-                items.push({
-                    item_number: row.find('.item_number').text(),
-                    rubro_id: row.find('.rubro-id').text(),
-                    quantity: parseFloat(row.find('.quantity').text()),
-                    unit_price_mo: parseFloat(row.find('.price-unit-mo').text()),
-                    unit_price_mat: parseFloat(row.find('.price-unit-mat').text()),
-                    tot_price_mo: parseFloat(row.find('.price-total-mo').text()),
-                    tot_price_mat: parseFloat(row.find('.price-total-mat').text()),
-                });
+
+                let item_number = parseInt(row.find('.item_number').text().trim());
+                let rubro_id = parseInt(row.find('.rubro-id').text().trim());
+                let quantity = parseInt(row.find('.quantity input').val());
+                let unit_price_mo = parseInt(row.find('.price-unit-mo').attr('data-value'));
+                let unit_price_mat = parseInt(row.find('.price-unit-mat').attr('data-value'));
+                let tot_price_mo = parseInt(row.find('.price-total-mo').attr('data-value'));
+                let tot_price_mat = parseInt(row.find('.price-total-mat').attr('data-value'));
+
+                // Verificar si item_number es válido antes de agregarlo al array
+                if (item_number !== null && item_number !== undefined && !isNaN(item_number) && item_number !== 0 && quantity !== 0) {
+                    items.push({
+                        item_number: item_number,
+                        rubro_id: rubro_id,
+                        rubro: row.find('.rubro').text().trim(),
+                        quantity: quantity,                        
+                        unit_price_mo: unit_price_mo,
+                        unit_price_mat: unit_price_mat,
+                        tot_price_mo: tot_price_mo,
+                        tot_price_mat: tot_price_mat,
+                    });
+                }
             });
+
+            console.log(items);
 
             $.ajax({
                 url: '/item-orders',
                 type: 'POST',
                 data: {
                     items: items,
-                    order_id: orderId, 
+                    order_id: orderId,
                     creator_user_id: creator_user_Id,
                     _token: $('meta[name="csrf-token"]').attr('content'),
                 },

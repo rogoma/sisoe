@@ -80,7 +80,11 @@ class ItemsOrdersController extends Controller
              'items' => 'required|array',            
             'items.*.item_number' => 'required|integer',
             'items.*.rubro_id' => 'required|integer',
+            // 'items.*.rubro' => 'required',
+
             'items.*.quantity' => 'required|numeric',
+            
+            // 'items.*.unidad' => 'required',
             'items.*.unit_price_mo' => 'required|numeric',
             'items.*.unit_price_mat' => 'required|numeric',
             'items.*.tot_price_mo' => 'required|numeric',
@@ -103,7 +107,6 @@ class ItemsOrdersController extends Controller
                 'creator_user_id' => $data['creator_user_id'],
             ]);
         }
-
         return response()->json(['message' => 'Items almacenados correctamente'], 200);
     }
 
