@@ -58,6 +58,16 @@
                                             @method('PUT')
 
                                             <div class="container">
+                                                @if ($errors->any())
+                                                    <div class="alert alert-danger">
+                                                        <ul>
+                                                            @foreach ($errors->all() as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+
                                                 <div class="form-group row">
                                                     <div class="col-sm-6">
                                                         <label for="number" class="col-form-label">N° de Orden</label>
@@ -65,7 +75,8 @@
                                                             class="form-control @error('number') is-invalid @enderror"
                                                             value="{{ old('number', $order->number) }}" maxlength="23"
                                                             disabled>
-                                                        <input type="hidden" id="number_hidden" name="number" value="{{ old('number', $order->number) }}">
+                                                        <input type="hidden" id="number_hidden" name="number"
+                                                            value="{{ old('number', $order->number) }}">
                                                         @error('number')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -136,7 +147,8 @@
                                                     <div class="col-sm-12">
                                                         <input type="text" id="locality" name="locality"
                                                             class="form-control @error('locality') is-invalid @enderror"
-                                                            value="{{ old('locality', $order->locality) }}" maxlength="200">
+                                                            value="{{ old('locality', $order->locality) }}"
+                                                            maxlength="200">
                                                         @error('locality')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -169,13 +181,16 @@
                                                     </div>
 
                                                     <div class="col-sm-6">
-                                                        <label for="component_id"
-                                                            class="col-form-label">Sub-Componente</label>
+                                                        <label for="component_id" class="col-form-label">Sub-Componente</label>
+                                                    
+                                                        <!-- Campo oculto para enviar el valor cuando el select está deshabilitado -->
+                                                        <input type="hidden" name="component_id" id="component_id_hidden" value="{{ old('component_id', $order->component_id) }}">
+                                                    
                                                         <select id="component_id" name="component_id"
                                                             class="form-control @error('component_id') is-invalid @enderror"
-                                                            @if ($order->items->count() > 0) disabled @endif>
-                                                            <option value="">--- Seleccionar Sub-Componente ---
-                                                            </option>
+                                                            @if ($order->items->count() > 0) disabled @endif
+                                                            onchange="document.getElementById('component_id_hidden').value = this.value">
+                                                            <option value="">--- Seleccionar Sub-Componente ---</option>
                                                             @foreach ($components as $component)
                                                                 <option value="{{ $component->id }}"
                                                                     @if ($component->id == old('component_id', $order->component_id)) selected @endif>
@@ -183,16 +198,19 @@
                                                                 </option>
                                                             @endforeach
                                                         </select>
+                                                    
                                                         @error('component_id')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
+                                                    
 
                                                     <div class="col-sm-3">
-                                                        <label for="plazo" class="col-form-label">Plazo de ejecución (En días)</label>
+                                                        <label for="plazo" class="col-form-label">Plazo de ejecución
+                                                            (En días)</label>
                                                         <input type="text" id="plazo" name="plazo"
-                                                            class="form-control @error('plazo') is-invalid @enderror"                                                        
-                                                            value="{{ old('plazo', $order->plazo) }}" maxlength="3">                                                            
+                                                            class="form-control @error('plazo') is-invalid @enderror"
+                                                            value="{{ old('plazo', $order->plazo) }}" maxlength="3">
                                                         @error('plazo')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
@@ -201,7 +219,8 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="order_state_id" class="col-form-label">Estado de la Orden</label>
+                                                        <label for="order_state_id" class="col-form-label">Estado de la
+                                                            Orden</label>
                                                         <select id="order_state_id" name="order_state_id"
                                                             class="form-control @error('order_state_id') is-invalid @enderror"
                                                             @if ($order->items->count() == 0) disabled @endif>
@@ -217,7 +236,7 @@
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                    
+
 
                                                     <div class="col-sm-9">
                                                         <label for="reference" class="col-form-label">Referencia (Hasta

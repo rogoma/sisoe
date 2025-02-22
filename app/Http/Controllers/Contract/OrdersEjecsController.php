@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Contract;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 use App\Models\Order;
 use App\Models\Contract;
@@ -27,10 +28,10 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use Illuminate\Support\Facades\DB;
 use App\Exports\OrdersExport;
 use App\Exports\OrdersExport2;
 use App\Exports\OrdersExport3;
+
 
 
 class OrdersEjecsController extends Controller
@@ -408,19 +409,28 @@ class OrdersEjecsController extends Controller
         $contract = Contract::findOrFail($contract_id);
         $order = Order::findOrFail($order_id);
 
-        $rules = array(
-            // 'number' => 'numeric|required|unique:orders,number',
-            // 'total_amount' => 'nullable|string|max:9223372036854775807',
-            // 'sign_date' => 'date_format:d/m/Y|required|',
-            'component_id' => 'required|numeric',
-            // 'order_state_id' => 'required|numeric',
+        $rules = [
+            'component_id' => [
+                'required',
+                'numeric',
+                function ($attribute, $value, $fail) use ($request, $order) {
+                    $existingRecord = DB::table('orders')
+                        ->where('component_id', $request->input('component_id'))                        
+                        ->where('number', $request->input('number'))
+                        ->where('id', '!=', $order->id) // Permite ignorar el registro actual si se está editando
+                        ->exists();
+    
+                    if ($existingRecord) {
+                        $fail('Ya existe un una Orden con Sub-Componente-Nro, verifique');
+                    }
+                }
+            ],
             'locality' => 'required|string|max:100',
-            'reference' => 'nullable|max:500',
-            'comments' => 'nullable|max:200',
+            'reference' => 'nullable|string|max:500',
+            'comments' => 'nullable|string|max:200',
             'plazo' => 'required|numeric',
-            // 'department_id' => 'required',
-            'district_id' => 'required|numeric'
-        );
+            'district_id' => 'required|numeric',
+        ];
 
         // Valida los datos de entrada
         $validatedData = $request->validate($rules);
@@ -436,7 +446,7 @@ class OrdersEjecsController extends Controller
         $order_actual = $order->order_state_id = $request->input('order_state_id');
 
         //SI FECHA NO ES NULL Y ESTADO NO SE CAMBIO, SE CAMBIA A ESTADO 1 = "En curso"
-        if ($order->sign_date !== null && $order_actual == 10) {
+        if ($order->sign_date != null && $order_actual == 10) {
             $order->order_state_id = 1;
         } else {
             $order->order_state_id = $request->input('order_state_id');
@@ -453,22 +463,7 @@ class OrdersEjecsController extends Controller
         $order->component_id = $request->input('component_id');
         $component = Component::find($order->component_id);  // Assuming you have a Component model
         $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
-        
-        
-        // var_dump($order->component_code);
-        // var_dump($order->number);exit;
-
-
-        $exists = Order::where('component_code', $componentCode)
-            ->where('number', $request->input('number'))
-            ->where('id', '!=', $order->id) // Excluir el registro actual
-            ->exists();
-            // return back()->withErrors(['error' => 'Ya existe un pedido con ese Component Code y Number.']);
-        
-        if ($exists) {
-            return back()->withErrors(['error' => 'Ya existe un pedido con ese Component Code y Number.']);
-        }
-
+       
         $order->component_code = $componentCode;
         $order->number = $request->input('number');
         $order->reference = $request->input('reference');
