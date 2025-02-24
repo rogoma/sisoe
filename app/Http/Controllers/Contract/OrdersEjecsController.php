@@ -102,6 +102,19 @@ class OrdersEjecsController extends Controller
         return view('order.items.index', compact('order', 'items'));
     }
 
+
+    public function show(Request $request, $order_id)
+    {
+        $order = Order::findOrFail($order_id);
+
+        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
+        
+
+        // Obtenemos los items del pedido
+        $items = $order->items;
+        return view('order.items.index', compact('order', 'items'));
+    }
+
     //Para mostrar Planillas EXCEL Región Oriental guardado en el Proyecto con formato ZIP
     // public function ArchivoPedido(){
     //     header("Content-type: application/zip");

@@ -332,64 +332,13 @@
                     _token: $('meta[name="csrf-token"]').attr('content'),
                 },
                 success: function(response) {
-                    alert(response.message);
+                    window.location.href = response.redirect_url;
                 },
                 error: function(xhr) {
                     console.error(xhr.responseText);
                 },
             });
         });
-        // $('#saveButton').click(function() {
-        //     const items = [];
-        //     const orderId = $('#order_id').val();
-        //     const creator_user_Id = $('#creator_user_id').val();
-
-        //     $('#items tbody tr').each(function() {
-        //         const row = $(this);
-
-        //         let item_number = parseInt(row.find('.item_number').text().trim());
-        //         let rubro_id = parseInt(row.find('.rubro-id').text().trim());
-        //         let quantity = parseFloat(row.find('.quantity input').val());  // Cambiado parseInt a parseFloat para decimales                
-        //         let unit_price_mo = parseInt(row.find('.price-unit-mo').attr('data-value'));
-        //         let unit_price_mat = parseInt(row.find('.price-unit-mat').attr('data-value'));
-        //         let tot_price_mo = parseInt(row.find('.price-total-mo').attr('data-value'));
-        //         let tot_price_mat = parseInt(row.find('.price-total-mat').attr('data-value'));
-
-        //         // Verificar si item_number es válido antes de agregarlo al array
-        //         if (item_number !== null && item_number !== undefined && !isNaN(item_number) &&
-        //             item_number !== 0 && quantity !== 0 && quantity !== "") {
-        //             items.push({
-        //                 item_number: item_number,
-        //                 rubro_id: rubro_id,
-        //                 rubro: row.find('.rubro').text().trim(),
-        //                 quantity: quantity,
-        //                 unit_price_mo: unit_price_mo,
-        //                 unit_price_mat: unit_price_mat,
-        //                 tot_price_mo: tot_price_mo,
-        //                 tot_price_mat: tot_price_mat,
-        //             });
-        //         }                
-        //     });
-
-        //     // console.log(items);
-
-        //     $.ajax({
-        //         url: '/item-orders',
-        //         type: 'POST',
-        //         data: {
-        //             items: items,
-        //             order_id: orderId,
-        //             creator_user_id: creator_user_Id,
-        //             _token: $('meta[name="csrf-token"]').attr('content'),
-        //         },
-        //         success: function(response) {
-        //             alert(response.message);
-        //         },
-        //         error: function(xhr) {
-        //             console.error(xhr.responseText);
-        //         },
-        //     });
-        // });
     });
 </script>
 

@@ -101,7 +101,7 @@ class ItemsOrdersController extends Controller
                 'creator_user_id' => $data['creator_user_id'],
             ]);
         }
-        return response()->json(['message' => 'Items almacenados correctamente'], 200);        
+        return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
     }
 
     /**
