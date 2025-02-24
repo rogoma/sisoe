@@ -79,10 +79,8 @@ class ItemsOrdersController extends Controller
         $data = $request->validate([
              'items' => 'required|array',            
             'items.*.item_number' => 'required|integer',
-            'items.*.rubro_id' => 'required|integer',
-            // 'items.*.rubro' => 'required',
-            'items.*.quantity' => 'required|numeric',            
-            // 'items.*.unidad' => 'required',
+            'items.*.rubro_id' => 'required|integer',           
+            'items.*.quantity' => 'required|numeric',                        
             'items.*.unit_price_mo' => 'required|numeric',
             'items.*.unit_price_mat' => 'required|numeric',
             'items.*.tot_price_mo' => 'required|numeric',
@@ -98,14 +96,12 @@ class ItemsOrdersController extends Controller
                 'quantity' => $item['quantity'],
                 'unit_price_mo' => $item['unit_price_mo'],
                 'unit_price_mat' => $item['unit_price_mat'],
-                'tot_price_mo' => $item['tot_price_mo'],
-                'tot_price_mat' => $item['tot_price_mat'],
                 'item_state' => 1,
                 'order_id' => $data['order_id'],
                 'creator_user_id' => $data['creator_user_id'],
             ]);
         }
-        return response()->json(['message' => 'Items almacenados correctamente'], 200);
+        return response()->json(['message' => 'Items almacenados correctamente'], 200);        
     }
 
     /**

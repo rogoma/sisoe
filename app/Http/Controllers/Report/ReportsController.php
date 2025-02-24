@@ -78,9 +78,7 @@ class ReportsController extends Controller
                     'items_orders_quantity',
                     'order_presentations_description',
                     'items_orders_unit_price_mo',
-                    'items_orders_unit_price_mat',
-                    'items_orders_tot_price_mo',
-                    'items_orders_tot_price_mat',                    
+                    'items_orders_unit_price_mat'
                 ])
                 ->where('orders_id', '=', $order_id)
                 ->Orderby('items_orders_id')
