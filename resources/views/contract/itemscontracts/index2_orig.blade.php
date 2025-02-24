@@ -47,7 +47,8 @@
                             <label for="order_id">Order ID:</label>
                             <input type="text" id="order_id" value="{{ $order->id }}" readonly>
                             <input type="text" id="creator_user_id" value="{{ Auth::user()->id }}" readonly>
-                            
+                            <br>
+                            <h5 style="color: blue;">contract.itemscontracts.index2_orig</h5>
                         </div>
                     </div>
                 </div>
@@ -84,15 +85,15 @@
                                             <table id="items" class="table table-striped table-bordered nowrap">
                                                 <thead>
                                                     <tr>
-                                                        <th class="item_number">N° Item</th>
-                                                        <th class="rubro-id" style="display: none;">ID Rubro</th>
-                                                        <th>Rubro</th>
-                                                        <th class="quantity">Cant.</th>
-                                                        <th>Unid.</th>
-                                                        <th class="price-unit-mo">Precio UNIT. MO</th>
-                                                        <th class="price-unit-mat">Precio UNIT. MAT</th>
-                                                        <th class="price-total-mo">Precio TOT. MO</th>
-                                                        <th class="price-total-mat">Precio TOT. MAT</th>
+                                                        <th>#Item</th>
+                                                        <th>Rubro ID</th>
+                                                        <th>Cod.- Rubro</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Unidad Med.</th>
+                                                        <th>Precio UNIT MO</th>
+                                                        <th>Precio UNIT MAT</th>
+                                                        <th>Precio Total MO</th>
+                                                        <th>Precio Total MAT</th>|
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -105,7 +106,7 @@
                                                         <tr>
                                                             @if ($item->rubro_id == '9999')
                                                                 <td></td>
-                                                                <td style="display: none;"></td>
+                                                                <td ></td>
                                                                 <td style="font-size: 16px; font-weight: bold;">{{ $item->subitem->description }}</td>
                                                                 <td></td>
                                                                 <td></td>
@@ -115,7 +116,7 @@
                                                                 <td></td>
                                                             @else
                                                                 <td style="text-align: center;">{{ $item->item_number }}</td>
-                                                                <td style="text-align: center; display: none;">{{ $item->rubro->id }}</td>
+                                                                <td style="text-align: center;">{{ $item->rubro->id }}</td>
                                                                 <td style="text-align: left;">
                                                                     {{ $item->rubro->code }}-{{ $item->rubro->description }}
                                                                 </td>
@@ -139,7 +140,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="5"></td>
+                                                        <td colspan="6"></td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mo"></td>
                                                         <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;" id="tot_price_mat"></td>
@@ -163,51 +164,11 @@
     </div>
 @endsection
 
-{{-- <script>
-        // Inicializar DataTable
-        $(document).ready(function() {
-            $('#items').DataTable();
-        });
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-        // Guardar datos con AJAX
-        $('#saveButton').click(function() {
-            const items = [];
-            const orderId = $('#order_id').val();
-            const creator_user_Id = $('#creator_user_id').val();
-
-            $('#items tbody tr').each(function() {
-                const row = $(this);
-                items.push({
-                    item_number: row.find('.item_number').text(),
-                    rubro_id: row.find('.rubro-id').text(),
-                    quantity: parseFloat(row.find('.quantity').text()),
-                    unit_price_mo: parseFloat(row.find('.price-unit-mo').text()),
-                    unit_price_mat: parseFloat(row.find('.price-unit-mat').text()),
-                    tot_price_mo: parseFloat(row.find('.price-total-mo').text()),
-                    tot_price_mat: parseFloat(row.find('.price-total-mat').text()),
-                });
-            });
-
-            $.ajax({
-                url: '/item-orders',
-                type: 'POST',
-                data: {
-                    items: items,
-                    order_id: orderId, 
-                    creator_user_id: creator_user_Id,
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                },
-                success: function(response) {
-                    alert(response.message);
-                },
-                error: function(xhr) {
-                    console.error(xhr.responseText);
-                },
-            });
-        });
-    </script> --}}
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         function updateTotals() {
@@ -216,16 +177,16 @@
 
             $(".quantity").each(function () {
                 let index = $(this).data("index");
-                
-                // Verificar que los elementos existan antes de acceder a ellos
-                let totalMoText = $("#total_mo_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
-                let totalMatText = $("#total_mat_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
 
-                totalMo += parseFloat(totalMoText) || 0;
-                totalMat += parseFloat(totalMatText) || 0;
+                if ($("#total_mo_" + index).length && $("#total_mat_" + index).length) {
+                    let totalMoText = $("#total_mo_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
+                    let totalMatText = $("#total_mat_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
+
+                    totalMo += parseFloat(totalMoText) || 0;
+                    totalMat += parseFloat(totalMatText) || 0;
+                }
             });
 
-            // Actualizar totales en el footer
             $("#tot_price_mo").text(totalMo.toLocaleString('es-ES'));
             $("#tot_price_mat").text(totalMat.toLocaleString('es-ES'));
         }
@@ -233,31 +194,147 @@
         $(".quantity").on("input", function () {
             let index = $(this).data("index");
             let quantity = parseFloat($(this).val()) || 0;
-            
-            // Verificar que los precios unitarios existan antes de acceder a ellos
-            let unitPriceText = $("#unit_price_mo_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
-            let unitPrice2Text = $("#unit_price_mat_" + index).text()?.replace(/\./g, '').replace(',', '.') || "0";
 
-            let unitPrice = parseFloat(unitPriceText) || 0;
-            let unitPrice2 = parseFloat(unitPrice2Text) || 0;
+            let unitPrice = 0, unitPrice2 = 0;
 
-            // Calcular los totales por fila
+            if ($("#unit_price_mo_" + index).length) {
+                let unitPriceText = $("#unit_price_mo_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
+                unitPrice = parseFloat(unitPriceText) || 0;
+            }
+
+            if ($("#unit_price_mat_" + index).length) {
+                let unitPrice2Text = $("#unit_price_mat_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
+                unitPrice2 = parseFloat(unitPrice2Text) || 0;
+            }
+
             let total = Math.round(quantity * unitPrice);
             let total2 = Math.round(quantity * unitPrice2);
 
-            // Actualizar los valores de las celdas de total
-            $("#total_mo_" + index).text(total.toLocaleString('es-ES'));
-            $("#total_mat_" + index).text(total2.toLocaleString('es-ES'));
+            if ($("#total_mo_" + index).length) $("#total_mo_" + index).text(total.toLocaleString('es-ES'));
+            if ($("#total_mat_" + index).length) $("#total_mat_" + index).text(total2.toLocaleString('es-ES'));
 
-            // Actualizar los totales generales
             updateTotals();
         });
 
-        // Llamar a la función para calcular totales al cargar la página
         updateTotals();
+    });
+</script>
 
-        // Guardar datos al hacer clic en el botón
-        
+{{-- <script>
+    $(document).ready(function() {
+        $('#items').DataTable();
     });
 
-</script>
+    $('#saveButton').click(function() {
+        const items = [];
+        const orderId = $('#order_id').val();
+        const creatorUserId = $('#creator_user_id').val();
+
+        $('#items tbody tr').each(function() {
+            const row = $(this);
+
+            let itemNumber = parseInt(row.find('.item_number').text().trim()) || 0;
+            let rubroId = parseInt(row.find('.rubro-id').text().trim()) || 0;
+            let quantity = parseFloat(row.find('.quantity input').val()) || 0;
+            let unitPriceMo = parseFloat(row.find('.price-unit-mo').attr('data-value')) || 0;
+            let unitPriceMat = parseFloat(row.find('.price-unit-mat').attr('data-value')) || 0;
+            let totPriceMo = parseFloat(row.find('.price-total-mo').attr('data-value')) || 0;
+            let totPriceMat = parseFloat(row.find('.price-total-mat').attr('data-value')) || 0;
+
+            if (itemNumber > 0 && quantity > 0) {
+                items.push({
+                    item_number: itemNumber,
+                    rubro_id: rubroId,
+                    rubro: row.find('.rubro').text().trim(),
+                    quantity: quantity,
+                    unit_price_mo: unitPriceMo,
+                    unit_price_mat: unitPriceMat,
+                    tot_price_mo: totPriceMo,
+                    tot_price_mat: totPriceMat,
+                });
+            }
+        });
+
+        console.log(items);
+
+        $.ajax({
+            url: '/item-orders',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({
+                items: items,
+                order_id: orderId,
+                creator_user_id: creatorUserId,
+                _token: $('meta[name="csrf-token"]').attr('content'),
+            }),
+            success: function(response) {
+                alert(response.message);
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            },
+        });
+    });
+</script> --}}
+
+
+{{-- <script>
+    // Inicializar DataTable
+    $(document).ready(function() {
+        $('#myDataTable').DataTable();
+    });
+
+    // Guardar datos con AJAX
+    $('#saveButton').click(function() {
+        const items = [];
+        const orderId = $('#order_id').val();
+        const creator_user_Id = $('#creator_user_id').val();
+
+        $('#items tbody tr').each(function() {
+            const row = $(this);
+
+            let item_number = parseInt(row.find('.item_number').text().trim());
+            let rubro_id = parseInt(row.find('.rubro-id').text().trim());
+            let quantity = parseFloat(row.find('.quantity input').val());  // Cambiado parseInt a parseFloat para decimales                
+            let unit_price_mo = parseInt(row.find('.price-unit-mo').attr('data-value'));
+            let unit_price_mat = parseInt(row.find('.price-unit-mat').attr('data-value'));
+            let tot_price_mo = parseInt(row.find('.price-total-mo').attr('data-value'));
+            let tot_price_mat = parseInt(row.find('.price-total-mat').attr('data-value'));
+
+            // Verificar si item_number es válido antes de agregarlo al array
+            if (item_number !== null && item_number !== undefined && !isNaN(item_number) &&
+                item_number !== 0 && quantity !== 0 && quantity !== "") {
+                items.push({
+                    item_number: item_number,
+                    rubro_id: rubro_id,
+                    rubro: row.find('.rubro').text().trim(),
+                    quantity: quantity,
+                    unit_price_mo: unit_price_mo,
+                    unit_price_mat: unit_price_mat,
+                    tot_price_mo: tot_price_mo,
+                    tot_price_mat: tot_price_mat,
+                });
+            }                
+        });
+
+        console.log(items);
+
+        $.ajax({
+            url: '/item-orders',
+            type: 'POST',
+            data: {
+                items: items,
+                order_id: orderId,
+                creator_user_id: creator_user_Id,
+                _token: $('meta[name="csrf-token"]').attr('content'),
+            },
+            success: function(response) {
+                alert(response.message);
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            },
+        });
+    });
+</script> --}}

@@ -21,7 +21,7 @@
     </div>
 
     {{-- <table id="myDataTable" class="display" style="width:100%"> --}}
-    <table id="myDataTable" class="table table-striped table-bordered">
+    <table id="items" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>#Item</th>
@@ -64,19 +64,19 @@
                         <td class="unidad" style="text-align: center;">
                             {{ $item->rubro->orderPresentations->description }}</td>
 
-                        <td class="price-unit-mo" style="text-align: center;" class="unit_price_mo"
+                        <td class="price-unit-mo" style="text-align: center;" 
                             data-value="{{ $item->unit_price_mo }}">
                             {{ number_format($item->unit_price_mo, 0, ',', '.') }}
                         </td>
 
-                        <td class="price-unit-mat" style="text-align: center;" class="unit_price_mat"
+                        <td class="price-unit-mat" style="text-align: center;" 
                             data-value="{{ $item->unit_price_mat }}">
                             {{ number_format($item->unit_price_mat, 0, ',', '.') }}
                         </td>
 
-                        <td class="price-total-mo" style="text-align: center;" class="total_mo" data-value="0">0</td>
+                        <td class="price-total-mo" style="text-align: center;" data-value="0">0</td>
 
-                        <td class="price-total-mat"style="text-align: center;" class="total_mat" data-value="0">0</td>
+                        <td class="price-total-mat" style="text-align: center;" data-value="0">0</td>
                     @endif
                 </tr>
             @endforeach
@@ -95,19 +95,19 @@
 
     <button id="saveButton">Guardar Items</button>
 
-    <script>
+   
+   <script>
         // Inicializar DataTable
         $(document).ready(function() {
-            $('#myDataTable').DataTable();
+            $('#items').DataTable();
         });
-
         // Guardar datos con AJAX
         $('#saveButton').click(function() {
             const items = [];
             const orderId = $('#order_id').val();
             const creator_user_Id = $('#creator_user_id').val();
 
-            $('#myDataTable tbody tr').each(function() {
+            $('#items tbody tr').each(function() {
                 const row = $(this);
 
                 let item_number = parseInt(row.find('.item_number').text().trim());

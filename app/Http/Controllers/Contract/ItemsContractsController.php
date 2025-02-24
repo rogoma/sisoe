@@ -77,12 +77,12 @@ class ItemsContractsController extends Controller
         if(!$request->user()->hasPermission(['admin.items.index', 'contracts.items.index','contracts.items.show'])){
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
-
-        // return view('contract.itemscontracts.index', compact('items','contract', 'order'));
-        // return view('contract.itemscontracts.index2', compact('items','contract', 'order'));
-        // return view('contract.itemscontracts.index2_chat_ok', compact('items','contract', 'order'));
-        return view('contract.itemscontracts.index2_orig', compact('items','contract', 'order'));
+        
+        // return view('contract.itemscontracts.index2_chat_ok', compact('items','contract', 'order'));        
         // return view('contract.itemscontracts.index2_orig2', compact('items','contract', 'order'));
+        return view('contract.itemscontracts.index2_orig', compact('items','contract', 'order'));
+
+        
     }
 
 
