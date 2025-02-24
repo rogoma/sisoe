@@ -47,7 +47,8 @@
         border: 1px solid black;
         width: 100%;
         font-size: 8px;
-        line-height: 1; /* Reduce el espacio entre líneas */
+        line-height: 1;
+        /* Reduce el espacio entre líneas */
     }
 
     td,
@@ -109,11 +110,11 @@
         <table id="orders_items">
             @for ($i = 0; $i < count($contracts1); $i = $i + 3)
                 <tr>
-                    <td> Referencia: {{ $contracts1[$i]->components_description }}</td>                
-                    <td> {{ $contracts1[$i]->orders_references }} </td>                    
+                    <td> Referencia: {{ $contracts1[$i]->components_description }}</td>
+                    <td> {{ $contracts1[$i]->orders_references }} </td>
                 </tr>
             @endfor
-        </table>        
+        </table>
 
         <h2>DETALLE DE RUBROS</h2>
         <table>
@@ -130,8 +131,7 @@
             </tr>
 
             @php
-                $tot_price_mo = 0;
-                $tot_price_mat = 0;
+                $tot_price_mo = 0; $tot_price_mat = 0;                
             @endphp
 
             @for ($i = 0; $i < count($contracts2); $i++)
@@ -148,21 +148,29 @@
                         <td> </td>
                     @else
                         <td style="text-align: center"> {{ $contracts2[$i]->items_orders_item_number }}</td>
-                        <td style="text-align: left"> {{ $contracts2[$i]->rubros_code }} - {{ $contracts2[$i]->rubros_description }}</td>                        
-                        <td style="text-align: center">{{ number_format($contracts2[$i]->items_orders_quantity, 2, ',', ',') }}</td>
+                        <td style="text-align: left"> {{ $contracts2[$i]->rubros_code }} -
+                            {{ $contracts2[$i]->rubros_description }}</td>
+                        <td style="text-align: center">
+                            {{ number_format($contracts2[$i]->items_orders_quantity, 2, ',', ',') }}</td>
+                        
                         <td style="text-align: center"> {{ $contracts2[$i]->order_presentations_description }}</td>
+                        
                         <td style="text-align: center">
                             {{ number_format($contracts2[$i]->items_orders_unit_price_mo, '0', ',', '.') }} </td>
+                        
                         <td style="text-align: center">
                             {{ number_format($contracts2[$i]->items_orders_unit_price_mat, '0', ',', '.') }} </td>
+                        
                         <td style="text-align: center">
-                            {{ number_format($contracts2[$i]->items_orders_tot_price_mo, '0', ',', '.') }} </td>
+                                {{ number_format($contracts2[$i]->items_orders_quantity * $contracts2[$i]->items_orders_unit_price_mo, '0', ',', '.') }}
+                            </td>
                         <td style="text-align: center">
-                            {{ number_format($contracts2[$i]->items_orders_tot_price_mat, '0', ',', '.') }} </td>
+                                {{ number_format($contracts2[$i]->items_orders_quantity * $contracts2[$i]->items_orders_unit_price_mat, '0', ',', '.') }}
+                            </td>
 
                         @php
-                            $tot_price_mo += $contracts2[$i]->items_orders_tot_price_mo;
-                            $tot_price_mat += $contracts2[$i]->items_orders_tot_price_mat;
+                            $tot_price_mo += $contracts2[$i]->items_orders_quantity * $contracts2[$i]->items_orders_unit_price_mo;
+                            $tot_price_mat += $contracts2[$i]->items_orders_quantity * $contracts2[$i]->items_orders_unit_price_mat;                            
                         @endphp
                     @endif
                 </tr>
@@ -177,16 +185,16 @@
                     </td>
                     <td style="font-size: 10px; text-align: center;">
                         {{ number_format($tot_price_mat, '0', ',', '.') }}</td>
-                    <td colspan="2"></td>
+                    {{-- <td colspan="2"></td> --}}
                 </tr>
 
                 <tr>
                     <td colspan="3"></td>
                     <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON IVA:</td>
                     <td style="font-size: 10px; text-align: center;"> </td>
-                    <td style="font-size: 10px; text-align: center;">
-                        {{ number_format($contracts1[0]->orders_total_amount, '0', ',', '.') }} </td>
-                    <td colspan="2"></td>
+                    <td style="font-size: 10px; text-align: center;">                        
+                        {{ number_format($tot_price_mo + $tot_price_mat, '0', ',', '.') }}                                                
+                    {{-- <td colspan="2"></td> --}}
                 </tr>
 
                 <tr>
@@ -194,7 +202,8 @@
                         style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
                         OBSERVACIÓN: {{ $contracts1[0]->orders_comments }}
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
-                            {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo por parte del Contratista.</span>
+                            {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
+                            por parte del Contratista.</span>
                     </td>
                 </tr>
 
@@ -209,9 +218,9 @@
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        {{$user->name}} {{$user->lastname}} <br> Aclaración Firma  Fiscal
+                        {{ $user->name }} {{ $user->lastname }} <br> Aclaración Firma Fiscal
                     </td>
-                    <td colspan="3"></td> <!-- Espacio para balancear si es necesario -->
+                    {{-- <td colspan="3"></td> <!-- Espacio para balancear si es necesario --> --}}
                 </tr>
                 <tr>
                     <td colspan="3"
@@ -226,11 +235,10 @@
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Aclaración Firma Contratista
                     </td>
-                    <td colspan="3"></td> <!-- Espacio para balancear si es necesario -->
+                    {{-- <td colspan="3"></td> <!-- Espacio para balancear si es necesario --> --}}
                 </tr>
             </tfoot>
-        </table>
-        </table>
+        </table>        
     </div>
 </body>
 

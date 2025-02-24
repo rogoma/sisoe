@@ -34,6 +34,11 @@
                     <div class="d-inline">
                         <h5>Orden de Ejecución N° {{ $order->number }}</h5>
                     </div>
+                    <br><br>
+                            <h5>
+                                {{$order->contract->description}} - {{$order->contract->provider->description}}
+                                {{-- <p style="font-size: 17px; font-weight: bold; color:#FF0000;">Estado Actual:  {{ $contracts->id . ' - ' . $contracts->description }}</p> --}}
+                            </h5>
                 </div>
             </div>
             <div class="col-lg-4">
@@ -84,8 +89,7 @@
                                                     </th> --}}
                                                 </tr>
                                             </thead>
-                                                                                       
-                                            
+
                                             <tbody>
                                                 @php
                                                     $tot_price_mo = 0; 
@@ -120,14 +124,14 @@
                                                             <td style="text-align: center;">{{ number_format($item->unit_price_mat, 0, ',', '.') }}</td>
                                                                                                                         
                                                             <td style="text-align: center;" id="total_mo_{{ $i }}">
-                                                                {{ number_format($item->quantity * $item->unit_price_mo, 0, ',', '.') }}
-                                                            </td>
+                                                                {{ number_format($item->quantity * $item->unit_price_mo, 0, ',', '.') }}</td>
                                             
-                                                            <td style="text-align: center;">{{ number_format($item->tot_price_mat, 0, ',', '.') }}</td>
+                                                            <td style="text-align: center;" id="total_mat_{{ $i }}">
+                                                                {{ number_format($item->quantity * $item->unit_price_mat, 0, ',', '.') }}
                                             
                                                             @php
                                                                 $tot_price_mo += $item->quantity * $item->unit_price_mo;
-                                                                $tot_price_mat += $item->tot_price_mat;
+                                                                $tot_price_mat += $item->quantity * $item->unit_price_mat;
                                                             @endphp
                                             
                                                             <td style="text-align: center;">
@@ -148,10 +152,17 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="5"></td>
-                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">SUB-TOTALES:</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mo, '0', ',', '.') }}</td>
                                                     <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">{{ number_format($tot_price_mat, '0', ',', '.') }}</td>
-                                                    <td colspan="3"></td>
+                                                    <td colspan="3"></td>                                                    
+                                                </tr>
+                                                <td colspan="5"></td>
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">TOTALES:</td>
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;"></td>
+                                                    <td style="font-size: 16px; font-weight: bold; color: red; background-color: yellow; text-align: center;">
+                                                        {{ number_format($tot_price_mo + $tot_price_mat, '0', ',', '.') }}</td>
+                                                    <td colspan="3"></td>                                                    
                                                 </tr>
                                             </tfoot>
                                         </table>
