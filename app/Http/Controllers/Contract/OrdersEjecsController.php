@@ -458,6 +458,8 @@ class OrdersEjecsController extends Controller
 
         $order_actual = $order->order_state_id = $request->input('order_state_id');
 
+        // 10 CONTRATISTA 11 RUBROS
+
         //SI FECHA NO ES NULL Y ESTADO NO SE CAMBIO, SE CAMBIA A ESTADO 1 = "En curso"
         if ($order->sign_date != null && $order_actual == 10) {
             $order->order_state_id = 1;

@@ -101,6 +101,10 @@ class ItemsOrdersController extends Controller
                 'creator_user_id' => $data['creator_user_id'],
             ]);
         }
+
+        // Actualizar el estado del pedido
+        Order::where('id', $data['order_id'])->update(['order_state_id' => 10]);
+
         return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
     }
 
