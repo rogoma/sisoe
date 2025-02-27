@@ -57,22 +57,6 @@ class ItemsOrdersController extends Controller
 
     }
 
-
-    public function uploadExcel(Request $request, $order_id)
-    {
-        $order = Order::findOrFail($order_id);
-
-        $contracts = $order->contracts;
-
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if (!$request->user()->hasPermission(['admin.items.create', 'orders.items.create'])) {
-            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
-        }
-
-        return view('order.items.uploadExcel', compact('order', 'contracts'));
-    }
-
-
     public function store(Request $request)
     {        
         // SE DEBE HABILITAR EN EL MODEL PARA QUE SE PUEDAN AGREGAR ITEMS(CAMPOS)
@@ -89,6 +73,8 @@ class ItemsOrdersController extends Controller
             'creator_user_id' => 'required|integer',
         ]);
 
+        $total_amount = 0;
+
         foreach ($data['items'] as $item) {
             ItemOrder::create([
                 'item_number' => $item['item_number'],
@@ -100,10 +86,14 @@ class ItemsOrdersController extends Controller
                 'order_id' => $data['order_id'],
                 'creator_user_id' => $data['creator_user_id'],
             ]);
+            $total_mo = ($item['quantity'] * $item['unit_price_mo']);
+            $total_mat = ($item['quantity'] * $item['unit_price_mat']);
+            $total_amount += ($total_mo + $total_mat);
         }
 
-        // Actualizar el estado del pedido
+        // Actualizar el estado de la orden y el Monto
         Order::where('id', $data['order_id'])->update(['order_state_id' => 10]);
+        Order::where('id', $data['order_id'])->update(['total_amount' => $total_amount]);
 
         return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
     }

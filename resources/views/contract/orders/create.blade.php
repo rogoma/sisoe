@@ -219,15 +219,18 @@
                                                 {{-- <button id="saveButton1" type="submit" class="btn btn-primary">Ajuntar Rubros</button> --}}
                                             </div>
                                             <br>
-                                            <br>REFERENCIAS: PLAZO EN DIAS:
-                                                * Fuente de Provisión: 30 *
-                                                Equipamiento: 30 *                                               
-                                                Tanque: 60 *                                              
-                                                Caseta: 30 *
-                                                Extensión de línea: 45 *
-                                                Red de distribución: 30 *
-                                                Aductora: 30 *
-                                                Cercado Perim.: 30
+                                            <br><p><span style="color: red;">REFERENCIAS: PLAZO EN DIAS:</span></p>
+                                            <ul style="color: red;">
+                                                REFERENCIAS: PLAZO EN DIAS:
+                                            * Fuente de Provisión: 30 *
+                                            Equipamiento: 30 *
+                                            Tanque: 60 *
+                                            Caseta: 30 *
+                                            Extensión de línea: 45 *
+                                            Red de distribución: 30 *
+                                            Aductora: 30 *
+                                            Cercado Perim.: 30
+                                            </ul>
                                         </form>
                                     </div>
                                 </div>

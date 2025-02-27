@@ -92,42 +92,29 @@
     <div>
         <br><br>
         <table id="orders_items">
-            <br><br>
             @for ($i = 0; $i < count($contracts1); $i = $i + 3)
-            <table border="1">
                 <tr>
-                    <td colspan="1">FISCALIZACIÓN: </td>
-                    <td colspan="6"> {{ $contracts1[$i]->dependencies_description }}</td>
-                    <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts1[$i]->orders_number }}</td>
-                    <br><br><br><br>                    
+                    <td> Contrato: {{ $contracts1[$i]->contracts_description }} </td>
+                    <td> N°Contrato: {{ $contracts1[$i]->contracts_number_year }} <br><br> ID N°: <br>
+                        {{ number_format($contracts1[$i]->contracts_iddncp, '0', ',', '.') }}</td>
+                    <th> Empresa Contratista: <br><br> {{ $contracts1[$i]->providers_description }}</th>
+                    <th> Dependencia Responsable: <br><br> {{ $contracts1[$i]->dependencies_description }}</th>
+                    <th> Modalidad: {{ $contracts1[$i]->modalities_description }}</th>
+                    <th> Localidad(es): {{ $contracts1[$i]->orders_locality }}</th>
+                    <th> Monto de la Orden: {{ number_format($contracts1[$i]->orders_total_amount, '0', ',', '.') }}  </th>
                 </tr>
-                <tr>
-                    <td colspan="1">CONTRATO: </td>
-                    <td colspan="11"> {{ $contracts1[$i]->contracts_number_year }} - Lote: {{ $contracts1[0]->batch }} <br> {{ $contracts1[$i]->providers_description }}</td>
-                    <br><br>
-                </tr>
-                <tr>
-                    <td colspan="1">LOCALIDAD: </td>                    
-                    <td colspan="11">{{ $contracts1[$i]->orders_locality }}</td>
-                </tr>
-                <tr>
-                    <td colspan="1">REFERENCIA: </td>                    
-                    <td colspan="11">{{ $contracts1[$i]->components_description }} - {{ $contracts1[$i]->orders_references }}</td>
-                </tr>
-            </table>
             @endfor
         </table>
-        {{-- <br> --}}
-        {{-- <table id="orders_items">
+        <br>
+        <table id="orders_items">
             @for ($i = 0; $i < count($contracts1); $i = $i + 3)
                 <tr>
-                    <td> REFERENCIA: {{ $contracts1[$i]->components_description }} - {{ $contracts1[$i]->orders_references }} </td>
+                    <td> Referencia: {{ $contracts1[$i]->components_description }}</td>
+                    <td> {{ $contracts1[$i]->orders_references }} </td>
                 </tr>
             @endfor
-        </table> --}}
-    </div>
+        </table>
 
-    <div>
         <h2>DETALLE DE RUBROS</h2>
         <table>
             <tr>

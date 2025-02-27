@@ -267,7 +267,9 @@
                                                 </div>
                                             </div>
                                             <br>
-                                            <br>REFERENCIAS: PLAZO EN DIAS:
+                                            <br><p><span style="color: red;">REFERENCIAS: PLAZO EN DIAS:</span></p>
+                                            <ul style="color: red;">
+                                                REFERENCIAS: PLAZO EN DIAS:
                                             * Fuente de Provisión: 30 *
                                             Equipamiento: 30 *
                                             Tanque: 60 *
@@ -276,6 +278,7 @@
                                             Red de distribución: 30 *
                                             Aductora: 30 *
                                             Cercado Perim.: 30
+                                            </ul>
                                         </form>
                                     </div>
                                 </div>

@@ -456,29 +456,34 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $order_actual = $order->order_state_id = $request->input('order_state_id');
+        // $order_actual = $order->order_state_id = $request->input('order_state_id');
 
         // 10 CONTRATISTA 11 RUBROS
+        if (is_null($request->input('sign_date')) ) {
+            $order->order_state_id = 10;
+        }else{
+            $order->order_state_id = 1;
+        }
 
         //SI FECHA NO ES NULL Y ESTADO NO SE CAMBIO, SE CAMBIA A ESTADO 1 = "En curso"
-        if ($order->sign_date != null && $order_actual == 10) {
-            $order->order_state_id = 1;
-        } else {
-            $order->order_state_id = $request->input('order_state_id');
-        }
+        // if (!is_null($request->input('sign_date')) && $order->order_state_id == 11) {
+        //     $order->order_state_id = 10;        
+        // }
 
-        //SI FECHA ES NULL Y ESTADO ES DIFERENTE A 10 , SE CAMBIA A ESTADO 10 = "En curso"
-        if ($order->sign_date == null && $order_actual != 10) {
-            $order->order_state_id = 11;
-        }
+        
+
+        // if (is_null($order->sign_date) && $order->order_state_id <> 10) {
+        //     $order->order_state_id = 10;        
+        // }
+
+        // //SI FECHA ES NULL Y ESTADO ES DIFERENTE A 10 , SE CAMBIA A ESTADO 10 = "En curso"
+        
 
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
         $order->locality = $request->input('locality');
-
         $order->component_id = $request->input('component_id');
         $component = Component::find($order->component_id);  // Assuming you have a Component model
-        $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
-       
+        $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                       
         $order->component_code = $componentCode;
         $order->number = $request->input('number');
         $order->reference = $request->input('reference');
