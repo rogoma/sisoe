@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <p class="p-t-30">
-                                        SENASA-Sistema de Gestión de Contratos<br>
+                                        SENASA-Sistema de Gestión de Órdenes de Ejecución de Componentes y Rubros de Obras<br>
                                         {{-- SENASA<br> --}}
                                         Ministerio de Salud Pública y Bienestar Social.<br>
                                         <small>&copy; {{date('Y')}} SENASA - MSPBS</small>

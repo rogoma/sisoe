@@ -418,7 +418,7 @@
                                                             <th>N° OE</th>
                                                             <th>Fecha</th>
                                                             <th>Monto Orden</th>
-                                                            <th>Localidad</th>
+                                                            <th>Distrito-Localidad</th>
                                                             <th>Sub-Componente</th>
                                                             <th>Estado</th>
                                                             {{-- <th>Referencia</th> --}}
@@ -434,7 +434,7 @@
                                                                 <td style="text-align: center;width: 30px;">{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
                                                                 {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
                                                                 <td style="text-align: center;width: 100px;">{{ $order->totalAmountFormat() }}</td>
-                                                                <td style="text-align: left;width: 120px;">{{ $order->locality }}</td>
+                                                                <td style="text-align: left;width: 120px;">{{ $order->district->description }} - {{ $order->locality }}</td>
                                                                 <td style="text-align: left;width: 350px;">{{ $order->component->code }}-{{ $order->component->description }}</td>
                                                                 {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
                                                                 @if (in_array($order->orderState->id, [5]))
@@ -558,13 +558,13 @@
                                                         <u>MONTO DEL CONTRATO:</u> {{ $contract->totalAmountFormat() }}
                                                     </div>
                                                     <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
-                                                        <u>MONTO COMPROMETIDO:</u> 1.500.000.000
+                                                        <u>MONTO COMPROMETIDO:</u> 0
                                                     </div>
                                                     <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: red; background-color: white; padding: 10px;">
-                                                        <u>MONTO UTILIZADO:</u> 657.000.000
+                                                        <u>MONTO UTILIZADO:</u> 0
                                                     </div>
                                                     <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
-                                                        <u>SALDO DEL CONTRATO:</u> 2.343.000
+                                                        <u>SALDO DEL CONTRATO:</u> 3.000.000.000
                                                         {{-- SALDO DEL CONTRATO: {{ $contract->totalAmountFormat() }} --}}
                                                     </div>
                                                 </div>                                                
