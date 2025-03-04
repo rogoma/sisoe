@@ -223,7 +223,7 @@
                 <tr>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Fecha Recepción:
+                        Fecha Recepción: {{ $contracts1[0]->orders_date }}
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">

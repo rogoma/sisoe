@@ -219,7 +219,7 @@
                                                 {{-- <button id="saveButton1" type="submit" class="btn btn-primary">Ajuntar Rubros</button> --}}
                                             </div>
                                             <br>
-                                            <br><p><span style="color: red;">REFERENCIAS: PLAZO EN DIAS:</span></p>
+                                            <br><p><span style="color: red;"></span></p>
                                             <ul style="color: red;">
                                                 REFERENCIAS: PLAZO EN DIAS:
                                             * Fuente de Provisión: 30 *
@@ -249,34 +249,65 @@
     $(document).ready(function () {
         // Evento para el cambio del componente
         $('#component_id').on('change', function () {
-            const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
-            const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
-            const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
+    const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
+    const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
+    const locality = $('#locality').val(); // Obtiene la localidad seleccionada
+    const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
 
-            // Limpia el campo de texto al cambiar de componente
-            numberInput.val('');
+    // Limpia el campo de texto al cambiar de componente
+    numberInput.val('');
 
-            if (componentId) {
-                // Realiza la solicitud al backend
-                fetch(`${url}?component_id=${componentId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const maxNumber = data.number || 0; // Si no hay registros, muestra 0
-                            numberInput.val(maxNumber + 1); // Actualiza el valor del input y le suma 1
-                            $('#number_hidden').val(maxNumber + 1); // Actualiza el valor del input oculto
-                            $nextOrderNumber = maxNumber + 1;
-                        } else {
-                            console.error('Error al obtener el número:', data.message);
-                            numberInput.val('Error'); // Muestra un mensaje en caso de error
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error en la solicitud:', error);
-                        numberInput.val('Error'); // Muestra un mensaje en caso de error
-                    });
-            }
-        });
+    if (componentId && locality) {
+        // Realiza la solicitud al backend incluyendo la localidad
+        fetch(`${url}?component_id=${componentId}&locality=${locality}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const maxNumber = data.number || 0; // Si no hay registros, muestra 0
+                    const nextNumber = maxNumber + 1;
+                    numberInput.val(nextNumber); // Actualiza el valor del input
+                    $('#number_hidden').val(nextNumber); // Actualiza el valor del input oculto
+                } else {
+                    console.error('Error al obtener el número:', data.message);
+                    numberInput.val('Error'); // Muestra un mensaje en caso de error
+                }
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error);
+                numberInput.val('Error'); // Muestra un mensaje en caso de error
+            });
+    }
+});
+
+        // $('#component_id').on('change', function () {
+        //     const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
+        //     const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
+        //     const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
+
+        //     // Limpia el campo de texto al cambiar de componente
+        //     numberInput.val('');
+
+        //     if (componentId) {
+        //         // Realiza la solicitud al backend
+        //         fetch(`${url}?component_id=${componentId}`)
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 if (data.success) {
+        //                     const maxNumber = data.number || 0; // Si no hay registros, muestra 0
+        //                     numberInput.val(maxNumber + 1); // Actualiza el valor del input y le suma 1
+        //                     $('#number_hidden').val(maxNumber + 1); // Actualiza el valor del input oculto
+        //                     $nextOrderNumber = maxNumber + 1;
+        //                 } else {
+        //                     console.error('Error al obtener el número:', data.message);
+        //                     numberInput.val('Error'); // Muestra un mensaje en caso de error
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error('Error en la solicitud:', error);
+        //                 numberInput.val('Error'); // Muestra un mensaje en caso de error
+        //             });
+        //     }
+        // });
 
         // Evento para cargar distritos al cambiar el departamento
         $('#department_id').on('change', function () {

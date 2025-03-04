@@ -329,23 +329,39 @@ class OrdersEjecsController extends Controller
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden agregada correctamente'); // Caso usuario posee rol pedidos
     }
 
-    //PARA CALCULA NUMERO DE ORDEN DE ACUERDO AL COMPONENTE
+    //PARA CALCULA NUMERO DE ORDEN DE ACUERDO AL COMPONENTE y LOCALIDAD
     public function getMaxNumber(Request $request)
-    {
-        $componentId = $request->query('component_id');
+{
+    $componentId = $request->input('component_id');
+    $locality = $request->input('locality');
 
-        if (!$componentId) {
-            return response()->json(['success' => false, 'message' => 'Component ID no proporcionado.']);
-        }
+    // Buscar el número máximo solo de los registros con la misma localidad
+    $maxNumber = Order::where('component_id', $componentId)
+                      ->where('locality', $locality) // Filtra por localidad
+                      ->max('number');
 
-        $maxNumber = Order::where('component_id', $componentId)->max('number');
+    return response()->json([
+        'success' => true,
+        'number' => $maxNumber ?? 0 // Si no hay registros, devuelve 0
+    ]);
+}
+
+    // public function getMaxNumber(Request $request)
+    // {
+    //     $componentId = $request->query('component_id');
+
+    //     if (!$componentId) {
+    //         return response()->json(['success' => false, 'message' => 'Component ID no proporcionado.']);
+    //     }
+
+    //     $maxNumber = Order::where('component_id', $componentId)->max('number');
 
 
-        return response()->json([
-            'success' => true,
-            'number' => $maxNumber,
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'number' => $maxNumber,
+    //     ]);
+    // }
 
     /**
      * Formulario de modificacion de pedido
@@ -430,11 +446,12 @@ class OrdersEjecsController extends Controller
                     $existingRecord = DB::table('orders')
                         ->where('component_id', $request->input('component_id'))                        
                         ->where('number', $request->input('number'))
+                        ->where('locality', $request->input('locality'))
                         ->where('id', '!=', $order->id) // Permite ignorar el registro actual si se está editando
                         ->exists();
     
                     if ($existingRecord) {
-                        $fail('Ya existe un una Orden con Sub-Componente-Nro, verifique');
+                        $fail('Ya existe un una Orden:  Localidad/Sub-Componente/Nro, verifique');
                     }
                 }
             ],

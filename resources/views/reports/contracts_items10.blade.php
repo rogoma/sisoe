@@ -236,7 +236,12 @@
                 <tr>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Fecha Recepción:
+                        {{-- Fecha Recepción: {{ \Carbon\Carbon::parse($contracts1[0]->sign_date)->format('d/m/Y') }} --}}
+                        @if(!empty($contracts1[0]->sign_date))
+                                Fecha Recepción: {{ \Carbon\Carbon::parse($contracts1[0]->sign_date)->format('d/m/Y') }}
+                        @else
+                                Fecha Recepción:
+                        @endif
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
