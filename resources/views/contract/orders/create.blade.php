@@ -44,7 +44,7 @@
                     <div class="page-body">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="card">                                    
+                                <div class="card">
                                     <div class="card-header">
                                         <div class="col-sm-10 text-left">
                                             <h5>Llamado:
@@ -58,7 +58,7 @@
                                             style="font-size: 20px;color: #FF0000;float: left;"
                                             for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>
                                         <h3 style="text-align: center;">Agregar Orden</h3>
-                                    </div>                                    
+                                    </div>
                                     <div class="card-block">
                                         <form method="POST" action="{{ route('contracts.orders.store', $contract->id) }}"
                                             enctype="multipart/form-data">
@@ -76,7 +76,7 @@
                                                         @error('number')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
-                                                    </div>                                                    
+                                                    </div>
 
                                                     <div class="col-sm-6">
                                                         <label for="total_amount" class="col-form-label">Monto</label>
@@ -140,7 +140,8 @@
                                                         <div class="input-group">
                                                             <input type="text" id="sign_date" name="sign_date"
                                                                 class="form-control @error('sign_date') is-invalid @enderror"
-                                                                value="{{ old('sign_date') }}" autocomplete="off" disabled>
+                                                                value="{{ old('sign_date') }}" autocomplete="off"
+                                                                disabled>
                                                             <span class="input-group-append">
                                                                 <button type="button" class="btn btn-outline-secondary"
                                                                     onclick="show('sign_date');"><i
@@ -158,7 +159,8 @@
                                                         <select id="component_id" name="component_id"
                                                             class="form-control @error('component_id') is-invalid @enderror"
                                                             data-url="{{ route('getMaxNumber') }}">
-                                                            <option value="">--- Seleccionar Sub-Componente ---</option>
+                                                            <option value="">--- Seleccionar Sub-Componente ---
+                                                            </option>
                                                             @foreach ($components as $component)
                                                                 <option value="{{ $component->id }}"
                                                                     @if ($component->id == old('component_id')) selected @endif>
@@ -186,7 +188,8 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="order_state_id" class="col-form-label">Estado de la Orden:</label>
+                                                        <label for="order_state_id" class="col-form-label">Estado de la
+                                                            Orden:</label>
                                                         <br>
                                                         <label for="order_state_id" class="col-form-label"
                                                             style="color: red;">Pendiente Fecha Acuse recibo
@@ -194,7 +197,8 @@
                                                     </div>
 
                                                     <div class="col-sm-9">
-                                                        <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
+                                                        <label for="reference" class="col-form-label">Referencia (Hasta
+                                                            500 caracteres)</label>
                                                         <textarea id="reference" name="reference" class="form-control @error('reference') is-invalid @enderror"
                                                             maxlength="500">{{ old('reference') }}</textarea>
                                                         @error('reference')
@@ -203,7 +207,8 @@
                                                     </div>
 
                                                     <div class="col-sm-12">
-                                                        <label for="comments" class="col-form-label">Comentarios (Hasta 200 caracteres)</label>
+                                                        <label for="comments" class="col-form-label">Comentarios (Hasta
+                                                            200 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
                                                             maxlength="200">{{ old('comments') }}</textarea>
                                                         @error('comments')
@@ -219,17 +224,18 @@
                                                 {{-- <button id="saveButton1" type="submit" class="btn btn-primary">Ajuntar Rubros</button> --}}
                                             </div>
                                             <br>
-                                            <br><p><span style="color: red;"></span></p>
+                                            <br>
+                                            <p><span style="color: red;"></span></p>
                                             <ul style="color: red;">
                                                 REFERENCIAS: PLAZO EN DIAS:
-                                            * Fuente de Provisión: 30 *
-                                            Equipamiento: 30 *
-                                            Tanque: 60 *
-                                            Caseta: 30 *
-                                            Extensión de línea: 45 *
-                                            Red de distribución: 30 *
-                                            Aductora: 30 *
-                                            Cercado Perim.: 30
+                                                * Fuente de Provisión: 30 *
+                                                Equipamiento: 30 *
+                                                Tanque: 60 *
+                                                Caseta: 30 *
+                                                Extensión de línea: 45 *
+                                                Red de distribución: 30 *
+                                                Aductora: 30 *
+                                                Cercado Perim.: 30
                                             </ul>
                                         </form>
                                     </div>
@@ -245,39 +251,41 @@
 
 
 @push('scripts')
-<script type="text/javascript">
-    $(document).ready(function () {
+    <script type="text/javascript">
+        $(document).ready(function() {
         // Evento para el cambio del componente
-        $('#component_id').on('change', function () {
-    const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
-    const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
-    const locality = $('#locality').val(); // Obtiene la localidad seleccionada
-    const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
+        $('#component_id').on('change', function() {
+            const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
+            const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
+            const locality = $('#locality').val(); // Obtiene la localidad seleccionada
+            const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
 
-    // Limpia el campo de texto al cambiar de componente
-    numberInput.val('');
+            // Limpia el campo de texto al cambiar de componente
+            numberInput.val('');
 
-    if (componentId && locality) {
-        // Realiza la solicitud al backend incluyendo la localidad
-        fetch(`${url}?component_id=${componentId}&locality=${locality}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const maxNumber = data.number || 0; // Si no hay registros, muestra 0
-                    const nextNumber = maxNumber + 1;
-                    numberInput.val(nextNumber); // Actualiza el valor del input
-                    $('#number_hidden').val(nextNumber); // Actualiza el valor del input oculto
-                } else {
-                    console.error('Error al obtener el número:', data.message);
-                    numberInput.val('Error'); // Muestra un mensaje en caso de error
-                }
-            })
-            .catch(error => {
-                console.error('Error en la solicitud:', error);
-                numberInput.val('Error'); // Muestra un mensaje en caso de error
-            });
-    }
-});
+            if (componentId && locality) {
+                // Realiza la solicitud al backend incluyendo la localidad
+                fetch(`${url}?component_id=${componentId}&locality=${locality}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const maxNumber = data.number || 0; // Si no hay registros, muestra 0
+                            const nextNumber = maxNumber + 1;
+                            numberInput.val(nextNumber); // Actualiza el valor del input
+                            $('#number_hidden').val(
+                                nextNumber); // Actualiza el valor del input oculto
+                        } else {
+                            console.error('Error al obtener el número:', data.message);
+                            numberInput.val('Error'); // Muestra un mensaje en caso de error
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error en la solicitud:', error);
+                        numberInput.val('Error'); // Muestra un mensaje en caso de error
+                    });
+            }
+        });
+
 
         // $('#component_id').on('change', function () {
         //     const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
@@ -309,8 +317,10 @@
         //     }
         // });
 
+
+
         // Evento para cargar distritos al cambiar el departamento
-        $('#department_id').on('change', function () {
+        $('#department_id').on('change', function() {
             var departmentId = $(this).val();
             var districtDropdown = $('#district_id');
 
@@ -322,14 +332,17 @@
                 $.ajax({
                     url: '/fetch-districts',
                     type: 'GET',
-                    data: { department_id: departmentId },
-                    success: function (data) {
+                    data: {
+                        department_id: departmentId
+                    },
+                    success: function(data) {
                         // Agrega las opciones al combo de distritos
-                        $.each(data, function (key, district) {
-                            districtDropdown.append('<option value="' + district.id + '">' + district.description + '</option>');
+                        $.each(data, function(key, district) {
+                            districtDropdown.append('<option value="' + district
+                                .id + '">' + district.description + '</option>');
                         });
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         console.error('Error fetching districts:', xhr.responseText);
                     }
                 });
@@ -349,7 +362,30 @@
             autoclose: true,
             todayHighlight: true,
         });
-    });
-</script>
-@endpush
 
+        $('#locality').on('input', function() {
+            $('#component_id').val($('#component_id option:first').val())
+        .change(); // Establece la primera opción y dispara el evento change
+        });
+
+        // Cuando el usuario sale del input locality
+        $('#locality').on('blur', function() {
+            let url = $('#component_id').data('url'); // Obtener la URL desde el atributo data-url
+            if (url) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response); // Manejar la respuesta aquí si es necesario
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al obtener los datos:', error);
+                    }
+                });
+            }
+        });
+        
+    });
+    </script>
+@endpush

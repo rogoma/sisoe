@@ -558,13 +558,13 @@
                                                         <u>MONTO DEL CONTRATO:</u> {{ $contract->totalAmountFormat() }}
                                                     </div>
                                                     <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
-                                                        <u>MONTO COMPROMETIDO:</u> 0
+                                                        <u>MONTO COMPROMETIDO:</u> {{ number_format($contract->compro_amount, 0, ',', '.') }}
                                                     </div>
                                                     <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: red; background-color: white; padding: 10px;">
                                                         <u>MONTO UTILIZADO:</u> 0
                                                     </div>
                                                     <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
-                                                        <u>SALDO DEL CONTRATO:</u> 3.000.000.000
+                                                        <u>SALDO DEL CONTRATO:</u> {{ $contract->totalAmountFormat() }}
                                                         {{-- SALDO DEL CONTRATO: {{ $contract->totalAmountFormat() }} --}}
                                                     </div>
                                                 </div>                                                

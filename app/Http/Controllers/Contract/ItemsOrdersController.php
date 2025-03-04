@@ -21,6 +21,7 @@ use App\Models\ItemOrder;
 use App\Models\Rubro;
 use App\Models\Component;
 use App\Models\SubItem;
+use App\Models\Contract;
 
 class ItemsOrdersController extends Controller
 {
@@ -58,13 +59,13 @@ class ItemsOrdersController extends Controller
     }
 
     public function store(Request $request)
-    {        
+    {
         // SE DEBE HABILITAR EN EL MODEL PARA QUE SE PUEDAN AGREGAR ITEMS(CAMPOS)
         $data = $request->validate([
-             'items' => 'required|array',            
+            'items' => 'required|array',
             'items.*.item_number' => 'required|integer',
-            'items.*.rubro_id' => 'required|integer',           
-            'items.*.quantity' => 'required|numeric',                        
+            'items.*.rubro_id' => 'required|integer',
+            'items.*.quantity' => 'required|numeric',
             'items.*.unit_price_mo' => 'required|numeric',
             'items.*.unit_price_mat' => 'required|numeric',
             'items.*.tot_price_mo' => 'required|numeric',
@@ -92,8 +93,23 @@ class ItemsOrdersController extends Controller
         }
 
         // Actualizar el estado de la orden y el Monto
-        Order::where('id', $data['order_id'])->update(['order_state_id' => 10]);
-        Order::where('id', $data['order_id'])->update(['total_amount' => $total_amount]);
+        // Order::where('id', $data['order_id'])->update(['order_state_id' => 10]);
+        // Order::where('id', $data['order_id'])->update(['total_amount' => $total_amount]);
+        // Actualizar estado y monto en una sola consulta
+        Order::where('id', $data['order_id'])->update([
+            'order_state_id' => 10,
+            'total_amount' => $total_amount
+        ]);
+
+        // Obtener el contract_id de la orden
+        $contract_id = Order::where('id', $data['order_id'])->value('contract_id');
+
+        // Calcular el nuevo monto sumando todas las órdenes del contrato
+        $total_compro_amount = Order::where('contract_id', $contract_id)->sum('total_amount');
+
+        // Acumular el total_amount en compro_amount del contrato
+        Contract::where('id', $contract_id)->increment('compro_amount', $total_amount);
+
 
         return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
     }
