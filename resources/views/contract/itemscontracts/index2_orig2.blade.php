@@ -88,6 +88,7 @@
                                             <table id="items" class="display" style="width:100%">
                                                 <thead>
                                                     <tr>
+                                                        <th>Id</th>
                                                         <th>#Item</th>
                                                         <th>Rubro ID</th>
                                                         <th>Cod.- Rubro</th>
@@ -105,23 +106,29 @@
                                                         $tot_price_mat = 0;
                                                     @endphp
 
-                                                    @foreach ($items as $i => $item)
+                                                    @foreach ($items->sortBy('rubro.id') as $i => $item)
                                                         <tr>
                                                             @if ($item->rubro_id == '9999')
-                                                                <td colspan="2"></td>
+                                                                <td class="item_id" style="text-align: center;">
+                                                                {{ $item->id }}</td>
+
+                                                                <td class="item_number" style="text-align: center;">
+                                                                    {{ $item->item_number }}</td>
+
+                                                                <td class="rubro-id" style="text-align: center;">
+                                                                    {{ $item->rubro->id }}</td>
                                                                 <td style="font-size: 16px; font-weight: bold;">
-                                                                    {{ $item->subitem->description }}</td>
-                                                                <td colspan="6"></td>
-                                                                {{-- <td></td>
+                                                                    {{ $item->subitem->description }}</td>                                                               
                                                                 <td></td>
-                                                                <td style="font-size: 16px; font-weight: bold;">{{ $item->subitem->description }}</td>
+                                                                <td></td>                                                                
                                                                 <td></td>   
                                                                 <td></td>
                                                                 <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td> --}}
+                                                                <td></td>                                                                
                                                             @else
+                                                                <td class="item_id" style="text-align: center;">
+                                                                {{ $item->id }}</td>
+
                                                                 <td class="item_number" style="text-align: center;">
                                                                     {{ $item->item_number }}</td>
 
@@ -159,20 +166,14 @@
                                                                 <td class="price-total-mo" style="text-align: center;"
                                                                     id="total_mo_{{ $i }}">0</td>
                                                                 <td class="price-total-mat" style="text-align: center;"
-                                                                    id="total_mat_{{ $i }}">0</td>
-
-                                                                {{-- <td class="price-total-mo" style="text-align: center;" data-value="0">0</td>
-                                                                <td class="price-total-mat" style="text-align: center;" data-value="0">0</td> --}}
-
-                                                                {{-- <td class="price-total-mo" style="text-align: center;" id="total_mo_{{ $i }}" data-value="0">0</td>
-                                                                <td class="price-total-mo" style="text-align: center;" id="total_mat_{{ $i }}" data-value="0">0</td> --}}
+                                                                    id="total_mat_{{ $i }}">0</td>                                                                
                                                             @endif
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="6"></td>
+                                                        <td colspan="7"></td>
                                                         <td
                                                             style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">
                                                             SUB-TOTALES:</td>
@@ -182,7 +183,7 @@
                                                             id="tot_price_mat"></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="6"></td>
+                                                        <td colspan="7"></td>
                                                         <td
                                                             style="font-size: 16px; font-weight: bold; color: red; background-color: yellow;">
                                                             TOTALES:</td>
