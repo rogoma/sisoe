@@ -230,7 +230,7 @@
                     </td>
                     <td colspan="3"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        {{ $user->name }} {{ $user->lastname }} <br> Aclaración Firma Fiscal
+                        {{ $contracts1[0]->fiscal_name }} {{ $contracts1[0]->fiscal_lastname }}  <br> Aclaración Firma Fiscal
                     </td>
                 </tr>
                 <tr>

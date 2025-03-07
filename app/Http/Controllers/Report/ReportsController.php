@@ -62,6 +62,7 @@ class ReportsController extends Controller
                 ->select(DB::raw('DISTINCT ON (orders_id) orders_id, orders_number,
                     contracts_description,contracts_iddncp, contracts_number_year,
                     providers_description, orders_number, orders_references,
+                    creator_user_id, fiscal_ci,fiscal_name, fiscal_lastname,
                     orders_locality,orders_date, dependencies_description,sign_date,
                     components_description,orders_total_amount,modalities_description, 
                     orders_comments, orders_plazo,minim_amount,fiscal4_id,fiscal4_date,contract_admin_id,batch'))                    
