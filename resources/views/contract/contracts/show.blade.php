@@ -204,11 +204,11 @@
                                                         class="fa fa-clone"></i> Órdenes de Ejec.</a>
                                                 <div class="slide"></div>
                                             </li>
-                                            <li class="nav-item">
+                                            {{-- <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab7" role="tab"><i
                                                         class="fa fa-file-pdf-o"></i> Plazos/Prórrogas</a>
                                                 <div class="slide"></div>
-                                            </li>
+                                            </li> --}}
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i
                                                         class="fa fa-file-pdf-o"></i> Reportes</a>
@@ -404,22 +404,28 @@
                                                 </div>
                                             </div>
 
-                                            {{-- ORDENES DE EJECUCIÓN - MUESTRA CON SEARCH--}}                                                                                        
-                                            <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+                                            {{-- ORDENES DE EJECUCIÓN - MUESTRA CON SEARCH --}}
+                                            <link rel="stylesheet"
+                                                href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
                                             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
                                             <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-                                               <div class="tab-pane" id="tab2" role="tabpanel">
-                                                <table id="items" class="display; table table-striped table-bordered" style="width:100%">
+                                            <div class="tab-pane" id="tab2" role="tabpanel">
+                                                <table id="items" class="display; table table-striped table-bordered"
+                                                    style="width:100%">
                                                     <thead>
                                                         <tr>
                                                             {{-- <th>#</th> --}}
                                                             <th>Fiscal</th>
                                                             <th>N° OE</th>
-                                                            <th>Fecha</th>
+                                                            <th>Fecha Orden</th>
                                                             <th>Monto Orden</th>
                                                             <th>Distrito-Localidad</th>
                                                             <th>Sub-Componente</th>
+                                                            <th>Plazo Inicio</th>
+                                                            <th>Plazo días</th>
+                                                            <th>Fecha Alerta</th>
+                                                            <th>Plazo Final</th>
                                                             <th>Estado</th>
                                                             {{-- <th>Referencia</th> --}}
                                                             <th style="width: 190px; text-align: center;">Acciones</th>
@@ -428,28 +434,84 @@
                                                     <tbody>
                                                         @foreach ($contract->orders->sortBy('id') as $index => $order)
                                                             <tr>
-                                                                
-                                                                <td style="color:black;text-align: left;width: 150px;">{{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }}-{{ $order->creatorUser->position->description }} </td>                                                                
-                                                                <td style="text-align: center;width: 60px;">{{ $order->component_code }} - {{ $order->number }}</td>
-                                                                <td style="text-align: center;width: 30px;">{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
+
+                                                                <td style="color:black;text-align: left;width: 150px;">
+                                                                    {{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }}-{{ $order->creatorUser->position->description }}
+                                                                </td>
+                                                                <td style="text-align: center;width: 60px;">
+                                                                    {{ $order->component_code }} - {{ $order->number }}
+                                                                </td>
+                                                                <td style="text-align: center;width: 25px;">
+                                                                    {{ date('d/m/Y', strtotime($order->created_at)) }}</td>
                                                                 {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
-                                                                <td style="text-align: center;width: 100px;">{{ $order->totalAmountFormat() }}</td>
-                                                                <td style="text-align: left;width: 120px;">{{ $order->district->description }} - {{ $order->locality }}</td>
-                                                                <td style="text-align: left;width: 350px;">{{ $order->component->code }}-{{ $order->component->description }}</td>
+                                                                <td style="text-align: center;width: 100px;">
+                                                                    {{ $order->totalAmountFormat() }}</td>
+                                                                <td style="text-align: left;width: 120px;">
+                                                                    {{ $order->district->description }} -
+                                                                    {{ $order->locality }}</td>
+                                                                <td style="text-align: left;width: 350px;">
+                                                                    {{ $order->component->code }}-{{ $order->component->description }}
+                                                                </td>
+
+                                                                {{-- FECHA ACUSE CONTRATISTA--}}
+                                                                <td style="color:#ff0000;text-align: left;width: 25px;">
+                                                                    @if($order->sign_date)
+                                                                        {{ \Carbon\Carbon::parse($order->sign_date)->format('d/m/Y') }}
+                                                                    @endif
+                                                                </td>                                                                
+
+                                                                {{-- PLAZO --}}
+                                                                <td style="color:#ff0000;text-align: center;width: 15px;">
+                                                                    {{ $order->plazo }}</td>
+
+                                                                {{-- FECHA ALERTA 03 DIAS ANTES--}}
+                                                                <td style="text-align: left; width: 20px; 
+                                                                    @if ($order->sign_date) 
+                                                                        @php
+                                                                            $fechaCalculada = \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3);
+                                                                        @endphp
+
+                                                                        @if ($fechaCalculada->lte(\Carbon\Carbon::now()))
+                                                                            background-color: yellow; color: black;
+                                                                        @endif
+                                                                    @endif">
+                                                                    @if ($order->sign_date)
+                                                                        {{ $fechaCalculada->format('d/m/Y') }}
+                                                                    @endif
+                                                                </td>                                                               
+
+                                                                {{-- PLAZO FINAL CALCULA SI FECHA PLAZO ES IGUAL A FECHA ACTUAL Y PONE EN ROJO --}}
+                                                                <td style="text-align: left; width: 25px; 
+                                                                    @if ($order->sign_date && \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->lte(\Carbon\Carbon::now())) 
+                                                                        background-color: red; color: white;                                                                        
+                                                                    @endif">
+                                                                    @if ($order->sign_date)
+                                                                        {{ \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->format('d/m/Y') }}
+                                                                    @endif
+                                                                </td>
+
+
                                                                 {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
                                                                 @if (in_array($order->orderState->id, [5]))
-                                                                    <td style="color:#ff0000;text-align: left;width: 50px;"> {{ $order->orderState->description }}</td>
+                                                                    <td
+                                                                        style="color:#ff0000;text-align: left;width: 50px;">
+                                                                        {{ $order->orderState->description }}</td>
                                                                 @else
                                                                     {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
                                                                     @if (in_array($order->orderState->id, [10]))
-                                                                        <td style="color:white;background-color:red;width: 120px;">{{ $order->orderState->description }}</td>                                                                        
+                                                                        <td
+                                                                            style="color:white;background-color:red;width: 120px;">
+                                                                            {{ $order->orderState->description }}</td>
                                                                     @else
                                                                         @if (in_array($order->orderState->id, [11]))
-                                                                            <td style="color:#ff0000;background-color:yellow;width: 120px;">{{ $order->orderState->description }}</td>
+                                                                            <td
+                                                                                style="color:#ff0000;background-color:yellow;width: 120px;">
+                                                                                {{ $order->orderState->description }}</td>
                                                                         @else
-                                                                            <td style="color:rgb(41, 128, 0)">{{ $order->orderState->description }}</td>
+                                                                            <td style="color:rgb(41, 128, 0)">
+                                                                                {{ $order->orderState->description }}</td>
                                                                         @endif
-                                                                    @endif  
+                                                                    @endif
                                                                 @endif
                                                                 {{-- <td style="max-width: 200px">{{ $order->comments }}</td> --}}
 
@@ -467,7 +529,7 @@
 
                                                                     {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
                                                                     @if (in_array($order->orderState->id, [1, 2, 3, 4, 10, 11]))
-                                                                        @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))                                                                            
+                                                                        @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                             @if (Auth::user()->id == $order->creator_user_id)
                                                                                 <button type="button" title="Editar"
@@ -475,12 +537,6 @@
                                                                                     onclick="updateOrder({{ $order->id }})">
                                                                                     <i class="fa fa-pencil"></i>
                                                                                 </button>                                                                                
-                                                                                {{-- @if ($order->items->count() > 0)
-                                                                                    <button type="button" title="Anular"
-                                                                                        class="btn btn-danger btn-icon"
-                                                                                        onclick="anuleOrder({{ $order->id }})"><i
-                                                                                            class="fa fa-ban"></i></button>
-                                                                                @endif --}}
                                                                             @endif
 
                                                                             @if ($order->items->count() > 0)
@@ -499,18 +555,28 @@
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id)
                                                                                     <button type="button" title="Anular"
-                                                                                    class="btn btn-danger btn-icon"
-                                                                                    onclick="anuleOrder({{ $order->id }})"><i
-                                                                                        class="fa fa-ban"></i></button>
+                                                                                        class="btn btn-danger btn-icon"
+                                                                                        onclick="anuleOrder({{ $order->id }})"><i
+                                                                                            class="fa fa-ban"></i></button>
                                                                                 @endif
+
+                                                                                {{-- Agregar eventos a la orden --}}
+                                                                                @if (Auth::user()->id == $order->creator_user_id)
+                                                                                    <button type="button" title="Eventos"
+                                                                                        class="btn btn-secondary btn-icon">
+                                                                                        {{-- onclick="anuleOrder({{ $order->id }})"> --}}
+                                                                                        <i class="fa fa-calendar-o"></i></button>
+                                                                                @endif
+
                                                                             @else
-                                                                                {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}    
+                                                                                {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id)
                                                                                     <button type="button"
-                                                                                    title="Importar Rubros de Contrato"
-                                                                                    class="btn btn-primary btn-icon"
-                                                                                    onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
-                                                                                    <i class="fa fa-download text-white"></i>
+                                                                                        title="Importar Rubros de Contrato"
+                                                                                        class="btn btn-primary btn-icon"
+                                                                                        onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
+                                                                                        <i
+                                                                                            class="fa fa-download text-white"></i>
                                                                                     </button>
                                                                                 @endif
                                                                             @endif
@@ -530,7 +596,7 @@
                                                                                     title="Ver Orden" target="_blank"
                                                                                     class="btn btn-success btn-icon"><i
                                                                                         class="fa fa-eye"></i></a>
-                                                                            {{-- @else
+                                                                                {{-- @else
                                                                                 <span style="color:#ff0000;background-color:yellow">Falta agregar rubros </span>  --}}
                                                                             @endif
                                                                         @endif
@@ -553,21 +619,27 @@
                                                 </div>
                                                 <br><br><br>
                                                 {{-- ACA DEBEN IR VALORES CALCULADOS DE ACUERDO A LA GENERACIÓN DE ORDENES --}}
-                                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
+                                                <div
+                                                    style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                                    <div
+                                                        style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
                                                         <u>MONTO DEL CONTRATO:</u> {{ $contract->totalAmountFormat() }}
                                                     </div>
-                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
-                                                        <u>MONTO COMPROMETIDO:</u> {{ number_format($contract->compro_amount, 0, ',', '.') }}
+                                                    <div
+                                                        style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
+                                                        <u>MONTO COMPROMETIDO:</u>
+                                                        {{ number_format($contract->compro_amount, 0, ',', '.') }}
                                                     </div>
-                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: red; background-color: white; padding: 10px;">
+                                                    <div
+                                                        style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: red; background-color: white; padding: 10px;">
                                                         <u>MONTO UTILIZADO:</u> 0
                                                     </div>
-                                                    <div style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
+                                                    <div
+                                                        style="flex: 1; text-align: center; font-size: 16px; font-weight: bold; color: blue; background-color: white; padding: 10px;">
                                                         <u>SALDO DEL CONTRATO:</u> {{ $contract->totalAmountFormat() }}
                                                         {{-- SALDO DEL CONTRATO: {{ $contract->totalAmountFormat() }} --}}
                                                     </div>
-                                                </div>                                                
+                                                </div>
                                                 {{-- <br>
                                                 <span style="font-size: 16px; font-weight: bold; color:WHITE;background-color:GREEN;">MONTO DEL CONTRATO: {{ $contract->totalAmountFormat() }}</span>
                                                 <br>
@@ -585,7 +657,7 @@
                                                             <th>#</th>
                                                             <th>Descripción</th>
                                                             <th>Tipo de Evento:</th>
-                                                            <th>Fecha/Hora</th>                                                            
+                                                            <th>Fecha/Hora</th>
                                                             <th style="width: 200px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
@@ -683,16 +755,20 @@
                                                         <tr>
                                                             <td>{{ $contract->fiscal1->name ?? '-' }}
                                                                 {{ $contract->fiscal1->lastname ?? '-' }} -
-                                                                {{ $contract->fiscal1->position->description ?? '-' }}</td>
+                                                                {{ $contract->fiscal1->position->description ?? '-' }}
+                                                            </td>
                                                             <td>{{ $contract->fiscal2->name ?? '-' }}
                                                                 {{ $contract->fiscal2->lastname ?? '-' }} -
-                                                                {{ $contract->fiscal2->position->description ?? '-' }}</td>
+                                                                {{ $contract->fiscal2->position->description ?? '-' }}
+                                                            </td>
                                                             <td>{{ $contract->fiscal3->name ?? '-' }}
                                                                 {{ $contract->fiscal3->lastname ?? '-' }} -
-                                                                {{ $contract->fiscal3->position->description ?? '-' }}</td>
+                                                                {{ $contract->fiscal3->position->description ?? '-' }}
+                                                            </td>
                                                             <td>{{ $contract->fiscal4->name ?? '-' }}
                                                                 {{ $contract->fiscal4->lastname ?? '-' }} -
-                                                                {{ $contract->fiscal4->position->description ?? '-' }}</td>
+                                                                {{ $contract->fiscal4->position->description ?? '-' }}
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -901,7 +977,6 @@
 
 @push('scripts')
     <script type="text/javascript">
-    
         $(document).ready(function() {
 
             $('#items').DataTable();
