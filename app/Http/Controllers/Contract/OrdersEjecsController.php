@@ -295,7 +295,7 @@ class OrdersEjecsController extends Controller
             // 'order_state_id'=> 'required|numeric',
             'locality' => 'required|string|max:100',
             'reference' => 'nullable|max:500',
-            'comments' => 'nullable|max:200',
+            'comments' => 'nullable|max:500',
             'plazo' => 'required|numeric',
             'department_id' => 'required',
             'district_id' => 'required|numeric'
@@ -457,7 +457,7 @@ class OrdersEjecsController extends Controller
             ],
             'locality' => 'required|string|max:100',
             'reference' => 'nullable|string|max:500',
-            'comments' => 'nullable|string|max:200',
+            'comments' => 'nullable|string|max:500',
             'plazo' => 'required|numeric',
             'district_id' => 'required|numeric',
         ];

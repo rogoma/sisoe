@@ -250,9 +250,9 @@
 
                                                     <div class="col-sm-12">
                                                         <label for="comments" class="col-form-label">Comentarios (Hasta
-                                                            200 caracteres)</label>
+                                                            500 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
-                                                            maxlength="200">{{ old('comments', $order->comments) }}</textarea>
+                                                            maxlength="500">{{ old('comments', $order->comments) }}</textarea>
                                                         @error('comments')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
