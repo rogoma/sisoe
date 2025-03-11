@@ -373,7 +373,8 @@
                     </tr>
                     <tr>
                         <td colspan="1">LOCALIDAD: </td>                    
-                        <td colspan="11">{{ $contracts1[$i]->orders_locality }}</td>
+                        <td colspan="11">{{ $contracts1[$i]->orders_locality }}, Distrito de: {{ $contracts1[$i]->districts_description }}, Departamento de: {{ $contracts1[$i]->departments_description }}</td>
+
                     </tr>
                     <tr>
                         <td colspan="1">REFERENCIA: </td>                    
