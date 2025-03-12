@@ -160,7 +160,6 @@
                                                         <label for="sign_date" class="col-form-label">Fecha acuse recibo
                                                             Contratista</label>
                                                         <div class="input-group">
-
                                                             <input type="text" id="sign_date" name="sign_date"
                                                                 {{-- DISABLED INGRESO DE FECHA SI LA ORDEN NO TIENE DETALLE DE RUBROS --}}
                                                                 class="form-control @error('sign_date') is-invalid @enderror"
@@ -219,8 +218,7 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="order_state_id" class="col-form-label">Estado de la
-                                                            Orden</label>
+                                                        <label for="order_state_id" class="col-form-label">Estado de la Orden</label>
                                                         <select id="order_state_id" name="order_state_id"
                                                             class="form-control @error('order_state_id') is-invalid @enderror"
                                                             @if ($order->items->count() == 0) disabled @endif>
@@ -233,6 +231,31 @@
                                                             @endforeach
                                                         </select>
                                                         @error('order_state_id')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <label for="sign_date_fin" class="col-form-label">Fecha final de Orden</label>
+                                                        <div class="input-group">                                                            
+                                                            <input 
+                                                                type="text" 
+                                                                id="sign_date_fin" 
+                                                                name="sign_date_fin"
+                                                                class="form-control @error('sign_date_fin') is-invalid @enderror"
+                                                                value="{{ old('sign_date_fin', isset($order->sign_date_fin) ? date('d/m/Y', strtotime($order->sign_date_fin)) : '') }}"
+                                                                autocomplete="off">                                                    
+                                                            <span class="input-group-append">
+                                                                <button 
+                                                                    type="button" 
+                                                                    class="btn btn-outline-secondary" 
+                                                                    onclick="show('sign_date_fin');" 
+                                                                    {{ empty($order->sign_date_fin) ? 'disabled' : '' }}>
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                        @error('sign_date_fin')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
@@ -338,6 +361,13 @@
             $('#district_id').select2();
 
             $('#sign_date').datepicker({
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+            });
+
+            $('#sign_date_fin').datepicker({
                 language: 'es',
                 format: 'dd/mm/yyyy',
                 autoclose: true,

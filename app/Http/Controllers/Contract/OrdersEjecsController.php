@@ -479,24 +479,23 @@ class OrdersEjecsController extends Controller
         if (is_null($request->input('sign_date')) ) {
             $order->order_state_id = 10;
         }else{
-            $order->order_state_id = 1;
+            // $order->order_state_id = 1;
+            $order->order_state_id = $request->input('order_state_id');
         }
-
-        //SI FECHA NO ES NULL Y ESTADO NO SE CAMBIO, SE CAMBIA A ESTADO 1 = "En curso"
-        // if (!is_null($request->input('sign_date')) && $order->order_state_id == 11) {
-        //     $order->order_state_id = 10;        
-        // }
-
         
-
-        // if (is_null($order->sign_date) && $order->order_state_id <> 10) {
-        //     $order->order_state_id = 10;        
-        // }
-
-        // //SI FECHA ES NULL Y ESTADO ES DIFERENTE A 10 , SE CAMBIA A ESTADO 10 = "En curso"
-        
-
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
+        
+        
+        // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
+        if ($request->input('order_state_id') == 4 && $request->filled('sign_date_fin')) {
+            $order->sign_date_fin = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date_fin'))));
+        } else {
+            $order->sign_date_fin = null;
+        }
+        
+
+        
+        
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         $component = Component::find($order->component_id);  // Assuming you have a Component model

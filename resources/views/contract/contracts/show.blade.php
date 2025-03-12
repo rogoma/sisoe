@@ -464,9 +464,11 @@
                                                                 <td style="color:#ff0000;text-align: center;width: 15px;">
                                                                     {{ $order->plazo }}</td>
 
-                                                                {{-- FECHA ALERTA 03 DIAS ANTES--}}
+                                                                {{-- FECHA ALERTA 03 DIAS ANTES NO PINTA SI YA ESTA FINALIZADO ESTADO 4--}}
                                                                 <td style="text-align: left; width: 20px; 
-                                                                    @if ($order->sign_date) 
+                                                                    @if ($order->orderState->id == 4) 
+                                                                        background-color: white; color: black;
+                                                                    @elseif ($order->sign_date) 
                                                                         @php
                                                                             $fechaCalculada = \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3);
                                                                         @endphp
@@ -475,14 +477,18 @@
                                                                             background-color: yellow; color: black;
                                                                         @endif
                                                                     @endif">
+                                                                    
                                                                     @if ($order->sign_date)
-                                                                        {{ $fechaCalculada->format('d/m/Y') }}
+                                                                        {{ \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3)->format('d/m/Y') }}
                                                                     @endif
-                                                                </td>                                                               
+                                                                </td>
+                                                           
 
-                                                                {{-- PLAZO FINAL CALCULA SI FECHA PLAZO ES IGUAL A FECHA ACTUAL Y PONE EN ROJO --}}
-                                                                <td style="text-align: left; width: 25px; 
-                                                                    @if ($order->sign_date && \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->lte(\Carbon\Carbon::now())) 
+                                                                {{-- PLAZO FINAL CALCULA SI FECHA PLAZO ES IGUAL A FECHA ACTUAL Y PONE EN ROJO - NO PINTA SI YA ESTA FINALIZADO ESTADO 4--}}
+                                                                <td style="text-align: left; width: 25px;
+                                                                    @if ($order->orderState->id == 4) 
+                                                                        background-color: white; color: black; 
+                                                                    @elseif ($order->sign_date && \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->lte(\Carbon\Carbon::now()))                                                                        
                                                                         background-color: red; color: white;                                                                        
                                                                     @endif">
                                                                     @if ($order->sign_date)
@@ -508,9 +514,14 @@
                                                                                 style="color:#ff0000;background-color:yellow;width: 120px;">
                                                                                 {{ $order->orderState->description }}</td>
                                                                         @else
-                                                                            <td style="color:rgb(41, 128, 0)">
-                                                                                {{ $order->orderState->description }}</td>
-                                                                        @endif
+                                                                            @if ($order->orderState->id == 4)
+                                                                                <td style="color:white;background-color:green">{{ $order->orderState->description }} - 
+                                                                                    {{ !empty($order->sign_date_fin) ? \Carbon\Carbon::parse($order->sign_date_fin)->format('d/m/Y') : 'Sin fecha' }}                                                                                    
+                                                                                </td>
+                                                                            @else
+                                                                                <td style="color:rgb(41, 128, 0)">{{ $order->orderState->description }}</td>
+                                                                            @endif
+                                                                        @endif    
                                                                     @endif
                                                                 @endif
                                                                 {{-- <td style="max-width: 200px">{{ $order->comments }}</td> --}}
