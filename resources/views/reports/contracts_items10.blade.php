@@ -363,7 +363,7 @@
                     <tr>
                         <td colspan="1">FISCALIZACIÓN: </td>
                         <td colspan="6"> {{ $contracts1[$i]->dependencies_description }}</td>
-                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts1[$i]->orders_number }}</td>
+                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts1[$i]->components_code }}{{ $contracts1[$i]->orders_number }}</td>                        
                         <br><br><br><br>                    
                     </tr>
                     <tr>

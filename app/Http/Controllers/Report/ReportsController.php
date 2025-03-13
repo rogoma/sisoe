@@ -64,7 +64,7 @@ class ReportsController extends Controller
                     providers_description, orders_number, orders_references, districts_description,
                     creator_user_id, fiscal_ci,fiscal_name, fiscal_lastname,departments_description,
                     orders_locality,orders_date, dependencies_description,sign_date,
-                    components_description,orders_total_amount,modalities_description, 
+                    components_code,components_description,orders_total_amount,modalities_description, 
                     orders_comments, orders_plazo,minim_amount,fiscal4_id,fiscal4_date,contract_admin_id,batch'))                    
                 ->where('orders_id', '=', $order_id)                
                 ->orderBy('orders_id')
