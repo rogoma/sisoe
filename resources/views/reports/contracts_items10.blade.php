@@ -504,12 +504,12 @@
                 </tr>
             @endfor            
         </table>
-        <br></br><br></br>
+        {{-- <br> --}}
         <table>
             <tfoot>
                 <tr>
-                    <td colspan="3"></td>
-                    <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">SUB-TOTAL GS.:
+                    <td colspan="7"></td>
+                    <td colspan="7" style="font-size: 10px; text-align: right; padding-right: 5px;">SUB-TOTAL GS.:
                     </td>
                     <td style="font-size: 10px; text-align: center;"> {{ number_format($tot_price_mo, '0', ',', '.') }}
                     </td>
@@ -518,16 +518,17 @@
                 </tr>
 
                 <tr>
-                    <td colspan="3"></td>
-                    <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON
+                    <td colspan="7"></td>
+                    <td colspan="7" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON
                         IVA:</td>
                     <td style="font-size: 10px; text-align: center;"> </td>
                     <td style="font-size: 10px; text-align: center;">
                         {{ number_format($tot_price_mo + $tot_price_mat, '0', ',', '.') }}
                 </tr>
+                {{-- <br> --}}
 
                 <tr>
-                    <td colspan="12"
+                    <td colspan="16"
                         style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
                         OBSERVACIÓN: {{ $contracts1[0]->orders_comments }}
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
@@ -537,21 +538,21 @@
                 </tr>
 
                 <tr>
-                    <td colspan="2"
+                    <td colspan="6"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Fecha Emisión: {{ \Carbon\Carbon::parse($contracts1[0]->orders_date)->format('d/m/Y') }}
                     </td>
-                    <td colspan="3"
+                    <td colspan="6"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Firma Fiscalización
                     </td>
-                    <td colspan="3"
+                    <td colspan="6"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         {{ $contracts1[0]->fiscal_name }} {{ $contracts1[0]->fiscal_lastname }}  <br> Aclaración Firma Fiscal
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"
+                    <td colspan="6"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">                       
                         @if(!empty($contracts1[0]->sign_date))
                                 Fecha Recepción: {{ \Carbon\Carbon::parse($contracts1[0]->sign_date)->format('d/m/Y') }}
@@ -559,11 +560,11 @@
                                 Fecha Recepción:
                         @endif
                     </td>
-                    <td colspan="3"
+                    <td colspan="6"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Firma Contratista
                     </td>
-                    <td colspan="3"
+                    <td colspan="6"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Aclaración Firma Contratista
                     </td>
