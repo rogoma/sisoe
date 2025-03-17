@@ -116,7 +116,7 @@
                                                                        value="{{ number_format($item->quantity, 2, '.', '') }}" 
                                                                        class="form-control quantity-input" 
                                                                        data-index="{{ $i }}"
-                                                                       oninput="updateTotal({{ $i }})" readonly style="width: 80px;">
+                                                                       oninput="updateTotal({{ $i }})"  style="width: 80px;" readonly>
                                                             </td>
                                             
                                                             <td style="text-align: center;">{{ $item->rubro->orderPresentations->description }}</td>

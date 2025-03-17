@@ -65,8 +65,7 @@ class ItemsContractsController extends Controller
     {
         $contract = Contract::findOrFail($contract_id);
 
-        $order = Order::findOrFail($order_id);
-        // var_dump($order->number);exit();
+        $order = Order::findOrFail($order_id);        
        
         $items = ItemContract::where('contract_id', $contract_id)
                 ->where('component_id', $component_id)
@@ -78,13 +77,7 @@ class ItemsContractsController extends Controller
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }
         
-        // return view('contract.itemscontracts.index2_chat_ok', compact('items','contract', 'order'));        
-        
-        return view('contract.itemscontracts.index2_orig2', compact('items','contract', 'order'));
-        
-        // return view('contract.itemscontracts.index2_orig', compact('items','contract', 'order'));
-
-        
+        return view('contract.itemscontracts.index2_orig2', compact('items','contract', 'order'));        
     }
 
 

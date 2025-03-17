@@ -574,8 +574,8 @@
                                                                                 {{-- Agregar eventos a la orden --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id)
                                                                                     <button type="button" title="Eventos"
-                                                                                        class="btn btn-secondary btn-icon">
-                                                                                        {{-- onclick="anuleOrder({{ $order->id }})"> --}}
+                                                                                        class="btn btn-secondary btn-icon"
+                                                                                        onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
                                                                                         <i class="fa fa-calendar-o"></i></button>
                                                                                 @endif
 
@@ -1178,8 +1178,7 @@
 
             //lleva a indexRubros de ItemsContractsController
             itemContraRubro = function(order, contract, component) {
-                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' +
-                    component + '/itemsRubros';
+                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' + component + '/itemsRubros';
             }
 
             //lleva a index de ItemsContractsController

@@ -173,7 +173,6 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //PARA MOSTRAR DATOS DE ITEMSCONTRACTS Y GENERAR RUBROS EN ORDENES    
     Route::get('/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('items_contracts.itemsRubros');
-    // Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('items_contracts.itemsRubros');
 
     Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('itemsRubros.import');
 
@@ -294,6 +293,15 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('pdf/panel_contracts4', [ReportsController::class, 'generarContracts4'])->name('pdf.panel_contracts4');
     //REPORTE DE ALERTAS DE VENCIMIENTOS DE PÓLIZAS
     Route::get('pdf/panel_contracts5', [ReportsController::class, 'generarContracts5'])->name('pdf.panel_contracts5');
+
+
+    //REPORTE DE ORDENES TODOS
+    Route::get('pdf/panel_orders1', [ReportsController::class, 'generarOrders1'])->name('pdf.panel_orders1');
+
+
+
+
+
 
     //VISTA PARA ELEGIR DEPENDENCIA OPARA MOSTRAR ALERTAS DE VENCIMIENTOS DE PÓLIZAS
     Route::get('pdf/panel_contracts7/{dependency_id}', [ReportsController::class, 'generarContracts7'])->name('pdf.panel_contracts7');

@@ -49,6 +49,42 @@ class ReportsController extends Controller
     }
 
 
+    public function generarOrders1(Request $request)
+    {
+        //capturamos el nombre del método para poder cambiar el título del reporte en la vista
+        $nombreMetodo = __METHOD__;
+
+        //No filtra por permiso si es rol admin y uoc2
+        // if ($request->user()->hasPermission(['admin.contracts.show'])) {
+            $orders = DB::table('vista_reporte1') //vista que muestra los datos
+                ->select([
+                    'contrato',
+                    'nro_contrato',
+                    'contratista',
+                    'monto_maximo',
+                    'monto_minimo',
+                    'nro_orden',
+                    'fecha_orden',
+                    'fecha_acuse_contr',
+                    'plazo',
+                    'dpto',
+                    'distrito',
+                    'localidad',
+                    'sub_componente',
+                    'estado_orden',
+                    'nombre_fiscal'                    
+                ])
+                ->get();        
+        // }
+
+        $view = View::make('reports.orders', compact('orders', 'nombreMetodo'))->render();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
+        return $pdf->stream('ORDENES DE EJECUCION' . '.pdf');
+    }
+
+
     // MUESTRA UNA ORDEN DE EJECUCIÓN EN ESPECÍFICO
     public function generarContracts10(Request $request, $order_id)
     {
