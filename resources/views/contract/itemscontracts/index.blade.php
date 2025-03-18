@@ -32,7 +32,10 @@
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5 style="color: red;">
+                        <h5>Llamado:
+                            {{ $contract->description . ' - ' . $contract->modality->description . ' - Contrato N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
+                        </h5>
+                        <h5 style="color: red;">                            
                             Detalle de Rubros de Componente: {{ $items[0]->component->description }}
                         </h5>
                     </div>
@@ -120,9 +123,9 @@
                                                     <td colspan="3"></td>
                                                 </tr>                                                 --}}
                                             </tfoot>                                            
-                                        </table>
+                                        </table>                                        
                                         <div class="text-center">
-                                            <a href="pdf/panel_contracts1" class="btn btn-danger" target="_blank">VER EN PDF</a>
+                                            <a href="{{ route('items-contracts.report', [$contract->id, $items[0]->component_id]) }}" class="btn btn-danger" target="_blank">VER EN PDF</a>
                                         </div>
                                     </div>
                                 </div>                                

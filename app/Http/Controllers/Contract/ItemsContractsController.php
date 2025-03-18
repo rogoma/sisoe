@@ -23,6 +23,8 @@ use App\Models\Component;
 use App\Models\SubItem;
 use App\Models\Contract;
 use App\Models\ItemContract;
+use Mpdf\Mpdf;
+use Barryvdh\DomPDF\Facade as Pdf;
 
 
 class ItemsContractsController extends Controller
@@ -92,6 +94,91 @@ class ItemsContractsController extends Controller
         return response()->json(['data' => $items]);        
     }
 
+
+    public function generateReport($contractId, $componentId)
+{
+    // Obtén los datos necesarios para el reporte
+    $contract = Contract::findOrFail($contractId);
+
+    // Filtrar los ítems por contract_id y component_id
+    $items = ItemContract::where('contract_id', $contractId)
+                 ->where('component_id', $componentId)
+                 ->get();
+
+    // Verificar si hay ítems para el componente
+    if ($items->isEmpty()) {
+        return redirect()->back()->with('error', 'No hay ítems para el componente seleccionado.');
+    }
+
+    // Calcula los totales
+    $tot_price_mo = 0;
+    $tot_price_mat = 0;
+
+    foreach ($items as $item) {
+        $tot_price_mo += ($item->unit_price_mo * $item->quantity);
+        $tot_price_mat += ($item->unit_price_mat * $item->quantity);
+    }
+
+    // Pasa los datos a la vista del reporte
+    $data = [
+        'contract' => $contract,
+        'items' => $items,
+        'tot_price_mo' => $tot_price_mo,
+        'tot_price_mat' => $tot_price_mat,
+    ];
+
+    // Generar el PDF con DomPDF
+    $pdf = Pdf::loadView('reports.items_contracts', $data);
+
+    // Mostrar el PDF en el navegador
+    return $pdf->stream('reporte_contrato_' . $contractId . '_componente_' . $componentId . '.pdf');
+}
+
+    private function generateHtmlForPdf($contract, $items, $tot_price_mo, $tot_price_mat)
+    {
+        // Generar el HTML para el PDF
+        $html = '
+        <h1>Reporte de Contrato: ' . $contract->id . '</h1>
+        <h2>Componente: ' . $items[0]->component->description . '</h2>
+        
+        <table border="1" cellpadding="4" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>N° item</th>
+                    <th>Rubro (Cod. - Descripción)</th>
+                    <th>Cant.</th>
+                    <th>Unid.</th>
+                    <th>Precio UNIT. Mano de Obra</th>
+                    <th>Precio UNIT. Materiales</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+        foreach ($items as $item) {
+            $html .= '
+                <tr>
+                    <td>' . $item->item_number . '</td>
+                    <td>' . $item->rubro->code . ' - ' . $item->rubro->description . '</td>
+                    <td>' . $item->quantity . '</td>
+                    <td>' . $item->rubro->orderPresentations->description . '</td>
+                    <td>' . number_format($item->unit_price_mo, '0', ',', '.') . '</td>
+                    <td>' . number_format($item->unit_price_mat, '0', ',', '.') . '</td>
+                </tr>';
+        }
+
+        $html .= '
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"><strong>TOTALES:</strong></td>
+                    <td><strong>' . number_format($tot_price_mo, '0', ',', '.') . '</strong></td>
+                    <td><strong>' . number_format($tot_price_mat, '0', ',', '.') . '</strong></td>
+                </tr>
+            </tfoot>
+        </table>';
+
+        return $html;
+    }
 
     public function uploadExcel(Request $request, $order_id)
     {

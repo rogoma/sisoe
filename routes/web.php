@@ -298,7 +298,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //REPORTE DE ORDENES TODOS
     Route::get('pdf/panel_orders1', [ReportsController::class, 'generarOrders1'])->name('pdf.panel_orders1');
 
-
+    //RUTA PARA MOSTRAR RUBROS CARGADOS EN UN CONTRATO
+    // Route::get('/items-contracts/report/{contractId}', [ItemsContractsController::class, 'generateReport'])->name('items-contracts.report');
+    Route::get('/items-contracts/report/{contractId}/{componentId}', [ItemsContractsController::class, 'generateReport'])->name('items-contracts.report');
 
 
 
