@@ -67,12 +67,15 @@ class ReportsController extends Controller
                     'fecha_orden',
                     'fecha_acuse_contr',
                     'plazo',
+                    'fecha_fin_plazo',
                     'dpto',
                     'distrito',
                     'localidad',
                     'sub_componente',
                     'estado_orden',
-                    'nombre_fiscal'                    
+                    'nombre_fiscal',
+                    'monto_orden',
+                    'order_state_id'
                 ])
                 ->get();        
         // }

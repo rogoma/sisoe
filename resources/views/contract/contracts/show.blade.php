@@ -480,6 +480,7 @@
                                                                     
                                                                     @if ($order->sign_date)
                                                                         {{ \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3)->format('d/m/Y') }}
+                                                                        FECHA ALERTA
                                                                     @endif
                                                                 </td>
                                                            
@@ -489,10 +490,11 @@
                                                                     @if ($order->orderState->id == 4) 
                                                                         background-color: white; color: black; 
                                                                     @elseif ($order->sign_date && \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->lte(\Carbon\Carbon::now()))                                                                        
-                                                                        background-color: red; color: white;                                                                        
+                                                                        background-color: red; color: white;                                                                         
                                                                     @endif">
                                                                     @if ($order->sign_date)
                                                                         {{ \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->format('d/m/Y') }}
+                                                                        FUERA DE PLAZO
                                                                     @endif
                                                                 </td>
 
