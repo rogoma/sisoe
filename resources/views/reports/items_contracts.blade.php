@@ -29,8 +29,8 @@
     </style>
 </head>
 <body>
-    <h1>Reporte de Contrato: {{ $contract->id }}</h1>
-    <h2>Componente: {{ $items[0]->component->description }}</h2>
+    <h5>Contrato: {{ $contract->description }} - {{ $contract->provider->description }} </h5>
+    <h5>Sub-Componente: {{ $items[0]->component->description }}</h5>
     
     <table>
         <thead>
