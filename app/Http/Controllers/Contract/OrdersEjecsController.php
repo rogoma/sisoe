@@ -481,16 +481,19 @@ class OrdersEjecsController extends Controller
 
         // $order_actual = $order->order_state_id = $request->input('order_state_id');
 
-        // 10 CONTRATISTA 11 RUBROS
-        if (is_null($request->input('sign_date'))) {
+        // SI FECHA ACUSE ES NULL ENTONCES ESTADO = 10 PENDIENTE ACUSE CONTRATISTA
+        if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin'))))) {
             $order->order_state_id = 10;
         } else {
             $order->order_state_id = 1;
-            // $order->order_state_id = $request->input('order_state_id');
+        }
+
+        // SI FECHA FINALIZACIÓN ES NULL ENTONCES ESTADO = 10 PENDIENTE ACUSE CONTRATISTA
+        if (($request->input('sign_date') && (($request->input('sign_date_fin'))))) {
+            $order->order_state_id = 4;        
         }
 
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
-
 
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
         if ($request->input('order_state_id') == 4 && $request->filled('sign_date_fin')) {
