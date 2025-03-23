@@ -598,6 +598,14 @@
                                                                                         <i
                                                                                             class="fa fa-recycle"></i></button>
                                                                                 @endif
+
+                                                                                {{-- Generar Eventos para prorroga de fecha de vencimiento del plazo de la orden --}}
+                                                                                @if (Auth::user()->id == $order->creator_user_id && $order->orderState->id == 1)
+                                                                                    <button type="button" title="Cargar Eventos"
+                                                                                        class="btn btn-primary btn-icon">
+                                                                                        {{-- onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})"> --}}
+                                                                                        <i class="fa fa-clock-o"></i></button>
+                                                                                @endif
                                                                             @else
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id)
