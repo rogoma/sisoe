@@ -241,10 +241,11 @@
                                                             <input 
                                                                 type="text" 
                                                                 id="sign_date_fin" 
-                                                                name="sign_date_fin"
+                                                                name="sign_date_fin"                                                                
                                                                 class="form-control @error('sign_date_fin') is-invalid @enderror"
                                                                 value="{{ old('sign_date_fin', isset($order->sign_date_fin) ? date('d/m/Y', strtotime($order->sign_date_fin)) : '') }}"
-                                                                autocomplete="off">                                                    
+                                                                autocomplete="off"
+                                                                @if ($order->sign_date === null) disabled @endif>                                                    
                                                             <span class="input-group-append">
                                                                 <button 
                                                                     type="button" 

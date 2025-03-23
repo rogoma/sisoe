@@ -108,7 +108,7 @@ class OrdersEjecsController extends Controller
         $order = Order::findOrFail($order_id);
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        
+
 
         // Obtenemos los items del pedido
         $items = $order->items;
@@ -306,7 +306,6 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-
         $order = new Order;
         $order->contract_id = $contract_id;
         $order->component_id = $request->input('component_id');
@@ -318,7 +317,14 @@ class OrdersEjecsController extends Controller
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         //CUANDO SE GRABA POR VEZ PRIMERA ASUME ESTADO 10= Pendiente Fecha Acuse recibo Contratista
-        $order->order_state_id = 11; // toma estado pendiente de carga de rubros
+
+        // Si tiene estado en curso no hace nada
+        // $order->order_state_id = 11; // toma estado pendiente de carga de rubros
+
+        if ($order->order_state_id === null) {
+            $order->order_state_id = 11; // toma estado pendiente de carga de rubros        
+        }
+
         $order->total_amount = 0;
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
@@ -331,20 +337,20 @@ class OrdersEjecsController extends Controller
 
     //PARA CALCULA NUMERO DE ORDEN DE ACUERDO AL COMPONENTE y LOCALIDAD
     public function getMaxNumber(Request $request)
-{
-    $componentId = $request->input('component_id');
-    $locality = $request->input('locality');
+    {
+        $componentId = $request->input('component_id');
+        $locality = $request->input('locality');
 
-    // Buscar el número máximo solo de los registros con la misma localidad
-    $maxNumber = Order::where('component_id', $componentId)
-                      ->where('locality', $locality) // Filtra por localidad
-                      ->max('number');
+        // Buscar el número máximo solo de los registros con la misma localidad
+        $maxNumber = Order::where('component_id', $componentId)
+            ->where('locality', $locality) // Filtra por localidad
+            ->max('number');
 
-    return response()->json([
-        'success' => true,
-        'number' => $maxNumber ?? 0 // Si no hay registros, devuelve 0
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'number' => $maxNumber ?? 0 // Si no hay registros, devuelve 0
+        ]);
+    }
 
     // public function getMaxNumber(Request $request)
     // {
@@ -444,12 +450,12 @@ class OrdersEjecsController extends Controller
                 'numeric',
                 function ($attribute, $value, $fail) use ($request, $order) {
                     $existingRecord = DB::table('orders')
-                        ->where('component_id', $request->input('component_id'))                        
+                        ->where('component_id', $request->input('component_id'))
                         ->where('number', $request->input('number'))
                         ->where('locality', $request->input('locality'))
                         ->where('id', '!=', $order->id) // Permite ignorar el registro actual si se está editando
                         ->exists();
-    
+
                     if ($existingRecord) {
                         $fail('Ya existe un una Orden:  Localidad/Sub-Componente/Nro, verifique');
                     }
@@ -476,26 +482,23 @@ class OrdersEjecsController extends Controller
         // $order_actual = $order->order_state_id = $request->input('order_state_id');
 
         // 10 CONTRATISTA 11 RUBROS
-        if (is_null($request->input('sign_date')) ) {
+        if (is_null($request->input('sign_date'))) {
             $order->order_state_id = 10;
-        }else{
-            // $order->order_state_id = 1;
-            $order->order_state_id = $request->input('order_state_id');
+        } else {
+            $order->order_state_id = 1;
+            // $order->order_state_id = $request->input('order_state_id');
         }
-        
+
         $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
-        
-        
+
+
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
         if ($request->input('order_state_id') == 4 && $request->filled('sign_date_fin')) {
             $order->sign_date_fin = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date_fin'))));
         } else {
             $order->sign_date_fin = null;
         }
-        
 
-        
-        
         $order->locality = $request->input('locality');
         $order->component_id = $request->input('component_id');
         $component = Component::find($order->component_id);  // Assuming you have a Component model
@@ -511,80 +514,61 @@ class OrdersEjecsController extends Controller
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request, $contract_id, $item_id)
     {
         $contract = Contract::findOrFail($contract_id);
-        $order = Order::find($item_id);
-
+        $order = Order::findOrFail($item_id);
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if (!$request->user()->hasPermission(['admin.orders.delete', 'orders.orders.delete']) && $order->contract->dependency_id != $request->user()->dependency_id) {
             return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para anular la orden.', 'code' => 200], 200);
         }
 
-        //ARREGLAR ESTO PARA QUE NO ELIMINE SI EXISTEN ITEMS O RUBROS
-        // Chequeamos si existen items_oi referenciando al item
-        // if($order->itemAwardHistories->count() > 0){
-        //     return response()->json(['status' => 'error', 'message' => 'Orden no puede eliminarse, posee carga de rubros, verificar ', 'code' => 200], 200);
-        // }
+        // Obtener el monto actual de la orden
+        $currentOrderAmount = $order->total_amount;
 
         // ANULAR Cambia a estado 5 = "Anulado" si es que Estado de la orden está en 1 (En curso)
         if ($order->order_state_id == 1) {
+
+            // Restar el monto actual de la orden al compro_amount del contrato
+            $contract->decrement('compro_amount', $currentOrderAmount);
 
             $order->order_state_id = 5;
             $order->save();
 
             session()->flash('status', 'success');
-            session()->flash('message', 'Orden anulada' . $order->number);
+            session()->flash('message', 'Orden anulada ' . $order->number);
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Orden anulada correctamente' . $order->number,
+                'message' => 'Orden anulada correctamente ' . $order->number,
+                'code' => 200
+            ], 200);
+        }
+        // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
+        elseif ($order->order_state_id == 5) {
+
+            // Sumar el monto actual de la orden al compro_amount del contrato
+            $contract->increment('compro_amount', $currentOrderAmount);
+
+            $order->order_state_id = 1;
+            $order->save();
+
+            session()->flash('status', 'success');
+            session()->flash('message', 'Orden Desanulada ' . $order->number);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Orden Desanulada correctamente ' . $order->number,
                 'code' => 200
             ], 200);
         } else {
-            // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
-            if ($order->order_state_id == 5) {
-
-                $order->order_state_id = 1;
-                $order->save();
-
-                session()->flash('status', 'success');
-                session()->flash('message', 'Orden Desanulada' . $order->number);
-
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Orden Desanulada correctamente' . $order->number,
-                    'code' => 200
-                ], 200);
-            }
+            // Si la orden no está en estado 1 o 5, no se hace nada
+            return response()->json([
+                'status' => 'error',
+                'message' => 'La orden no puede ser anulada o desanulada en su estado actual.',
+                'code' => 200
+            ], 200);
         }
-
-
-        // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
-        // if ($order->order_state_id = 5) {
-
-        //     $order->order_state_id = 1;
-        //     $order->save();    
-
-        //     session()->flash('status', 'success');
-        //     session()->flash('message', 'Orden Desanulada' . $order->number);
-
-        //     return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'Orden Desanulada correctamente'. $order->number,
-        //     'code' => 200
-        //     ], 200);
-        // }
-
-        //return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza eliminada correctamente'); // Caso usuario posee rol pedidos
-        // return response()->json(['status' => 'success', 'message' => 'Póliza eliminada correctamente', 'code' => 200], 200);
-        //return redirect()->route('contracts.show', $contract_id)->with('success', 'Póliza modificada correctamente'); // Caso usuario posee rol pedidos
     }
 }

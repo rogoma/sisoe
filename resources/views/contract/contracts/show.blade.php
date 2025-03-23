@@ -453,50 +453,69 @@
                                                                     {{ $order->component->code }}-{{ $order->component->description }}
                                                                 </td>
 
-                                                                {{-- FECHA ACUSE CONTRATISTA--}}
+                                                                {{-- FECHA ACUSE CONTRATISTA --}}
                                                                 <td style="color:#ff0000;text-align: left;width: 25px;">
-                                                                    @if($order->sign_date)
+                                                                    @if ($order->sign_date)
                                                                         {{ \Carbon\Carbon::parse($order->sign_date)->format('d/m/Y') }}
                                                                     @endif
-                                                                </td>                                                                
+                                                                </td>
 
                                                                 {{-- PLAZO --}}
                                                                 <td style="color:#ff0000;text-align: center;width: 15px;">
                                                                     {{ $order->plazo }}</td>
 
-                                                                {{-- FECHA ALERTA 03 DIAS ANTES NO PINTA SI YA ESTA FINALIZADO ESTADO 4--}}
-                                                                <td style="text-align: left; width: 20px; 
-                                                                    @if ($order->orderState->id == 4) 
-                                                                        background-color: white; color: black;
-                                                                    @elseif ($order->sign_date) 
+                                                                {{-- FECHA ALERTA 03 DIAS ANTES NO PINTA SI YA ESTA FINALIZADO ESTADO 4 --}}
+                                                                <td
+                                                                    style="text-align: left; width: 20px; 
+                                                                    @if ($order->orderState->id == 4) background-color: white; color: black;
+                                                                    
+                                                                    @elseif ($order->orderState->id == 1 && $order->sign_date) 
                                                                         @php
                                                                             $fechaCalculada = \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3);
                                                                         @endphp
 
-                                                                        @if ($fechaCalculada->lte(\Carbon\Carbon::now()))
-                                                                            background-color: yellow; color: black;
-                                                                        @endif
+                                                                        @if ($fechaCalculada->lte(\Carbon\Carbon::now()))background-color: yellow; color: black; @endif
                                                                     @endif">
-                                                                    
-                                                                    @if ($order->sign_date)
-                                                                        {{ \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3)->format('d/m/Y') }}
-                                                                        FECHA ALERTA
-                                                                    @endif
-                                                                </td>
-                                                           
 
-                                                                {{-- PLAZO FINAL CALCULA SI FECHA PLAZO ES IGUAL A FECHA ACTUAL Y PONE EN ROJO - NO PINTA SI YA ESTA FINALIZADO ESTADO 4--}}
-                                                                <td style="text-align: left; width: 25px;
-                                                                    @if ($order->orderState->id == 4) 
-                                                                        background-color: white; color: black; 
-                                                                    @elseif ($order->sign_date && \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->lte(\Carbon\Carbon::now()))                                                                        
-                                                                        background-color: red; color: white;                                                                         
-                                                                    @endif">
                                                                     @if ($order->sign_date)
-                                                                        {{ \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo)->format('d/m/Y') }}
-                                                                        FUERA DE PLAZO
+                                                                        @php
+                                                                            $fechaCalculada = \Carbon\Carbon::parse($order->sign_date,)->addDays($order->plazo - 3);
+                                                                        @endphp
+
+                                                                        @if ($order->orderState->id == 1 && $fechaCalculada->lte(\Carbon\Carbon::now()))
+                                                                            {{($fechaCalculada)->format('d/m/Y')}}   
+                                                                            <strong>FECHA ALERTA</strong>
+                                                                        @else
+                                                                            {{ $fechaCalculada->format('d/m/Y') }}
+                                                                        @endif
                                                                     @endif
                                                                 </td>
+
+
+                                                                {{-- PLAZO FINAL CALCULA SI FECHA PLAZO ES IGUAL A FECHA ACTUAL Y PONE EN ROJO - NO PINTA SI YA ESTA FINALIZADO ESTADO 4 --}}
+                                                                <td style="text-align: left; width: 25px; 
+                                                                @php
+                                                                    $fechaVencimiento = $order->sign_date ? \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo) : null;
+                                                                @endphp
+
+                                                                @if ($order->orderState->id == 4) 
+                                                                    background-color: white; color: black; 
+                                                                @elseif ($order->orderState->id == 1 && $fechaVencimiento && \Carbon\Carbon::now()->gt($fechaVencimiento))
+                                                                    background-color: red; color: white;
+                                                                @endif">
+                                                                
+                                                                @if ($order->sign_date)
+                                                                    @if ($order->orderState->id == 1 && $fechaVencimiento && \Carbon\Carbon::now()->gt($fechaVencimiento))
+                                                                        {{ $fechaVencimiento->format('d/m/Y') }}   
+                                                                        <strong> PLAZO VENCIDO</strong>
+                                                                    @else
+                                                                        {{ $fechaVencimiento->format('d/m/Y') }}
+                                                                    @endif
+                                                                @endif
+                                                            </td>
+
+                                                            </td>
+                                                            
 
 
                                                                 {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
@@ -517,13 +536,17 @@
                                                                                 {{ $order->orderState->description }}</td>
                                                                         @else
                                                                             @if ($order->orderState->id == 4)
-                                                                                <td style="color:white;background-color:green">{{ $order->orderState->description }} - 
-                                                                                    {{ !empty($order->sign_date_fin) ? \Carbon\Carbon::parse($order->sign_date_fin)->format('d/m/Y') : 'Sin fecha' }}                                                                                    
+                                                                                <td
+                                                                                    style="color:white;background-color:green">
+                                                                                    {{ $order->orderState->description }} -
+                                                                                    {{ !empty($order->sign_date_fin) ? \Carbon\Carbon::parse($order->sign_date_fin)->format('d/m/Y') : 'Sin fecha' }}
                                                                                 </td>
                                                                             @else
-                                                                                <td style="color:rgb(41, 128, 0)">{{ $order->orderState->description }}</td>
+                                                                                <td style="color:rgb(41, 128, 0)">
+                                                                                    {{ $order->orderState->description }}
+                                                                                </td>
                                                                             @endif
-                                                                        @endif    
+                                                                        @endif
                                                                     @endif
                                                                 @endif
                                                                 {{-- <td style="max-width: 200px">{{ $order->comments }}</td> --}}
@@ -541,7 +564,7 @@
                                                                     @endif
 
                                                                     {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
-                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 4, 10, 11]))
+                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 10, 11]))
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                             @if (Auth::user()->id == $order->creator_user_id)
@@ -549,16 +572,16 @@
                                                                                     class="btn btn-warning btn-icon"
                                                                                     onclick="updateOrder({{ $order->id }})">
                                                                                     <i class="fa fa-pencil"></i>
-                                                                                </button>                                                                                
+                                                                                </button>
                                                                             @endif
 
                                                                             @if ($order->items->count() > 0)
-                                                                                <button type="button"
+                                                                                {{-- <button type="button"
                                                                                     title="Orden con Rubros"
                                                                                     class="btn btn-primary btn-icon"
                                                                                     onclick="itemOrder({{ $order->id }})">
                                                                                     <i class="fa fa-list"></i>
-                                                                                </button>
+                                                                                </button> --}}
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                                     title="Ver Orden" target="_blank"
@@ -574,13 +597,13 @@
                                                                                 @endif
 
                                                                                 {{-- Agregar eventos a la orden --}}
-                                                                                @if (Auth::user()->id == $order->creator_user_id)
+                                                                                @if (Auth::user()->id == $order->creator_user_id && $order->orderState->id == 1)
                                                                                     <button type="button" title="Eventos"
                                                                                         class="btn btn-secondary btn-icon"
                                                                                         onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
-                                                                                        <i class="fa fa-calendar-o"></i></button>
+                                                                                        <i
+                                                                                            class="fa fa-calendar-o"></i></button>
                                                                                 @endif
-
                                                                             @else
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id)
@@ -598,12 +621,13 @@
                                                                         {{-- Muestra botones si no son fiscales --}}
                                                                         @if (Auth::user()->hasPermission(['admin.orders.show', 'orders.orders.view']))
                                                                             @if ($order->items->count() > 0)
-                                                                                <button type="button"
+                                                                                {{-- <button type="button"
                                                                                     title="Orden con Rubros"
                                                                                     class="btn btn-primary btn-icon"
                                                                                     onclick="itemOrder({{ $order->id }})">
                                                                                     <i class="fa fa-list"></i>
-                                                                                </button>
+                                                                                </button> --}}
+
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                                     title="Ver Orden" target="_blank"
@@ -614,6 +638,15 @@
                                                                             @endif
                                                                         @endif
                                                                     @endif
+
+                                                                    @if (in_array($order->orderState->id, [4]))
+                                                                         {{-- MOSTRAR PDF DE ORDEN --}}
+                                                                         <a href="/pdf/panel_contracts10/{{ $order->id }}"
+                                                                            title="Ver Orden" target="_blank"
+                                                                            class="btn btn-success btn-icon"><i
+                                                                                class="fa fa-eye"></i></a>
+                                                                    @endif
+
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -703,7 +736,8 @@
                                                                 <td>{{ $other_files_con[$i]->description }}</td>
                                                                 <td>{{ $other_files_con[$i]->dependency->description }}
                                                                 </td>
-                                                                <td>{{ $other_files_con[$i]->updated_atDateFormat() }}</td>
+                                                                <td>{{ $other_files_con[$i]->updated_atDateFormat() }}
+                                                                </td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $other_files_con[$i]->file) }}"
                                                                         title="Ver Archivo" target="_blank"
@@ -1180,7 +1214,8 @@
 
             //lleva a indexRubros de ItemsContractsController
             itemContraRubro = function(order, contract, component) {
-                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' + component + '/itemsRubros';
+                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' +
+                    component + '/itemsRubros';
             }
 
             //lleva a index de ItemsContractsController
