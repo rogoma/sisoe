@@ -332,8 +332,7 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab1" role="tabpanel">
-                                                <label class="col-form-label f-w-700">Archivos de Evaluaciones
-                                                    Técnicas:</label>
+                                                <label class="col-form-label f-w-700">Archivos de Evaluaciones Técnicas:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -348,14 +347,9 @@
                                                         @for ($i = 0; $i < count($user_files_eval); $i++)
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
-                                                                <td style="max-width: 800px">
-                                                                    {{ $user_files_eval[$i]->description }}</td>
-                                                                <td style="max-width: 500px">
-                                                                    {{-- {{ $user_files_eval[$i]->users->id }} --}}
-                                                                    {{ $user_files_eval[$i]->dependency->description }}
-                                                                </td>
-                                                                <td style="max-width: 200px">
-                                                                    {{ $user_files_eval[$i]->updated_atDateFormat() }}</td>
+                                                                <td style="max-width: 800px"> {{ $user_files_eval[$i]->description }}</td>
+                                                                <td style="max-width: 500px"> {{ $user_files_eval[$i]->user->name}} {{ $user_files_eval[$i]->user->lastname }}</td>
+                                                                <td style="max-width: 200px"> {{ $user_files_eval[$i]->updated_atDateFormat() }}</td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $user_files_eval[$i]->file) }}"
                                                                         title="Ver Archivo" target="_blank"
@@ -376,7 +370,7 @@
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
                                                                 <td>{{ $other_files_eval[$i]->description }}</td>
-                                                                <td>{{ $other_files_eval[$i]->dependency->description }}
+                                                                {{ $user_files_eval[$i]->user->name}} {{ $user_files_eval[$i]->user->lastname }}
                                                                 </td>
                                                                 <td>{{ $other_files_eval[$i]->updated_atDateFormat() }}
                                                                 </td>
@@ -596,13 +590,13 @@
                                                                                             class="fa fa-ban"></i></button>
                                                                                 @endif
 
-                                                                                {{-- Agregar eventos a la orden --}}
+                                                                                {{-- Editar y Cambiar Rubros de la orden --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id && $order->orderState->id == 1)
-                                                                                    <button type="button" title="Eventos"
+                                                                                    <button type="button" title="Editar Rubros"
                                                                                         class="btn btn-secondary btn-icon"
                                                                                         onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
                                                                                         <i
-                                                                                            class="fa fa-calendar-o"></i></button>
+                                                                                            class="fa fa-recycle"></i></button>
                                                                                 @endif
                                                                             @else
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
@@ -918,8 +912,7 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab6" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Archivos de contratos cargados al
-                                                    llamado:</label>
+                                                <label class="col-form-label f-w-600">Archivos del contrato:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -936,9 +929,17 @@
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
                                                                 <td>{{ $user_files_con[$i]->description }}</td>
-                                                                <td>{{ $user_files_con[$i]->dependency->description }}
-                                                                </td>
+                                                                {{-- <td>{{ $user_files_con[$i]->dependency->description }}</td> --}}
+                                                                <td style="max-width: 500px"> {{ $user_files_con[$i]->user->name}} {{ $user_files_con[$i]->user->lastname }}</td>
+
                                                                 <td>{{ $user_files_con[$i]->updated_atDateFormat() }}</td>
+
+                                                                {{-- <td style="max-width: 800px"> {{ $user_files_eval[$i]->description }}</td> --}}
+                                                                {{-- <td style="max-width: 500px"> {{ $user_files_eval[$i]->user->name}} {{ $user_files_eval[$i]->user->lastname }}</td> --}}
+                                                                {{-- <td style="max-width: 200px"> {{ $user_files_eval[$i]->updated_atDateFormat() }}</td> --}}
+
+
+
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $user_files_con[$i]->file) }}"
                                                                         title="Ver Archivo" target="_blank"
@@ -959,8 +960,8 @@
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
                                                                 <td>{{ $other_files_con[$i]->description }}</td>
-                                                                <td>{{ $other_files_con[$i]->dependency->description }}
-                                                                </td>
+                                                                {{-- <td>{{ $other_files_con[$i]->dependency->description }}</td> --}}
+                                                                <td style="max-width: 500px"> {{ $other_files_con[$i]->user->name}} {{ $other_files_con[$i]->user->lastname }}</td>
                                                                 <td>{{ $other_files_con[$i]->updated_atDateFormat() }}
                                                                 </td>
                                                                 <td>

@@ -295,6 +295,7 @@ class ContractsController extends Controller
 
         // $user_files_rubros = ItemContract::findOrFail($contract_id);
         $user_dependency = $request->user()->dependency_id;
+        $user_id = $request->user()->id;
         $role_user = $request->user()->role_id;
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 1 pólizas
@@ -312,14 +313,14 @@ class ContractsController extends Controller
         // }
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 3 contratos
-        $user_files_con = $contract->files()->where('dependency_id', $user_dependency)
+        $user_files_con = $contract->files()->where('user_id', $user_id)
             ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas 5-dictamenes
             ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
             ->get();
 
         // if($role_user == 1){
-            $other_files_con = $contract->files()->where('dependency_id', '!=', $user_dependency)
+            $other_files_con = $contract->files()->where('user_id', '!=', $user_id)
             ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas  5-dictamenes
             ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
@@ -327,14 +328,14 @@ class ContractsController extends Controller
         // }
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 6-evaluaciones
-        $user_files_eval = $contract->files()->where('dependency_id', $user_dependency)
+        $user_files_eval = $contract->files()->where('user_id', $user_id)
             ->whereIn('file_type', [6])//1-polizas 3-contratos 4-addendas 5-dictamenes 6-evaluaciones
             ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
             ->get();
 
         // if($role_user == 1){
-            $other_files_eval = $contract->files()->where('dependency_id', '!=', $user_dependency)
+            $other_files_eval = $contract->files()->where('user_id', '!=', $user_id)
             ->whereIn('file_type', [6])//1-polizas 3-contratos 4-addendas  5-dictamenes 6-evaluaciones
             ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')

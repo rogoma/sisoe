@@ -355,7 +355,7 @@ class ContractsFilesController extends Controller
         $file->file_type = 1;//pólizas
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->contract_state_id;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->user_id = $request->user()->id;  // usuario logueado
         $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
         $file->save();
 
@@ -408,7 +408,7 @@ class ContractsFilesController extends Controller
         $file->file_state = 1;//activo
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->contract_state_id;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->user_id = $request->user()->id;  // usuario logueado
         $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
         $file->save();
 
@@ -463,7 +463,7 @@ class ContractsFilesController extends Controller
         $file->file_state = 1;//activo
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->contract_state_id;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->user_id = $request->user()->id;  // usuario logueado
         $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
         $file->save();
 
@@ -518,7 +518,7 @@ class ContractsFilesController extends Controller
         }
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->actual_state;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->user_id = $request->user()->id;  // usuario logueado
         $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
         $file->save();
 
@@ -625,7 +625,7 @@ class ContractsFilesController extends Controller
         $file->file_type = 6;
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->actual_state;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->user_id = $request->user()->id;  // usuario logueado
         $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
         $file->save();
 
@@ -704,7 +704,7 @@ class ContractsFilesController extends Controller
 
         $file->contract_id = $contract_id;
         $file->contract_state_id = $contract->actual_state;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
+        $file->user_id = $request->user()->id;  // usuario logueado
         $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
         $file->save();
 
