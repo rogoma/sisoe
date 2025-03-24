@@ -77,7 +77,8 @@ class ReportsController extends Controller
                     'monto_orden',
                     'order_state_id'
                 ])
-                ->orderBy('contratista')
+                ->orderBy('contratista')                
+                ->orderBy('nombre_fiscal')
                 ->orderBy('localidad')
                 ->get();        
         // }
