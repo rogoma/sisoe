@@ -369,11 +369,10 @@
                                                         @for ($i = 0; $i < count($other_files_eval); $i++)
                                                             <tr>
                                                                 <td>{{ $i + 1 }}</td>
-                                                                <td>{{ $other_files_eval[$i]->description }}</td>
-                                                                {{ $user_files_eval[$i]->user->name}} {{ $user_files_eval[$i]->user->lastname }}
-                                                                </td>
-                                                                <td>{{ $other_files_eval[$i]->updated_atDateFormat() }}
-                                                                </td>
+                                                                <td style="max-width: 800px"> {{ $other_files_eval[$i]->description }}</td>
+                                                                <td style="max-width: 500px"> {{ $other_files_eval[$i]->user->name}} {{ $other_files_eval[$i]->user->lastname }}</td>
+                                                                <td style="max-width: 200px"> {{ $other_files_eval[$i]->updated_atDateFormat() }}</td>
+                                                                
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $other_files_eval[$i]->file) }}"
                                                                         title="Ver Archivo" target="_blank"

@@ -44,13 +44,13 @@
                             <h5 style="color: red;">Detalle de Rubros de Componente: {{ $items[0]->component->code }} -
                                 {{ $items[0]->component->description }} </h5>
                             <br>
-                            <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>
-                            index2
-                            <label for="order_id">Order ID:</label>
-                            <input type="text" id="order_id" value="{{ $order->id }}" readonly>
-                            <input type="text" id="creator_user_id" value="{{ Auth::user()->id }}" readonly>
-                            <br>
-                            <h5 style="color: blue;">contract.itemscontracts.index2_orig2</h5>
+                            <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>                            
+                            {{-- <label for="order_id">Order ID:</label> --}}
+                            <input type="hidden" id="order_id" value="{{ $order->id }}">
+                            <input type="hidden" id="creator_user_id" value="{{ Auth::user()->id }}">
+                            index2_orig2.blade.php
+                            {{-- <br> --}}
+                            {{-- <h5 style="color: blue;">contract.itemscontracts.index2_orig2</h5> --}}
                         </div>
                     </div>
                 </div>

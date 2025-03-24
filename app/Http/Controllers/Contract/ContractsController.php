@@ -320,7 +320,7 @@ class ContractsController extends Controller
             ->get();
 
         // if($role_user == 1){
-            $other_files_con = $contract->files()->where('user_id', '!=', $user_id)
+        $other_files_con = $contract->files()->where('user_id', '!=', $user_id)
             ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas  5-dictamenes
             ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
@@ -335,7 +335,7 @@ class ContractsController extends Controller
             ->get();
 
         // if($role_user == 1){
-            $other_files_eval = $contract->files()->where('user_id', '!=', $user_id)
+        $other_files_eval = $contract->files()->where('user_id', '!=', $user_id)
             ->whereIn('file_type', [6])//1-polizas 3-contratos 4-addendas  5-dictamenes 6-evaluaciones
             ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
