@@ -36,15 +36,15 @@
                         <i class="fa fa-list bg-c-blue"></i>
                         <div class="d-inline">
                             <h5 style="color: red;">
-                                Contrato N°: {{ $contract->description }}
+                                Contrato N°: {{ $contract->description }} - Contratista: {{ $contract->provider->description }}
                             </h5>
                         </div>
                         <br>
                         <div class="d-inline">
-                            <h5 style="color: red;">Detalle de Rubros de Componente: {{ $items[0]->component->code }} -
-                                {{ $items[0]->component->description }} </h5>
+                            {{-- <h5 style="color: red;">Detalle de Rubros de Componente: {{ $items[0]->component->code }} -
+                                {{ $items[0]->component->description }}</h5> --}}
                             <br>
-                            <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>                            
+                            {{-- <h5 style="color: red;">Localidad: {{ $order->locality }} </h5>                             --}}
                             {{-- <label for="order_id">Order ID:</label> --}}
                             <input type="hidden" id="order_id" value="{{ $order->id }}">
                             <input type="hidden" id="creator_user_id" value="{{ Auth::user()->id }}">
@@ -76,12 +76,10 @@
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <div class="float-left">
-                                            <h4 style="color: blue;">Rubros para procesar en la Orden de Ejecución N°:
-                                                {{ $order->number }}
-                                        </div>
-                                        <div class="float-right">
-                                        </div>
+                                        {{-- <div class="float-left"> --}}                                        
+                                        <h4 style="color: blue;"> Detalle de Rubros de Componente: {{ $items[0]->component->code }} - {{ $items[0]->component->description }}</h4>
+                                        <h4 style="color: blue;">Localidad: {{ $order->locality }} - Rubros para procesar en la Orden de Ejecución N°: {{ $order->component->code }} - {{ $order->number }}</h4>
+                                        {{-- </div> --}}
                                     </div>
                                     <div class="card-block">
                                         <div class="dt-responsive table-responsive">
@@ -97,7 +95,7 @@
                                                         <th>Precio UNIT MO</th>
                                                         <th>Precio UNIT MAT</th>
                                                         <th>Precio Total MO</th>
-                                                        <th>Precio Total MAT</th>|
+                                                        <th>Precio Total MAT</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -342,116 +340,3 @@
         });
     });
 </script>
-
-
-{{-- original (ambos) --}}
-{{-- <script>
-    $(document).ready(function () {
-        function updateTotals() {
-            let totalMo = 0;
-            let totalMat = 0;
-
-            $(".quantity").each(function () {
-                let index = $(this).data("index");
-
-                if ($("#total_mo_" + index).length && $("#total_mat_" + index).length) {
-                    let totalMoText = $("#total_mo_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
-                    let totalMatText = $("#total_mat_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
-
-                    totalMo += parseFloat(totalMoText) || 0;
-                    totalMat += parseFloat(totalMatText) || 0;
-                }
-            });
-
-            $("#tot_price_mo").text(totalMo.toLocaleString('es-ES'));
-            $("#tot_price_mat").text(totalMat.toLocaleString('es-ES'));
-        }
-
-        $(".quantity").on("input", function () {
-            let index = $(this).data("index");
-            let quantity = parseFloat($(this).val()) || 0;
-
-            let unitPrice = 0, unitPrice2 = 0;
-
-            if ($("#unit_price_mo_" + index).length) {
-                let unitPriceText = $("#unit_price_mo_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
-                unitPrice = parseFloat(unitPriceText) || 0;
-            }
-
-            if ($("#unit_price_mat_" + index).length) {
-                let unitPrice2Text = $("#unit_price_mat_" + index).text().replace(/\./g, '').replace(',', '.') || "0";
-                unitPrice2 = parseFloat(unitPrice2Text) || 0;
-            }
-
-            let total = Math.round(quantity * unitPrice);
-            let total2 = Math.round(quantity * unitPrice2);
-
-            if ($("#total_mo_" + index).length) $("#total_mo_" + index).text(total.toLocaleString('es-ES'));
-            if ($("#total_mat_" + index).length) $("#total_mat_" + index).text(total2.toLocaleString('es-ES'));
-
-            updateTotals();
-        });
-
-        updateTotals();
-    });
-</script>
-
-<script>
-    // Inicializar DataTable
-    $(document).ready(function() {
-        $('#items').DataTable();
-    });
-
-    // Guardar datos con AJAX
-    $('#saveButton').click(function() {
-        const items = [];
-        const orderId = $('#order_id').val();
-        const creator_user_Id = $('#creator_user_id').val();
-
-        $('#items tbody tr').each(function() {
-            const row = $(this);
-
-            let item_number = parseInt(row.find('.item_number').text().trim());
-            let rubro_id = parseInt(row.find('.rubro-id').text().trim());
-            let quantity = parseFloat(row.find('.quantity input').val());  // Cambiado parseInt a parseFloat para decimales                
-            let unit_price_mo = parseInt(row.find('.price-unit-mo').attr('data-value'));
-            let unit_price_mat = parseInt(row.find('.price-unit-mat').attr('data-value'));
-            let tot_price_mo = parseInt(row.find('.price-total-mo').attr('data-value'));
-            let tot_price_mat = parseInt(row.find('.price-total-mat').attr('data-value'));
-
-            // Verificar si item_number es válido antes de agregarlo al array
-            if (item_number !== null && item_number !== undefined && !isNaN(item_number) &&
-                item_number !== 0 && quantity !== 0 && quantity !== "") {
-                items.push({
-                    item_number: item_number,
-                    rubro_id: rubro_id,
-                    rubro: row.find('.rubro').text().trim(),
-                    quantity: quantity,
-                    unit_price_mo: unit_price_mo,
-                    unit_price_mat: unit_price_mat,
-                    tot_price_mo: tot_price_mo,
-                    tot_price_mat: tot_price_mat,
-                });
-            }                
-        });
-
-        console.log(items);
-
-        $.ajax({
-            url: '/item-orders',
-            type: 'POST',
-            data: {
-                items: items,
-                order_id: orderId,
-                creator_user_id: creator_user_Id,
-                _token: $('meta[name="csrf-token"]').attr('content'),
-            },
-            success: function(response) {
-                alert(response.message);
-            },
-            error: function(xhr) {
-                console.error(xhr.responseText);
-            },
-        });
-    });
-</script> --}}

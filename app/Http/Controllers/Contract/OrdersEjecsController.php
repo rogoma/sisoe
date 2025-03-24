@@ -105,29 +105,15 @@ class OrdersEjecsController extends Controller
 
     public function show(Request $request, $order_id)
     {
-        $order = Order::findOrFail($order_id);
+        $order = Order::with('contract')->findOrFail($order_id);
+        // $items = $order->items;
+        $contract_id = $order->contract->id ?? null;
 
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
+        // return view('order.items.index', compact('order', 'items'));
+        return redirect()->to("http://localhost:8080/contracts/{$contract_id}");
 
-
-        // Obtenemos los items del pedido
-        $items = $order->items;
-        return view('order.items.index', compact('order', 'items'));
     }
-
-    //Para mostrar Planillas EXCEL Región Oriental guardado en el Proyecto con formato ZIP
-    // public function ArchivoPedido(){
-    //     header("Content-type: application/zip");
-    //     header("Content-Disposition: inline; filename=Planillas Región Oriental.zip");        
-    //     readfile("files/Planillas Región Oriental.zip");
-    // }
-
-    //Para mostrar Planillas EXCEL Región Occidental guardado en el Proyecto con formato ZIP
-    // public function ArchivoPedido2(){
-    //     header("Content-type: application/zip");
-    //     header("Content-Disposition: inline; filename=Planillas Región Occidental.zip");        
-    //     readfile("files/Planillas Región Occidental.zip");
-    // }
+    
     /**
      * BUscar codigos de catalogo 5
      *

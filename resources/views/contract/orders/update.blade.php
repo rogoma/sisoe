@@ -38,12 +38,13 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <div class="col-sm-10 text-left">
-                                            <h5>Llamado:
+                                            <h4>Llamado:
                                                 {{ $contract->description . ' - ' . $contract->modality->description . ' - ' . $contract->provider->description }}
-                                            </h5>
+                                                Modificar Orden del Contrato N° {{ $contract->number_year }}
+                                            </h4>
                                         </div>
 
-                                        <h5>Modificar Orden del Contrato N° {{ $contract->number_year }}</h5>
+                                        
                                         <br><br>
                                         <label id="fecha_actual" name="fecha_actual"
                                             style="font-size: 20px;color: #FF0000;float: left;"
@@ -350,6 +351,7 @@
                 format: 'dd/mm/yyyy',
                 autoclose: true,
                 todayHighlight: true,
+                endDate: "today" // Restringe la selección de fechas futuras
             });
 
             // Control de habilitación de sign_date_fin
