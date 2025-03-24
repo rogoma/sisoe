@@ -1071,21 +1071,29 @@
             anuleOrder = function(order) {
                 swal({
                         title: "Atención",
-                        text: "Está seguro que desea anular la orden?",
-                        type: "warning",
+                        text: "Está seguro que desea anular la orden? Ingrese el motivo:",
+                        type: "input", // Permite ingresar texto
                         showCancelButton: true,
                         confirmButtonColor: "#DD6B55",
                         confirmButtonText: "Sí, anular",
                         cancelButtonText: "Cancelar",
+                        closeOnConfirm: false,
+                        inputPlaceholder: "Escriba el motivo aquí..."
                     },
-                    function(isConfirm) {
-                        if (isConfirm) {
+                    function(motivo) {
+                        if (motivo === false) return false; // Si se presiona cancelar
+                        
+                        if (motivo === "") {
+                            swal.showInputError("Debe ingresar un motivo!"); // Si no se ingresa motivo 
+                            return false;
+                        }
                             $.ajax({
                                 url: '/contracts/{{ $contract->id }}/orders/' + order,
                                 method: 'POST',
                                 data: {
                                     _method: 'DELETE',
-                                    _token: '{{ csrf_token() }}'
+                                    _token: '{{ csrf_token() }}',
+                                    motivo: motivo // Se envía el motivo en la solicitud
                                 },
                                 success: function(data) {
                                     try {
@@ -1112,10 +1120,59 @@
                                     console.log(error);
                                 }
                             });
-                        }
+                        
                     }
                 );
             };
+
+            // anuleOrder = function(order) {
+            //     swal({
+            //             title: "Atención",
+            //             text: "Está seguro que desea anular la orden?",
+            //             type: "warning",
+            //             showCancelButton: true,
+            //             confirmButtonColor: "#DD6B55",
+            //             confirmButtonText: "Sí, anular",
+            //             cancelButtonText: "Cancelar",
+            //         },
+            //         function(isConfirm) {
+            //             if (isConfirm) {
+            //                 $.ajax({
+            //                     url: '/contracts/{{ $contract->id }}/orders/' + order,
+            //                     method: 'POST',
+            //                     data: {
+            //                         _method: 'DELETE',
+            //                         _token: '{{ csrf_token() }}'
+            //                     },
+            //                     success: function(data) {
+            //                         try {
+            //                             response = (typeof data == "object") ? data : JSON
+            //                                 .parse(data);
+            //                             if (response.status == "success") {
+            //                                 swal("Éxito!", "Orden Anulada correctamente",
+            //                                     "success");
+            //                                 location.reload();
+            //                             } else {
+            //                                 swal("Error!", response.message, "error");
+            //                             }
+            //                         } catch (error) {
+            //                             swal("Error!",
+            //                                 "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina",
+            //                                 "error");
+            //                             console.log(error);
+            //                         }
+            //                     },
+            //                     error: function(error) {
+            //                         swal("Error!",
+            //                             "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina",
+            //                             "error");
+            //                         console.log(error);
+            //                     }
+            //                 });
+            //             }
+            //         }
+            //     );
+            // };
 
             DesanuleOrder = function(order) {
                 swal({

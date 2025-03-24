@@ -489,16 +489,19 @@ class OrdersEjecsController extends Controller
         }
 
         // SI FECHA FINALIZACIÓN ES NULL ENTONCES ESTADO = 10 PENDIENTE ACUSE CONTRATISTA
-        if (($request->input('sign_date') && (($request->input('sign_date_fin'))))) {
-            $order->order_state_id = 4;        
-        }
+        // if (($request->input('sign_date') && (($request->input('sign_date_fin'))))) {
+        //     $order->order_state_id = 4;        
+        // }
 
-        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
+        // $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
+        
 
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
-        if ($request->input('order_state_id') == 4 && $request->filled('sign_date_fin')) {
+        if ($request->filled('sign_date_fin')) {
             $order->sign_date_fin = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date_fin'))));
+            $order->order_state_id = 4;
         } else {
+            $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
             $order->sign_date_fin = null;
         }
 
@@ -517,6 +520,81 @@ class OrdersEjecsController extends Controller
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
     }
 
+//     public function destroy(Request $request, $contract_id, $item_id)
+// {
+//     $contract = Contract::findOrFail($contract_id);
+//     $order = Order::findOrFail($item_id);
+
+//     // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
+//     if (!$request->user()->hasPermission(['admin.orders.delete', 'orders.orders.delete']) && 
+//         $order->contract->dependency_id != $request->user()->dependency_id) {
+//         return response()->json([
+//             'status' => 'error', 
+//             'message' => 'No posee los suficientes permisos para anular la orden.', 
+//             'code' => 200
+//         ], 200);
+//     }
+
+//     // Obtener el monto actual de la orden
+//     $currentOrderAmount = $order->total_amount;
+
+//     // ANULAR Cambia a estado 5 = "Anulado" si es que Estado de la orden está en 1 (En curso)
+//     if ($order->order_state_id == 1) {
+//         // Validar que se haya enviado un motivo
+//         $motivo = $request->input('motivo');
+//         if (!$motivo) {
+//             return response()->json([
+//                 'status' => 'error',
+//                 'message' => 'Debe proporcionar un motivo para anular la orden.',
+//                 'code' => 400
+//             ], 400);
+//         }
+
+//         // Restar el monto actual de la orden al compro_amount del contrato
+//         $contract->decrement('compro_amount', $currentOrderAmount);
+
+//         // Guardar estado y motivo en la orden
+//         $order->order_state_id = 5;
+//         $order->motivo_anule = $motivo;
+//         $order->save();
+
+//         session()->flash('status', 'success');
+//         session()->flash('message', 'Orden anulada ' . $order->number);
+
+//         return response()->json([
+//             'status' => 'success',
+//             'message' => 'Orden anulada correctamente ' . $order->number,
+//             'code' => 200
+//         ], 200);
+//     }
+//     // DESANULAR Cambia a estado 1 = "En curso" si es que Estado de la orden está en 5 (Anulado)
+//     elseif ($order->order_state_id == 5) {
+//         // Sumar el monto actual de la orden al compro_amount del contrato
+//         $contract->increment('compro_amount', $currentOrderAmount);
+
+//         // Restaurar el estado de la orden
+//         $order->order_state_id = 1;
+//         $order->motivo_anule = null; // Limpiar el motivo al desanular
+//         $order->save();
+
+//         session()->flash('status', 'success');
+//         session()->flash('message', 'Orden Desanulada ' . $order->number);
+
+//         return response()->json([
+//             'status' => 'success',
+//             'message' => 'Orden Desanulada correctamente ' . $order->number,
+//             'code' => 200
+//         ], 200);
+//     } else {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'La orden no puede ser anulada o desanulada en su estado actual.',
+//             'code' => 200
+//         ], 200);
+//     }
+// }
+
+
     public function destroy(Request $request, $contract_id, $item_id)
     {
         $contract = Contract::findOrFail($contract_id);
@@ -533,10 +611,20 @@ class OrdersEjecsController extends Controller
         // ANULAR Cambia a estado 5 = "Anulado" si es que Estado de la orden está en 1 (En curso)
         if ($order->order_state_id == 1) {
 
+            $motivo = $request->input('motivo');
+        // if (!$motivo) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Debe proporcionar un motivo para anular la orden.',
+        //         'code' => 400
+        //     ], 400);
+        // }
+
             // Restar el monto actual de la orden al compro_amount del contrato
             $contract->decrement('compro_amount', $currentOrderAmount);
 
             $order->order_state_id = 5;
+            $order->motivo_anule = $motivo;
             $order->save();
 
             session()->flash('status', 'success');

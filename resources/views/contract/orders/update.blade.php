@@ -157,8 +157,7 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo
-                                                            Contratista</label>
+                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
                                                         <div class="input-group">
                                                             <input type="text" id="sign_date" name="sign_date"
                                                                 {{-- DISABLED INGRESO DE FECHA SI LA ORDEN NO TIENE DETALLE DE RUBROS --}}
@@ -317,6 +316,77 @@
 
 @push('scripts')
     <script type="text/javascript">
+        $(document).ready(function() {            
+            // Manejo de cambio en el departamento para cargar distritos
+            $('#department_id').on('change', function() {
+                var departmentId = $(this).val();
+                var $districtSelect = $('#district_id');
+
+                $districtSelect.empty().append('<option value="">--- Seleccionar Distrito ---</option>');
+
+                if (departmentId) {
+                    $.ajax({
+                        url: '/fetch-districts',
+                        type: 'GET',
+                        data: { department_id: departmentId },
+                        success: function(data) {
+                            $.each(data, function(key, district) {
+                                $districtSelect.append('<option value="' + district.id + '">' + district.description + '</option>');
+                            });
+                        },
+                        error: function(xhr) {
+                            console.error('Error fetching districts:', xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // Inicialización de Select2
+            $('#component_id, #order_state_id, #department_id, #district_id').select2();
+
+            // Configuración de Datepicker
+            $('#sign_date, #sign_date_fin').datepicker({
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+            });
+
+            // Control de habilitación de sign_date_fin
+            function toggleSignDateFin() {
+                if ($('#sign_date').val().trim() === "") {
+                    $('#sign_date_fin').val("").prop('disabled', true);
+                } else {
+                    $('#sign_date_fin').prop('disabled', false);
+                }
+            }
+
+            // Ejecutar la función al cargar la página
+            toggleSignDateFin();
+
+            // Evento al cambiar sign_date
+            $('#sign_date').on('change', function () {
+                toggleSignDateFin();
+            });
+
+            // Evento al cambiar sign_date_fin (deshabilitar sign_date si se selecciona)
+            $('#sign_date_fin').on('change', function () {
+                if ($(this).val().trim() !== "") {
+                    $('#sign_date').prop('disabled', true);
+                } else {
+                    $('#sign_date').prop('disabled', false);
+                }
+            });
+        });
+    </script>
+@endpush
+
+
+
+
+
+{{-- @push('scripts')
+    <script type="text/javascript">
         $(document).ready(function() {
 
             $('#department_id').on('change', function() {
@@ -344,18 +414,6 @@
                 }
             });
 
-            // Validar antes de guardar
-            // $('#saveButton').on('click', function(event) {
-            //     var districtId = $('#district_id').val();
-            //     if (!districtId) {
-            //         event.preventDefault(); // Evita que el formulario se envíe
-            //         alert('Por favor, seleccione un distrito antes de guardar.');
-            //     } else {
-            //         // Aquí puedes agregar la lógica para proceder con el guardado
-            //         //console.log('Formulario válido. Procediendo con el guardado...');
-            //     }
-            // });
-
             $('#component_id').select2();
             $('#order_state_id').select2();
             $('#department_id').select2();
@@ -376,4 +434,4 @@
             });
         });
     </script>
-@endpush
+@endpush --}}
