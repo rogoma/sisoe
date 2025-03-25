@@ -77,6 +77,13 @@
     </style>
 @endpush
 
+{{-- Mensaje --}}
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif 
+
 @section('content')
     {{-- <div class="container"> --}}
     <div class="pcoded-content">

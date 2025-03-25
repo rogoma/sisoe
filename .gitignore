@@ -190,3 +190,4 @@ nbdist/
 
 # postgresql database
 docker_files/postgres-data/*
+.qodo

@@ -106,12 +106,13 @@ class OrdersEjecsController extends Controller
     public function show(Request $request, $order_id)
     {
         $order = Order::with('contract')->findOrFail($order_id);
-        // $items = $order->items;
-        $contract_id = $order->contract->id ?? null;
+        $contract = $order->contract;
 
-        // return view('order.items.index', compact('order', 'items'));
-        return redirect()->to("http://localhost:8080/contracts/{$contract_id}");
-
+        if (!$contract) {
+            return redirect()->back()->with('error', 'No se encontró un contrato para esta orden.');
+        }
+        
+        return redirect()->route('contracts.show', $contract->id)->with('success', 'Rubros generados');                
     }
     
     /**
