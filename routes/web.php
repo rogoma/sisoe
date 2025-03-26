@@ -187,14 +187,14 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //PARA MANEJAR DATOS EN ITEMS DE ORDENES DE EJECUCIÓN
     Route::resource('orders.items_orders', ItemsOrdersController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}
-    Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');    
+
+    Route::get('/orders/{id}/uploadExcelItem', [ItemsOrdersController::class, 'uploadExcel'])->name('orders.items.uploadExcel');   
+
     Route::post('/orders/{id}/uploadExcel', [ItemsOrdersController::class, 'storeExcel'])->name('orders.items.storeExcel');
     // PARA GRABAR RUBROS EN ITEMS_ORDERS
     Route::post('items_orders/store', [ItemsOrdersController::class, 'store'])->name('items_orders.store');
 
-
     Route::post('/item-orders', [ItemsOrdersController::class, 'store']);
-
        
 
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
@@ -215,12 +215,16 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //PARA BUSCAR EL MAYOR NÚMERO DE ORDEN DE EJECUCIÓN Y ASIGNARLO A UNA NUEVA ORDEN (GPT)
     Route::get('/get-max-number', [OrdersEjecsController::class, 'getMaxNumber'])->name('getMaxNumber');
 
+    //PARA AGREGAR EVENTOS A LA ORDEN DE EJECUCIÓN
+    Route::get('orders/{order_id}/events', [OrdersEjecsController::class, 'events'])->name('orders.orders.events');
+
     // Route::get('/get-max-order-number/{componentId}', [OrdersEjecsController::class, 'getMaxOrderNumber'])->name('getMaxOrderNumber');
     
 
 
 
     Route::post('orders/derive/{order_id}', [OrdersController::class, 'derive'])->name('orders.derive');
+
     Route::post('orders/anuleOrder/{order_id}', [OrdersController::class, 'anuleOrder'])->name('orders.anuleOrder');
 
     Route::post('orders/anuleDerive/{order_id}', [OrdersController::class, 'anuleDerive'])->name('orders.anuleDerive');

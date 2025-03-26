@@ -197,5 +197,5 @@ return [
     */
 
     'same_site' => 'lax',
-
+    'secure' => false,  // Ponlo en false si estás en localhost sin HTTPS
 ];

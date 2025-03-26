@@ -45,7 +45,7 @@ class OrdersEjecsController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.orders.index', 'orders.orders.index'];
+        $index_permissions = ['admin.orders.index', 'orders.orders.index','orders.orders.events'];
         $create_permissions = ['admin.orders.create', 'orders.orders.create'];
         $update_permissions = ['admin.orders.update', 'orders.orders.update'];
 
@@ -100,6 +100,26 @@ class OrdersEjecsController extends Controller
         // Obtenemos los items del pedido
         $items = $order->items;
         return view('order.items.index', compact('order', 'items'));
+    }
+
+    /**
+     * Listado de todos los ítems de un pedido.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function events(Request $request, $order_id)
+    {
+        $order = Order::findOrFail($order_id);
+
+        // Obtenemos los eventos del pedido
+        $events = $order->events;
+        
+        if (
+            !$request->user()->hasPermission(['admin.orders.index', 'orders.orders.index']) ){
+            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        }
+                
+        return view('contract.orders.events', compact('order', 'events'));
     }
 
 

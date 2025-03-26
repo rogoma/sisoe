@@ -608,9 +608,9 @@
                                                                                 {{-- Generar Eventos para prorroga de fecha de vencimiento del plazo de la orden --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id && $order->orderState->id == 1)
                                                                                     <button type="button" title="Cargar Eventos"
-                                                                                        class="btn btn-primary btn-icon">
-                                                                                        {{-- onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})"> --}}
-                                                                                        <i class="fa fa-clock-o"></i></button>
+                                                                                        class="btn btn-primary btn-icon"
+                                                                                        onclick="itemEvents({{ $order->id }})"><i                                                                                        
+                                                                                            class="fa fa-clock-o"></i></button>
                                                                                 @endif
                                                                             @else
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
@@ -1284,6 +1284,11 @@
                 location.href = '/orders/' + order + '/items_orders';
             }
 
+            //lleva a indexRubros de ItemsContractsController            
+            itemEvents = function(order) {
+                location.href = '/orders/' + order + '/events';
+            }
+            
             //lleva a indexRubros de ItemsContractsController
             itemContraRubro = function(order, contract, component) {
                 location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' +

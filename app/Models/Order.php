@@ -42,6 +42,14 @@ class Order extends Model
         return $this->hasMany('App\Models\ItemOrder');
     }
 
+
+    /**
+    * Para obtener el vinculo con la tabla events
+    */
+    public function events(){
+        return $this->hasMany('App\Models\Event');
+    }
+
     /**
      * Para obtener el vinculo con la tabla items2
      */
