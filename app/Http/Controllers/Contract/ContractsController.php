@@ -23,6 +23,7 @@ use App\Models\OrderOrderState;
 use App\Models\ContractState;
 use App\Models\ContractType;
 use App\Models\User;
+use App\Models\Event;
 use App\Models\ItemContract;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -276,7 +277,19 @@ class ContractsController extends Controller
      */
     public function show(Request $request, $contract_id)
     {
-        $contract = Contract::findOrFail($contract_id);
+        // $contract = Contract::findOrFail($contract_id);
+        $contract = Contract::with('orders.events')->findOrFail($contract_id);
+
+        // Obtener las órdenes del contrato
+        $orders = $contract->orders;
+
+        // Obtener los eventos a partir de las órdenes
+        // $events = $orders->events;
+
+        // $contract = Contract::with('orders.events')->findOrFail($contract_id);    
+        // Obtener todos los eventos del contrato a través de las órdenes
+        $events = $contract->orders->flatMap->events;
+
 
         // para mostrar agrupados los componentes de items_contracts agregados
         $items_contract = ItemContract::with('component') // Carga la relación 'component'
@@ -297,6 +310,7 @@ class ContractsController extends Controller
         $user_dependency = $request->user()->dependency_id;
         $user_id = $request->user()->id;
         $role_user = $request->user()->role_id;
+        
 
         // Obtenemos los archivos cargados por usuarios con tipo de archivos 1 pólizas
         $user_files_pol = $contract->files()->where('dependency_id', $user_dependency)
@@ -359,7 +373,7 @@ class ContractsController extends Controller
         if($request->user()->hasPermission(['admin.contracts.show', 'contracts.contracts.show','process_contracts.contracts.show',
         'contracts.contracts.index','derive_contracts.contracts.index']) || $contract->dependency_id == $request->user()->dependency_id){
             return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con',
-            'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract'));
+            'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract', 'orders', 'events'));
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }

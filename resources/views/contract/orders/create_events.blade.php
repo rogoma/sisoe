@@ -55,12 +55,19 @@
                                             <br>
                                             @php
                                                 use Carbon\Carbon;
+
                                                 $fechaInicio = Carbon::parse($order->sign_date);
-                                                $fechaFin = $fechaInicio->addDays($order->plazo);
+                                                $fechaFin = $fechaInicio->copy()->addDays($order->plazo);
                                             @endphp
+
+                                            @foreach ($events as $event)
+                                                @php
+                                                    $fechaFinal = $fechaFin->copy()->addDays($event->event_days);
+                                                @endphp                                                
+                                            @endforeach
                                             
                                             <h4>Fecha Inicio: {{ \Carbon\Carbon::parse($order->sign_date)->format('d/m/Y') }}  *****  Plazo días: {{$order->plazo}}
-                                                *****  Fecha Fin: {{$fechaFin->format('d/m/Y')}}</h4>
+                                                *****  Fecha Fin: {{$fechaFinal->format('d/m/Y')}}</h4>
                                             
 
                                             <br>

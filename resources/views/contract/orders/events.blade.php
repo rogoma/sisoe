@@ -72,13 +72,21 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                            
+                                            
+                                            @php
+                                                use Carbon\Carbon;
+                                                $fechaInicio = Carbon::parse($order->sign_date);
+                                                $fechaFin = $fechaInicio->copy()->addDays($order->plazo);
+                                            @endphp
+
                                             @for ($i = 0; $i < count($events); $i++)
                                                 <tr>
                                                     <td>{{ ($i+1) }}</td>
                                                     <td>{{ $events[$i]->eventType->description }}</td>                                                    
                                                     <td>{{ $events[$i]->eventDateFormat() }}</td>
                                                     <td>{{ $events[$i]->event_days }}</td>
-                                                    <td>{{ \Carbon\Carbon::createFromFormat('d/m/Y', $events[$i]->eventDateFormat())->addDays($events[$i]->event_days)->format('d/m/Y') }}</td>
+                                                    <td>{{ $fechaFin->copy()->addDays($events[$i]->event_days)->format('d/m/Y') }}</td>
                                                     <td>{{ $events[$i]->comments }}</td>
 
                                                         <td>

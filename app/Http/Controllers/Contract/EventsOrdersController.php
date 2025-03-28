@@ -95,12 +95,13 @@ class EventsOrdersController extends Controller
      */
     public function create(Request $request, $order_id)
     {
-        $order = Order::findOrFail($order_id);
+        // $order = Order::findOrFail($order_id);
+        $order = Order::with('events')->findOrFail($order_id);
+        $events = $order->events;        
+
         $contract = $order->contract; // Accedemos a la relación contract        
         $post_max_size = $this->postMaxSize;
         $event_types = EventType::all();
-
-
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         // if(!$request->user()->hasPermission(['admin.events_orders.create', 'contracts.events_orders.create']) &&
@@ -110,7 +111,7 @@ class EventsOrdersController extends Controller
 
         // return view('contract.events_orders.create', compact('item'));
         return view('contract.orders.create_events', compact('order', 'post_max_size', 
-        'contract', 'event_types'));
+        'contract', 'event_types', 'events'));
     }
 
 

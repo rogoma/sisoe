@@ -421,18 +421,18 @@
                                                             <th>Fecha Orden</th>
                                                             <th>Monto Orden</th>
                                                             <th>Distrito-Localidad</th>
-                                                            <th>Sub-Componente</th>
+                                                            <th>Sub-Componente</th>                                                            
                                                             <th>Plazo Inicio</th>
                                                             <th>Plazo días</th>
                                                             <th>Fecha Alerta</th>
-                                                            <th>Plazo Final</th>
+                                                            <th>Plazo Final</th>                                                            
                                                             <th>Estado</th>
                                                             {{-- <th>Referencia</th> --}}
                                                             <th style="width: 190px; text-align: center;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($contract->orders->sortBy('id') as $index => $order)
+                                                        @foreach ($orders->sortBy('id') as $index => $order)
                                                             <tr>
 
                                                                 <td style="color:black;text-align: left;width: 150px;">
@@ -451,7 +451,7 @@
                                                                     {{ $order->locality }}</td>
                                                                 <td style="text-align: left;width: 350px;">
                                                                     {{ $order->component->code }}-{{ $order->component->description }}
-                                                                </td>
+                                                                </td>                                                               
 
                                                                 {{-- FECHA ACUSE CONTRATISTA --}}
                                                                 <td style="color:#ff0000;text-align: left;width: 25px;">
@@ -465,59 +465,80 @@
                                                                     {{ $order->plazo }}</td>
 
                                                                 {{-- FECHA ALERTA 03 DIAS ANTES NO PINTA SI YA ESTA FINALIZADO ESTADO 4 --}}
-                                                                <td
-                                                                    style="text-align: left; width: 20px; 
-                                                                    @if ($order->orderState->id == 4) background-color: white; color: black;
-                                                                    
-                                                                    @elseif ($order->orderState->id == 1 && $order->sign_date) 
-                                                                        @php
-                                                                            $fechaCalculada = \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3);
-                                                                        @endphp
+                                                                <td style="text-align: left; width: 20px;
+                                                                
+                                                                    @php
+                                                                            $eventDays = \App\Models\Event::where('order_id', $order->id)->value('event_days');
+                                                                            // Verifica si hay eventos asociados a la orden // Si hay eventos, calcula la fecha de vencimiento sumando los días de evento a la fecha de firma
+                                                                            if ($eventDays) {
+                                                                                $fechaCalculada = \Carbon\Carbon::parse($order->sign_date)->addDays(($order->plazo + $eventDays)-3);
+                                                                            } else {
+                                                                                $fechaCalculada = $order->sign_date ? \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3) : null;
+                                                                            }                                                                    
+                                                                    @endphp
 
-                                                                        @if ($fechaCalculada->lte(\Carbon\Carbon::now()))background-color: yellow; color: black; @endif
+                                                                    @if ($order->orderState->id == 4) 
+                                                                        background-color: white; color: black;                                                                    
+                                                                    @elseif ($order->orderState->id == 1 && $fechaCalculada && \Carbon\Carbon::now()->gt($fechaCalculada))
+                                                                        background-color: yellow; color: black;                                                                         
                                                                     @endif">
 
                                                                     @if ($order->sign_date)
-                                                                        @php
-                                                                            $fechaCalculada = \Carbon\Carbon::parse($order->sign_date,)->addDays($order->plazo - 3);
-                                                                        @endphp
-
-                                                                        @if ($order->orderState->id == 1 && $fechaCalculada->lte(\Carbon\Carbon::now()))
-                                                                            {{($fechaCalculada)->format('d/m/Y')}}   
-                                                                            <strong>FECHA ALERTA</strong>
+                                                                        @if ($order->orderState->id == 1 && $fechaCalculada && \Carbon\Carbon::now()->gt($fechaCalculada))
+                                                                            {{ $fechaCalculada->format('d/m/Y') }}   
+                                                                            <strong> FECHA ALERTA</strong>
                                                                         @else
-                                                                            {{ $fechaCalculada->format('d/m/Y') }}
+                                                                            @php
+                                                                                $eventDays = \App\Models\Event::where('order_id', $order->id)->value('event_days');
+                                                                            @endphp
+                                                                    
+                                                                            @if ($fechaCalculada)
+                                                                                {{ $fechaCalculada->format('d/m/Y') }}   
+                                                                                @if ($eventDays)
+                                                                                    <strong style="color: red;"> EXTENDIDO {{($eventDays)}} días </strong>
+                                                                                @endif
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 </td>
 
-
                                                                 {{-- PLAZO FINAL CALCULA SI FECHA PLAZO ES IGUAL A FECHA ACTUAL Y PONE EN ROJO - NO PINTA SI YA ESTA FINALIZADO ESTADO 4 --}}
-
                                                                 {{-- ACA DEBE PREGUNTAR SI TIENE EVENTOS  --}}
-
                                                                 <td style="text-align: left; width: 25px;                                                                
-                                                                
-                                                                @php
-                                                                    $fechaVencimiento = $order->sign_date ? \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo) : null;
-                                                                @endphp
+                                                                        @php
+                                                                            $eventDays = \App\Models\Event::where('order_id', $order->id)->value('event_days');
+                                                                            // Verifica si hay eventos asociados a la orden // Si hay eventos, calcula la fecha de vencimiento sumando los días de evento a la fecha de firma
+                                                                            if ($eventDays) {
+                                                                                $fechaVencimiento = \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo + $eventDays);
+                                                                            } else {
+                                                                                $fechaVencimiento = $order->sign_date ? \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo) : null;
+                                                                            }                                                                    
+                                                                        @endphp
 
-                                                                @if ($order->orderState->id == 4) 
-                                                                    background-color: white; color: black; 
-                                                                @elseif ($order->orderState->id == 1 && $fechaVencimiento && \Carbon\Carbon::now()->gt($fechaVencimiento))
-                                                                    background-color: red; color: white;
-                                                                @endif">
-                                                                
-                                                                @if ($order->sign_date)
-                                                                    @if ($order->orderState->id == 1 && $fechaVencimiento && \Carbon\Carbon::now()->gt($fechaVencimiento))
-                                                                        {{ $fechaVencimiento->format('d/m/Y') }}   
-                                                                        <strong> PLAZO VENCIDO</strong>
-                                                                    @else
-                                                                        {{ $fechaVencimiento->format('d/m/Y') }}
-                                                                    @endif
-                                                                @endif
-                                                            </td>
-
+                                                                        @if ($order->orderState->id == 4) 
+                                                                            background-color: white; color: black; 
+                                                                        @elseif ($order->orderState->id == 1 && $fechaVencimiento && \Carbon\Carbon::now()->gt($fechaVencimiento))
+                                                                            background-color: red; color: white;
+                                                                        @endif">
+                                                                        
+                                                                        @if ($order->sign_date)
+                                                                            @if ($order->orderState->id == 1 && $fechaVencimiento && \Carbon\Carbon::now()->gt($fechaVencimiento))
+                                                                                {{ $fechaVencimiento->format('d/m/Y') }}   
+                                                                                <strong> PLAZO VENCIDO</strong>
+                                                                            @else
+                                                                                @php
+                                                                                    $eventDays = \App\Models\Event::where('order_id', $order->id)->value('event_days');
+                                                                                @endphp
+                                                                        
+                                                                                @if ($fechaVencimiento)
+                                                                                    {{ $fechaVencimiento->format('d/m/Y') }}   
+                                                                                    @if ($eventDays)
+                                                                                    <strong style="color: red;"> EXTENDIDO {{($eventDays)}} días </strong>
+                                                                                    @endif
+                                                                                @endif
+                                                                            @endif
+                                                                    @endif                                                            
+                                                                </td>
                                                             </td>
                                                             
 
