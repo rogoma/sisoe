@@ -24,7 +24,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.show', $order->contract->id) }}">Eventos de Prórrogas</a>
+                            <a href="{{ route('contracts.show', $contract->id) }}">Contrato</a>
                             {{-- <a>Póliza Nº {{ $item->contract_id }}</a> --}}
                         </li>
                     </ul>
@@ -36,6 +36,11 @@
         <div class="main-body">
             <div class="page-wrapper">
                 <div class="page-body">
+                    <h4>Contratista: {{$contract->provider->description }} - Localidad: {{ $order->locality }} 
+                        {{-- - SubComponente: {{ $order->component_id->components->description }} --}}
+                        {{-- - Componente: {{ $order->component_code->component->description }} --}}
+                        - Orden N°: {{ $order->component_code }} - {{ $order->number }} </h4>
+                    
                     {{-- <h5>Póliza: {{ $item->policy->description }} - N°: {{ $item->number_policy }}</h5> --}}
                     {{-- <h3 style="font-size: 20px;color: blue;">Póliza: {{ $item->policy->description }} - N°: {{ $item->number_policy }} - Gs.: {{ $item->amountFormat() }}</h3> --}}
 
@@ -70,10 +75,10 @@
                                             @for ($i = 0; $i < count($events); $i++)
                                                 <tr>
                                                     <td>{{ ($i+1) }}</td>
-                                                    <td>{{ $events[$i]->eventType->description }}</td>
+                                                    <td>{{ $events[$i]->eventType->description }}</td>                                                    
                                                     <td>{{ $events[$i]->eventDateFormat() }}</td>
                                                     <td>{{ $events[$i]->event_days }}</td>
-                                                    <td>{{ $events[$i]->eventDateFormat() }}</td>
+                                                    <td>{{ \Carbon\Carbon::createFromFormat('d/m/Y', $events[$i]->eventDateFormat())->addDays($events[$i]->event_days)->format('d/m/Y') }}</td>
                                                     <td>{{ $events[$i]->comments }}</td>
 
                                                         <td>
@@ -92,8 +97,8 @@
                                                             @endif
                                                         </td>                                                        
                                                     <td>
-                                                        <a href="{{ asset('storage/files/') }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
-                                                        {{-- <a href="{{ asset('storage/files/'.$item->itemAwardHistories[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a> --}}
+                                                        {{-- <a href="{{ asset('storage/files/') }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a> --}}
+                                                        <a href="{{ asset('storage/files/'.$order->events[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
                                                     </td>
                                                 </tr>
                                             @endfor
@@ -104,7 +109,7 @@
                                             @if (Auth::user()->hasPermission(['admin.orders.index', 'orders.orders.index']))
                                                 {{-- Si pedido está anulado no muestra agregar ítems --}}
                                                 {{-- @if (in_array($contract->contract_state_id, [1])) --}}
-                                                    <a href="{{ route('items.item_award_histories.create', $order->id) }}" class="btn btn-primary">Agregar Evento</a>
+                                                    <a href="{{ route('orders.events.create', $order->id) }}" class="btn btn-primary">Agregar Evento</a>
                                                 {{-- @endif --}}
                                             @endif
                                         </div>

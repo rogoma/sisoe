@@ -47,6 +47,7 @@ use App\Http\Controllers\Dgaf\DgafsController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Contract\ItemsOrdersController;
 use App\Http\Controllers\Contract\ItemsContractsController;
+use App\Http\Controllers\Contract\EventsOrdersController;
 
 // use App\Http\Controllers\Report\PdfsController;
 use App\Http\Controllers\Report\ReportsController;
@@ -126,6 +127,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('program_types', ProgramTypesController::class);
     Route::resource('programs', ProgramsController::class);
     Route::resource('sub_programs', SubProgramsController::class);
+
+    Route::resource('orders.events', EventsOrdersController::class);
 
     Route::resource('catalog_level1s', Level1CatalogCodeController::class);
 
@@ -216,10 +219,12 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/get-max-number', [OrdersEjecsController::class, 'getMaxNumber'])->name('getMaxNumber');
 
     //PARA AGREGAR EVENTOS A LA ORDEN DE EJECUCIÓN
-    Route::get('orders/{order_id}/events', [OrdersEjecsController::class, 'events'])->name('orders.orders.events');
+    // Route::get('orders/{order_id}/events', [OrdersEjecsController::class, 'events'])->name('orders.orders.events');
 
     // Route::get('/get-max-order-number/{componentId}', [OrdersEjecsController::class, 'getMaxOrderNumber'])->name('getMaxOrderNumber');
     
+    //PARA LLEVAR AL INDEX DE EVENTOS DE ORDENES
+    Route::get('orders/{order_id}/events', [EventsOrdersController::class, 'index'])->name('orders.order.events');;
 
 
 

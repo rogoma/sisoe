@@ -20,7 +20,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            {{-- <a href="{{ route('items.item_award_histories.index', $item->id) }}">Listado de Eventos de la Orden {{ $item->iddncp }}</a> --}}
+                            {{-- <a href="{{ route('items.item_award_histories.index', $order->id) }}">Listado de Eventos de la Orden {{ $order->iddncp }}</a> --}}
                         </li>
                     </ul>
                 </div>
@@ -36,109 +36,90 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">                                    
-                                    {{-- <h4 style="font-size: 20px;color: blue;float: left;">Póliza: {{ $item->policy->description }} - N°: {{ $item->number_policy }} - Gs.: {{ $item->amountFormat() }}</h4> --}}
-                                    <br><br>
+                                    <h4>Contratista: {{$contract->provider->description }} - Localidad: {{ $order->locality }} 
+                                    {{-- - SubComponente: {{ $order->component_id->components->description }} --}}
+                                    {{-- - Componente: {{ $order->component_code->component->description }} --}}
+                                    - Orden N°: {{ $order->component_code }} - {{ $order->number }} </h4>
+                                    
                                     <label id="fecha_actual" name="fecha_actual"  style="font-size: 20px;color: #FF0000;float: left;" for="fecha_actual">{{ Carbon\Carbon::now()->format('d/m/Y') }}</label>
                                     {{-- <label style="font-size: 20px;color: #FF0000;float: left;">FECHA: </label> --}}
                                 </div>
                                 <div class="card-block">
-                                    {{-- <form method="POST" action="{{ route('items.item_award_histories.store', $item->id)}}" enctype="multipart/form-data"> --}}
+                                    <form method="POST" action="{{ route('orders.events.store', $order->id)}}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="container">
                                             {{-- se captura en modo hidden el monto para pasar al controlador, se debe controlar monto poliza vs monto endoso --}}
-                                            {{-- <input type="hidden" id="tot" name="tot" value="{{ $item->amount }}"> --}}
+                                            {{-- <input type="hidden" id="tot" name="tot" value="{{ $order->event_days }}"> --}}
 
                                             <h3 style="text-align: center;">Agregar Evento</h3>
                                             <br>
-                                            <div class="form-group row @error('item_award_type_id') has-danger @enderror">
+                                            @php
+                                                use Carbon\Carbon;
+                                                $fechaInicio = Carbon::parse($order->sign_date);
+                                                $fechaFin = $fechaInicio->addDays($order->plazo);
+                                            @endphp
+                                            
+                                            <h4>Fecha Inicio: {{ \Carbon\Carbon::parse($order->sign_date)->format('d/m/Y') }}  *****  Plazo días: {{$order->plazo}}
+                                                *****  Fecha Fin: {{$fechaFin->format('d/m/Y')}}</h4>
+                                            
+
+                                            <br>
+                                            <div class="form-group row @error('event_type_id') has-danger @enderror">
                                                 <label class="col-sm-2 col-form-label">Tipo de Evento</label>
-                                                    <div class="col-sm-10">
-                                                    <select id="item_award_type_id" name="item_award_type_id" class="form-control" onclick="checkAwardType()">
+                                                    <div class="col-sm-8">
+                                                    <select id="event_type_id" name="event_type_id" class="form-control" onclick="checkAwardType()">
                                                             <option value="">Seleccionar Tipo de Evento</option>
-                                                        {{-- @foreach ($item_award_types as $item_award_type)
-                                                            <option value="{{ $item_award_type->id }}" @if ($item_award_type->id == old('item_award_type_id')) selected @endif>{{$item_award_type->description }}</option>
-                                                        @endforeach --}}
+
+                                                        @foreach ($event_types as $event_type)
+                                                            <option value="{{ $event_type->id }}" @if ($event_type->id == old('event_type_id')) selected @endif>{{$event_type->description }}</option>
+                                                        @endforeach
+                                                        
                                                         </select>
-                                                        @error('item_award_type_id')
+                                                        @error('event_type_id')
                                                             <div class="col-form-label">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                            </div>
+                                            </div>                                           
 
-                                            <div class="form-group row @error('number_policy') has-danger @enderror">
-                                                <label class="col-sm-2 col-form-label">N° de Póliza</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="number_policy" name="number_policy" maxlength="300" value="{{ old('number_policy') }}" class="form-control">
-                                                    @error('number_policy')
-                                                        <div class="col-form-label">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
+                                            <div class="form-group row @error('event_date') has-danger @enderror">
+                                                <label class="col-sm-2 col-form-label">Fecha Evento</label>
                                                 <div class="col-md-3">
-                                                        <label class="col-form-label @error('item_from') has-danger @enderror">Vigencia Desde</label>
-                                                        <div class="input-group @error('item_from') has-danger @enderror">
-                                                            <input type="text" id="item_from" name="item_from" value="{{ old('item_from') }}" class="form-control text-align: left" autocomplete="off">
+                                                        {{-- <label class="col-form-label @error('event_date') has-danger @enderror">Fecha Evento</label> --}}
+                                                        <div class="input-group @error('event_date') has-danger @enderror">
+                                                            <input type="text" id="event_date" name="event_date" value="{{ old('event_date') }}" class="form-control text-align: left" autocomplete="off">
                                                             <span class="input-group-append" id="basic-addon">
-                                                                <label class="input-group-text" onclick="show('item_from');"><i class="fa fa-calendar"></i></label>
+                                                                <label class="input-group-text" onclick="show('event_date');"><i class="fa fa-calendar"></i></label>
                                                             </span>
                                                         </div>
-                                                        @error('item_from')
+                                                        @error('event_date')
                                                         <div class="has-danger">
                                                             <div class="col-form-label">{{ $message }}</div>
                                                         </div>
                                                         @enderror
                                                 </div>
-                                                <div class="col-md-3">
-                                                        <label class="col-form-label @error('item_to') has-danger @enderror">Vigencia Hasta</label>
-                                                        <div class="input-group @error('item_to') has-danger @enderror">
-                                                            <input type="text" id="item_to" name="item_to" value="{{ old('item_to') }}" class="form-control" autocomplete="off">
-                                                            <span class="input-group-append" id="basic-addon">
-                                                                <label class="input-group-text" onclick="show('item_to');"><i class="fa fa-calendar"></i></label>
-                                                            </span>
-                                                        </div>
-                                                        @error('item_to')
-                                                        <div class="has-danger">
-                                                            <div class="col-form-label">{{ $message }}</div>
-                                                        </div>
-                                                        @enderror
-                                                </div>
+                                            </div>    
+                                           
 
-                                                <div class="col-md-2">
-                                                    <div class="form-group @error('control_1') has-danger @enderror">
-                                                        <label class="col-form-label">Días Vigencia</label>
-                                                        <input type="text" id="control_1" readonly name="control_1" value="{{ old('control_1') }}" class="form-control">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-2">
-                                                    <div class="form-group @error('control_a') has-danger @enderror">
-                                                        <label class="col-form-label">Días para Vencer</label>
-                                                        <input type="text" id="control_a" readonly name="control_a" value="{{ old('control_a') }}" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row @error('amount') has-danger @enderror">
-                                                <label class="col-sm-2 col-form-label">Monto</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="amount" name="amount" value="{{ old('amount') }}" class="form-control @error('amount') form-control-danger @enderror" maxlength="23">
-                                                    @error('amount')
+                                            <div class="form-group row @error('event_days') has-danger @enderror">
+                                                <label class="col-sm-2 col-form-label">Días Prórroga</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" id="event_days" name="event_days" value="{{ old('event_days') }}" class="form-control @error('event_days') form-control-danger @enderror" maxlength="2">
+                                                    @error('event_days')
                                                         <div class="col-form-label">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
 
                                             <div class="form-group row @error('comments') has-danger @enderror">
-                                                <label class="col-sm-2 col-form-label">Comentarios</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" id="comments" name="comments" maxlength="300" value="{{ old('comments') }}" class="form-control">
-                                                    @error('comments')
-                                                        <div class="col-form-label">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
+                                                <label for="comments" class="col-form-label">Comentarios (Hasta 500 caracteres)</label>
+                                                <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
+                                                    maxlength="500">{{ old('comments')}}</textarea>
+                                                @error('comments')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>                                           
 
+                                            <br>
                                             <div class="form-group row @error('file') has-danger @enderror">
                                                 {{-- <h3 style="text-align: center;">Agregar Póliza</h3> --}}
                                                 <label class="col-form-label">Cargar Archivo: <h7>(Tipo de archivos permitidos: WORD, PDF)</h7></label>
@@ -167,175 +148,23 @@
 </div>
 @endsection
 
-{{-- @push('scripts')
+@push('scripts')
 <script type="text/javascript">
 $(document).ready(function(){
 
-    $('#policy_id').select2();
-    $('#item_award_type_id').select2();
-
-
-    // Script para formatear el valor con separador de miles mientras se ingresa Monto
-    document.getElementById('amount').addEventListener('input', function(event) {
-    // Obtenemos el valor ingresado
-    let monto = event.target.value.replace(/\./g, '');
-    // Comprobamos si el valor es vacío
-    if (monto === '' || monto < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Convertimos a número
-    monto = parseFloat(monto);
-
-    // Verificamos si el monto es un número válido y no NaN
-    if (isNaN(monto) || monto < 0) {
-        event.target.value = '0';
-        return;
-    }
-
-    // Formateamos el valor con separador de miles
-    monto = monto.toLocaleString('es-ES');
-
-    // Actualizamos el valor en el input text
-    event.target.value = monto;
-    });
-
-    function checkAwardType() {
-        var awardType = document.getElementById('item_award_type_id').value;
-        var itemFrom = document.getElementById('item_from');
-
-        if (awardType == '1' || awardType == '2') {
-            itemFrom.disabled = true;
-        } else {
-            itemFrom.disabled = false;
-        }
-    }
-
-    $('#item_from').datepicker({
+    $('#event_date').datepicker({
         language: 'es',
         format: 'dd/mm/yyyy',
         autoclose: true,
         todayHighlight: true,
+        endDate: "today" // Restringe la selección de fechas futuras
     });
 
-    $('#item_to').datepicker({
-        language: 'es',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayHighlight: true,
-    });
+    $('#event_type_id').select2();
 
-    //VALIDACIÓN DE FECHAS DE ANTICIPOS
-    $('#item_from').on('changeDate', function() {
-        var fechaInicio = $(this).datepicker('getDate').getTime();
-        var fechaFin = $('#item_to').datepicker('getDate').getTime();
 
-        if (fechaInicio === fechaFin){
-            alert('La fecha final debe ser mayor a fecha de inicio');
-            $('#item_to').datepicker('date', null); // Limpiar el datapicker
-            $('#item_to').val('');
-            $('#control_1').val('');
-            $('#control_a').val('');
-            return;
-        }
-
-        if (fechaFin == null){
-
-        }else{
-            if (fechaInicio > fechaFin) {
-                alert('La fecha de inicio no puede ser mayor a la fecha final.');
-                $('#item_to').datepicker('date', null); // Limpiar el datapicker
-                $('#item_to').val('');
-                $('#control_1').val('');
-                $('#control_a').val('');
-            }else{
-                $('#item_to').datepicker('date', null); // Limpiar el datapicker
-                $('#item_to').val('');
-                $('#control_1').val('');
-                $('#control_a').val('');
-
-                //controla días para vigencia
-                restaFechas = function(f1,f2)
-                {
-                    var aFecha1 = f1.split('/');
-                    var aFecha2 = f2.split('/');
-                    var fFecha1 = Date.UTC(aFecha1[2],aFecha1[1]-1,aFecha1[0]);
-                    var fFecha2 = Date.UTC(aFecha2[2],aFecha2[1]-1,aFecha2[0]);
-                    var dif = fFecha2 - fFecha1;
-                    var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
-                    return dias;
-                }
-
-                $('#control_1').val(restaFechas(f1,f2));
-            }
-        }
-    });
-
-    $('#item_to').on('changeDate', function() {
-        var fechaInicio = $('#item_from').datepicker('getDate').getTime();
-        var fechaFin = $(this).datepicker('getDate').getTime();
-
-        if (fechaInicio === fechaFin) {
-            alert('La fecha final debe ser mayor a fecha de inicio');
-            $('#item_to').datepicker('date', null); // Limpiar el datapicker
-            $('#item_to').val('');
-            $('#control_1').val('');
-            $('#control_a').val('');
-            return;
-        }
-
-        if (fechaInicio > fechaFin) {
-            alert('La fecha de inicio no puede ser mayor a la fecha final.');
-            $('#item_to').datepicker('date', null); // Limpiar el datapicker
-            $('#item_to').val('');
-            $('#control_1').val('');
-            $('#control_a').val('');
-        }else{
-            ///calcula dias de vigencia
-            restaFechas = function(f1,f2)
-            {
-                var aFecha1 = f1.split('/');
-                var aFecha2 = f2.split('/');
-                var fFecha1 = Date.UTC(aFecha1[2],aFecha1[1]-1,aFecha1[0]);
-                var fFecha2 = Date.UTC(aFecha2[2],aFecha2[1]-1,aFecha2[0]);
-                var dif = fFecha2 - fFecha1;
-                var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
-                return dias;
-            }
-
-            ///calcula dias que faltan para vencer
-            restaFechas2 = function(f2,f3)
-            {
-                var aFecha1 = f3.split('/');
-                var aFecha2 = f2.split('/');
-                var fFecha1 = Date.UTC(aFecha1[2],aFecha1[1]-1,aFecha1[0]);
-                var fFecha2 = Date.UTC(aFecha2[2],aFecha2[1]-1,aFecha2[0]);
-                var dif = fFecha2 - fFecha1;
-                var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
-                return dias;
-            }
-
-            var f1 = $('#item_from').val();//fecha dtpicker inicio
-            var f2=  $('#item_to').val(); //fecha dtpicker final
-            var f3= $('#fecha_actual').text();//fecha actual
-            $('#control_1').val(restaFechas(f1,f2));//resultado fecha vigencia
-            $('#control_a').val(restaFechas2(f2,f3));//resultado fecha días para vencer
-        }
-    });
-
-    $('#file').bind('change', function() {
-        max_upload_size = {{ $post_max_size }};
-        if(this.files[0].size > max_upload_size){
-            $('#guardar').attr("disabled", "disabled");
-            file_size = Math.ceil((this.files[0].size/1024)/1024);
-            max_allowed = Math.ceil((max_upload_size/1024)/1024);
-            swal("Error!", "El tamaño del archivo seleccionado ("+file_size+" Mb) supera el tamaño maximo de carga permitido ("+max_allowed+" Mb).", "error");
-        }else{
-            $('#guardar').removeAttr("disabled");
-        }
-    });
+    
 
 });
 </script>
-@endpush --}}
+@endpush

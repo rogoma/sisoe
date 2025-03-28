@@ -107,20 +107,19 @@ class OrdersEjecsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function events(Request $request, $order_id)
-    {
-        $order = Order::findOrFail($order_id);
+    // public function events(Request $request, $order_id)
+    // {
+    //     $order = Order::findOrFail($order_id);
 
-        // Obtenemos los eventos del pedido
-        $events = $order->events;
+    //     // Obtenemos los eventos del pedido
+    //     $events = $order->events;
         
-        if (
-            !$request->user()->hasPermission(['admin.orders.index', 'orders.orders.index']) ){
-            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
-        }
+    //     if (!$request->user()->hasPermission(['admin.orders.index', 'orders.orders.index']) ){
+    //         return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+    //     }
                 
-        return view('contract.orders.events', compact('order', 'events'));
-    }
+    //     return view('contract.orders.events', compact('order', 'events'));
+    // }
 
 
     public function show(Request $request, $order_id)

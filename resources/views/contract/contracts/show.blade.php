@@ -493,7 +493,11 @@
 
 
                                                                 {{-- PLAZO FINAL CALCULA SI FECHA PLAZO ES IGUAL A FECHA ACTUAL Y PONE EN ROJO - NO PINTA SI YA ESTA FINALIZADO ESTADO 4 --}}
-                                                                <td style="text-align: left; width: 25px; 
+
+                                                                {{-- ACA DEBE PREGUNTAR SI TIENE EVENTOS  --}}
+
+                                                                <td style="text-align: left; width: 25px;                                                                
+                                                                
                                                                 @php
                                                                     $fechaVencimiento = $order->sign_date ? \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo) : null;
                                                                 @endphp
@@ -1284,15 +1288,15 @@
                 location.href = '/orders/' + order + '/items_orders';
             }
 
-            //lleva a indexRubros de ItemsContractsController            
-            itemEvents = function(order) {
+            //lleva a index de eventos de Ordenes
+            itemEvents = function(order) {                                
                 location.href = '/orders/' + order + '/events';
+                // lleva a esta ruta Route::resource('orders.events', EventsOrdersController::class);
             }
             
             //lleva a indexRubros de ItemsContractsController
             itemContraRubro = function(order, contract, component) {
-                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' +
-                    component + '/itemsRubros';
+                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' + component + '/itemsRubros';
             }
 
             //lleva a index de ItemsContractsController

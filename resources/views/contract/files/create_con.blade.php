@@ -57,7 +57,7 @@
                                         </div>
 
                                         <div class="form-group @error('file') has-danger @enderror">
-                                            <label class="col-form-label">Cargar archivo <small>(Archivos permitidos: WORD, PDF, EXCEL)</small></label>
+                                            <label class="col-form-label">Cargar archivo <h7>(Archivos hasta 5MB permitidos: WORD, PDF, EXCEL, AUTOCAD)</h7></label>
                                             <input id="file" type="file" class="form-control" name="file">
                                             @error('file')
                                                 <div class="col-form-label">{{ $message }}</div>
@@ -85,7 +85,8 @@
 $(document).ready(function(){
 
     $('#file').bind('change', function() {
-        max_upload_size = {{ $post_max_size }};
+        max_upload_size = {{ $post_max_size5}};
+
         if(this.files[0].size > max_upload_size){
             $('#guardar').attr("disabled", "disabled");
             file_size = Math.ceil((this.files[0].size/1024)/1024);

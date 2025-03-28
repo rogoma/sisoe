@@ -263,8 +263,7 @@
 
 
                                                     <div class="col-sm-9">
-                                                        <label for="reference" class="col-form-label">Referencia (Hasta
-                                                            500 caracteres)</label>
+                                                        <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
                                                         <textarea id="reference" name="reference" class="form-control @error('reference') is-invalid @enderror"
                                                             maxlength="500">{{ old('reference', $order->reference) }}</textarea>
                                                         @error('reference')
