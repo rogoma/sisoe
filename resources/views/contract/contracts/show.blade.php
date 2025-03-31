@@ -699,11 +699,23 @@
                                                 <div class="text-right">
                                                     {{-- @if (Auth::user()->hasPermission(['contracts.contracts.create', 'admin.orders.create'])) --}}
                                                     @if (Auth::user()->hasPermission(['admin.orders.create', 'orders.orders.create']))
-                                                        {{-- Si pedido está anulado no muestra agregar ítems --}}
-                                                        @if (in_array($contract->contract_state_id, [1]))
-                                                            <a href="{{ route('contracts.orders.create', $contract->id) }}"
-                                                                class="btn btn-primary">Agregar Orden</a>
+                                                        @if ($contract)
+                                                            {{-- Si contrato tiene rubros cargados --}}    
+                                                            @if ($contract->itemsContracts->isNotEmpty())
+                                                                {{-- Si contrato está anulado no muestra agregar ítems --}}
+                                                                @if (in_array($contract->contract_state_id, [1]))
+                                                                    <a href="{{ route('contracts.orders.create', $contract->id) }}" class="btn btn-primary">Agregar Orden</a>
+                                                                @else
+                                                                    <button class="btn btn-danger" disabled>Contrato no está en Curso</button>
+                                                                @endif    
+                                                            @else
+                                                                <button class="btn btn-danger" disabled>Falta Agregar Rubros al Contrato</button>
+                                                            @endif
+                                                        @else
+                                                            <p class="text-danger">No hay un contrato disponible.</p>
                                                         @endif
+
+
                                                     @endif
                                                 </div>
                                                 <br><br><br>

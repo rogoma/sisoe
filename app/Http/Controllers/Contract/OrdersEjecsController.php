@@ -224,15 +224,10 @@ class OrdersEjecsController extends Controller
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
-        $item_contract = ItemContract::where('contract_id', $contract_id)->get();
+        $item_contract = ItemContract::where('contract_id', $contract_id)->get();        
 
-        return view('contract.orders.create', compact(
-            'contract',
-            'order_states',
-            'components',
-            'departments',
-            'districts'
-        ));
+        return view('contract.orders.create', compact('contract', 'order_states',
+            'components','departments','districts'));
     }
 
     // PARA ANIDAR COMBOS
@@ -425,17 +420,7 @@ class OrdersEjecsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $contract_id, $order_id)
-    {
-        // Buscar la orden
-    //     $order = Order::findOrFail($order_id);
-
-    //     // Verificar si la orden tiene eventos asociados
-    //     $hasEvents = DB::table('events')->where('order_id', $order_id)->exists();
-       
-    //    // Verificar si el campo sign_date está siendo modificado y hay eventos asociados
-    //     if ($hasEvents && $request->filled('sign_date') && $request->input('sign_date') != $order->sign_date) {
-    //         return back()->withErrors(['error' => 'No se puede modificar la fecha de firma porque la orden tiene eventos asociados.']);
-    //     }
+    {    
 
         $request->validate([
             'component_id' => 'required|integer',
@@ -460,6 +445,7 @@ class OrdersEjecsController extends Controller
 
         $contract = Contract::findOrFail($contract_id);
         $order = Order::findOrFail($order_id);
+        $post_max_size = $this->postMaxSize;
 
         $rules = [
             'component_id' => [
@@ -496,6 +482,25 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        if(!$request->hasFile('file')){
+            $validator = Validator::make($request->input(), []);
+            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // chequeamos la extension del archivo subido
+        $extension = $request->file('file')->getClientOriginalExtension();
+        if(!in_array($extension, array('doc', 'docx', 'pdf'))){
+            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Pasó todas las validaciones, guardamos el archivo        
+        $fileName = 'fin_orden_'.$request->input('event_date_fin').'.'.$extension; // nombre a guardar
+        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
+        $path = $request->file('file')->storeAs('public/files', $fileName);
+
         // SI FECHA ACUSE ES NULL ENTONCES ESTADO = 10 PENDIENTE ACUSE CONTRATISTA
         if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin'))))) {
             $order->order_state_id = 10;
@@ -521,6 +526,7 @@ class OrdersEjecsController extends Controller
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
+        $order->file = $fileName;
         $order->district_id = $request->input('district_id');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();

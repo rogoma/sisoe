@@ -251,6 +251,13 @@
                                                         @enderror
                                                     </div>
 
+                                                    <div class="form-group @error('file') has-danger @enderror">                                                        
+                                                        <label class="col-form-label">Cargar Archivo: <h7>(Tipo de archivos permitidos: WORD, PDF)</h7></label>
+                                                        <input id="file" type="file" class="form-control" name="file">
+                                                        @error('file')
+                                                            <div class="col-form-label">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
                                                     <div class="col-sm-9">
                                                         <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
@@ -368,6 +375,24 @@
                     $('#sign_date').prop('disabled', false);
                 }
             });
+
+            // Control de habilitación del campo de archivo
+            function toggleFileUpload() {
+                let signDateFin = $('#sign_date_fin');
+                let fileInput = $('#file');
+
+                if ($.trim(signDateFin.val()) !== '') {
+                    fileInput.prop('disabled', false);
+                } else {
+                    fileInput.prop('disabled', true);
+                }
+            }
+
+            // Ejecutar la función al cargar la página para mantener el estado correcto
+            toggleFileUpload();
+
+            // Evento al cambiar sign_date_fin
+            $('#sign_date_fin').on('change', toggleFileUpload);
         });
     </script>
 @endpush
