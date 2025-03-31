@@ -83,18 +83,6 @@
                                                         @enderror
                                                     </div>
 
-                                                    {{-- <div class="col-sm-6">
-                                                        <label for="number" class="col-form-label">N° de Orden</label>
-                                                        <input type="text" id="number" name="number_display"
-                                                            class="form-control @error('number') is-invalid @enderror"
-                                                            value="{{ old('number', $order->number) }}" maxlength="23" disabled>
-                                                        <input type="hidden" id="number_hidden" name="number"
-                                                            value="{{ old('number') }}">
-                                                        @error('number')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>   --}}
-
                                                     <div class="col-sm-6">
                                                         <label for="total_amount" class="col-form-label">Monto</label>
                                                         <input type="text" id="total_amount" name="total_amount"
@@ -163,6 +151,7 @@
                                                             <input type="text" id="sign_date" name="sign_date"
                                                                 {{-- DISABLED INGRESO DE FECHA SI LA ORDEN NO TIENE DETALLE DE RUBROS --}}
                                                                 class="form-control @error('sign_date') is-invalid @enderror"
+                                                                @if ($order->items->count() > 0 && $order->order_state_id == 1) disabled @endif
                                                                 value="{{ old('sign_date', !empty($order->sign_date) ? date('d/m/Y', strtotime($order->sign_date)) : '') }}"
                                                                 autocomplete="off"
                                                                 @if ($order->items->count() == 0) disabled @endif>
@@ -209,6 +198,7 @@
                                                             (En días)</label>
                                                         <input type="text" id="plazo" name="plazo"
                                                             class="form-control @error('plazo') is-invalid @enderror"
+                                                            @if ($order->items->count() > 0 && $order->order_state_id == 1) disabled @endif
                                                             value="{{ old('plazo', $order->plazo) }}" maxlength="3">
                                                         @error('plazo')
                                                             <div class="invalid-feedback">{{ $message }}</div>

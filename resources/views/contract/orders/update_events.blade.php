@@ -9,7 +9,7 @@
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
                         <h5>Eventos</h5>
-                        <span>Agregar Eventos</span>
+                        <span>Modificar Eventos</span>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                                             {{-- se captura en modo hidden el monto para pasar al controlador, se debe controlar monto poliza vs monto endoso --}}
                                             {{-- <input type="hidden" id="tot" name="tot" value="{{ $order->event_days }}"> --}}
 
-                                            <h3 style="text-align: center;">Agregar Evento</h3>
+                                            <h3 style="text-align: center;">Modificar Evento</h3>
                                             <br>
                                             @php
                                                 use Carbon\Carbon;

@@ -12,6 +12,7 @@ use App\Models\Event;
 use App\Models\EventType;
 
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class EventsOrdersController extends Controller
 {
@@ -160,11 +161,32 @@ class EventsOrdersController extends Controller
         // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
         $path = $request->file('file')->storeAs('public/files', $fileName);
 
+        $order = Order::findOrFail($order_id);
         $event = new Event;
         $event->order_id = $order_id;        
         $event->event_type_id = $request->input('event_type_id');
-        $event->event_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('event_date'))));
-        $event->event_days = $request->input('event_days');
+        
+        // Convertir la fecha de entrada a formato Y-m-d
+        $event_date = Carbon::createFromFormat('Y-m-d', date('Y-m-d', strtotime(str_replace("/", "-", $request->input('event_date')))));
+
+        // Obtener los días del evento
+        $event_days = (int) $request->input('event_days');        
+
+        // Verificar si la orden ya tiene al menos un evento
+        if (Event::where('order_id', $order_id)->exists()) {
+            // Si ya tiene eventos, calcular la fecha final sumando la fecha del último evento más los días al evento
+            $last_event = Event::where('order_id', $order_id)->latest()->first();
+            $event_date_fin = \Carbon\Carbon::parse($last_event->event_date_fin)->addDays($event_days);
+        } else {
+            // Si no tiene eventos, usar la fecha de acuse del contratista (order_sign_date) más el plazo mas los días del evento
+            $event_date_fin = \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo + $event_days);
+            
+        }
+
+        // Guardar en el modelo
+        $event->event_date = $event_date;
+        $event->event_days = $event_days;
+        $event->event_date_fin = $event_date_fin; // Asegúrate de tener esta columna en la base de datos
         
         $event_days = str_replace('.', '',($request->input('event_days')));
         
@@ -200,23 +222,14 @@ class EventsOrdersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $order_id, $event_id)
+    public function edit(Request $request, $event_id)
     {
-        // $item = ItemAwardHistory::findOrFail($order_id);
+        $event = Event::findOrFail($event_id);
+        $order = $event->order; // Accedemos a la relación order
+        $contract = $order->contract; // Accedemos a la relación contract
+        $event_types = EventType::all();
 
-        $item = Item::findOrFail($order_id);
-        $item_award_types = ItemAwardType::all();
-        $post_max_size = $this->postMaxSize;
-
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if(!$request->user()->hasPermission(['admin.events_orders.create', 'contracts.events_orders.create']) &&
-        $item->contract->dependency_id != $request->user()->dependency_id){
-            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
-        }
-
-        $event = ItemAwardHistory::findOrFail($event_id);
-
-        return view('contract.events_orders.update', compact('item','itemA','item_award_types','post_max_size'));
+        return view('contract.orders.update_events', compact('event', 'order', 'contract', 'event_types'));
     }
 
     /**

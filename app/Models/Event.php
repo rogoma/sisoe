@@ -56,5 +56,13 @@ class Event extends Model
         }else{
             return date('d/m/Y', strtotime($this->event_date));
         }
-    }    
+    } 
+    
+    public function eventDateFinFormat(){
+        if(empty($this->event_date_fin)){
+            return "";
+        }else{
+            return date('d/m/Y', strtotime($this->event_date_fin));
+        }
+    } 
 }

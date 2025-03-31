@@ -86,13 +86,13 @@
                                                     <td>{{ $events[$i]->eventType->description }}</td>                                                    
                                                     <td>{{ $events[$i]->eventDateFormat() }}</td>
                                                     <td>{{ $events[$i]->event_days }}</td>
-                                                    <td>{{ $fechaFin->copy()->addDays($events[$i]->event_days)->format('d/m/Y') }}</td>
+                                                    <td>{{ $events[$i]->eventDateFinFormat() }}</td>
                                                     <td>{{ $events[$i]->comments }}</td>
 
                                                         <td>
                                                             @if (Auth::user()->hasPermission(['admin.orders.index', 'orders.orders.index']))
-                                                                <button type="button" title="Editar" class="btn btn-warning btn-icon">
-                                                                {{-- <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateItem({{ $item->itemAwardHistories[$i]->id }})"> --}}                                                                    
+                                                                <button type="button" title="Editar" class="btn btn-warning btn-icon">  
+                                                                {{-- <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateEvent({{ $events[$i]->id }})"> --}}
                                                                     <i class="fa fa-pencil"></i>
                                                                 </button>
                                                             @endif
@@ -142,8 +142,8 @@
 $(document).ready(function(){
     $('#item_award_histories').DataTable();
 
-    updateItem = function(item){
-        
+    updateEvent = function(event){       
+        location.href = '/orders/events/'+event+'/edit';       
     }
 
     deleteItemAwardHistories = function(item_id){

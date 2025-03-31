@@ -469,9 +469,13 @@
                                                                 
                                                                     @php
                                                                             $eventDays = \App\Models\Event::where('order_id', $order->id)->value('event_days');
-                                                                            // Verifica si hay eventos asociados a la orden // Si hay eventos, calcula la fecha de vencimiento sumando los días de evento a la fecha de firma
+                                                                            // Verifica si hay eventos asociados a la orden // Si hay eventos, calcula restando 3 dias la ultima fecha del plazo
                                                                             if ($eventDays) {
-                                                                                $fechaCalculada = \Carbon\Carbon::parse($order->sign_date)->addDays(($order->plazo + $eventDays)-3);
+                                                                                $ultimoEvento = \App\Models\Event::where('order_id', $order->id)
+                                                                                ->orderByDesc('event_date_fin')
+                                                                                ->first();                                                                                
+                                                                                
+                                                                                $fechaCalculada = \Carbon\Carbon::parse($ultimoEvento->event_date_fin)->subDays(3);                                                                                
                                                                             } else {
                                                                                 $fechaCalculada = $order->sign_date ? \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo - 3) : null;
                                                                             }                                                                    
@@ -495,7 +499,7 @@
                                                                             @if ($fechaCalculada)
                                                                                 {{ $fechaCalculada->format('d/m/Y') }}   
                                                                                 @if ($eventDays)
-                                                                                    <strong style="color: red;"> EXTENDIDO {{($eventDays)}} días </strong>
+                                                                                    <strong style="color: red;"> EXTENDIDO</strong>
                                                                                 @endif
                                                                             @endif
                                                                         @endif
@@ -507,9 +511,15 @@
                                                                 <td style="text-align: left; width: 25px;                                                                
                                                                         @php
                                                                             $eventDays = \App\Models\Event::where('order_id', $order->id)->value('event_days');
-                                                                            // Verifica si hay eventos asociados a la orden // Si hay eventos, calcula la fecha de vencimiento sumando los días de evento a la fecha de firma
+                                                                            // Obtener el último evento asociado a la orden
+    
+                                                                            // Verifica si hay eventos asociados a la orden // Si hay eventos, muestra la ultima fecha de vencimiento event_date_fin
                                                                             if ($eventDays) {
-                                                                                $fechaVencimiento = \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo + $eventDays);
+                                                                                $ultimoEvento = \App\Models\Event::where('order_id', $order->id)
+                                                                                ->orderByDesc('event_date_fin')
+                                                                                ->first();
+                                                                                
+                                                                                $fechaVencimiento = \Carbon\Carbon::parse($ultimoEvento->event_date_fin);
                                                                             } else {
                                                                                 $fechaVencimiento = $order->sign_date ? \Carbon\Carbon::parse($order->sign_date)->addDays($order->plazo) : null;
                                                                             }                                                                    
@@ -533,7 +543,7 @@
                                                                                 @if ($fechaVencimiento)
                                                                                     {{ $fechaVencimiento->format('d/m/Y') }}   
                                                                                     @if ($eventDays)
-                                                                                    <strong style="color: red;"> EXTENDIDO {{($eventDays)}} días </strong>
+                                                                                    <strong style="color: red;"> EXTENDIDO</strong>
                                                                                     @endif
                                                                                 @endif
                                                                             @endif

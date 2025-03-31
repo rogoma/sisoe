@@ -128,7 +128,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('programs', ProgramsController::class);
     Route::resource('sub_programs', SubProgramsController::class);
 
-    Route::resource('orders.events', EventsOrdersController::class);
+    // Route::resource('orders.events', EventsOrdersController::class);
+    Route::resource('orders.events', EventsOrdersController::class)->shallow();
+    Route::get('orders/events/{event}/edit', [EventsOrdersController::class, 'edit'])->name('events.edit');
 
     Route::resource('catalog_level1s', Level1CatalogCodeController::class);
 
@@ -225,6 +227,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     
     //PARA LLEVAR AL INDEX DE EVENTOS DE ORDENES
     Route::get('orders/{order_id}/events', [EventsOrdersController::class, 'index'])->name('orders.order.events');;
+    
 
 
 
