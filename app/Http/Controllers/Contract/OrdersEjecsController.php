@@ -482,30 +482,36 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        if(!$request->hasFile('file')){
-            $validator = Validator::make($request->input(), []);
-            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
-            return back()->withErrors($validator)->withInput();
-        }
+        // if(!$request->hasFile('file')){
+        //     $validator = Validator::make($request->input(), []);
+        //     $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
+        //     return back()->withErrors($validator)->withInput();
+        // }
 
-        // chequeamos la extension del archivo subido
-        $extension = $request->file('file')->getClientOriginalExtension();
-        if(!in_array($extension, array('doc', 'docx', 'pdf'))){
-            $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
-            return back()->withErrors($validator)->withInput();
-        }
+        // // chequeamos la extension del archivo subido
+        // $extension = $request->file('file')->getClientOriginalExtension();
+        // if(!in_array($extension, array('doc', 'docx', 'pdf'))){
+        //     $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+        //     $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
+        //     return back()->withErrors($validator)->withInput();
+        // }
 
-        // Pasó todas las validaciones, guardamos el archivo        
-        $fileName = 'fin_orden_'.$request->input('event_date_fin').'.'.$extension; // nombre a guardar
-        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
-        $path = $request->file('file')->storeAs('public/files', $fileName);
+        // // Pasó todas las validaciones, guardamos el archivo        
+        // $fileName = 'fin_orden_'.$request->input('event_date_fin').'.'.$extension; // nombre a guardar
+        // // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
+        // $path = $request->file('file')->storeAs('public/files', $fileName);
 
         // SI FECHA ACUSE ES NULL ENTONCES ESTADO = 10 PENDIENTE ACUSE CONTRATISTA
+        
+        dd($request->input('sign_date'), $request->input('sign_date_fin'));
+
+        $order->items->count() == 0;
+
+
         if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin'))))) {
             $order->order_state_id = 10;
         } else {
-            $order->order_state_id = 1;
+            $order->order_state_id = 11;
         }        
 
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
@@ -526,7 +532,7 @@ class OrdersEjecsController extends Controller
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
-        $order->file = $fileName;
+        // $order->file = $fileName;
         $order->district_id = $request->input('district_id');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();

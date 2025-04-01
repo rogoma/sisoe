@@ -211,7 +211,7 @@
                                                         <label for="order_state_id" class="col-form-label">Estado de la Orden</label>
                                                         <select id="order_state_id" name="order_state_id"
                                                             class="form-control @error('order_state_id') is-invalid @enderror"
-                                                            @if ($order->items) disabled @endif>
+                                                            @if ($order->order_state_id == 11) disabled @endif>>
                                                             <option value="">--- Seleccionar Estado ---</option>
                                                             @foreach ($order_states as $order_state)
                                                                 <option value="{{ $order_state->id }}"
