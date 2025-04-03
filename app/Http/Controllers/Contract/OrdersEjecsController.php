@@ -482,6 +482,7 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        //MANEJO DE ARCHIVO DE FINALIZACIÓN DE LA ORDEN
         // if(!$request->hasFile('file')){
         //     $validator = Validator::make($request->input(), []);
         //     $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
@@ -501,18 +502,21 @@ class OrdersEjecsController extends Controller
         // // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
         // $path = $request->file('file')->storeAs('public/files', $fileName);
 
-        // SI FECHA ACUSE ES NULL ENTONCES ESTADO = 10 PENDIENTE ACUSE CONTRATISTA
         
-        dd($request->input('sign_date'), $request->input('sign_date_fin'));
 
-        $order->items->count() == 0;
+        // SI ESTADO = (11) PENDIENTE DE CARGA DE RUBROS Y ACUSE CONTRATISTA Y FINALIZADO SON VACIOS
+        if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 11) {
+            $order->order_state_id = 11;        
+        }
 
+        if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 10) {
+            $order->order_state_id = 10;        
+        }
 
-        if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin'))))) {
-            $order->order_state_id = 10;
-        } else {
-            $order->order_state_id = 11;
+        if (($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 10) {
+            $order->order_state_id = 1;        
         }        
+        
 
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
         if ($request->filled('sign_date_fin')) {

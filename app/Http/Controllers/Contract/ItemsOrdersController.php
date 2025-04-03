@@ -107,15 +107,23 @@ class ItemsOrdersController extends Controller
 
     // Obtener el estado actual de la orden
     $currentOrderState = Order::where('id', $data['order_id'])->value('order_state_id');
+    $sign_dateOrder = Order::where('id', $data['order_id'])->value('sign_date');
 
     // Determinar el nuevo valor de order_state_id
     if ($currentOrderState == 11) {
-        $newOrderState = 10; // Si el estado actual es 11, cambiarlo a 10
-    } elseif ($currentOrderState == 10) {
-        $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1
-    } else {
-        $newOrderState = $currentOrderState; // Dejar el estado igual en otros casos
+        $newOrderState = 10; // Si el estado actual es 11, cambiarlo a 10otros casos
     }
+
+    if ($currentOrderState == 10 && $sign_dateOrder !== null) {        
+        $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1
+    }else{
+        $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
+    }
+
+    if ($currentOrderState == 1 && $sign_dateOrder !== null) {        
+        $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1    
+    }
+
 
     // Actualizar el estado de la orden y el monto total
     Order::where('id', $data['order_id'])->update([

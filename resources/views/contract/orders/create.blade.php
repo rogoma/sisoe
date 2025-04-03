@@ -155,11 +155,11 @@
 
                                                     <div class="col-sm-6">
                                                         <label for="component_id"
-                                                            class="col-form-label">Sub-Componente</label>
+                                                            class="col-form-label">Componente</label>
                                                         <select id="component_id" name="component_id"
                                                             class="form-control @error('component_id') is-invalid @enderror"
                                                             data-url="{{ route('getMaxNumber') }}">
-                                                            <option value="">--- Seleccionar Sub-Componente ---
+                                                            <option value="">--- Seleccionar Componente ---
                                                             </option>
                                                             @foreach ($components as $component)
                                                                 <option value="{{ $component->id }}"
@@ -188,8 +188,7 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="order_state_id" class="col-form-label">Estado de la
-                                                            Orden:</label>
+                                                        <label for="order_state_id" class="col-form-label">Estado de la Orden:</label>
                                                         <br>
                                                         <label for="order_state_id" class="col-form-label"
                                                             style="color: red;">Pendiente Fecha Acuse recibo
@@ -197,8 +196,7 @@
                                                     </div>
 
                                                     <div class="col-sm-9">
-                                                        <label for="reference" class="col-form-label">Referencia (Hasta
-                                                            500 caracteres)</label>
+                                                        <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
                                                         <textarea id="reference" name="reference" class="form-control @error('reference') is-invalid @enderror"
                                                             maxlength="500">{{ old('reference') }}</textarea>
                                                         @error('reference')

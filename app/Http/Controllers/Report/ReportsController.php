@@ -100,17 +100,27 @@ class ReportsController extends Controller
             $user = auth()->user();
             $data = ['userName' => $user->name];// Pasar el nombre del usuario           
 
+            $contracts0 = DB::table('vista_encab_orden')
+            ->select([
+                'id2','description2','id','component_code','number','number_year','batch',
+                'id1','description','locality','id3','description3','id4','description4',
+                'code','description1', 'reference', 'comments'
+                ])                   
+                ->where('id', '=', $order_id)                
+                ->orderBy('id')
+                ->get();
+            
             $contracts1 = DB::table('vista_full')
-                ->select(DB::raw('DISTINCT ON (orders_id) orders_id, orders_number,
-                    contracts_description,contracts_iddncp, contracts_number_year,
-                    providers_description, orders_number, orders_references, districts_description,
-                    creator_user_id, fiscal_ci,fiscal_name, fiscal_lastname,departments_description,
-                    orders_locality,orders_date, dependencies_description,sign_date,
-                    components_code,components_description,orders_total_amount,modalities_description, 
-                    orders_comments, orders_plazo,minim_amount,fiscal4_id,fiscal4_date,contract_admin_id,batch'))                    
+                ->select(DB::raw('DISTINCT ON (orders_id) 
+                    orders_id, orders_number, contracts_description, contracts_iddncp, contracts_number_year,
+                    providers_description,orders_number,orders_references, districts_description,
+                    creator_user_id, fiscal_ci,fiscal_name, fiscal_lastname, departments_description,
+                    orders_locality,orders_date, dependencies_description,sign_date,components_code,
+                    components_description,orders_total_amount,modalities_description,orders_comments, 
+                    orders_plazo,minim_amount,fiscal4_id,fiscal4_date,contract_admin_id,batch'))                    
                 ->where('orders_id', '=', $order_id)                
                 ->orderBy('orders_id')
-                ->get();    
+                ->get();
 
             
             $contracts2 = DB::table('vista_full_rep10') //vista que muestra los datos
@@ -129,7 +139,7 @@ class ReportsController extends Controller
                 ->get();        
         // }
 
-        $view = View::make('reports.contracts_items10', compact('contracts1', 'contracts2', 'user'))->render();
+        $view = View::make('reports.contracts_items10', compact('contracts0','contracts1', 'contracts2', 'user'))->render();
         // $view = View::make('reports.contracts_items', compact('contracts1', 'contracts2', 'contracts3'))->render();
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($view);

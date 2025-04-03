@@ -632,7 +632,7 @@
                                                                                 @endif
 
                                                                                 {{-- Editar y Cambiar Rubros de la orden --}}
-                                                                                @if (Auth::user()->id == $order->creator_user_id && $order->orderState->id == 1)
+                                                                                @if (Auth::user()->id == $order->creator_user_id && ($order->orderState->id == 1 || $order->orderState->id == 10))
                                                                                     <button type="button" title="Editar Rubros"
                                                                                         class="btn btn-secondary btn-icon"
                                                                                         onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">

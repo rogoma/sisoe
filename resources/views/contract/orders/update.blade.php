@@ -69,6 +69,10 @@
                                                     </div>
                                                 @endif
 
+                                                {{-- <div id="mensaje-componente" style="color: red;"></div> --}}
+                                                <div id="mensaje-componente" style="color: red; font-size: 18px; padding: 10px;"></div>
+                                                <div id="mensaje-componente2" style="color: red; font-size: 18px; padding: 10px;"></div>
+
                                                 <div class="form-group row">
                                                     <div class="col-sm-6">
                                                         <label for="number" class="col-form-label">N° de Orden</label>
@@ -151,7 +155,7 @@
                                                             <input type="text" id="sign_date" name="sign_date"
                                                                 {{-- DISABLED INGRESO DE FECHA SI LA ORDEN NO TIENE DETALLE DE RUBROS --}}
                                                                 class="form-control @error('sign_date') is-invalid @enderror"
-                                                                @if ($order->items->count() > 0 && $order->order_state_id == 1) disabled @endif
+                                                                @if ($order->items->count() > 0 && $order->order_state_id == 1) @endif
                                                                 value="{{ old('sign_date', !empty($order->sign_date) ? date('d/m/Y', strtotime($order->sign_date)) : '') }}"
                                                                 autocomplete="off"
                                                                 @if ($order->items->count() == 0) disabled @endif>
@@ -169,16 +173,16 @@
                                                     </div>
 
                                                     <div class="col-sm-6">
-                                                        <label for="component_id" class="col-form-label">Sub-Componente</label>
-                                                    
+                                                        <label for="component_id" class="col-form-label">Componente</label>                                                
+                                                        
                                                         <!-- Campo oculto para enviar el valor cuando el select está deshabilitado -->
                                                         <input type="hidden" name="component_id" id="component_id_hidden" value="{{ old('component_id', $order->component_id) }}">
                                                     
                                                         <select id="component_id" name="component_id"
                                                             class="form-control @error('component_id') is-invalid @enderror"
-                                                            @if ($order->items->count() > 0) disabled @endif
-                                                            onchange="document.getElementById('component_id_hidden').value = this.value">
-                                                            <option value="">--- Seleccionar Sub-Componente ---</option>
+                                                            @if ($order->items->count() > 0 && $order->order_state_id == 10) @endif
+                                                            onchange="confirmComponentChange(this)">
+                                                            <option value="">--- Seleccionar Componente ---</option>
                                                             @foreach ($components as $component)
                                                                 <option value="{{ $component->id }}"
                                                                     @if ($component->id == old('component_id', $order->component_id)) selected @endif>
@@ -186,10 +190,6 @@
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                    
-                                                        @error('component_id')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
                                                     </div>
                                                     
 
@@ -198,20 +198,20 @@
                                                             (En días)</label>
                                                         <input type="text" id="plazo" name="plazo"
                                                             class="form-control @error('plazo') is-invalid @enderror"
-                                                            @if ($order->items->count() > 0 && $order->order_state_id == 1) disabled @endif
+                                                            @if ($order->items->count() > 0 && $order->order_state_id == 1) @endif
                                                             value="{{ old('plazo', $order->plazo) }}" maxlength="3">
                                                         @error('plazo')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
+                                                {{-- </div> --}}
 
-                                                <div class="form-group row">
+                                                {{-- <div class="form-group row">
                                                     <div class="col-sm-3">
                                                         <label for="order_state_id" class="col-form-label">Estado de la Orden</label>
                                                         <select id="order_state_id" name="order_state_id"
                                                             class="form-control @error('order_state_id') is-invalid @enderror"
-                                                            @if ($order->order_state_id == 11) disabled @endif>>
+                                                            @if ($order->order_state_id == 1) disabled @endif>>
                                                             <option value="">--- Seleccionar Estado ---</option>
                                                             @foreach ($order_states as $order_state)
                                                                 <option value="{{ $order_state->id }}"
@@ -223,7 +223,7 @@
                                                         @error('order_state_id')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="col-sm-3">
                                                         <label for="sign_date_fin" class="col-form-label">Fecha final de Orden</label>
@@ -251,13 +251,13 @@
                                                         @enderror
                                                     </div>
 
-                                                    <div class="form-group @error('file') has-danger @enderror">                                                        
+                                                    {{-- <div class="form-group @error('file') has-danger @enderror">                                                        
                                                         <label class="col-form-label">Cargar Archivo: <h7>(Tipo de archivos permitidos: WORD, PDF)</h7></label>
                                                         <input id="file" type="file" class="form-control" name="file">
                                                         @error('file')
                                                             <div class="col-form-label">{{ $message }}</div>
                                                         @enderror
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="col-sm-9">
                                                         <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
@@ -309,11 +309,12 @@
             </div>
         </div>
     </div>
+    
 @endsection
 
 @push('scripts')
     <script type="text/javascript">
-        $(document).ready(function() {            
+        $(document).ready(function() {
             // Manejo de cambio en el departamento para cargar distritos
             $('#department_id').on('change', function() {
                 var departmentId = $(this).val();
@@ -352,10 +353,13 @@
 
             // Control de habilitación de sign_date_fin
             function toggleSignDateFin() {
-                if ($('#sign_date').val().trim() === "") {
-                    $('#sign_date_fin').val("").prop('disabled', true);
+                let signDate = $('#sign_date');
+                let signDateFin = $('#sign_date_fin');
+
+                if ($.trim(signDate.val()) === "") {
+                    signDateFin.val("").prop('disabled', true);
                 } else {
-                    $('#sign_date_fin').prop('disabled', false);
+                    signDateFin.prop('disabled', false);
                 }
             }
 
@@ -363,29 +367,19 @@
             toggleSignDateFin();
 
             // Evento al cambiar sign_date
-            $('#sign_date').on('change', function () {
-                toggleSignDateFin();
-            });
+            $('#sign_date').on('change', toggleSignDateFin);
 
             // Evento al cambiar sign_date_fin (deshabilitar sign_date si se selecciona)
             $('#sign_date_fin').on('change', function () {
-                if ($(this).val().trim() !== "") {
-                    $('#sign_date').prop('disabled', true);
-                } else {
-                    $('#sign_date').prop('disabled', false);
-                }
+                // $('#sign_date').prop('disabled', $.trim($(this).val()) !== "");
             });
 
             // Control de habilitación del campo de archivo
             function toggleFileUpload() {
-                let signDateFin = $('#sign_date_fin');
                 let fileInput = $('#file');
+                let signDateFin = $('#sign_date_fin');
 
-                if ($.trim(signDateFin.val()) !== '') {
-                    fileInput.prop('disabled', false);
-                } else {
-                    fileInput.prop('disabled', true);
-                }
+                fileInput.prop('disabled', $.trim(signDateFin.val()) === '');
             }
 
             // Ejecutar la función al cargar la página para mantener el estado correcto
@@ -393,9 +387,40 @@
 
             // Evento al cambiar sign_date_fin
             $('#sign_date_fin').on('change', toggleFileUpload);
+
+            // Manejo del cambio en el select component_id
+            let select = document.getElementById("component_id");
+            select.dataset.previousValue = select.value; // Guardamos el valor actual
+            let orderStateId = {{ $order->order_state_id ?? 'null' }}; // Pasar el estado de la orden desde PHP
+
+            $('#component_id').on('change', function() {
+                let previousValue = this.dataset.previousValue; // Valor antes del cambio
+                let newValue = this.value; // Nuevo valor seleccionado
+                
+                // if (newValue !== previousValue && (orderStateId === 10 || orderStateId === 1)) {
+                //     let selectedOptionText = this.options[this.selectedIndex].text;
+                //     alert("Cambiado por el Componente: " + selectedOptionText +" "+ " Edite rubros para recalcular valores del nuevo Componente");
+                //     this.dataset.previousValue = newValue; // Actualizamos el valor guardado
+                // }
+
+                if (newValue !== previousValue && (orderStateId === 10 || orderStateId === 1)) {
+                    let selectedOptionText = this.options[this.selectedIndex].text;
+                    // let mensaje = "Cambiado por el Componente: " + selectedOptionText + " Edite rubros para recalcular valores del nuevo Componente";
+                    let mensaje = "Cambiado por el Componente: " + selectedOptionText;
+                    let mensaje2 = "Edite rubros para recalcular valores del nuevo Componente";
+                    document.getElementById('mensaje-componente').textContent = mensaje;
+                    document.getElementById('mensaje-componente2').textContent = mensaje2;
+                    // O si prefieres usar html dentro del div
+                    // document.getElementById('mensaje-componente').innerHTML = '<span style="color: red;">' + mensaje + '</span>';
+                    this.dataset.previousValue = newValue;
+                }
+                
+            });
+
         });
     </script>
 @endpush
+
 
 
 

@@ -102,23 +102,23 @@
                 <table border="1">
                     <tr>
                         <td colspan="1">FISCALIZACIÓN: </td>
-                        <td colspan="6"> {{ $contracts1[$i]->dependencies_description }}</td>
-                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts1[$i]->components_code }} - {{ $contracts1[$i]->orders_number }}</td>
+                        <td colspan="6"> {{ $contracts0[$i]->description2 }}</td>
+                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->id3}}</td>
                         <br><br><br><br>                    
                     </tr>
                     <tr>
                         <td colspan="1">CONTRATO: </td>
-                        <td colspan="11"> {{ $contracts1[$i]->contracts_number_year }} - Lote: {{ $contracts1[0]->batch }} <br> {{ $contracts1[$i]->providers_description }}</td>
+                        <td colspan="11"> {{ $contracts0[$i]->number_year }} - Lote: {{ $contracts0[0]->batch }} <br> {{ $contracts0[$i]->description }}</td>
                         <br><br>
                     </tr>
                     <tr>
                         <td colspan="1">LOCALIDAD: </td>                    
-                        <td colspan="11">{{ $contracts1[$i]->orders_locality }}, Distrito de: {{ $contracts1[$i]->districts_description }}, Departamento de: {{ $contracts1[$i]->departments_description }}</td>
+                        <td colspan="11">{{ $contracts0[$i]->locality }}, Distrito de: {{ $contracts0[$i]->description3 }}, Departamento de: {{ $contracts0[$i]->description4 }}</td>
 
                     </tr>
                     <tr>
                         <td colspan="1">REFERENCIA: </td>                    
-                        <td colspan="11">{{ $contracts1[$i]->components_description }} - {{ $contracts1[$i]->orders_references }}</td>                        
+                        <td colspan="11">{{ $contracts0[$i]->code }} - {{ $contracts0[$i]->description1 }} - {{ $contracts0[$i]->reference }}</td>                        
                     </tr>                    
                 </table>                
             @endfor                       
@@ -129,7 +129,7 @@
                 <tr>
                     <td colspan="12"
                         style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
-                        OBSERVACIÓN: {{ $contracts1[0]->orders_comments }}
+                        COMENTARIO: {{ $contracts1[0]->orders_comments }}
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
                             {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
                             por parte del Contratista.</span>
@@ -183,6 +183,31 @@
 
     <div>
         <br><br>
+        @for ($i = 0; $i < count($contracts0); $i = $i + 3)
+                <table border="1">
+                    <tr>
+                        <td colspan="1">FISCALIZACIÓN: </td>
+                        <td colspan="6"> {{ $contracts0[$i]->description2 }}</td>
+                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->id3}}</td>
+                        <br><br><br><br>                    
+                    </tr>
+                    <tr>
+                        <td colspan="1">CONTRATO: </td>
+                        <td colspan="11"> {{ $contracts0[$i]->number_year }} - Lote: {{ $contracts0[0]->batch }} <br> {{ $contracts0[$i]->description }}</td>
+                        <br><br>
+                    </tr>
+                    <tr>
+                        <td colspan="1">LOCALIDAD: </td>                    
+                        <td colspan="11">{{ $contracts0[$i]->locality }}, Distrito de: {{ $contracts0[$i]->description3 }}, Departamento de: {{ $contracts0[$i]->description4 }}</td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="1">REFERENCIA: </td>                    
+                        <td colspan="11">{{ $contracts0[$i]->code }} - {{ $contracts0[$i]->description1 }} - {{ $contracts0[$i]->reference }}</td>                        
+                    </tr>                    
+                </table>                
+            @endfor
+                        
         <h2>DETALLE DE RUBROS</h2>
         <table>
             <tr>
@@ -270,14 +295,14 @@
                 <tr>
                     <td colspan="16"
                         style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
-                        OBSERVACIÓN: {{ $contracts1[0]->orders_comments }}
+                        COMENTARIO: {{ $contracts1[0]->orders_comments }}
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
                             {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
                             por parte del Contratista.</span>
                     </td>
                 </tr>
 
-                <tr>
+                {{-- <tr>
                     <td colspan="6"
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Fecha Emisión: {{ \Carbon\Carbon::parse($contracts1[0]->orders_date)->format('d/m/Y') }}
@@ -308,7 +333,7 @@
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Aclaración Firma Contratista
                     </td>
-                </tr>
+                </tr> --}}
             </tfoot>
         </table>
     </div>

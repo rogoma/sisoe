@@ -126,7 +126,7 @@
                 <tr>
                     <td colspan="12"
                         style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
-                        OBSERVACIÓN: {{ $contracts1[0]->orders_comments }}
+                        COMENTARIO: {{ $contracts1[0]->orders_comments }}
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
                             {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
                             por parte del Contratista.</span>
@@ -264,7 +264,7 @@
                 <tr>
                     <td colspan="12"
                         style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
-                        OBSERVACIÓN: {{ $contracts1[0]->orders_comments }}
+                        COMENTARIO: {{ $contracts1[0]->orders_comments }}
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
                             {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
                             por parte del Contratista.</span>
