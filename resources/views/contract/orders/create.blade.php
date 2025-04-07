@@ -134,7 +134,7 @@
                                                 </div>
 
                                                 <div class="form-group row">
-                                                    <div class="col-sm-3">
+                                                    {{-- <div class="col-sm-3">
                                                         <label for="sign_date" class="col-form-label">Fecha acuse recibo
                                                             Contratista</label>
                                                         <div class="input-group">
@@ -151,7 +151,7 @@
                                                         @error('sign_date')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="col-sm-6">
                                                         <label for="component_id"
