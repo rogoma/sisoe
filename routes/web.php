@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\ProvidersController;
 use App\Http\Controllers\Admin\RegionsController;
 use App\Http\Controllers\Admin\DepartmentsController;
 use App\Http\Controllers\Admin\DistrictsController;
+use App\Http\Controllers\Admin\LocalityController;
 use App\Http\Controllers\Admin\ExpenditureObjectsController;
 use App\Http\Controllers\Admin\FilesController;
 use App\Http\Controllers\Admin\OrderMeasurementUnitsController;
@@ -119,6 +120,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('regions', RegionsController::class);
     Route::resource('departments', DepartmentsController::class);
     Route::resource('districts', DistrictsController::class);
+    Route::resource('localities', LocalityController::class)->names('admin.localities');
     Route::resource('expenditure_objects', ExpenditureObjectsController::class);
     Route::resource('files', FilesController::class);
     Route::resource('order_measurement_units', OrderMeasurementUnitsController::class);
