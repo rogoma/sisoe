@@ -675,7 +675,7 @@
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                                     title="Ver Orden" target="_blank"
                                                                                     class="btn btn-success btn-icon"><i
-                                                                                        class="fa fa-eye"></i></a>
+                                                                                        class="fa fa-   "></i></a>
                                                                                 {{-- @else
                                                                                 <span style="color:#ff0000;background-color:yellow">Falta agregar rubros </span>  --}}
                                                                             @endif

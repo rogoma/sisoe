@@ -17,6 +17,7 @@ use App\Models\Item;
 use App\Models\File;
 use App\Models\Department;
 use App\Models\District;
+use App\Models\Locality;
 use App\Models\Level5CatalogCode;
 use App\Models\OrderPresentation;
 use App\Models\OrderMeasurementUnit;
@@ -224,10 +225,11 @@ class OrdersEjecsController extends Controller
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
+        $localities = Locality::all();
         $item_contract = ItemContract::where('contract_id', $contract_id)->get();        
 
         return view('contract.orders.create', compact('contract', 'order_states',
-            'components','departments','districts'));
+            'components','departments','districts', 'localities'));
     }
 
     // PARA ANIDAR COMBOS
@@ -237,27 +239,11 @@ class OrdersEjecsController extends Controller
         return response()->json($districts);
     }
 
-
-    /**
-     * Formulario de agregacion de items cargando archivo excel.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function uploadExcel(Request $request, $order_id)
-    {
-        $order = Order::findOrFail($order_id);
-
-        // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
-        if (
-            !$request->user()->hasPermission(['admin.items.create']) &&  $order->dependency_id != $request->user()->dependency_id
-        ) {
-            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
-        }
-
-        // return view('order.items.uploadExcel', compact('order'));
-        return view('order.items.uploadExcel', compact('order'));
+    public function fetchLocalities(Request $request)
+    {        
+        $localities = Locality::where('district_id', $request->district_id)->get();
+        return response()->json($localities);
     }
-
 
     /**
      * Funcionalidad de guardado del pedido de ítemes Contrato Abierto.

@@ -218,7 +218,8 @@
                                 @elseif($fechaAcuse && $porVencer) 
                                     {{ date('d/m/Y', strtotime($orders[$i]->fecha_fin_plazo)) }} {{$porVencermsj}}
                                     @else
-                                        {{ date('d/m/Y', strtotime($orders[$i]->fecha_fin_plazo)) }}
+                                        {{-- {{ date('d/m/Y', strtotime($orders[$i]->fecha_fin_plazo)) }} --}}
+                                        {{ $orders[$i]->fecha_fin_plazo ? date('d/m/Y', strtotime($orders[$i]->fecha_fin_plazo)) : '' }}
                                 @endif
 
                         </span>

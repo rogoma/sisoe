@@ -118,9 +118,21 @@
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
 
-                                                <div class="form-group row">
+                                                    <div class="col-sm-12">
+                                                        <label for="locality_id" class="col-form-label">Localidad</label>
+                                                        <select id="locality_id" name="locality_id"
+                                                            class="form-control @error('locality_id') is-invalid @enderror">
+                                                            <option value="">--- Seleccionar Localidad ---</option>
+                                                        </select>
+                                                        @error('locality_id')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    
+                                                </div>                                                
+
+                                                {{-- <div class="form-group row">
                                                     <label for="locality" class="col-sm-6 col-form-label">Localidad (Hasta
                                                         200 caracteres)</label>
                                                     <div class="col-sm-12">
@@ -131,7 +143,7 @@
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="form-group row">
                                                     {{-- <div class="col-sm-3">
@@ -187,13 +199,13 @@
 
 
                                                 <div class="form-group row">
-                                                    <div class="col-sm-3">
+                                                    {{-- <div class="col-sm-3">
                                                         <label for="order_state_id" class="col-form-label">Estado de la Orden:</label>
                                                         <br>
                                                         <label for="order_state_id" class="col-form-label"
                                                             style="color: red;">Pendiente Fecha Acuse recibo
                                                             Contratista</label>
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="col-sm-9">
                                                         <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
@@ -255,7 +267,7 @@
         $('#component_id').on('change', function() {
             const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
             const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
-            const locality = $('#locality').val(); // Obtiene la localidad seleccionada
+            const locality = $('#locality_id').val(); // Obtiene la localidad seleccionada
             const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
 
             // Limpia el campo de texto al cambiar de componente
@@ -263,7 +275,7 @@
 
             if (componentId && locality) {
                 // Realiza la solicitud al backend incluyendo la localidad
-                fetch(`${url}?component_id=${componentId}&locality=${locality}`)
+                fetch(`${url}?component_id=${componentId}&locality_id=${locality}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
@@ -282,48 +294,17 @@
                         numberInput.val('Error'); // Muestra un mensaje en caso de error
                     });
             }
-        });
-
-
-        // $('#component_id').on('change', function () {
-        //     const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
-        //     const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
-        //     const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
-
-        //     // Limpia el campo de texto al cambiar de componente
-        //     numberInput.val('');
-
-        //     if (componentId) {
-        //         // Realiza la solicitud al backend
-        //         fetch(`${url}?component_id=${componentId}`)
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 if (data.success) {
-        //                     const maxNumber = data.number || 0; // Si no hay registros, muestra 0
-        //                     numberInput.val(maxNumber + 1); // Actualiza el valor del input y le suma 1
-        //                     $('#number_hidden').val(maxNumber + 1); // Actualiza el valor del input oculto
-        //                     $nextOrderNumber = maxNumber + 1;
-        //                 } else {
-        //                     console.error('Error al obtener el número:', data.message);
-        //                     numberInput.val('Error'); // Muestra un mensaje en caso de error
-        //                 }
-        //             })
-        //             .catch(error => {
-        //                 console.error('Error en la solicitud:', error);
-        //                 numberInput.val('Error'); // Muestra un mensaje en caso de error
-        //             });
-        //     }
-        // });
-
-
+        });        
 
         // Evento para cargar distritos al cambiar el departamento
         $('#department_id').on('change', function() {
             var departmentId = $(this).val();
             var districtDropdown = $('#district_id');
+            var localityDropdown = $('#locality_id');
 
             // Limpia el combo de distritos
             districtDropdown.empty().append('<option value="">--- Seleccionar Distrito ---</option>');
+            localityDropdown.empty().append('<option value="">--- Seleccionar Localidad ---</option>');
 
             if (departmentId) {
                 // Realiza la solicitud AJAX para obtener distritos
@@ -347,11 +328,42 @@
             }
         });
 
+        // Evento para cargar localidades al cambiar el distrito
+        $('#district_id').on('change', function () {
+            var districtId = $(this).val();
+            var localityDropdown = $('#locality_id');
+
+            // Limpia el combo de localidades
+            localityDropdown.empty().append('<option value="">--- Seleccionar Localidad ---</option>');
+
+            if (districtId) {
+                // Realiza la solicitud AJAX para obtener localidades
+                $.ajax({
+                    url: '/fetch-localities',
+                    type: 'GET',
+                    data: {
+                        district_id: districtId
+                    },
+                    success: function (data) {
+                        // Agrega las opciones al combo de localidades
+                        $.each(data, function (key, locality) {
+                            localityDropdown.append('<option value="' + locality.id + '">' + locality.description + '</option>');
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching localities:', xhr.responseText);
+                    }
+                });
+            }
+        });
+
+
         // Inicialización de select2 en los combos
         $('#component_id').select2();
         $('#order_state_id').select2();
         $('#department_id').select2();
         $('#district_id').select2();
+        $('#locality_id').select2();
 
         // Inicialización del datepicker
         $('#sign_date').datepicker({

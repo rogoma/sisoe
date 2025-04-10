@@ -154,6 +154,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/orders/create', [OrdersEjecsController::class, 'create']);
     Route::post('/orders', [OrdersEjecsController::class, 'store']);
     Route::get('/fetch-districts', [OrdersEjecsController::class, 'fetchDistricts']);
+    Route::get('/fetch-localities', [OrdersEjecsController::class, 'fetchLocalities']);
 
 
     //PARA MOSTRAR LOS RUBROS DE UN CONTRATO DE ACUERDO A SU COMPONENTE
