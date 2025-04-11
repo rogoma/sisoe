@@ -101,8 +101,7 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-6">
-                                                        <label for="department_id"
-                                                            class="col-form-label">Departamento</label>
+                                                        <label for="department_id" class="col-form-label">Departamento</label>
                                                         <select id="department_id" name="department_id"
                                                             class="form-control @error('department_id') is-invalid @enderror">
                                                             <option value="">--- Seleccionar Departamento ---</option>
@@ -132,9 +131,26 @@
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
+
+                                                    <div class="col-sm-12">
+                                                        <label for="locality_id" class="col-form-label">Localidad</label>
+                                                        <select id="locality_id" name="locality_id"
+                                                            class="form-control @error('locality_id') is-invalid @enderror">
+                                                            <option value="">--- Seleccionar Localidad ---</option>
+                                                            @foreach ($localities as $locality)
+                                                                <option value="{{ $locality->id }}"
+                                                                    @if ($locality->id == old('locality_id', $order->locality_id)) selected @endif>
+                                                                    {{ $locality->description }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('locality_id')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
                                                 </div>
 
-                                                <div class="form-group row">
+                                                
+                                                {{-- <div class="form-group row">
                                                     <label for="locality" class="col-sm-6 col-form-label">Localidad (Hasta
                                                         200 caracteres)</label>
                                                     <div class="col-sm-12">
@@ -146,7 +162,7 @@
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
@@ -314,33 +330,70 @@
 
 @push('scripts')
     <script type="text/javascript">
-        $(document).ready(function() {
-            // Manejo de cambio en el departamento para cargar distritos
-            $('#department_id').on('change', function() {
-                var departmentId = $(this).val();
-                var $districtSelect = $('#district_id');
+        $(document).ready(function() {            
+        // Evento para cargar distritos al cambiar el departamento
+        $('#department_id').on('change', function() {
+            var departmentId = $(this).val();
+            var districtDropdown = $('#district_id');
+            var localityDropdown = $('#locality_id');
 
-                $districtSelect.empty().append('<option value="">--- Seleccionar Distrito ---</option>');
+            // Limpia el combo de distritos
+            districtDropdown.empty().append('<option value="">--- Seleccionar Distrito ---</option>');
+            localityDropdown.empty().append('<option value="">--- Seleccionar Localidad ---</option>');
 
-                if (departmentId) {
-                    $.ajax({
-                        url: '/fetch-districts',
-                        type: 'GET',
-                        data: { department_id: departmentId },
-                        success: function(data) {
-                            $.each(data, function(key, district) {
-                                $districtSelect.append('<option value="' + district.id + '">' + district.description + '</option>');
-                            });
-                        },
-                        error: function(xhr) {
-                            console.error('Error fetching districts:', xhr.responseText);
-                        }
-                    });
-                }
-            });
+            if (departmentId) {
+                // Realiza la solicitud AJAX para obtener distritos
+                $.ajax({
+                    url: '/fetch-districts',
+                    type: 'GET',
+                    data: {
+                        department_id: departmentId
+                    },
+                    success: function(data) {
+                        // Agrega las opciones al combo de distritos
+                        $.each(data, function(key, district) {
+                            districtDropdown.append('<option value="' + district
+                                .id + '">' + district.description + '</option>');
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching districts:', xhr.responseText);
+                    }
+                });
+            }
+        });
+
+        // Evento para cargar localidades al cambiar el distrito
+        $('#district_id').on('change', function () {
+            var districtId = $(this).val();
+            var localityDropdown = $('#locality_id');
+
+            // Limpia el combo de localidades
+            localityDropdown.empty().append('<option value="">--- Seleccionar Localidad ---</option>');
+
+            if (districtId) {
+                // Realiza la solicitud AJAX para obtener localidades
+                $.ajax({
+                    url: '/fetch-localities',
+                    type: 'GET',
+                    data: {
+                        district_id: districtId
+                    },
+                    success: function (data) {
+                        // Agrega las opciones al combo de localidades
+                        $.each(data, function (key, locality) {
+                            localityDropdown.append('<option value="' + locality.id + '">' + locality.description + '</option>');
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching localities:', xhr.responseText);
+                    }
+                });
+            }
+        });
 
             // Inicialización de Select2
-            $('#component_id, #order_state_id, #department_id, #district_id').select2();
+            $('#component_id, #order_state_id, #department_id, #district_id, #locality_id').select2();
 
             // Configuración de Datepicker
             $('#sign_date, #sign_date_fin').datepicker({

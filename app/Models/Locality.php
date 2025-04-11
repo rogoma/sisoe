@@ -12,7 +12,7 @@ class Locality extends Model
 
     protected $fillable = ['description', 'district_id'];
 
-    public function district(): BelongsTo
+    public function district()
     {
         return $this->belongsTo(District::class);
     }

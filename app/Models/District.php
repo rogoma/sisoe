@@ -22,4 +22,9 @@ class District extends Model
     {
         return $this->hasMany('App\Models\Order');
     }
+
+    public function localities() //Relación con la tabla orders
+    {
+        return $this->hasMany('App\Models\Locality');
+    }
 }

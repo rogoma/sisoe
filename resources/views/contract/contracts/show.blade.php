@@ -447,8 +447,10 @@
                                                                 <td style="text-align: center;width: 100px;">
                                                                     {{ $order->totalAmountFormat() }}</td>
                                                                 <td style="text-align: left;width: 120px;">
-                                                                    {{ $order->district->description }} -
-                                                                    {{ $order->locality }}</td>
+                                                                    {{ $order->district->description }} - 
+                                                                    @foreach($order->district->localities as $locality)
+                                                                            {{ $locality->description }}@if(!$loop->last), @endif
+                                                                    @endforeach
                                                                 <td style="text-align: left;width: 350px;">
                                                                     {{ $order->component->code }}-{{ $order->component->description }}
                                                                 </td>                                                               

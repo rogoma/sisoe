@@ -278,14 +278,14 @@ class OrdersEjecsController extends Controller
             'number' => 'required|integer|min:1', // Asegúrate de que sea un número válido
             // 'total_amount' => 'nullable|string|max:9223372036854775807',
             // 'sign_date' => 'date_format:d/m/Y',
+            'department_id' => 'required|numeric',
+            'district_id' => 'required|numeric',
+            'locality_id' => 'required||numeric',
             'component_id' => 'required|numeric',
-            // 'order_state_id'=> 'required|numeric',
-            'locality' => 'required|string|max:100',
+            // 'order_state_id'=> 'required|numeric',                        
             'reference' => 'nullable|max:500',
             'comments' => 'nullable|max:500',
-            'plazo' => 'required|numeric',
-            'department_id' => 'required',
-            'district_id' => 'required|numeric'
+            'plazo' => 'required|numeric'            
         );
 
         $validator =  Validator::make($request->input(), $rules);
@@ -300,8 +300,7 @@ class OrdersEjecsController extends Controller
         $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                
         $order->component_code = $componentCode;
         $order->number = $request->input('number');
-        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
-        $order->locality = $request->input('locality');
+        $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;        
         $order->component_id = $request->input('component_id');
         //CUANDO SE GRABA POR VEZ PRIMERA ASUME ESTADO 10= Pendiente Fecha Acuse recibo Contratista
 
@@ -317,6 +316,7 @@ class OrdersEjecsController extends Controller
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');
         $order->district_id = $request->input('district_id');
+        $order->locality_id = $request->input('locality_id');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden agregada correctamente'); // Caso usuario posee rol pedidos
@@ -394,8 +394,9 @@ class OrdersEjecsController extends Controller
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
+        $localities = Locality::all();
 
-        return view('contract.orders.update', compact('contract', 'order', 'components', 'order_states', 'departments', 'districts'));
+        return view('contract.orders.update', compact('contract', 'order', 'components', 'order_states', 'departments', 'districts', 'localities'));
     }
 
 
@@ -441,7 +442,7 @@ class OrdersEjecsController extends Controller
                     $existingRecord = DB::table('orders')
                         ->where('component_id', $request->input('component_id'))
                         ->where('number', $request->input('number'))
-                        ->where('locality', $request->input('locality'))
+                        ->where('locality_id', $request->input('locality_id'))
                         ->where('id', '!=', $order->id) // Permite ignorar el registro actual si se está editando
                         ->exists();
 
@@ -450,13 +451,14 @@ class OrdersEjecsController extends Controller
                     }
                 }
             ],
-            'locality' => 'required|string|max:100',
+            // 'locality' => 'required|string|max:100',
             'reference' => 'nullable|string|max:500',
             'comments' => 'nullable|string|max:500',
             'plazo' => 'required|numeric',
             'district_id' => 'required|numeric',
+            'locality_id' => 'required||numeric'
         ];
-
+        
         // Valida los datos de entrada
         $validatedData = $request->validate($rules);
 
@@ -513,7 +515,7 @@ class OrdersEjecsController extends Controller
             $order->sign_date_fin = null;
         }
 
-        $order->locality = $request->input('locality');
+        $order->locality_id = $request->input('locality_id');
         $order->component_id = $request->input('component_id');
         $component = Component::find($order->component_id);  // Assuming you have a Component model
         $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                       
