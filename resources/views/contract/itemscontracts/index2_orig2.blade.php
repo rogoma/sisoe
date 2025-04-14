@@ -78,7 +78,12 @@
                                     <div class="card-header">
                                         {{-- <div class="float-left"> --}}                                        
                                         <h4 style="color: blue;"> Detalle de Rubros de Componente: {{ $items[0]->component->code }} - {{ $items[0]->component->description }}</h4>
-                                        <h4 style="color: blue;">Localidad: {{ $order->locality }} - Rubros para procesar en la Orden de Ejecución N°: {{ $order->component->code }} - {{ $order->number }}</h4>
+                                        @if($order->locality)
+                                            Localidad: {{ $order->locality->description }}
+                                        @else
+                                            Localidad: Sin localidad asignada
+                                        @endif
+                                        {{-- <h4 style="color: blue;"> Localidad: {{ $order->locality->description ?? 'Sin localidad' }} - Rubros para procesar en la Orden de Ejecución N°: {{ $order->component->code }} - {{ $order->number }}</h4> --}}
                                         {{-- </div> --}}
                                     </div>
                                     <div class="card-block">

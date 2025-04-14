@@ -30,6 +30,10 @@ class Order extends Model
         return $this->belongsTo('App\Models\District');
     }
 
+    public function locality()
+    {
+        return $this->belongsTo(Locality::class);
+    }
     
     public function orderState(){
         return $this->belongsTo('App\Models\OrderState');

@@ -67,7 +67,10 @@ class ItemsContractsController extends Controller
     {
         $contract = Contract::findOrFail($contract_id);
 
-        $order = Order::findOrFail($order_id);        
+        $order = Order::findOrFail($order_id);
+
+        // $order = Order::with('locality')->find($order_id);
+                
        
         $items = ItemContract::where('contract_id', $contract_id)
                 ->where('component_id', $component_id)
