@@ -89,6 +89,7 @@ class OrdersEjecsController extends Controller
     public function index(Request $request, $order_id)
     {
         $order = Order::findOrFail($order_id);
+        $locality = $order->locality;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if (
@@ -100,7 +101,7 @@ class OrdersEjecsController extends Controller
 
         // Obtenemos los items del pedido
         $items = $order->items;
-        return view('order.items.index', compact('order', 'items'));
+        return view('order.items.index', compact('order', 'items', 'locality'));
     }
 
     /**
@@ -125,8 +126,9 @@ class OrdersEjecsController extends Controller
 
     public function show(Request $request, $order_id)
     {
-        $order = Order::with('contract')->findOrFail($order_id);
+        $order = Order::with('contract')->findOrFail($order_id);        
         $contract = $order->contract;
+        
 
         if (!$contract) {
             return redirect()->back()->with('error', 'No se encontró un contrato para esta orden.');
@@ -135,56 +137,6 @@ class OrdersEjecsController extends Controller
         return redirect()->route('contracts.show', $contract->id)->with('success', 'Rubros generados');                
     }
     
-    /**
-     * BUscar codigos de catalogo 5
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request)
-    {
-        // obtenemos los parametros del request
-        $search = $request->input('search');
-
-        // en caso de no haberse enviado nada retornamos
-        if (empty($search)) {
-            return response()->json([]);
-        }
-
-        // definimos la consulta sql y enlazamos el parametro
-        $search = '%' . $search . '%';
-        $sql = "SELECT * FROM level5_catalog_codes WHERE code LIKE :search OR lower(description) LIKE lower(:search) LIMIT 10";
-        $bindings = array("search" => $search);
-        $codigos = DB::select($sql, $bindings);
-
-        // retornamos
-        return response()->json($codigos);
-    }
-
-    /**
-     * BUscar codigos de catalogo 4
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function search4(Request $request)
-    {
-        // obtenemos los parametros del request
-        $search4 = $request->input('search4');
-
-        // en caso de no haberse enviado nada retornamos
-        if (empty($search4)) {
-            return response()->json([]);
-        }
-
-        // definimos la consulta sql y enlazamos el parametro
-        $search4 = '%' . $search4 . '%';
-        $sql = "SELECT * FROM level4_catalog_codes WHERE code LIKE :search4 OR lower(description) LIKE lower(:search4) LIMIT 10";
-        $bindings = array("search4" => $search4);
-        $codigos = DB::select($sql, $bindings);
-
-        // retornamos
-        return response()->json($codigos);
-    }
-
     /**
      * Formulario de agregacion de pedido.
      *
@@ -326,11 +278,11 @@ class OrdersEjecsController extends Controller
     public function getMaxNumber(Request $request)
     {
         $componentId = $request->input('component_id');
-        $locality = $request->input('locality');
+        $locality = $request->input('locality_id');
 
         // Buscar el número máximo solo de los registros con la misma localidad
         $maxNumber = Order::where('component_id', $componentId)
-            ->where('locality', $locality) // Filtra por localidad
+            ->where('locality_id', $locality) // Filtra por localidad
             ->max('number');
 
         return response()->json([
@@ -394,7 +346,7 @@ class OrdersEjecsController extends Controller
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
-        $localities = Locality::all();
+        $localities = Locality::all();        
 
         return view('contract.orders.update', compact('contract', 'order', 'components', 'order_states', 'departments', 'districts', 'localities'));
     }
@@ -455,8 +407,9 @@ class OrdersEjecsController extends Controller
             'reference' => 'nullable|string|max:500',
             'comments' => 'nullable|string|max:500',
             'plazo' => 'required|numeric',
+            // 'department_id' => 'required|numeric',
             'district_id' => 'required|numeric',
-            'locality_id' => 'required||numeric'
+            'locality_id' => 'required||numeric',
         ];
         
         // Valida los datos de entrada

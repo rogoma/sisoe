@@ -277,19 +277,14 @@ class ContractsController extends Controller
      */
     public function show(Request $request, $contract_id)
     {
-        // $contract = Contract::findOrFail($contract_id);
-        $contract = Contract::with('orders.events')->findOrFail($contract_id);
-
+        // Para acceder a eventos y localidades de las órdenes de un contrato
+        $contract = Contract::with('orders.events', 'orders.locality')->findOrFail($contract_id);
+        
         // Obtener las órdenes del contrato
         $orders = $contract->orders;
-
-        // Obtener los eventos a partir de las órdenes
-        // $events = $orders->events;
-
-        // $contract = Contract::with('orders.events')->findOrFail($contract_id);    
+        
         // Obtener todos los eventos del contrato a través de las órdenes
         $events = $contract->orders->flatMap->events;
-
 
         // para mostrar agrupados los componentes de items_contracts agregados
         $items_contract = ItemContract::with('component') // Carga la relación 'component'
@@ -354,21 +349,7 @@ class ContractsController extends Controller
             ->whereIn('file_state', [1])//1-activo
             ->orderBy('created_at','asc')
             ->get();
-        // }
-
-        // Obtenemos los archivos excel cargados por usuarios con tipo de archivos 6-evaluaciones
-        // $user_files_rubros = $contract->files()->where('dependency_id', $user_dependency)
-        //     ->whereIn('file_type', [7])//7-archivos excel de rubros
-        //     ->orderBy('created_at','asc')
-        //     ->get();
-
-        // // if($role_user == 1){
-        //     $other_files_rubros = $contract->files()->where('dependency_id', '!=', $user_dependency)
-        //     ->whereIn('file_type', [7])//7-archivos excel de rubros
-        //     ->orderBy('created_at','asc')
-        //     ->get();
-        // // }
-
+        
         // chequeamos que el usuario tenga permisos para visualizar el pedido
         if($request->user()->hasPermission(['admin.contracts.show', 'contracts.contracts.show','process_contracts.contracts.show',
         'contracts.contracts.index','derive_contracts.contracts.index']) || $contract->dependency_id == $request->user()->dependency_id){

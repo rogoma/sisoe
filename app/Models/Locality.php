@@ -13,12 +13,12 @@ class Locality extends Model
 
     protected $fillable = ['description', 'district_id'];
 
-    public function district(): BelongsTo
+    public function district()
     {
         return $this->belongsTo(District::class);
     }
     
-    public function orders(): HasMany
+    public function orders()
     {
         return $this->hasMany(Order::class);
     }

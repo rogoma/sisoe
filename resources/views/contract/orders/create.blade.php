@@ -373,13 +373,13 @@
             todayHighlight: true,
         });
 
-        $('#locality').on('input', function() {
+        $('#locality_id').on('input', function() {
             $('#component_id').val($('#component_id option:first').val())
         .change(); // Establece la primera opción y dispara el evento change
         });
 
         // Cuando el usuario sale del input locality
-        $('#locality').on('blur', function() {
+        $('#locality_id').on('blur', function() {
             let url = $('#component_id').data('url'); // Obtener la URL desde el atributo data-url
             if (url) {
                 $.ajax({

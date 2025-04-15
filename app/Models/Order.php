@@ -12,7 +12,8 @@ class Order extends Model
 
     protected $fillable = [
         'date',
-        'district_id'
+        'district_id',
+        'locality_id'
     ];
 
     /**
