@@ -121,7 +121,7 @@
                                                         @enderror
                                                     </div>
 
-                                                    <input type="hidden" name="district_id" value="{{ $order->locality_id }}">
+                                                    <input type="hidden" name="district_id" value="{{ $order->district_id }}">
 
                                                     <div class="col-sm-6">
                                                         <label for="district_id" class="col-form-label">Distrito</label>
@@ -189,11 +189,10 @@
                                                         <!-- Campo oculto para enviar el valor cuando el select está deshabilitado -->
                                                         <input type="hidden" name="component_id" id="component_id_hidden"
                                                             value="{{ old('component_id', $order->component_id) }}">
-
                                                         <select id="component_id" name="component_id"
-                                                            class="form-control @error('component_id') is-invalid @enderror"
+                                                            class="form-control @error('component_id') is-invalid @enderror" 
                                                             data-url="{{ route('getMaxNumber') }}">
-                                                            @if ($order->items->count() > 0 && $order->order_state_id == 10)  @endif
+                                                            @if ($order->items->count() > 0 && $order->order_state_id == 10)  @endif                                                            
                                                             onchange="confirmComponentChange(this)">
                                                             <option value="">--- Seleccionar Componente ---</option>
                                                             @foreach ($components as $component)
@@ -219,8 +218,7 @@
                                                     </div>                                                    
 
                                                     <div class="col-sm-3">
-                                                        <label for="sign_date_fin" class="col-form-label">Fecha final de
-                                                            Orden</label>
+                                                        <label for="sign_date_fin" class="col-form-label">Fecha final de Orden</label>
                                                         <div class="input-group">
                                                             <input type="text" id="sign_date_fin" name="sign_date_fin"
                                                                 class="form-control @error('sign_date_fin') is-invalid @enderror"
@@ -299,8 +297,28 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+
+        // Manejo del cambio en el select component_id
+        let select = document.getElementById("component_id");
+        select.dataset.previousValue = select.value; // Guardamos el valor actual
+        let orderStateId = {{ $order->order_state_id ?? 'null' }}; // Pasar el estado de la orden desde PHP
+
         // Evento para el cambio del componente
         $('#component_id').on('change', function() {
+            // Controla el  cambio de componente y debe eliminar los detalles de orders_items
+            let previousValue = this.dataset.previousValue; // Valor antes del cambio
+            let newValue = this.value; // Nuevo valor seleccionado
+
+            if (newValue !== previousValue && (orderStateId === 10 || orderStateId === 1)) {
+                    let selectedOptionText = this.options[this.selectedIndex].text;                   
+                    let mensaje = "Cambiado por el Componente: " + selectedOptionText;
+                    let mensaje2 = "Edite rubros para recalcular valores del nuevo Componente";
+                    document.getElementById('mensaje-componente').textContent = mensaje;
+                    document.getElementById('mensaje-componente2').textContent = mensaje2;                    
+                    this.dataset.previousValue = newValue;
+            }
+
+            //Asigna un número de order de acuerdo a la localidad y tipo de componente
             const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
             const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
             const locality = $('#locality_id').val(); // Obtiene la localidad seleccionada
@@ -330,8 +348,8 @@
                         numberInput.val('Error'); // Muestra un mensaje en caso de error
                     });
             }
-        });        
-
+        }); 
+                
         // Evento para cargar distritos al cambiar el departamento
         $('#department_id').on('change', function() {
             var departmentId = $(this).val();
@@ -355,7 +373,9 @@
                         $.each(data, function(key, district) {
                             districtDropdown.append('<option value="' + district
                                 .id + '">' + district.description + '</option>');
-                        });
+                        }); 
+                        $('#district_id').prop('disabled', false);
+                        $('#locality_id').prop('disabled', false);
                     },
                     error: function(xhr) {
                         console.error('Error fetching districts:', xhr.responseText);
@@ -402,12 +422,13 @@
         $('#locality_id').select2();
 
         // Inicialización del datepicker
-        $('#sign_date').datepicker({
-            language: 'es',
-            format: 'dd/mm/yyyy',
-            autoclose: true,
-            todayHighlight: true,
-        });
+        $('#sign_date, #sign_date_fin').datepicker({
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                endDate: "today" // Restringe la selección de fechas futuras
+            });
 
         $('#locality_id').on('input', function() {
             $('#component_id').val($('#component_id option:first').val())

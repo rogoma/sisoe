@@ -36,7 +36,7 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">                                    
-                                    <h4>Contratista: {{$contract->provider->description }} - Localidad: {{ $order->locality }} 
+                                    <h4>Contratista: {{$contract->provider->description }} - Localidad: {{ $order->locality->description }} 
                                     {{-- - SubComponente: {{ $order->component_id->components->description }} --}}
                                     {{-- - Componente: {{ $order->component_code->component->description }} --}}
                                     - Orden N°: {{ $order->component_code }} - {{ $order->number }} </h4>

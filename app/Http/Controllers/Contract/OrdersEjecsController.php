@@ -346,9 +346,10 @@ class OrdersEjecsController extends Controller
         $order_states = OrderState::all();
         $departments = Department::all();
         $districts = District::all();
-        $localities = Locality::all();        
+        $localities = Locality::all();
+        $items = $order->items;        
 
-        return view('contract.orders.update', compact('contract', 'order', 'components', 'order_states', 'departments', 'districts', 'localities'));
+        return view('contract.orders.update', compact('contract', 'order', 'components', 'order_states', 'departments', 'districts', 'localities', 'items'));
     }
 
 
@@ -456,9 +457,8 @@ class OrdersEjecsController extends Controller
 
         if (($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 10) {
             $order->order_state_id = 1;        
-        }        
+        }
         
-
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
         if ($request->filled('sign_date_fin')) {
             $order->sign_date_fin = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date_fin'))));
@@ -467,12 +467,22 @@ class OrdersEjecsController extends Controller
             $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
             $order->sign_date_fin = null;
         }
+       
 
         $order->locality_id = $request->input('locality_id');
         $order->component_id = $request->input('component_id');
         $component = Component::find($order->component_id);  // Assuming you have a Component model
         $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                       
         $order->component_code = $componentCode;
+
+        if ($order->isDirty('component_id')) {
+            // Aquí cambió, puedes asignar un nuevo estado
+            $order->order_state_id = 22 /* nuevo estado  reasginar rubros*/;
+            // $order->total_amount = 0; // Reiniciar el monto total si es necesario
+            $order->items()->delete(); // Eliminar los ítems asociados a la orden si es necesario
+        }
+
+
         $order->number = $request->input('number');
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
@@ -482,6 +492,9 @@ class OrdersEjecsController extends Controller
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
+
+
+
     }
 
     public function destroy(Request $request, $contract_id, $item_id)

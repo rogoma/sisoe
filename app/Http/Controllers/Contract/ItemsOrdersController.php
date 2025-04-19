@@ -124,6 +124,12 @@ class ItemsOrdersController extends Controller
         $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1    
     }
 
+    if ($currentOrderState == 22 && $sign_dateOrder !== null) {        
+        $newOrderState = 1; // Si el estado actual es 22, cambiarlo a 1
+    }else{
+        $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
+    }
+
 
     // Actualizar el estado de la orden y el monto total
     Order::where('id', $data['order_id'])->update([

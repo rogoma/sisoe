@@ -560,7 +560,7 @@
                                                                         {{ $order->orderState->description }}</td>
                                                                 @else
                                                                     {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
-                                                                    @if (in_array($order->orderState->id, [10]))
+                                                                    @if (in_array($order->orderState->id, [10, 22]))
                                                                         <td
                                                                             style="color:white;background-color:red;width: 120px;">
                                                                             {{ $order->orderState->description }}</td>
@@ -599,7 +599,7 @@
                                                                     @endif
 
                                                                     {{-- Para mostra datos de acuerdo a estados de la Orden  --}}
-                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 10, 11]))
+                                                                    @if (in_array($order->orderState->id, [1, 2, 3, 10, 11, 22]))
                                                                         @if (Auth::user()->hasPermission(['admin.orders.update', 'orders.orders.update']))
                                                                             {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
                                                                             @if (Auth::user()->id == $order->creator_user_id)
@@ -646,30 +646,33 @@
                                                                                         class="btn btn-primary btn-icon"
                                                                                         onclick="itemEvents({{ $order->id }})"><i                                                                                        
                                                                                             class="fa fa-clock-o"></i></button>
-                                                                                @endif
+                                                                                @endif                                                                                
                                                                             @else
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
-                                                                                @if (Auth::user()->id == $order->creator_user_id)
-                                                                                    <button type="button"
-                                                                                        title="Importar Rubros de Contrato"
-                                                                                        class="btn btn-primary btn-icon"
-                                                                                        onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
-                                                                                        <i
-                                                                                            class="fa fa-download text-white"></i>
-                                                                                    </button>
+                                                                                @if (Auth::user()->id == $order->creator_user_id && $order->orderState->id == 22)
+                                                                                    <button type="button" title="Editar Rubros"
+                                                                                    class="btn btn-secondary btn-icon"
+                                                                                    onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
+                                                                                    <i
+                                                                                        class="fa fa-recycle"></i></button> 
+                                                                                @else                                                                            
+                                                                                    {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
+                                                                                    @if (Auth::user()->id == $order->creator_user_id)
+                                                                                        <button type="button"
+                                                                                            title="Importar Rubros de Contrato"
+                                                                                            class="btn btn-primary btn-icon"
+                                                                                            onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
+                                                                                            <i
+                                                                                                class="fa fa-download text-white"></i>
+                                                                                        </button>
+                                                                                    @endif
                                                                                 @endif
-                                                                            @endif
+                                                                            @endif                                                                            
                                                                         @endif
 
                                                                         {{-- Muestra botones si no son fiscales --}}
                                                                         @if (Auth::user()->hasPermission(['admin.orders.show', 'orders.orders.view']))
-                                                                            @if ($order->items->count() > 0)
-                                                                                {{-- <button type="button"
-                                                                                    title="Orden con Rubros"
-                                                                                    class="btn btn-primary btn-icon"
-                                                                                    onclick="itemOrder({{ $order->id }})">
-                                                                                    <i class="fa fa-list"></i>
-                                                                                </button> --}}
+                                                                            @if ($order->items->count() > 0)                                                                             
 
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
@@ -688,6 +691,17 @@
                                                                             title="Ver Orden" target="_blank"
                                                                             class="btn btn-success btn-icon"><i
                                                                                 class="fa fa-eye"></i></a>
+                                                                    @endif
+
+                                                                    {{-- SI ESTA ANULADO --}}
+                                                                    @if (in_array($order->orderState->id, [5]))
+                                                                         <a> Motivo: {{ $order->motivo_anule }} </a>
+                                                                         <br>
+                                                                         {{-- MOSTRAR PDF DE ORDEN --}}
+                                                                         <a href="/pdf/panel_contracts10/{{ $order->id }}"                                                                            
+                                                                            title="Ver Orden" target="_blank"
+                                                                            class="btn btn-success btn-icon"><i
+                                                                                class="fa fa-eye"></i></a>                                                                                
                                                                     @endif
 
                                                                 </td>
