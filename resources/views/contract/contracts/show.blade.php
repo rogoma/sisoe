@@ -678,7 +678,7 @@
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                                     title="Ver Orden" target="_blank"
                                                                                     class="btn btn-success btn-icon"><i
-                                                                                        class="fa fa-   "></i></a>
+                                                                                        class="fa fa-eye"></i></a>
                                                                                 {{-- @else
                                                                                 <span style="color:#ff0000;background-color:yellow">Falta agregar rubros </span>  --}}
                                                                             @endif
@@ -699,9 +699,7 @@
                                                                                         onclick="itemEvents({{ $order->id }})"><i                                                                                        
                                                                                             class="fa fa-clock-o"></i></button>
                                                                             @endif
-                                                                    @endif
-
-                                                                    
+                                                                    @endif                                                                    
 
                                                                     {{-- SI ESTA ANULADO --}}
                                                                     @if (in_array($order->orderState->id, [5]))
