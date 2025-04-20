@@ -37,6 +37,8 @@ use App\Http\Controllers\Order\BudgetRequestProvidersController;
 use App\Http\Controllers\DeriveOrder\DeriveOrdersController;
 use App\Http\Controllers\Order\SimeseOrdersController;
 use App\Http\Controllers\Order\OrdersFilesController;
+use App\Http\Controllers\Admin\RegionesController;
+
 
 //DESDE ACA SE USA PARA EL SISTEMA DE CONTRATOS Y POLIZAS
 use App\Http\Controllers\Contract\ContractsController;
@@ -117,7 +119,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('financial_organisms', FinancialOrganismsController::class);
     Route::resource('financial_levels', FinancialLevelsController::class);
     Route::resource('providers', ProvidersController::class);
-    Route::resource('regions', RegionsController::class);
+    Route::resource('regiones', RegionesController::class);
     Route::resource('departments', DepartmentsController::class);
     Route::resource('districts', DistrictsController::class);
     Route::resource('localities', LocalityController::class)->names('admin.localities');

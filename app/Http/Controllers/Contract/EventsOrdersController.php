@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
 use App\Models\Event;
 use App\Models\EventType;
+use App\Models\Item;
+use App\Models\ItemAwardHistory;
 
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;

@@ -318,7 +318,7 @@
                         <li class="pcoded-hasmenu">
                             <a href="javascript:void(0)" class="waves-effect waves-dark">
                             <span class="pcoded-micon"><i class="fa fa-map"></i></span>
-                            <span class="pcoded-mtext">Distritos</span>
+                            <span class="pcoded-mtext">División Política</span>
                             </a>
                             <ul class="pcoded-submenu">
                                 <li class="@if(Route::currentRouteName() == 'departments.index') active @endif">
@@ -326,8 +326,8 @@
                                     <span class="pcoded-mtext">Departamentos</span>
                                     </a>
                                 </li>
-                                <li class="@if(Route::currentRouteName() == 'regions.index') active @endif">
-                                    <a href="{{ route('regions.index') }}" class="waves-effect waves-dark">
+                                <li class="@if(Route::currentRouteName() == 'regiones.index') active @endif">
+                                    <a href="{{ route('regiones.index') }}" class="waves-effect waves-dark">
                                     <span class="pcoded-mtext">Regiones</span>
                                     </a>
                                 </li>

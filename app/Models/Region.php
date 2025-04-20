@@ -7,14 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Region extends Model
 {
-    use HasFactory;
+    protected $table = 'regiones';
 
-    /**
-     * Para obtener el vinculo con la tabla districts
-     */
-    public function districts(){
-        return District::where('codreg', $this->codreg)
-                     ->where('subcreg', $this->subcreg)
-                     ->get();
-    }
+    protected $fillable = ['description'];
 }
