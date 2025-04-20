@@ -35,7 +35,7 @@ class RegionesController extends Controller
 
     public function create()
     {
-        return view('regiones.create');
+        return view('admin.regiones.create');
     }
 
     public function store(Request $request)
