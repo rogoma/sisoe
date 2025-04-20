@@ -103,7 +103,7 @@
                     <tr>
                         <td colspan="1">FISCALIZACIÓN: </td>
                         <td colspan="6"> {{ $contracts0[$i]->description2 }}</td>
-                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->id3}}</td>
+                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->number}}</td>
                         <br><br><br><br>                    
                     </tr>
                     <tr>
@@ -188,7 +188,7 @@
                     <tr>
                         <td colspan="1">FISCALIZACIÓN: </td>
                         <td colspan="6"> {{ $contracts0[$i]->description2 }}</td>
-                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->id3}}</td>
+                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->number}}</td>
                         <br><br><br><br>                    
                     </tr>
                     <tr>
@@ -273,9 +273,8 @@
         <table>
             <tfoot>
                 <tr>
-                    <td colspan="7"></td>
-                    <td colspan="7" style="font-size: 10px; text-align: right; padding-right: 5px;">SUB-TOTAL GS.:
-                    </td>
+                    <td colspan="9"></td>
+                    <td colspan="8" style="font-size: 10px; text-align: right; padding-right: 5px;">SUB-TOTAL GS.: </td>
                     <td style="font-size: 10px; text-align: center;"> {{ number_format($tot_price_mo, '0', ',', '.') }}
                     </td>
                     <td style="font-size: 10px; text-align: center;">
@@ -283,9 +282,8 @@
                 </tr>
 
                 <tr>
-                    <td colspan="7"></td>
-                    <td colspan="7" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON
-                        IVA:</td>
+                    <td colspan="9"></td>
+                    <td colspan="8" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON IVA:</td>
                     <td style="font-size: 10px; text-align: center;"> </td>
                     <td style="font-size: 10px; text-align: center;">
                         {{ number_format($tot_price_mo + $tot_price_mat, '0', ',', '.') }}
@@ -300,42 +298,10 @@
                             {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
                             por parte del Contratista.</span>
                     </td>
-                </tr>
-
-                {{-- <tr>
-                    <td colspan="6"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Fecha Emisión: {{ \Carbon\Carbon::parse($contracts1[0]->orders_date)->format('d/m/Y') }}
-                    </td>
-                    <td colspan="6"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Firma Fiscalización
-                    </td>
-                    <td colspan="6"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        {{ $contracts1[0]->fiscal_name }} {{ $contracts1[0]->fiscal_lastname }}  <br> Aclaración Firma Fiscal
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="6"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">                       
-                        @if(!empty($contracts1[0]->sign_date))
-                                Fecha Recepción: {{ \Carbon\Carbon::parse($contracts1[0]->sign_date)->format('d/m/Y') }}
-                        @else
-                                Fecha Recepción:
-                        @endif
-                    </td>
-                    <td colspan="6"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Firma Contratista
-                    </td>
-                    <td colspan="6"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Aclaración Firma Contratista
-                    </td>
-                </tr> --}}
+                </tr>                
             </tfoot>
-        </table>
+        </table>            
+
     </div>
 </body>
 
