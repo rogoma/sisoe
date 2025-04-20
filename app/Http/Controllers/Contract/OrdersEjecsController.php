@@ -77,8 +77,8 @@ class OrdersEjecsController extends Controller
             }
         }
         // $this->postMaxSize = $postMaxSize;
-        //MÁXIMO PERMITIDO 2 MEGAS POR CADA ARCHIVO
-        $this->postMaxSize = 1048576 * 2;
+        //MÁXIMO PERMITIDO 5 MEGAS POR CADA ARCHIVO
+        $this->postMaxSize = 1048576 * 5;
     }
 
     /**
@@ -317,7 +317,7 @@ class OrdersEjecsController extends Controller
     public function edit(Request $request, $contract_id, $order_id)
     {
         $contract = Contract::findOrFail($contract_id);
-        // $post_max_size = $this->postMaxSize;
+        $post_max_size = $this->postMaxSize;
 
         // Chequeamos permisos del usuario en caso de no ser de la dependencia solicitante
         if (!$request->user()->hasPermission(['admin.orders.update', 'orders.orders.update']) &&  $contract->dependency_id != $request->user()->dependency_id) {
@@ -349,7 +349,8 @@ class OrdersEjecsController extends Controller
         $localities = Locality::all();
         $items = $order->items;        
 
-        return view('contract.orders.update', compact('contract', 'order', 'components', 'order_states', 'departments', 'districts', 'localities', 'items'));
+        return view('contract.orders.update', compact('contract', 'order', 'components', 
+        'order_states', 'departments', 'districts', 'localities', 'items', 'post_max_size')); // Se pasa el tamaño máximo permitido para el archivo
     }
 
 
@@ -403,14 +404,15 @@ class OrdersEjecsController extends Controller
                         $fail('Ya existe un una Orden:  Localidad/Sub-Componente/Nro, verifique');
                     }
                 }
-            ],
-            // 'locality' => 'required|string|max:100',
+            ],           
             'reference' => 'nullable|string|max:500',
             'comments' => 'nullable|string|max:500',
-            'plazo' => 'required|numeric',
-            // 'department_id' => 'required|numeric',
+            'plazo' => 'required|numeric',            
             'district_id' => 'required|numeric',
             'locality_id' => 'required||numeric',
+        //     'file' => [ 'nullable', 'file','max:' . $post_max_size,'mimes:doc,docx,pdf',
+        //      Rule::requiredIf(!empty($request->input('sign_date_fin')))
+        // ],
         ];
         
         // Valida los datos de entrada
@@ -424,25 +426,30 @@ class OrdersEjecsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        //MANEJO DE ARCHIVO DE FINALIZACIÓN DE LA ORDEN
-        // if(!$request->hasFile('file')){
-        //     $validator = Validator::make($request->input(), []);
-        //     $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
-        //     return back()->withErrors($validator)->withInput();
-        // }
+        //MANEJO DE ARCHIVO DE FINALIZACIÓN DE LA ORDEN-VERIFICAMOS QUE FIN DE ORDEN NO ESTE VACIO        
+        if (!empty($request->input('sign_date_fin')))
+        {
+            if(!$request->hasFile('file')){
+                $validator = Validator::make($request->input(), []);
+                $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo PDF o WORD');
+                return back()->withErrors($validator)->withInput();
+            }
 
-        // // chequeamos la extension del archivo subido
-        // $extension = $request->file('file')->getClientOriginalExtension();
-        // if(!in_array($extension, array('doc', 'docx', 'pdf'))){
-        //     $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-        //     $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
-        //     return back()->withErrors($validator)->withInput();
-        // }
+            // chequeamos la extension del archivo subido
+            $extension = $request->file('file')->getClientOriginalExtension();
+            if(!in_array($extension, array('doc', 'docx', 'pdf'))){
+                $validator = Validator::make($request->input(), []); // Creamos un objeto validator
+                $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
+                return back()->withErrors($validator)->withInput();
+            }
 
-        // // Pasó todas las validaciones, guardamos el archivo        
-        // $fileName = 'fin_orden_'.$request->input('event_date_fin').'.'.$extension; // nombre a guardar
-        // // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
-        // $path = $request->file('file')->storeAs('public/files', $fileName);
+            // Pasó todas las validaciones, guardamos el archivo        
+            $fileName = 'fin_orden_'.$order->component_code.'.'.$order->number.'_'.$request->input('sign_date_fin').'.'.$extension; // nombre a guardar
+            // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
+            $path = $request->file('file')->storeAs('public/files', $fileName);
+
+            $order->file = $fileName; // Guardamos el nombre del archivo en la base de datos
+        }
 
         
 
@@ -466,8 +473,7 @@ class OrdersEjecsController extends Controller
         } else {
             $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
             $order->sign_date_fin = null;
-        }
-       
+        }       
 
         $order->locality_id = $request->input('locality_id');
         $order->component_id = $request->input('component_id');
@@ -475,10 +481,9 @@ class OrdersEjecsController extends Controller
         $componentCode = $component ? $component->code : null; // Handle the case where the component is not found                       
         $order->component_code = $componentCode;
 
-        if ($order->isDirty('component_id')) {
-            // Aquí cambió, puedes asignar un nuevo estado
-            $order->order_state_id = 22 /* nuevo estado  reasginar rubros*/;
-            // $order->total_amount = 0; // Reiniciar el monto total si es necesario
+        // Si componente cambia, se cambia el estado de la orden a 22 y se eliminan los items asociados a la orden
+        if ($order->isDirty('component_id')) {           
+            $order->order_state_id = 22 /* nuevo estado  reasginar rubros*/;           
             $order->items()->delete(); // Eliminar los ítems asociados a la orden si es necesario
         }
 
@@ -486,8 +491,7 @@ class OrdersEjecsController extends Controller
         $order->number = $request->input('number');
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
-        $order->plazo = $request->input('plazo');
-        // $order->file = $fileName;
+        $order->plazo = $request->input('plazo');        
         $order->district_id = $request->input('district_id');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();

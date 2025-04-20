@@ -159,8 +159,7 @@
 
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
-                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo
-                                                            Contratista</label>
+                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
                                                         <div class="input-group">
                                                             <input type="text" id="sign_date" name="sign_date"
                                                                 {{-- DISABLED INGRESO DE FECHA SI LA ORDEN NO TIENE DETALLE DE RUBROS --}}
@@ -185,7 +184,6 @@
                                                     <div class="col-sm-6">
                                                         <label for="component_id"
                                                             class="col-form-label">Componente</label>
-
                                                         <!-- Campo oculto para enviar el valor cuando el select está deshabilitado -->
                                                         <input type="hidden" name="component_id" id="component_id_hidden"
                                                             value="{{ old('component_id', $order->component_id) }}">
@@ -206,8 +204,7 @@
 
 
                                                     <div class="col-sm-3">
-                                                        <label for="plazo" class="col-form-label">Plazo de ejecución
-                                                            (En días)</label>
+                                                        <label for="plazo" class="col-form-label">Plazo de ejecución (En días)</label>
                                                         <input type="text" id="plazo" name="plazo"
                                                             class="form-control @error('plazo') is-invalid @enderror"
                                                             @if ($order->items->count() > 0 && $order->order_state_id == 1)  @endif
@@ -219,15 +216,21 @@
 
                                                     <div class="col-sm-3">
                                                         <label for="sign_date_fin" class="col-form-label">Fecha final de Orden</label>
-                                                        <div class="input-group">
-                                                            <input type="text" id="sign_date_fin" name="sign_date_fin"
+                                                        <div class="input-group">                                                            
+                                                            <input 
+                                                                type="text" 
+                                                                id="sign_date_fin" 
+                                                                name="sign_date_fin"                                                                
                                                                 class="form-control @error('sign_date_fin') is-invalid @enderror"
                                                                 value="{{ old('sign_date_fin', isset($order->sign_date_fin) ? date('d/m/Y', strtotime($order->sign_date_fin)) : '') }}"
                                                                 autocomplete="off"
-                                                                @if ($order->sign_date === null) disabled @endif>
+                                                                oninput="toggleFileUpload()"
+                                                                @if ($order->sign_date === null) disabled @endif>                                                    
                                                             <span class="input-group-append">
-                                                                <button type="button" class="btn btn-outline-secondary"
-                                                                    onclick="show('sign_date_fin');"
+                                                                <button 
+                                                                    type="button" 
+                                                                    class="btn btn-outline-secondary" 
+                                                                    onclick="show('sign_date_fin');" 
                                                                     {{ empty($order->sign_date_fin) ? 'disabled' : '' }}>
                                                                     <i class="fa fa-calendar"></i>
                                                                 </button>
@@ -238,9 +241,24 @@
                                                         @enderror
                                                     </div>
                                                     
+                                                    {{-- <div class="form-group @error('file') has-danger @enderror">                                                        
+                                                        <label class="col-form-label">Cargar Archivo: <h7>(Tipo de archivos permitidos: WORD, PDF)</h7></label>
+                                                        <input id="file" type="file" class="form-control" name="file" disabled>
+                                                        @error('file')
+                                                            <div class="col-form-label">{{ $message }}</div>
+                                                        @enderror
+                                                    </div> --}}
+
+                                                    <div class="col-sm-9">                                                    
+                                                        <label class="col-form-label text-danger">Cargar Archivo: <h7>(Tipo de archivo: PDF, DOC, DOCX hasta 5 MEGAS)</h7></label>
+                                                        <input id="file" type="file"  name="file"  class="form-control @error('file') has-danger @enderror">
+                                                        @error('file')                                                            
+                                                            <div class="col-form-label text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    
                                                     <div class="col-sm-9">
-                                                        <label for="reference" class="col-form-label">Referencia (Hasta
-                                                            500 caracteres)</label>
+                                                        <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
                                                         <textarea id="reference" name="reference" class="form-control @error('reference') is-invalid @enderror"
                                                             maxlength="500">{{ old('reference', $order->reference) }}</textarea>
                                                         @error('reference')
@@ -249,16 +267,16 @@
                                                     </div>
 
                                                     <div class="col-sm-12">
-                                                        <label for="comments" class="col-form-label">Comentarios (Hasta
-                                                            500 caracteres)</label>
+                                                        <label for="comments" class="col-form-label">Comentarios (Hasta 500 caracteres)</label>
                                                         <textarea id="comments" name="comments" class="form-control @error('comments') is-invalid @enderror"
                                                             maxlength="500">{{ old('comments', $order->comments) }}</textarea>
                                                         @error('comments')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-                                                </div>
+                                                </div>                                                
                                             </div>
+                                            
                                             <div class="col-sm-12">
                                                 <br>
                                                 <div class="form-group text-center">
@@ -415,12 +433,8 @@
 
 
         // Inicialización de select2 en los combos
-        $('#component_id').select2();
-        $('#order_state_id').select2();
-        $('#department_id').select2();
-        $('#district_id').select2();
-        $('#locality_id').select2();
-
+        $('#component_id, #order_state_id, #department_id, #district_id, #locality_id').select2();
+        
         // Inicialización del datepicker
         $('#sign_date, #sign_date_fin').datepicker({
                 language: 'es',
@@ -428,7 +442,7 @@
                 autoclose: true,
                 todayHighlight: true,
                 endDate: "today" // Restringe la selección de fechas futuras
-            });
+        });        
 
         $('#locality_id').on('input', function() {
             $('#component_id').val($('#component_id option:first').val())
@@ -450,6 +464,64 @@
                         console.error('Error al obtener los datos:', error);
                     }
                 });
+            }
+        });
+
+        // Control de habilitación de sign_date_fin
+        function toggleSignDateFin() {
+                let signDate = $('#sign_date');
+                let signDateFin = $('#sign_date_fin');
+
+                if ($.trim(signDate.val()) === "") {
+                    signDateFin.val("").prop('disabled', true);
+                } else {
+                    signDateFin.prop('disabled', false);
+                }
+            }
+
+            // Ejecutar la función al cargar la página
+            toggleSignDateFin();
+
+            // Evento al cambiar sign_date
+            $('#sign_date').on('change', toggleSignDateFin);
+
+            // Evento al cambiar sign_date_fin (deshabilitar sign_date si se selecciona)
+            $('#sign_date_fin').on('change', function () {
+                let signDate = $('#sign_date');
+                if ($.trim($(this).val()) !== "") {
+                    signDate.prop('disabled', true);
+                } else {
+                    signDate.prop('disabled', false);
+                }
+            });
+
+            // Control de habilitación del campo de archivo
+            function toggleFileUpload() {
+                let signDateFin = $('#sign_date_fin');
+                let fileInput = $('#file');
+
+                if ($.trim(signDateFin.val()) !== '') {
+                    fileInput.prop('disabled', false);
+                } else {
+                    fileInput.prop('disabled', true);
+                }
+            }
+
+            // Ejecutar la función al cargar la página para mantener el estado correcto
+            toggleFileUpload();
+
+            // Evento al cambiar sign_date_fin
+            $('#sign_date_fin').on('change', toggleFileUpload);
+
+            $('#file').bind('change', function() {
+            max_upload_size = {{ $post_max_size }};
+            if(this.files[0].size > max_upload_size){
+                $('#guardar').attr("disabled", "disabled");
+                file_size = Math.ceil((this.files[0].size/1024)/1024);
+                max_allowed = Math.ceil((max_upload_size/1024)/1024);
+                swal("Error!", "El tamaño del archivo seleccionado ("+file_size+" Mb) supera el tamaño maximo de carga permitido ("+max_allowed+" Mb).", "error");
+            }else{
+                $('#guardar').removeAttr("disabled");
             }
         });
         

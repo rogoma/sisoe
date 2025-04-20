@@ -120,14 +120,14 @@ class ItemsOrdersController extends Controller
         $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
     }
 
-    if ($currentOrderState == 1 && $sign_dateOrder !== null) {        
-        $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1    
-    }
-
     if ($currentOrderState == 22 && $sign_dateOrder !== null) {        
         $newOrderState = 1; // Si el estado actual es 22, cambiarlo a 1
     }else{
         $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
+    }
+
+    if ($currentOrderState == 1 && $sign_dateOrder !== null) {        
+        $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1    
     }
 
 

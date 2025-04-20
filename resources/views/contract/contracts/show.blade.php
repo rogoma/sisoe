@@ -685,13 +685,23 @@
                                                                         @endif
                                                                     @endif
 
-                                                                    @if (in_array($order->orderState->id, [4]))
-                                                                         {{-- MOSTRAR PDF DE ORDEN --}}
+                                                                    {{-- SI ESTA FINALIZADO --}}
+                                                                    @if (in_array($order->orderState->id, [4]))                                                                         
                                                                          <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                             title="Ver Orden" target="_blank"
-                                                                            class="btn btn-success btn-icon"><i
-                                                                                class="fa fa-eye"></i></a>
+                                                                            class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
+                                                                            
+                                                                            <a href="{{ asset('storage/files/'.$order->file) }}" title="Ver Archivo de Finalización de Orden" target="_blank" class="btn btn-danger btn-icon"><i class="fa fa-file-pdf-o"></i></a>
+
+                                                                            @if ($order->events->count() > 0)
+                                                                            <button type="button" title="Cargar Eventos"
+                                                                                        class="btn btn-primary btn-icon"
+                                                                                        onclick="itemEvents({{ $order->id }})"><i                                                                                        
+                                                                                            class="fa fa-clock-o"></i></button>
+                                                                            @endif
                                                                     @endif
+
+                                                                    
 
                                                                     {{-- SI ESTA ANULADO --}}
                                                                     @if (in_array($order->orderState->id, [5]))
@@ -703,7 +713,6 @@
                                                                             class="btn btn-success btn-icon"><i
                                                                                 class="fa fa-eye"></i></a>                                                                                
                                                                     @endif
-
                                                                 </td>
                                                             </tr>
                                                         @endforeach

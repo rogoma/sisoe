@@ -89,6 +89,13 @@
                                                     <td>{{ $events[$i]->eventDateFinFormat() }}</td>
                                                     <td>{{ $events[$i]->comments }}</td>
 
+                                                    {{-- SI ORDEN ESTA FINALIZADA --}}
+                                                    @if ($order->order_state_id == 4)
+                                                        <td></td>
+                                                        <td>                                                            
+                                                            <a href="{{ asset('storage/files/'.$order->events[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
+                                                        </td>
+                                                    @else
                                                         <td>
                                                             @if (Auth::user()->hasPermission(['admin.orders.index', 'orders.orders.index']))
                                                                 <button type="button" title="Editar" class="btn btn-warning btn-icon">  
@@ -104,10 +111,10 @@
                                                                 </button>
                                                             @endif
                                                         </td>                                                        
-                                                    <td>
-                                                        {{-- <a href="{{ asset('storage/files/') }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a> --}}
+                                                    <td>                                                            
                                                         <a href="{{ asset('storage/files/'.$order->events[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                             @endfor
                                             </tbody>
@@ -117,8 +124,13 @@
                                             @if (Auth::user()->hasPermission(['admin.orders.index', 'orders.orders.index']))
                                                 {{-- Si pedido está anulado no muestra agregar ítems --}}
                                                 {{-- @if (in_array($contract->contract_state_id, [1])) --}}
+                                                
+                                                {{-- SI ORDEN ESTA FINALIZADA --}}
+                                                @if ($order->order_state_id == 4)
+                                                
+                                                @else
                                                     <a href="{{ route('orders.events.create', $order->id) }}" class="btn btn-primary">Agregar Evento</a>
-                                                {{-- @endif --}}
+                                                @endif
                                             @endif
                                         </div>
                                     </div>
