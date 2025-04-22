@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/dependencies/exportarexcel', [DependenciesController::class, 'exportarExcel']);
     Route::resource('dependencies', DependenciesController::class);
 
+    // RUTAS
     Route::resource('order_states', OrderStatesController::class);
     Route::resource('funding_sources', FundingSourcesController::class);
     Route::resource('financial_organisms', FinancialOrganismsController::class);
