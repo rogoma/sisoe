@@ -52,6 +52,7 @@ class ItemsContractsController extends Controller
 
         $items = ItemContract::where('contract_id', $contract_id)
                 ->where('component_id', $component_id)
+                ->orderBy('id')
                 ->get();
 
         // Chequeamos permisos del usuario
