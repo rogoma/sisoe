@@ -223,10 +223,10 @@
 <script>
     $(document).ready(function() {
         $('#items').DataTable({
-            "pageLength": 25, // Muestra 25 filas por página
+            "pageLength": 60, // Muestra 60 filas por página
             "lengthMenu": [
-                [25, 50, 100, -1],
-                [25, 50, 100, "Todos"]
+                [25, 60, 100, -1],
+                [25, 60, 100, "Todos"]
             ], // Opciones para cambiar la cantidad de filas
             "responsive": true,
             "autoWidth": false
