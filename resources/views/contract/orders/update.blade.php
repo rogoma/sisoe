@@ -327,7 +327,8 @@
             let previousValue = this.dataset.previousValue; // Valor antes del cambio
             let newValue = this.value; // Nuevo valor seleccionado
 
-            if (newValue !== previousValue && (orderStateId === 10 || orderStateId === 1)) {
+            if (newValue !== previousValue) {
+            // if (newValue !== previousValue && (orderStateId === 10 || orderStateId === 1)) {    
                     let selectedOptionText = this.options[this.selectedIndex].text;                   
                     let mensaje = "Cambiado por el Componente: " + selectedOptionText;
                     let mensaje2 = "Edite rubros para recalcular valores del nuevo Componente";

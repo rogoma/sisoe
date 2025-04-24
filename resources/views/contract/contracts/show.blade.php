@@ -559,7 +559,7 @@
                                                                         style="color:#ff0000;text-align: left;width: 50px;">
                                                                         {{ $order->orderState->description }}</td>
                                                                 @else
-                                                                    {{-- SI ES ESTADO 10 "SIN FIRMA" SE MUESTRA EN ROJO Y AMARILLO --}}
+                                                                    {{-- SI ES ESTADO 10 "SIN FIRMA" y 22 "REINGRESAR RUBROS" SE MUESTRA EN ROJO Y AMARILLO --}}
                                                                     @if (in_array($order->orderState->id, [10, 22]))
                                                                         <td
                                                                             style="color:white;background-color:red;width: 120px;">
@@ -1110,6 +1110,16 @@
         $(document).ready(function() {
 
             $('#items').DataTable();
+        //     $('#items').DataTable({
+        //     "pageLength": 50, // Muestra 25 filas por página
+        //     "lengthMenu": [
+        //         [25, 50, 100, -1],
+        //         [25, 50, 100, "Todos"]
+        //     ], // Opciones para cambiar la cantidad de filas
+        //     "responsive": true,
+        //     "autoWidth": false
+        // });
+            
 
             const table = $('#example').DataTable({
                 ajax: '/tables', // URL que devuelve los datos JSON

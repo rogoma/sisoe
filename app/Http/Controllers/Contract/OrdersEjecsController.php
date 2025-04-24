@@ -271,7 +271,7 @@ class OrdersEjecsController extends Controller
         $order->locality_id = $request->input('locality_id');
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
-        return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden agregada correctamente'); // Caso usuario posee rol pedidos
+        return redirect()->route('contracts.show', $contract_id)->with('success', 'Datos de Orden agregado correctamente'); // Caso usuario posee rol pedidos
     }
 
     //PARA CALCULA NUMERO DE ORDEN DE ACUERDO AL COMPONENTE y LOCALIDAD
@@ -482,9 +482,21 @@ class OrdersEjecsController extends Controller
         $order->component_code = $componentCode;
 
         // Si componente cambia, se cambia el estado de la orden a 22 y se eliminan los items asociados a la orden
+        $contract = Contract::findOrFail($contract_id);
+
         if ($order->isDirty('component_id')) {           
-            $order->order_state_id = 22 /* nuevo estado  reasginar rubros*/;           
-            $order->items()->delete(); // Eliminar los ítems asociados a la orden si es necesario
+            // Cambiar estado de la orden
+            $order->order_state_id = 22; // nuevo estado: reasignar rubros
+    
+            // Eliminar ítems asociados
+            $order->items()->delete();
+
+            // Descontar total de la orden del monto comprometido del contrato
+            $contract->compro_amount -= $order->total_amount;
+            $order->total_amount = 0; // Reiniciar el total de la orden a 0
+            
+            // Guardar los cambios en contrato
+            $contract->save();
         }
 
 
@@ -496,7 +508,6 @@ class OrdersEjecsController extends Controller
         $order->creator_user_id = $request->user()->id;  // usuario logueado
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
-
 
 
     }
