@@ -59,145 +59,91 @@ class ItemsOrdersController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Validar los datos del request
-    $data = $request->validate([
-        'items' => 'required|array',
-        'items.*.item_number' => 'required|integer',
-        'items.*.rubro_id' => 'required|integer',
-        'items.*.quantity' => 'required|numeric',
-        'items.*.unit_price_mo' => 'required|numeric',
-        'items.*.unit_price_mat' => 'required|numeric',
-        'items.*.tot_price_mo' => 'required|numeric',
-        'items.*.tot_price_mat' => 'required|numeric',
-        'order_id' => 'required|integer',
-        'creator_user_id' => 'required|integer',
-    ]);
-
-    // Obtener el monto actual de la orden
-    $currentOrderAmount = Order::where('id', $data['order_id'])->value('total_amount');
-
-    // Obtener el contract_id de la orden
-    $contract_id = Order::where('id', $data['order_id'])->value('contract_id');
-
-    // Restar el monto actual de la orden al compro_amount del contrato
-    Contract::where('id', $contract_id)->decrement('compro_amount', $currentOrderAmount);
-
-    // Eliminar todos los registros existentes asociados a la orden
-    ItemOrder::where('order_id', $data['order_id'])->delete();
-
-    $total_amount = 0;
-
-    // Insertar los nuevos registros
-    foreach ($data['items'] as $item) {
-        ItemOrder::create([
-            'item_number' => $item['item_number'],
-            'rubro_id' => $item['rubro_id'],
-            'quantity' => $item['quantity'],
-            'unit_price_mo' => $item['unit_price_mo'],
-            'unit_price_mat' => $item['unit_price_mat'],
-            'item_state' => 1,
-            'order_id' => $data['order_id'],
-            'creator_user_id' => $data['creator_user_id'],
+    {
+        // Validar los datos del request
+        $data = $request->validate([
+            'items' => 'required|array',
+            'items.*.item_number' => 'required|integer',
+            'items.*.rubro_id' => 'required|integer',
+            'items.*.quantity' => 'required|numeric',
+            'items.*.unit_price_mo' => 'required|numeric',
+            'items.*.unit_price_mat' => 'required|numeric',
+            'items.*.tot_price_mo' => 'required|numeric',
+            'items.*.tot_price_mat' => 'required|numeric',
+            'order_id' => 'required|integer',
+            'creator_user_id' => 'required|integer',
         ]);
-        $total_mo = ($item['quantity'] * $item['unit_price_mo']);
-        $total_mat = ($item['quantity'] * $item['unit_price_mat']);
-        $total_amount += ($total_mo + $total_mat);
+
+        // Obtener el monto actual de la orden
+        $currentOrderAmount = Order::where('id', $data['order_id'])->value('total_amount');
+
+        // Obtener el contract_id de la orden
+        $contract_id = Order::where('id', $data['order_id'])->value('contract_id');
+
+        // Restar el monto actual de la orden al compro_amount del contrato
+        Contract::where('id', $contract_id)->decrement('compro_amount', $currentOrderAmount);
+
+        // Eliminar todos los registros existentes asociados a la orden
+        ItemOrder::where('order_id', $data['order_id'])->delete();
+
+        $total_amount = 0;
+
+        // Insertar los nuevos registros
+        foreach ($data['items'] as $item) {
+            ItemOrder::create([
+                'item_number' => $item['item_number'],
+                'rubro_id' => $item['rubro_id'],
+                'quantity' => $item['quantity'],
+                'unit_price_mo' => $item['unit_price_mo'],
+                'unit_price_mat' => $item['unit_price_mat'],
+                'item_state' => 1,
+                'order_id' => $data['order_id'],
+                'creator_user_id' => $data['creator_user_id'],
+            ]);
+            $total_mo = round($item['quantity'] * $item['unit_price_mo']);
+            $total_mat = round($item['quantity'] * $item['unit_price_mat']);
+            $total_amount += ($total_mo + $total_mat);
+        }
+
+        // Obtener el estado actual de la orden
+        $currentOrderState = Order::where('id', $data['order_id'])->value('order_state_id');
+        $sign_dateOrder = Order::where('id', $data['order_id'])->value('sign_date');
+
+        // Determinar el nuevo valor de order_state_id
+        if ($currentOrderState == 11) {
+            $newOrderState = 10; // Si el estado actual es 11, cambiarlo a 10otros casos
+        }
+
+        if ($currentOrderState == 10 && $sign_dateOrder !== null) {        
+            $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1
+        }else{
+            $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
+        }
+
+        if ($currentOrderState == 22 && $sign_dateOrder !== null) {        
+            $newOrderState = 1; // Si el estado actual es 22, cambiarlo a 1
+        }else{
+            $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
+        }
+
+        if ($currentOrderState == 1 && $sign_dateOrder !== null) {        
+            $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1    
+        }
+
+
+        // Actualizar el estado de la orden y el monto total
+        Order::where('id', $data['order_id'])->update([
+            'order_state_id' => $newOrderState,
+            'total_amount' => $total_amount
+        ]);
+
+        // Acumular el nuevo monto en compro_amount del contrato
+        Contract::where('id', $contract_id)->increment('compro_amount', $total_amount);
+
+        return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
     }
 
-    // Obtener el estado actual de la orden
-    $currentOrderState = Order::where('id', $data['order_id'])->value('order_state_id');
-    $sign_dateOrder = Order::where('id', $data['order_id'])->value('sign_date');
-
-    // Determinar el nuevo valor de order_state_id
-    if ($currentOrderState == 11) {
-        $newOrderState = 10; // Si el estado actual es 11, cambiarlo a 10otros casos
-    }
-
-    if ($currentOrderState == 10 && $sign_dateOrder !== null) {        
-        $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1
-    }else{
-        $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
-    }
-
-    if ($currentOrderState == 22 && $sign_dateOrder !== null) {        
-        $newOrderState = 1; // Si el estado actual es 22, cambiarlo a 1
-    }else{
-        $newOrderState = 10; // Si el estado actual es 10 y no tiene acuse
-    }
-
-    if ($currentOrderState == 1 && $sign_dateOrder !== null) {        
-        $newOrderState = 1; // Si el estado actual es 10, cambiarlo a 1    
-    }
-
-
-    // Actualizar el estado de la orden y el monto total
-    Order::where('id', $data['order_id'])->update([
-        'order_state_id' => $newOrderState,
-        'total_amount' => $total_amount
-    ]);
-
-    // Acumular el nuevo monto en compro_amount del contrato
-    Contract::where('id', $contract_id)->increment('compro_amount', $total_amount);
-
-    return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
-}
-
-    // public function store(Request $request)
-    // {
-    //     // SE DEBE HABILITAR EN EL MODEL PARA QUE SE PUEDAN AGREGAR ITEMS(CAMPOS)
-    //     $data = $request->validate([
-    //         'items' => 'required|array',
-    //         'items.*.item_number' => 'required|integer',
-    //         'items.*.rubro_id' => 'required|integer',
-    //         'items.*.quantity' => 'required|numeric',
-    //         'items.*.unit_price_mo' => 'required|numeric',
-    //         'items.*.unit_price_mat' => 'required|numeric',
-    //         'items.*.tot_price_mo' => 'required|numeric',
-    //         'items.*.tot_price_mat' => 'required|numeric',
-    //         'order_id' => 'required|integer',
-    //         'creator_user_id' => 'required|integer',
-    //     ]);
-
-    //     $total_amount = 0;
-
-    //     foreach ($data['items'] as $item) {
-    //         ItemOrder::create([
-    //             'item_number' => $item['item_number'],
-    //             'rubro_id' => $item['rubro_id'],
-    //             'quantity' => $item['quantity'],
-    //             'unit_price_mo' => $item['unit_price_mo'],
-    //             'unit_price_mat' => $item['unit_price_mat'],
-    //             'item_state' => 1,
-    //             'order_id' => $data['order_id'],
-    //             'creator_user_id' => $data['creator_user_id'],
-    //         ]);
-    //         $total_mo = ($item['quantity'] * $item['unit_price_mo']);
-    //         $total_mat = ($item['quantity'] * $item['unit_price_mat']);
-    //         $total_amount += ($total_mo + $total_mat);
-    //     }
-
-    //     // Actualizar el estado de la orden y el Monto
-    //     // Order::where('id', $data['order_id'])->update(['order_state_id' => 10]);
-    //     // Order::where('id', $data['order_id'])->update(['total_amount' => $total_amount]);
-    //     // Actualizar estado y monto en una sola consulta
-    //     Order::where('id', $data['order_id'])->update([
-    //         'order_state_id' => 10,
-    //         'total_amount' => $total_amount
-    //     ]);
-
-    //     // Obtener el contract_id de la orden
-    //     $contract_id = Order::where('id', $data['order_id'])->value('contract_id');
-
-    //     // Calcular el nuevo monto sumando todas las órdenes del contrato
-    //     $total_compro_amount = Order::where('contract_id', $contract_id)->sum('total_amount');
-
-    //     // Acumular el total_amount en compro_amount del contrato
-    //     Contract::where('id', $contract_id)->increment('compro_amount', $total_amount);
-
-
-    //     return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
-    // }
+    
 
     /**
      * Funcionalidad de guardado del pedido de ítemes Contrato Abierto.
