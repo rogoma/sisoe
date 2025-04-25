@@ -133,8 +133,9 @@
                         <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
                             {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
                             por parte del Contratista.</span>
-                    </td>
-                </tr>
+                            
+                    </td>                    
+                </tr>                
 
                 <tr>
                     <td colspan="4"
@@ -167,6 +168,14 @@
                         style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
                         Aclaración Firma Contratista
                     </td>
+                </tr>
+                
+                <tr>
+                    @if($contracts1[0]->order_states_id == 5)
+                        <td colspan="12">                                                    
+                            <h1 style="color: red; text-align: center; font-size: 3em;">ORDEN ANULADA</h1>
+                        </td>                    
+                    @endif
                 </tr>
             </tfoot> 
         </table>
@@ -287,23 +296,31 @@
                     <td style="font-size: 10px; text-align: center;"> </td>
                     <td style="font-size: 10px; text-align: center;">
                         {{ number_format($tot_price_mo + $tot_price_mat, '0', ',', '.') }}
-                </tr>
-                {{-- <br> --}}
-
-                <tr>
-                    <td colspan="16"
-                        style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
-                        COMENTARIO: {{ $contracts1[0]->orders_comments }}
-                        <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
-                            {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
-                            por parte del Contratista.</span>
-                    </td>
                 </tr>                
-            </tfoot>
-        </table>            
+            </tfoot>            
+        </table>
+
+        <table>
+            <tr>
+                <td colspan="16"
+                    style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
+                    COMENTARIO: {{ $contracts1[0]->orders_comments }}
+                    <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
+                        {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
+                        por parte del Contratista.</span>
+                </td>
+            </tr> 
+            
+            <tr>
+                @if($contracts1[0]->order_states_id == 5)
+                    <td colspan="16">                                                    
+                        <h1 style="color: red; text-align: center; font-size: 3em;">ORDEN ANULADA</h1>
+                    </td>                    
+                @endif
+            </tr>
+        </table>
 
     </div>
 </body>
 
 </html>
-

@@ -7,10 +7,8 @@
 </head>
 <style type="text/css">
     @page {
-        size: legal portrait;
-        /* Define tamaño oficio (legal) en orientación vertical */
-        margin: 100px 25px 100px 60px;
-        /* Márgenes: superior, derecho, inferior, izquierdo */
+        size: legal portrait;        
+        margin: 100px 25px 100px 60px;        
     }
 
     body {
@@ -47,8 +45,7 @@
         border: 1px solid black;
         width: 100%;
         font-size: 8px;
-        line-height: 1;
-        /* Reduce el espacio entre líneas */
+        line-height: 1;        
     }
 
     td,
@@ -76,45 +73,150 @@
         font-size: 12px;
         margin-bottom: 15px;
     }
+
+    .page-break {
+        page-break-before: always;
+    }
+
+    .space {
+        height: 500px; /* Espacio en blanco para la primera hoja */
+    }
 </style>
 
 <body>
     <header>
         <img src="img/logoVI_2.png" alt="Logo" style="height: 70px;"><br>
         <h2>{{ $contracts1[0]->contracts_description }} - Lote {{ $contracts1[0]->batch }} - ID N° {{ $contracts1[0]->contracts_iddncp }}</h2>
-        
     </header>
 
     <footer>
         Página <span class="page"></span> de <span class="topage"></span>
     </footer>
 
+    <!-- Primera hoja -->
     <div>
         <br><br>
         <table id="orders_items">
+            <br><br><br><br>
             @for ($i = 0; $i < count($contracts1); $i = $i + 3)
-                <tr>
-                    <td> Contrato: {{ $contracts1[$i]->contracts_description }} </td>
-                    <td> N°Contrato: {{ $contracts1[$i]->contracts_number_year }} <br><br> ID N°: <br>
-                        {{ number_format($contracts1[$i]->contracts_iddncp, '0', ',', '.') }}</td>
-                    <th> Empresa Contratista: <br><br> {{ $contracts1[$i]->providers_description }}</th>
-                    <th> Dependencia Responsable: <br><br> {{ $contracts1[$i]->dependencies_description }}</th>
-                    <th> Modalidad: {{ $contracts1[$i]->modalities_description }}</th>
-                    <th> Localidad(es): {{ $contracts1[$i]->orders_locality }}</th>
-                    <th> Monto de la Orden: {{ number_format($contracts1[$i]->orders_total_amount, '0', ',', '.') }}  </th>
-                </tr>
-            @endfor
-        </table>
-        <br>
-        <table id="orders_items">
-            @for ($i = 0; $i < count($contracts1); $i = $i + 3)
-                <tr>
-                    <td> Referencia: {{ $contracts1[$i]->components_description }}</td>
-                    <td> {{ $contracts1[$i]->orders_references }} </td>
-                </tr>
-            @endfor
+                <table border="1">
+                    <tr>
+                        <td colspan="1">FISCALIZACIÓN: </td>
+                        <td colspan="6"> {{ $contracts0[$i]->description2 }}</td>
+                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->number}}</td>
+                        <br><br><br><br>                    
+                    </tr>
+                    <tr>
+                        <td colspan="1">CONTRATO: </td>
+                        <td colspan="11"> {{ $contracts0[$i]->number_year }} - Lote: {{ $contracts0[0]->batch }} <br> {{ $contracts0[$i]->description }}</td>
+                        <br><br>
+                    </tr>
+                    <tr>
+                        <td colspan="1">LOCALIDAD: </td>                    
+                        <td colspan="11">{{ $contracts0[$i]->locality }}, Distrito de: {{ $contracts0[$i]->description3 }}, Departamento de: {{ $contracts0[$i]->description4 }}</td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="1">REFERENCIA: </td>                    
+                        <td colspan="11">{{ $contracts0[$i]->code }} - {{ $contracts0[$i]->description1 }} - {{ $contracts0[$i]->reference }}</td>                        
+                    </tr>                    
+                </table>                
+            @endfor                       
         </table>
 
+        <table>
+            <tfoot>             
+                <tr>
+                    <td colspan="12"
+                        style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
+                        COMENTARIO: {{ $contracts1[0]->orders_comments }}
+                        <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
+                            {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
+                            por parte del Contratista.</span>
+                            
+                    </td>                    
+                </tr>                
+
+                <tr>
+                    <td colspan="4"
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        Fecha Emisión: {{ \Carbon\Carbon::parse($contracts1[0]->orders_date)->format('d/m/Y') }}
+                    </td>
+                    <td colspan="4"
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        Firma Fiscalización
+                    </td>
+                    <td colspan="4"
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        {{ $contracts1[0]->fiscal_name }} {{ $contracts1[0]->fiscal_lastname }}  <br> Aclaración Firma Fiscal
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">                       
+                        @if(!empty($contracts1[0]->sign_date))
+                                Fecha Recepción: {{ \Carbon\Carbon::parse($contracts1[0]->sign_date)->format('d/m/Y') }}
+                        @else
+                                Fecha Recepción:
+                        @endif
+                    </td>
+                    <td colspan="4"
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        Firma Contratista
+                    </td>
+                    <td colspan="4"
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        Aclaración Firma Contratista
+                    </td>
+                </tr>
+                
+                <tr>
+                    @if($contracts1[0]->order_states_id == 5)
+                        <td colspan="12">                                                    
+                            <h1 style="color: red; text-align: center; font-size: 3em;">ORDEN ANULADA</h1>
+                        </td>                    
+                    @endif
+                </tr>
+            </tfoot> 
+        </table>
+                
+    </div>
+
+    <!-- Espacio en blanco para la primera hoja -->
+    <div class="space"></div>
+
+    
+
+    <!-- Segunda hoja -->
+    <div class="page-break"></div>
+
+    <div>
+        <br><br>
+        @for ($i = 0; $i < count($contracts0); $i = $i + 3)
+                <table border="1">
+                    <tr>
+                        <td colspan="1">FISCALIZACIÓN: </td>
+                        <td colspan="6"> {{ $contracts0[$i]->description2 }}</td>
+                        <td colspan="5">ORDEN DE EJECUCIÓN N°: {{ $contracts0[$i]->code }} - {{ $contracts0[$i]->number}}</td>
+                        <br><br><br><br>                    
+                    </tr>
+                    <tr>
+                        <td colspan="1">CONTRATO: </td>
+                        <td colspan="11"> {{ $contracts0[$i]->number_year }} - Lote: {{ $contracts0[0]->batch }} <br> {{ $contracts0[$i]->description }}</td>
+                        <br><br>
+                    </tr>
+                    <tr>
+                        <td colspan="1">LOCALIDAD: </td>                    
+                        <td colspan="11">{{ $contracts0[$i]->locality }}, Distrito de: {{ $contracts0[$i]->description3 }}, Departamento de: {{ $contracts0[$i]->description4 }}</td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="1">REFERENCIA: </td>                    
+                        <td colspan="11">{{ $contracts0[$i]->code }} - {{ $contracts0[$i]->description1 }} - {{ $contracts0[$i]->reference }}</td>                        
+                    </tr>                    
+                </table>                
+            @endfor
+                        
         <h2>DETALLE DE RUBROS</h2>
         <table>
             <tr>
@@ -174,13 +276,14 @@
                         @endphp
                     @endif
                 </tr>
-            @endfor
-
+            @endfor            
+        </table>
+        {{-- <br> --}}
+        <table>
             <tfoot>
                 <tr>
-                    <td colspan="3"></td>
-                    <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">SUB-TOTAL GS.:
-                    </td>
+                    <td colspan="9"></td>
+                    <td colspan="8" style="font-size: 10px; text-align: right; padding-right: 5px;">SUB-TOTAL GS.: </td>
                     <td style="font-size: 10px; text-align: center;"> {{ number_format($tot_price_mo, '0', ',', '.') }}
                     </td>
                     <td style="font-size: 10px; text-align: center;">
@@ -188,55 +291,37 @@
                 </tr>
 
                 <tr>
-                    <td colspan="3"></td>
-                    <td colspan="3" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON
-                        IVA:</td>
+                    <td colspan="9"></td>
+                    <td colspan="8" style="font-size: 10px; text-align: right; padding-right: 5px;">TOTAL GS. CON IVA:</td>
                     <td style="font-size: 10px; text-align: center;"> </td>
                     <td style="font-size: 10px; text-align: center;">
                         {{ number_format($tot_price_mo + $tot_price_mat, '0', ',', '.') }}
-                </tr>
-
-                <tr>
-                    <td colspan="12"
-                        style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
-                        COMENTARIO: {{ $contracts1[0]->orders_comments }}
-                        <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
-                            {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
-                            por parte del Contratista.</span>
-                    </td>
-                </tr>
-
-                <!-- <tr>
-                    <td colspan="3"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Fecha Emisión: {{ \Carbon\Carbon::parse($contracts1[0]->orders_date)->format('d/m/Y') }}
-                    </td>
-                    <td colspan="3"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Firma Fiscalización
-                    </td>
-                    <td colspan="3"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        {{ $user->name }} {{ $user->lastname }} <br> Aclaración Firma Fiscal
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Fecha Recepción: {{ $contracts1[0]->orders_date }}
-                    </td>
-                    <td colspan="3"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Firma Contratista
-                    </td>
-                    <td colspan="3"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
-                        Aclaración Firma Contratista
-                    </td>
-                </tr> -->
-            </tfoot>
+                </tr>                
+            </tfoot>            
         </table>
+
+        <table>
+            <tr>
+                <td colspan="16"
+                    style="font-size: 12px; font-weight: bold; text-align: left; padding: 15px; position: relative; left: -80px; width: calc(100% + 160px);">
+                    COMENTARIO: {{ $contracts1[0]->orders_comments }}
+                    <span style="background-color: yellow; padding: 2px 4px;"> Se establece un PLAZO DE EJECUCIÓN DE
+                        {{ $contracts1[0]->orders_plazo }} días a partir de la fecha de firma de acuse de recibo
+                        por parte del Contratista.</span>
+                </td>
+            </tr> 
+            
+            <tr>
+                @if($contracts1[0]->order_states_id == 5)
+                    <td colspan="16">                                                    
+                        <h1 style="color: red; text-align: center; font-size: 3em;">ORDEN ANULADA</h1>
+                    </td>                    
+                @endif
+            </tr>
+        </table>
+
     </div>
 </body>
 
 </html>
+
