@@ -703,12 +703,14 @@
 
                                                                     {{-- SI ESTA ANULADO --}}
                                                                     @if (in_array($order->orderState->id, [5]))
-                                                                         <a> Motivo: {{ $order->motivo_anule }} </a>
+                                                                         {{-- <a> Motivo: {{ $order->motivo_anule }} </a> --}}
+                                                                         <a style="color: red;">Motivo: {{ $order->motivo_anule }}</a>
+
                                                                          <br>
                                                                          {{-- MOSTRAR PDF DE ORDEN --}}
                                                                          <a href="/pdf/panel_contracts10/{{ $order->id }}"                                                                            
                                                                             title="Ver Orden" target="_blank"
-                                                                            class="btn btn-success btn-icon"><i
+                                                                            class="btn btn-danger btn-icon"><i
                                                                                 class="fa fa-eye"></i></a>                                                                                
                                                                     @endif
                                                                 </td>
