@@ -129,8 +129,10 @@
                                         <div class="row">
                                             <div class="col-sm-10 text-left">
                                                 <h5>Llamado:
-                                                    {{ $contract->description . ' - ' . $contract->modality->description . ' - Contrato N° ' . $contract->number_year . ' - ' . $contract->provider->description }}
+                                                    {{-- {{ $contract->description . ' - ' . $contract->modality->description . ' - Contrato N° ' . $contract->number_year . ' - ' . $contract->provider->description }} --}}
+                                                    {{ $contract->description }} - {{ $contract->modality->description }} - Contrato N° {{ $contract->number_year }}
                                                 </h5>
+                                                <h5 style="color: red; background-color: yellow;"> Contratista: {{ $contract->provider->description }}</h5>
                                             </div>
                                             <div class="col-sm-10 text-left">
                                                 <h5 style="font-size: 17px; font-weight: bold; color:blue">Dependencia

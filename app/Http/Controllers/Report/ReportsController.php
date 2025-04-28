@@ -90,6 +90,15 @@ class ReportsController extends Controller
         return $pdf->stream('ORDENES DE EJECUCION' . '.pdf');
     }
 
+    // MUESTRA REPORTE CON GRÁFICOS
+    public function showChart()
+    {
+        $summary = DB::table('vista_totals_123')->first();
+        // return view('charts.orders_summary', compact('summary'));
+        return view('reports.contracts_totals', compact('summary'));
+        
+    }
+
 
     // MUESTRA UNA ORDEN DE EJECUCIÓN EN ESPECÍFICO
     public function generarContracts10(Request $request, $order_id)
