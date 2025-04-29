@@ -120,6 +120,7 @@
             background-color: #f4f4f4;
             color: #333;
         }
+
         .container {
             max-width: 900px;
             margin: 10px auto;
@@ -128,39 +129,48 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
+
         .header {
             text-align: center;
             margin-bottom: 40px;
         }
+
         .header img {
-            height: 80px; /* Slightly larger logo */
+            height: 80px;
             margin-bottom: 10px;
         }
+
         .header h2 {
             color: #333;
             margin-top: 0;
         }
+
         .dashboard-section {
             margin-bottom: 30px;
             padding-bottom: 10px;
             border-bottom: 2px solid #eee;
         }
+
         .dashboard-section h3 {
             text-align: center;
             color: #555;
             margin-bottom: 10px;
         }
+
         .chart-container {
-            width: 100%; /* Make containers responsive within the main container */
-            max-width: 700px; /* Max width for charts */
+            width: 100%;
+            max-width: 700px;
+            height: 300px;
             margin: 0 auto;
+            position: relative;
         }
+
         .amount-card {
             text-align: center;
             background-color: #e9e9e9;
             padding: 20px;
             border-radius: 8px;
-            margin-top: 20px; /* Space above the card */
+            margin-top: 20px;
         }
 
         .amount-card_2 {
@@ -168,21 +178,71 @@
             background-color: #e9e9e9;
             padding: 10px;
             border-radius: 8px;
-            margin-top: 5px; /* Space above the card */
+            margin-top: 5px;
         }
 
         .amount-card p {
-            font-size: 2em; /* Larger font size for the total amount */
+            font-size: 2em;
             font-weight: bold;
-            color: #007bff; /* Highlight color */
-            margin: 10px 0 0 0; /* Adjust margin */
-        }
-        /* Style for the doughnut chart container if needed for alignment */
-        .amount-chart-container {
-             width: 150px; /* Smaller container for the visual doughnut */
-             margin: 0 auto 10px auto; /* Center and add space below */
+            color: #007bff;
+            margin: 10px 0 0 0;
         }
 
+        .amount-chart-container {
+            width: 150px;
+            margin: 0 auto 10px auto;
+        }
+
+        .responsive-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .responsive-table table {
+            width: 100%;
+            min-width: 400px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .responsive-table th,
+        .responsive-table td {
+            border: 1px solid #ccc;
+            padding: 16px;
+        }
+
+        .responsive-table th {
+            border: 2px solid #ccc;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .header img {
+                height: 50px;
+            }
+
+            .header h2 {
+                font-size: 1.2em;
+            }
+
+            .amount-card p {
+                font-size: 1.5em;
+            }
+
+            .chart-container,
+            .amount-chart-container {
+                width: 100%;
+                height: auto;
+            }
+
+            canvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -194,97 +254,84 @@
         </div>
 
         <div class="dashboard-section">            
-            <!-- Tabla para mostrar los valores -->
             <div class="amount-card">
-                <table style="margin: 0 auto; border-collapse: collapse; width: 90%; text-align: center;">
-                    <thead>
-                        <tr>
-                            <th style="border: 2px solid #ccc; padding: 16px;">Contratistas</th>
-                            <th style="border: 2px solid #ccc; padding: 16px;">Órdenes</th>
-                            <th style="border: 2px solid #ccc; padding: 16px;">Fiscales</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="border: 1px solid #ccc; padding: 16px;">
-                                {{ number_format($summary2->total_contratistas, 0, ',', '.') }}
-                            </td>
-                            <td style="border: 1px solid #ccc; padding: 16px;">
-                                {{ number_format($summary2->total_ordenes, 0, ',', '.') }}
-                            </td>
-                            <td style="border: 1px solid #ccc; padding: 16px;">
-                                {{ number_format($summary2->total_fiscales, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Contratistas</th>
+                                <th>Órdenes</th>
+                                <th>Fiscales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ number_format($summary2->total_contratistas, 0, ',', '.') }}</td>
+                                <td>{{ number_format($summary2->total_ordenes, 0, ',', '.') }}</td>
+                                <td>{{ number_format($summary2->total_fiscales, 0, ',', '.') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <div class="dashboard-section">            
-            <!-- Tabla para mostrar los valores -->
             <div class="amount-card_2">
-                <table style="margin: 0 auto; border-collapse: collapse; width: 90%; text-align: center;">
-                    <thead>
-                        <tr>
-                            <th style="border: 2px solid #ccc; padding: 16px;">Contratista</th>
-                            <th style="border: 2px solid #ccc; padding: 16px;">Cant. Órdenes</th>                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($summary3 as $item)
-                        <tr>
-                            <td style="border: 1px solid #ccc; padding: 16px;">
-                                {{ $item->contratista }}
-                            </td>
-                            <td style="border: 1px solid #ccc; padding: 16px;">
-                                {{ number_format($item->cant_ordenes, 0, ',', '.') }}
-                            </td>                            
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Contratista</th>
+                                <th>Cant. Órdenes</th>                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($summary3 as $item)
+                            <tr>
+                                <td>{{ $item->contratista }}</td>
+                                <td>{{ number_format($item->cant_ordenes, 0, ',', '.') }}</td>                            
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        
 
         <div class="dashboard-section">
-            {{-- <h3>Cantidad de Órdenes por Ubicación Geográfica</h3> --}}
             <div class="chart-container">
                 <canvas id="countsChart"></canvas>
             </div>
         </div>
 
         <div class="dashboard-section">
-            {{-- <h3>Monto Total de Órdenes Ejecutadas</h3> --}}
             <h2 style="text-align: center; color: red;">Monto Total de Órdenes Ejecutadas</h2>
-             <div class="amount-chart-container">
-                 <canvas id="amountChart"></canvas>
-             </div>
+            <div class="amount-chart-container">
+                <canvas id="amountChart"></canvas>
+            </div>
             <div class="amount-card">
-                 <p>
-                    Gs. {{ number_format($summary->total_orders_amount, 0, ',', '.') }}
-                 </p>
+                <p>Gs. {{ number_format($summary->total_orders_amount, 0, ',', '.') }}</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Gráfico de cantidades (Departamentos, Distritos, Localidades)
+        // Gráfico de cantidades
         const countsCtx = document.getElementById('countsChart').getContext('2d');
         const countsChart = new Chart(countsCtx, {
             type: 'bar',
             data: {
                 labels: ['Departamentos', 'Distritos', 'Localidades'],
                 datasets: [{
-                    label: 'Cantidades', // More descriptive label
+                    label: 'Cantidades',
                     data: [
                         {{ $summary->total_departments }},
                         {{ $summary->total_districts }},
                         {{ $summary->total_localities }}
                     ],
                     backgroundColor: [
-                        'rgba(75, 192, 192, 0.8)', // Slightly more opaque
+                        'rgba(75, 192, 192, 0.8)',
                         'rgba(54, 162, 235, 0.8)',
                         'rgba(255, 206, 86, 0.8)'
                     ],
@@ -297,20 +344,20 @@
                 }]
             },
             options: {
-                responsive: true, // Make chart responsive
-                maintainAspectRatio: false, // Allow height to be controlled
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            stepSize: 1 // Ensure steps of 1 for counts
+                            stepSize: 1
                         },
-                        title: { // Add axis title
+                        title: {
                             display: true,
                             text: 'Cantidades'
                         }
                     },
-                     x: { // Add axis title
+                    x: {
                         title: {
                             display: true,
                             text: ''
@@ -319,17 +366,17 @@
                 },
                 plugins: {
                     legend: {
-                        display: false // Hide legend if only one dataset
+                        display: false
                     },
                     title: {
                         display: true,
-                        text: 'Alcance por Niveles Geográficos' // Chart title
+                        text: 'Alcance por Niveles Geográficos'
                     }
                 }
             }
         });
 
-        // Gráfico de monto total (visual doughnut)
+        // Gráfico de monto total
         const amountCtx = document.getElementById('amountChart').getContext('2d');
         const amountChart = new Chart(amountCtx, {
             type: 'doughnut',
@@ -348,6 +395,7 @@
             },
             options: {
                 cutout: '80%',
+                responsive: true,
                 plugins: {
                     legend: {
                         display: false
