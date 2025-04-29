@@ -94,8 +94,9 @@ class ReportsController extends Controller
     public function showChart()
     {
         $summary = DB::table('vista_totals_123')->first();
-        // return view('charts.orders_summary', compact('summary'));
-        return view('reports.contracts_totals', compact('summary'));
+        $summary2 = DB::table('vista_totals_456')->first(); 
+        $summary3 = DB::table('vista_totals_789')->get(); 
+        return view('reports.contracts_totals', compact('summary', 'summary2', 'summary3'));
         
     }
 

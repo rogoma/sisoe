@@ -1,73 +1,9 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Resumen de Órdenes de Ejecución</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    {{-- <style>
-        body {
-            font-family: sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .header img {
-            height: 80px; /* Slightly larger logo */
-            margin-bottom: 10px;
-        }
-        .header h2 {
-            color: #333;
-            margin-top: 0;
-        }
-        .dashboard-section {
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-        .dashboard-section h3 {
-            text-align: center;
-            color: #555;
-            margin-bottom: 20px;
-        }
-        .chart-container {
-            width: 100%; /* Make containers responsive within the main container */
-            max-width: 700px; /* Max width for charts */
-            margin: 0 auto;
-        }
-        .amount-card {
-            text-align: center;
-            background-color: #e9e9e9;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px; /* Space above the card */
-        }
-        .amount-card p {
-            font-size: 2em; /* Larger font size for the total amount */
-            font-weight: bold;
-            color: #007bff; /* Highlight color */
-            margin: 10px 0 0 0; /* Adjust margin */
-        }
-        /* Style for the doughnut chart container if needed for alignment */
-        .amount-chart-container {
-             width: 150px; /* Smaller container for the visual doughnut */
-             margin: 0 auto 10px auto; /* Center and add space below */
-        }
-    </style> --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    
 </head>
 <body>
     <!-- Logo -->
@@ -160,10 +96,15 @@
         });
     </script>
 </body>
-</html>
+</html> --}}
 
 
-{{-- <!DOCTYPE html>
+
+
+
+
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -181,9 +122,9 @@
         }
         .container {
             max-width: 900px;
-            margin: 20px auto;
+            margin: 10px auto;
             background-color: #fff;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
@@ -200,14 +141,14 @@
             margin-top: 0;
         }
         .dashboard-section {
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
         }
         .dashboard-section h3 {
             text-align: center;
             color: #555;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .chart-container {
             width: 100%; /* Make containers responsive within the main container */
@@ -221,6 +162,15 @@
             border-radius: 8px;
             margin-top: 20px; /* Space above the card */
         }
+
+        .amount-card_2 {
+            text-align: center;
+            background-color: #e9e9e9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px; /* Space above the card */
+        }
+
         .amount-card p {
             font-size: 2em; /* Larger font size for the total amount */
             font-weight: bold;
@@ -239,24 +189,81 @@
     <div class="container">
         <div class="header">
             <img src="{{ asset('img/logoVI_2.png') }}" alt="Logo">
-            <h2>Tablero de Resumen de Órdenes de Ejecución</h2>
+            <h2 style="text-align: center; color: red;">Tablero de Órdenes de Ejecución</h2>    
+            <p style="text-align: center; color: #666; font-size: 0.9em;"> {{ now()->format('d/m/Y H:i:s') }}</p>
         </div>
 
+        <div class="dashboard-section">            
+            <!-- Tabla para mostrar los valores -->
+            <div class="amount-card">
+                <table style="margin: 0 auto; border-collapse: collapse; width: 90%; text-align: center;">
+                    <thead>
+                        <tr>
+                            <th style="border: 2px solid #ccc; padding: 16px;">Contratistas</th>
+                            <th style="border: 2px solid #ccc; padding: 16px;">Órdenes</th>
+                            <th style="border: 2px solid #ccc; padding: 16px;">Fiscales</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 16px;">
+                                {{ number_format($summary2->total_contratistas, 0, ',', '.') }}
+                            </td>
+                            <td style="border: 1px solid #ccc; padding: 16px;">
+                                {{ number_format($summary2->total_ordenes, 0, ',', '.') }}
+                            </td>
+                            <td style="border: 1px solid #ccc; padding: 16px;">
+                                {{ number_format($summary2->total_fiscales, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dashboard-section">            
+            <!-- Tabla para mostrar los valores -->
+            <div class="amount-card_2">
+                <table style="margin: 0 auto; border-collapse: collapse; width: 90%; text-align: center;">
+                    <thead>
+                        <tr>
+                            <th style="border: 2px solid #ccc; padding: 16px;">Contratista</th>
+                            <th style="border: 2px solid #ccc; padding: 16px;">Cant. Órdenes</th>                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($summary3 as $item)
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 16px;">
+                                {{ $item->contratista }}
+                            </td>
+                            <td style="border: 1px solid #ccc; padding: 16px;">
+                                {{ number_format($item->cant_ordenes, 0, ',', '.') }}
+                            </td>                            
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
         <div class="dashboard-section">
-            <h3>Cantidad de Órdenes por Ubicación Geográfica</h3>
+            {{-- <h3>Cantidad de Órdenes por Ubicación Geográfica</h3> --}}
             <div class="chart-container">
                 <canvas id="countsChart"></canvas>
             </div>
         </div>
 
         <div class="dashboard-section">
-            <h3>Monto Total de Órdenes Ejecutadas</h3>
+            {{-- <h3>Monto Total de Órdenes Ejecutadas</h3> --}}
+            <h2 style="text-align: center; color: red;">Monto Total de Órdenes Ejecutadas</h2>
              <div class="amount-chart-container">
                  <canvas id="amountChart"></canvas>
              </div>
             <div class="amount-card">
                  <p>
-                    Gs. {{ number_format($summary->total_orders_amount, 2, ',', '.') }}
+                    Gs. {{ number_format($summary->total_orders_amount, 0, ',', '.') }}
                  </p>
             </div>
         </div>
@@ -270,7 +277,7 @@
             data: {
                 labels: ['Departamentos', 'Distritos', 'Localidades'],
                 datasets: [{
-                    label: 'Cantidad de Órdenes', // More descriptive label
+                    label: 'Cantidades', // More descriptive label
                     data: [
                         {{ $summary->total_departments }},
                         {{ $summary->total_districts }},
@@ -300,13 +307,13 @@
                         },
                         title: { // Add axis title
                             display: true,
-                            text: 'Número de Órdenes'
+                            text: 'Cantidades'
                         }
                     },
                      x: { // Add axis title
                         title: {
                             display: true,
-                            text: 'Tipo de Ubicación'
+                            text: ''
                         }
                     }
                 },
@@ -316,7 +323,7 @@
                     },
                     title: {
                         display: true,
-                        text: 'Distribución de Órdenes por Nivel Geográfico' // Chart title
+                        text: 'Alcance por Niveles Geográficos' // Chart title
                     }
                 }
             }
@@ -327,32 +334,27 @@
         const amountChart = new Chart(amountCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Monto Total'], // Keep label for potential tooltip
+                labels: ['Monto Total'],
                 datasets: [{
                     data: [{{ $summary->total_orders_amount }}],
                     backgroundColor: [
-                        'rgba(40, 167, 69, 0.8)' // Use a color often associated with money/success
+                        'rgba(255, 99, 132, 0.6)'
                     ],
                     borderColor: [
-                        'rgba(40, 167, 69, 1)'
+                        'rgba(255, 99, 132, 1)'
                     ],
                     borderWidth: 1
                 }]
             },
             options: {
-                responsive: true, // Make chart responsive
-                maintainAspectRatio: false, // Allow height to be controlled
-                cutout: '70%', // Slightly smaller cutout for a thicker ring
+                cutout: '80%',
                 plugins: {
                     legend: {
                         display: false
-                    },
-                    tooltip: {
-                        enabled: false // Disable tooltip for this visual element
                     }
                 }
             }
         });
     </script>
 </body>
-</html> --}}
+</html>
