@@ -75,6 +75,11 @@
             margin-top: 5px;
         }
 
+        /* Estilo específico para reducir la fuente de la tabla en .amount-card_2 */
+        .amount-card_2 .responsive-table table {
+            font-size: 0.9em; /* Puedes ajustar este valor según lo necesites */
+        }
+
         .amount-card p {
             font-size: 2em;
             font-weight: bold;
