@@ -1,109 +1,3 @@
-{{-- <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Resumen de Órdenes de Ejecución</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    
-</head>
-<body>
-    <!-- Logo -->
-    <div style="text-align: center; margin-top: 20px;">
-        <img src="{{ asset('img/logoVI_2.png') }}" alt="Logo" style="height: 70px;">
-        <br>
-    </div>
-
-    <!-- Título -->
-    <h2 style="text-align:center;">Tablero de Órdenes de Ejecución</h2>
-
-    <!-- Gráfico de cantidades -->
-    <div style="width: 600px; margin: 30px auto;">
-        <canvas id="countsChart"></canvas>
-    </div>
-
-    <!-- Gráfico o tarjeta de monto total -->
-    <div style="width: 400px; margin: 30px auto; text-align:center;">
-        <h3>Monto Total de Órdenes</h3>
-        <canvas id="amountChart" width="300" height="300"></canvas>
-        <p style="font-size: 24px; font-weight: bold; margin-top: 10px;">
-            Gs. {{ number_format($summary->total_orders_amount, 0, ',', '.') }}
-        </p>
-    </div>
-
-    <script>
-        // Gráfico de cantidades (Departamentos, Distritos, Localidades)
-        const countsCtx = document.getElementById('countsChart').getContext('2d');
-        const countsChart = new Chart(countsCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Departamentos', 'Distritos', 'Localidades'],
-                datasets: [{
-                    label: 'Cantidad',
-                    data: [
-                        {{ $summary->total_departments }},
-                        {{ $summary->total_districts }},
-                        {{ $summary->total_localities }}
-                    ],
-                    backgroundColor: [
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 206, 86, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
-            }
-        });
-
-        // Gráfico de monto total (solo visual, opcionalmente Doughnut)
-        const amountCtx = document.getElementById('amountChart').getContext('2d');
-        const amountChart = new Chart(amountCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Monto Total'],
-                datasets: [{
-                    data: [{{ $summary->total_orders_amount }}],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                cutout: '80%',
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    </script>
-</body>
-</html> --}}
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -195,12 +89,12 @@
 
         .responsive-table {
             width: 100%;
-            overflow-x: auto;
+            overflow-x: auto; /* Permite el scroll horizontal en pantallas pequeñas */
         }
 
         .responsive-table table {
             width: 100%;
-            min-width: 400px;
+            min-width: 400px; /* Asegura que la tabla no se vea demasiado comprimida */
             border-collapse: collapse;
             text-align: center;
         }
@@ -215,6 +109,7 @@
             border: 2px solid #ccc;
         }
 
+        /* Media query para pantallas de hasta 600px de ancho */
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -235,12 +130,40 @@
             .chart-container,
             .amount-chart-container {
                 width: 100%;
-                height: auto;
+                height: auto; /* Permite que la altura se ajuste al contenido */
             }
 
             canvas {
                 width: 100% !important;
                 height: auto !important;
+            }
+
+            .responsive-table table {
+                font-size: 0.9em; /* Reduce el tamaño de la fuente en tablas */
+            }
+
+            .responsive-table th,
+            .responsive-table td {
+                padding: 10px; /* Reduce el padding en celdas de tabla */
+            }
+        }
+
+        /* Opcional: Media query para pantallas un poco más grandes (ej: tablets) */
+        @media (min-width: 601px) and (max-width: 900px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header img {
+                height: 60px;
+            }
+
+            .header h2 {
+                font-size: 1.4em;
+            }
+
+            .chart-container {
+                max-width: 100%; /* Los gráficos ocupan más espacio en tablets */
             }
         }
     </style>
@@ -249,11 +172,11 @@
     <div class="container">
         <div class="header">
             <img src="{{ asset('img/logoVI_2.png') }}" alt="Logo">
-            <h2 style="text-align: center; color: red;">Tablero de Órdenes de Ejecución</h2>    
+            <h2 style="text-align: center; color: red;">Tablero de Órdenes de Ejecución</h2>
             <p style="text-align: center; color: #666; font-size: 0.9em;"> {{ now()->format('d/m/Y H:i:s') }}</p>
         </div>
 
-        <div class="dashboard-section">            
+        <div class="dashboard-section">
             <div class="amount-card">
                 <div class="responsive-table">
                     <table>
@@ -276,21 +199,21 @@
             </div>
         </div>
 
-        <div class="dashboard-section">            
+        <div class="dashboard-section">
             <div class="amount-card_2">
                 <div class="responsive-table">
                     <table>
                         <thead>
                             <tr>
                                 <th>Contratista</th>
-                                <th>Cant. Órdenes</th>                            
+                                <th>Cant. Órdenes</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($summary3 as $item)
                             <tr>
                                 <td>{{ $item->contratista }}</td>
-                                <td>{{ number_format($item->cant_ordenes, 0, ',', '.') }}</td>                            
+                                <td>{{ number_format($item->cant_ordenes, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
