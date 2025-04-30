@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Order;
-use App\Models\File;
+use App\Models\FileOrder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -21,84 +21,11 @@ class OrdersFilesController extends Controller
      */
     public function __construct()
     {
-        $index_permissions = ['admin.files.index',
-                            'orders.files.index',
-                            'process_orders.files.index',
-                            'derive_orders.files.index',
-                            'plannings.files.index',
-                            'tenders.files.index',
-                            'minor_purchases.files.index',
-                            'awards.files.index',
-                            'exceptions.files.index',
-                            'contracts.files.index',
-                            'utas.files.index',
-                            'legal_advices.files.index',
-                            'comites.files.index',
-                            'coordinations.files.index',
-                            'dgafs.files.index',
-                            'documentals.files.index'];
-        $create_permissions = ['admin.files.create',
-                            'orders.files.create',
-                            'derive_orders.files.create',
-                            'plannings.files.create',
-                            'tenders.files.create',
-                            'minor_purchases.files.create',
-                            'awards.files.create',
-                            'exceptions.files.create',
-                            'contracts.files.create',
-                            'utas.files.create',
-                            'legal_advices.files.create',
-                            'comites.files.create',
-                            'coordinations.files.create',
-                            'dgafs.files.create',
-                            'documentals.files.create'];
-        $show_permissions = ['admin.files.show',
-                            'orders.files.show',
-                            'process_orders.files.show',
-                            'derive_orders.files.show',
-                            'plannings.files.show',
-                            'tenders.files.show',
-                            'minor_purchases.files.show',
-                            'awards.files.show',
-                            'exceptions.files.show',
-                            'contracts.files.show',
-                            'utas.files.show',
-                            'legal_advices.files.show',
-                            'comites.files.show',
-                            'coordinations.files.show',
-                            'dgafs.files.show',
-                            'documentals.files.show'];
-        $download_permissions = ['admin.files.download',
-                            'orders.files.download',
-                            'process_orders.files.download',
-                            'derive_orders.files.download',
-                            'plannings.files.download',
-                            'tenders.files.download',
-                            'minor_purchases.files.download',
-                            'awards.files.download',
-                            'exceptions.files.download',
-                            'contracts.files.download',
-                            'utas.files.download',
-                            'legal_advices.files.download',
-                            'comites.files.download',
-                            'coordinations.files.download',
-                            'dgafs.files.download',
-                            'documentals.files.download'];
-        $update_permissions = ['admin.files.update',
-                            'orders.files.update',
-                            'derive_orders.files.update',
-                            'plannings.files.update',
-                            'tenders.files.update',
-                            'minor_purchases.files.update',
-                            'awards.files.update',
-                            'exceptions.files.update',
-                            'contracts.files.update',
-                            'utas.files.update',
-                            'legal_advices.files.update',
-                            'comites.files.update',
-                            'coordinations.files.update',
-                            'dgafs.files.update',
-                            'documentals.files.update'];
+        $index_permissions = ['admin.files.index', 'orders.files.index'];
+        $create_permissions = ['admin.files.create', 'orders.files.create'];
+        $show_permissions = ['admin.files.show', 'orders.files.show'];
+        $download_permissions = ['admin.files.download', 'orders.files.download'];
+        $update_permissions = ['admin.files.update', 'orders.files.update'];
 
         $this->middleware('checkPermission:'.implode(',',$index_permissions))->only('index'); // Permiso para index 
         $this->middleware('checkPermission:'.implode(',',$create_permissions))->only(['create', 'store']);   // Permiso para create
@@ -131,6 +58,18 @@ class OrdersFilesController extends Controller
         $this->postMaxSize = $postMaxSize;
     }
 
+
+    public function index(Request $request, $order_id)
+    {
+        $order = Order::findOrFail($order_id);
+        $contract = $order->contract; // Accedemos a la relación contract
+        $components = $order->components; // Obtenemos los componentes del pedido
+
+        // Obtenemos los eventos del pedido
+        $files = $order->files;
+                
+        return view('contract.orders.files', compact('order', 'contract', 'components', 'files'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -138,9 +77,14 @@ class OrdersFilesController extends Controller
      */
     public function create(Request $request, $order_id)
     {
-        $order = Order::findOrFail($order_id);
+        // $order = Order::findOrFail($order_id);
+        $order = Order::with('files')->findOrFail($order_id);
+        $files = $order->files;        
+
+        $contract = $order->contract; // Accedemos a la relación contract        
         $post_max_size = $this->postMaxSize;
-        return view('order.files.create', compact('order', 'post_max_size'));
+
+        return view('contract.orders.create_files', compact('order', 'post_max_size','contract', 'files'));
     }
 
     /**
@@ -190,7 +134,7 @@ class OrdersFilesController extends Controller
         $order = Order::findOrFail($order_id);
         
         $rules = array(
-            'description' => 'string|required|max:100',
+            'description' => 'string|required|max:500',
         );
         
         $validator =  Validator::make($request->input(), $rules);
@@ -198,84 +142,41 @@ class OrdersFilesController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        // var_dump(
+        //     $request->number_policy,
+        //     $request->event_days,
+        //     $request->hasFile('file'),
+        // );exit;
+
         if(!$request->hasFile('file')){
             $validator = Validator::make($request->input(), []);
-            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD, PDF o EXCEL.');
+            $validator->errors()->add('file', 'El campo es requerido, debe ingresar un archivo WORD o PDF');
             return back()->withErrors($validator)->withInput();
         }
 
         // chequeamos la extension del archivo subido
         $extension = $request->file('file')->getClientOriginalExtension();
-        if(!in_array($extension, array('doc', 'docx', 'pdf', 'xls', 'xlsx'))){
+        if(!in_array($extension, array('doc', 'docx', 'pdf'))){
             $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf, xls, xlsx.'); // Agregamos el error
+            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
             return back()->withErrors($validator)->withInput();
         }
 
-        // Pasó todas las validaciones, guardamos el archivo
-        $fileName = time().'-order-file.'.$extension; // nombre a guardar
-        // Cargamos el archivo (ruta storage/app/public/files, enlace simbolico desde public/files)
+        // Pasó todas las validaciones, guardamos el archivo        
+        $fileName = 'file_order_'.$order->id.'.'.$extension; // nombre a guardar
+        // Cargamos el archivo (ruta storage/app/public/files, enlace simbólico desde public/files)
         $path = $request->file('file')->storeAs('public/files', $fileName);
 
-        $file = new File;
-        $file->description = $request->input('description');
-        $file->file = $fileName;        
-
-        if ($request->user()->dependency->id <> 57){
-            $file->file_type = 0;        
-        }
-        // *** Usuario Asesoría Jurídica  tipo 5 = dictamenes*** 
-        if ($request->user()->dependency->id == 57){
-            $file->file_type = 5;        
-        }
-        // *** Usuario Contratos tipo 3 = contratos*** 
-        if ($request->user()->dependency->id == 60){
-            $file->file_type = 3;        
-        }
-
-        // *** Usuario Licitaciones, Compras Menores y Excepciones tipo 7 = Cuadros comparativos*** 
-        // if (in_array($request->user()->dependency->id, [61,62,63])){        
-        //     // Ver bandera para preguntar si es cuadro comparativo o archivo normal
-        //     $file->file_type = 7;
-        // }
-        // if($request->user()->hasPermission(['admin.orders.update']) || $request->user()->dependency_id == 55){
-        // @if (in_array($order->orderState->id, [105]))
-
-
+        $file = new FileOrder;
         $file->order_id = $order_id;
-        $file->order_state_id = $order->actual_state;
-        $file->creator_user_id = $request->user()->id;  // usuario logueado
-        $file->dependency_id = $request->user()->dependency_id;  // dependencia del usuario
+        $file->description = $request->input('description');
+        $file->file = $fileName;
+        $file->file_state = 1;        
+        $file->creator_user_id = $request->user()->id;  // usuario logueado        
         $file->save();
-
-        // Dependiendo del modulo direccionamos a la vista del pedido
-        if($request->user()->hasPermission(['plannings.files.create'])){
-            return redirect()->route('plannings.show', $order_id)->with('success', 'Archivo agregado correctamente');
-        }elseif($request->user()->hasPermission(['tenders.files.create'])){
-            return redirect()->route('tenders.show', $order_id);  
-        }elseif($request->user()->hasPermission(['minor_purchases.files.create'])){
-            return redirect()->route('minor_purchases.show', $order_id);         
-        }elseif($request->user()->hasPermission(['awards.files.create'])){
-            return redirect()->route('awards.show', $order_id);
-        }elseif($request->user()->hasPermission(['exceptions.files.create'])){
-            return redirect()->route('exceptions.show', $order_id);
-        }elseif($request->user()->hasPermission(['contracts.files.create'])){
-            return redirect()->route('contracts.show', $order_id); 
-        }elseif($request->user()->hasPermission(['utas.files.create'])){
-            return redirect()->route('utas.show', $order_id);
-        }elseif($request->user()->hasPermission(['legal_advices.files.create'])){
-            return redirect()->route('legal_advices.show', $order_id);
-        }elseif($request->user()->hasPermission(['comites.files.create'])){
-            return redirect()->route('comites.show', $order_id); 
-        }elseif($request->user()->hasPermission(['coordinations.files.create'])){
-            return redirect()->route('coordinations.show', $order_id); 
-        }elseif($request->user()->hasPermission(['dgafs.files.create'])){
-            return redirect()->route('dgafs.show', $order_id);
-        }elseif($request->user()->hasPermission(['documentals.files.create'])){
-            return redirect()->route('documentals.show', $order_id);
-        }else{
-            return redirect()->route('orders.show', $order_id)->with('success', 'Archivo agregado correctamente');
-        }
+        
+        return redirect()->route('orders.order.files', $order_id)->with('success', 'Archivo agregado correctamente');
+        
     }
 
     /**

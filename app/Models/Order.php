@@ -176,11 +176,20 @@ class Order extends Model
     }
 
     /**
-     * Para obtener el vinculo con la tabla files
+     * Para obtener el vinculo con la tabla filesOrders
      */
     public function files(){
-        return $this->hasMany('App\Models\File');
+        return $this->hasMany('App\Models\FileOrder');
     }
+    
+
+    // /**
+    //  * Para obtener el vinculo con la tabla files
+    //  */
+    // public function filesOrders(){
+    //     return $this->hasMany('App\Models\FileOrder');
+    // }
+
 
     /**
      * Para obtener el vinculo con la tabla objections

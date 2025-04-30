@@ -133,10 +133,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('programs', ProgramsController::class);
     Route::resource('sub_programs', SubProgramsController::class);
 
-    // Route::resource('orders.events', EventsOrdersController::class);
-    Route::resource('orders.events', EventsOrdersController::class)->shallow();
-    Route::get('orders/events/{event}/edit', [EventsOrdersController::class, 'edit'])->name('events.edit');
+    // MANEJO DE EVENTOS DE ORDENES DE EJECUCIÓN
+    Route::resource('orders.events', EventsOrdersController::class)->shallow();    
 
+    Route::get('orders/events/{event}/edit', [EventsOrdersController::class, 'edit'])->name('events.edit');
+    
     Route::resource('catalog_level1s', Level1CatalogCodeController::class);
 
     Route::resource('catalog_level5s', Level5CatalogCodeController::class);
@@ -233,10 +234,13 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     
     //PARA LLEVAR AL INDEX DE EVENTOS DE ORDENES
     Route::get('orders/{order_id}/events', [EventsOrdersController::class, 'index'])->name('orders.order.events');;
+
+    //PARA LLEVAR AL INDEX DE ARCHIVOS DE ORDENES DE EJECUCIÓN
+    Route::get('orders/{order_id}/files', [OrdersFilesController::class, 'index'])->name('orders.order.files');
+    // Route::resource('orders.files', OrdersFilesController::class)->shallow();
+    Route::resource('orders.files', OrdersFilesController::class)->shallow();
+
     
-
-
-
     Route::post('orders/derive/{order_id}', [OrdersController::class, 'derive'])->name('orders.derive');
 
     Route::post('orders/anuleOrder/{order_id}', [OrdersController::class, 'anuleOrder'])->name('orders.anuleOrder');
@@ -263,8 +267,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('orders/simese/{order_id}/edit', [SimeseOrdersController::class, 'edit'])->name('orders.simese.edit');
     Route::put('orders/simese/{order_id}/edit', [SimeseOrdersController::class, 'update'])->name('orders.simese.update');
     Route::get('orders/files/{order_id}/index', [OrdersFilesController::class, 'index'])->name('orders.files.index');
-    Route::get('orders/files/{order_id}/create', [OrdersFilesController::class, 'create'])->name('orders.files.create');
-    Route::post('orders/files/{order_id}/create', [OrdersFilesController::class, 'store'])->name('orders.files.store');
+    Route::get('orders/files/{order_id}/create', [OrdersFilesController::class, 'create'])->name('orders.files.create');        
+
+    Route::get('orders/files/{order_id}/index', [OrdersFilesController::class, 'index'])->name('orders.files.index');
 
     Route::get('orders/files/{order_id}/create_filedncp', [OrdersFilesController::class, 'create_filedncp'])->name('orders.files.create_filedncp');
     Route::post('orders/files/{order_id}/create_filedncp', [OrdersFilesController::class, 'store_filedncp'])->name('orders.files.store_filedncp');

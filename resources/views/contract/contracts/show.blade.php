@@ -666,7 +666,7 @@
                                                                                             onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
                                                                                             <i
                                                                                                 class="fa fa-download text-white"></i>
-                                                                                        </button>
+                                                                                        </button>                                                                                        
                                                                                     @endif
                                                                                 @endif
                                                                             @endif                                                                            
@@ -715,6 +715,12 @@
                                                                             class="btn btn-danger btn-icon"><i
                                                                                 class="fa fa-eye"></i></a>                                                                                
                                                                     @endif
+
+                                                                    {{-- botón para cargar archivos a la orden --}}
+                                                                    <button type="button" title="Cargar Archivos"
+                                                                    class="btn btn-warning btn-icon"
+                                                                    onclick="itemFiles({{ $order->id }})"><i                                                                                        
+                                                                        class="fa fa-files-o"></i></button>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -1370,6 +1376,12 @@
             itemEvents = function(order) {                                
                 location.href = '/orders/' + order + '/events';
                 // lleva a esta ruta Route::resource('orders.events', EventsOrdersController::class);
+            }
+
+            //lleva a index de archivos
+            itemFiles = function(order) {                                
+                location.href = '/orders/' + order + '/files';
+                // lleva a esta ruta Route::resource('orders.files', OrdersFilesController::class);
             }
             
             //lleva a indexRubros de ItemsContractsController
