@@ -1023,7 +1023,6 @@
                                                                 <td>{{ $user_files_con[$i]->description }}</td>
                                                                 {{-- <td>{{ $user_files_con[$i]->dependency->description }}</td> --}}
                                                                 <td style="max-width: 500px"> {{ $user_files_con[$i]->user->name}} {{ $user_files_con[$i]->user->lastname }}</td>
-
                                                                 <td>{{ $user_files_con[$i]->updated_atDateFormat() }}</td>
 
                                                                 {{-- <td style="max-width: 800px"> {{ $user_files_eval[$i]->description }}</td> --}}

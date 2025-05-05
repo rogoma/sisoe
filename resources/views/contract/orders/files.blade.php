@@ -60,6 +60,7 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Descripción del Archivo</th>
+                                                            <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>                                                            
                                                             <th style="width: 200px; text-align: center;">Acciones</th>
                                                         </tr>                                                        
@@ -86,7 +87,7 @@
                                                                         title="Ver Archivo" target="_blank"
                                                                         class="btn btn-primary"><i
                                                                             class="fa fa-eye"></i></a>
-                                                                    <a href="{{ route('contracts.files.download', $files[$i]->id) }}"
+                                                                    <a href="{{ route('orders.files.download', $files[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
                                                                             class="fa fa-download"></i></a>
                                                                     <button title="Eliminar Archivo"

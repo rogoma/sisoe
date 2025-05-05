@@ -347,7 +347,7 @@ class ContractsFilesController extends Controller
         $extension = $request->file('file')->getClientOriginalExtension();
         if(!in_array($extension, array('doc', 'docx', 'pdf', 'xls', 'xlsx', 'dwg'))){
             $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf, xls, xlsx.'); // Agregamos el error
+            $validator->errors()->add('file', 'El archivo introducido debe tener formato: doc, docx, pdf, xls, xlsx, dwg'); // Agregamos el error
             return back()->withErrors($validator)->withInput();
         }
 

@@ -240,6 +240,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::resource('orders.files', OrdersFilesController::class)->shallow();
     Route::resource('orders.files', OrdersFilesController::class)->shallow();
 
+    Route::get('orders/files/{file_id}/download', [OrdersFilesController::class, 'download'])->name('orders.files.download');
+    Route::delete('orders/files/{file_id}/delete', [OrdersFilesController::class, 'destroy'])->name('orders.files.delete');
+
     
     Route::post('orders/derive/{order_id}', [OrdersController::class, 'derive'])->name('orders.derive');
 

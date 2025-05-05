@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 class OrdersFilesController extends Controller
 {
     protected $postMaxSize;
+    protected $postMaxSize5;
 
     /**
      * Create a new controller instance.
@@ -55,7 +56,12 @@ class OrdersFilesController extends Controller
                     break;
             }
         }
-        $this->postMaxSize = $postMaxSize;
+        // $this->postMaxSize = $postMaxSize;
+        //MÁXIMO PERMITIDO 2 MEGAS POR CADA ARCHIVO
+        $this->postMaxSize = 1048576 * 2;
+
+        //MÁXIMO PERMITIDO 5 MEGAS POR CADA ARCHIVO
+        $this->postMaxSize5 = 1048576 * 5;
     }
 
 
@@ -79,12 +85,13 @@ class OrdersFilesController extends Controller
     {
         // $order = Order::findOrFail($order_id);
         $order = Order::with('files')->findOrFail($order_id);
-        $files = $order->files;        
+        $files = $order->files;                
 
         $contract = $order->contract; // Accedemos a la relación contract        
         $post_max_size = $this->postMaxSize;
+        $post_max_size5 = $this->postMaxSize5;
 
-        return view('contract.orders.create_files', compact('order', 'post_max_size','contract', 'files'));
+        return view('contract.orders.create_files', compact('order', 'post_max_size','contract', 'files', 'post_max_size5'));
     }
 
     /**
@@ -156,9 +163,9 @@ class OrdersFilesController extends Controller
 
         // chequeamos la extension del archivo subido
         $extension = $request->file('file')->getClientOriginalExtension();
-        if(!in_array($extension, array('doc', 'docx', 'pdf'))){
+        if(!in_array($extension, array('doc', 'docx', 'pdf', 'xls', 'xlsx', 'dwg'))){
             $validator = Validator::make($request->input(), []); // Creamos un objeto validator
-            $validator->errors()->add('file', 'El archivo introducido debe corresponder a alguno de los siguientes formatos: doc, docx, pdf'); // Agregamos el error
+            $validator->errors()->add('file', 'El archivo introducido debe tener formato: doc, docx, xls, xlsx, pdf, dwg'); // Agregamos el error
             return back()->withErrors($validator)->withInput();
         }
 
@@ -215,7 +222,7 @@ class OrdersFilesController extends Controller
         // Cargamos el archivo (ruta storage/app/public/files, enlace simbolico desde public/files)
         $path = $request->file('file')->storeAs('public/files', $fileName);
 
-        $file = new File;
+        $file = new FileOrder;
         $file->description = $request->input('description');
         $file->file = $fileName;
         // *** filetype 1 = archivos de reparos // filetype 4 = Addendas ****        
@@ -296,7 +303,7 @@ class OrdersFilesController extends Controller
         // Cargamos el archivo (ruta storage/app/public/files, enlace simbolico desde public/files)
         $path = $request->file('file')->storeAs('public/files', $fileName);
 
-        $file = new File;
+        $file = new FileOrder;
         $file->description = $request->input('description');
         $file->file = $fileName;
         // *** filetype 6 = archivos de consultas DNCP ****        
@@ -373,7 +380,7 @@ class OrdersFilesController extends Controller
         // Cargamos el archivo (ruta storage/app/public/files, enlace simbolico desde public/files)
         $path = $request->file('file')->storeAs('public/files', $fileName);
 
-        $file = new File;
+        $file = new FileOrder;
         $file->description = $request->input('description');
         $file->file = $fileName;
         // *** filetype 7 = cuadro comparativos
@@ -423,7 +430,7 @@ class OrdersFilesController extends Controller
      */
     public function download(Request $request, $file_id)
     {
-        $file = File::findOrFail($file_id);
+        $file = FileOrder::findOrFail($file_id);
         // Eliminamos caracteres especiales de la descripcion y pasamos como nombre del archivo
         $name = Str::slug($file->description);
         //Separamos nombre y extensión de la descripción del archivo
@@ -451,7 +458,7 @@ class OrdersFilesController extends Controller
             return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
         }
 
-        $file = File::find($file_id);
+        $file = FileOrder::find($file_id);
         // Eliminamos el archivo
         Storage::delete('public/files/'.$file->file);
         
