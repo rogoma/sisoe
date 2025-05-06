@@ -179,7 +179,7 @@ class OrdersFilesController extends Controller
         $file->description = $request->input('description');
         $file->file = $fileName;
         $file->file_state = 1;        
-        $file->creator_user_id = $request->user()->id;  // usuario logueado        
+        $file->user_id = $request->user()->id;  // usuario logueado        
         $file->save();
         
         return redirect()->route('orders.order.files', $order_id)->with('success', 'Archivo agregado correctamente');
@@ -449,12 +449,7 @@ class OrdersFilesController extends Controller
     public function destroy(Request $request, $file_id)
     {
         // Chequeamos que el usuario actual disponga de permisos de eliminacion
-        if(!$request->user()->hasPermission(['admin.files.delete', 'orders.files.delete',
-            'process_orders.files.delete', 'derive_orders.files.delete', 
-            'plannings.files.delete','tenders.files.delete','minor_purchases.files.delete',
-            'exceptions.files.delete','awards.files.delete','contracts.files.delete',
-            'utas.files.delete','legal_advices.files.delete','comites.files.delete',
-            'coordinations.files.delete','dgafs.files.delete','documentals.files.delete'])){
+        if(!$request->user()->hasPermission(['admin.files.delete', 'orders.files.delete'])){
             return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
         }
 

@@ -436,7 +436,6 @@
                                                     <tbody>
                                                         @foreach ($orders->sortBy('id') as $index => $order)
                                                             <tr>
-
                                                                 <td style="color:black;text-align: left;width: 150px;">
                                                                     {{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }}-{{ $order->creatorUser->position->description }}
                                                                 </td>
@@ -552,8 +551,6 @@
                                                                     @endif                                                            
                                                                 </td>
                                                             </td>
-                                                            
-
 
                                                                 {{-- SI ES ESTADO 5 "ANULADO" SE MUESTRA EN ROJO --}}
                                                                 @if (in_array($order->orderState->id, [5]))
@@ -585,10 +582,8 @@
                                                                             @endif
                                                                         @endif
                                                                     @endif
-                                                                @endif
-                                                                {{-- <td style="max-width: 200px">{{ $order->comments }}</td> --}}
-
-                                                                {{-- Muestra si estado de llamado es En curso --}}
+                                                                @endif                                                                
+                                                                
                                                                 <td>
                                                                     {{-- Para Desanular si estado = 5 (anulado) --}}
                                                                     @if (in_array($order->orderState->id, [5]))
@@ -612,13 +607,7 @@
                                                                                 </button>
                                                                             @endif
 
-                                                                            @if ($order->items->count() > 0)
-                                                                                {{-- <button type="button"
-                                                                                    title="Orden con Rubros"
-                                                                                    class="btn btn-primary btn-icon"
-                                                                                    onclick="itemOrder({{ $order->id }})">
-                                                                                    <i class="fa fa-list"></i>
-                                                                                </button> --}}
+                                                                            @if ($order->items->count() > 0)                                                                                
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                                     title="Ver Orden" target="_blank"
@@ -718,7 +707,7 @@
 
                                                                     {{-- botón para cargar archivos a la orden --}}
                                                                     <button type="button" title="Cargar Archivos"
-                                                                    class="btn btn-warning btn-icon"
+                                                                    class="btn btn-info btn-icon"
                                                                     onclick="itemFiles({{ $order->id }})"><i                                                                                        
                                                                         class="fa fa-files-o"></i></button>
                                                                 </td>
@@ -1024,12 +1013,6 @@
                                                                 {{-- <td>{{ $user_files_con[$i]->dependency->description }}</td> --}}
                                                                 <td style="max-width: 500px"> {{ $user_files_con[$i]->user->name}} {{ $user_files_con[$i]->user->lastname }}</td>
                                                                 <td>{{ $user_files_con[$i]->updated_atDateFormat() }}</td>
-
-                                                                {{-- <td style="max-width: 800px"> {{ $user_files_eval[$i]->description }}</td> --}}
-                                                                {{-- <td style="max-width: 500px"> {{ $user_files_eval[$i]->user->name}} {{ $user_files_eval[$i]->user->lastname }}</td> --}}
-                                                                {{-- <td style="max-width: 200px"> {{ $user_files_eval[$i]->updated_atDateFormat() }}</td> --}}
-
-
 
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/' . $user_files_con[$i]->file) }}"

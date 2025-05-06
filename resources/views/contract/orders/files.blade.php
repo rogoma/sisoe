@@ -60,7 +60,6 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Descripción del Archivo</th>
-                                                            <th>Archivo generado por:</th>
                                                             <th>Fecha/Hora</th>                                                            
                                                             <th style="width: 200px; text-align: center;">Acciones</th>
                                                         </tr>                                                        
@@ -68,11 +67,6 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            {{-- @php
-                                                use Carbon\Carbon;
-                                                $fechaInicio = Carbon::parse($order->sign_date);
-                                                $fechaFin = $fechaInicio->copy()->addDays($order->plazo);
-                                            @endphp --}}
 
                                                 @for ($i = 0; $i < count($files); $i++)
                                                             <tr>
@@ -90,10 +84,13 @@
                                                                     <a href="{{ route('orders.files.download', $files[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
                                                                             class="fa fa-download"></i></a>
-                                                                    <button title="Eliminar Archivo"
+                                                                    
+                                                                    @if (Auth::user()->id == $order->creator_user_id)
+                                                                            <button title="Eliminar Archivo"
                                                                         onclick="deleteFile({{ $files[$i]->id }})"
                                                                         class="btn btn-danger"><i
                                                                             class="fa fa-trash"></i></a>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                 @endfor
@@ -101,8 +98,10 @@
                                         </table>
                                         <br>
                                         <div class="text-right">
-                                            @if (Auth::user()->hasPermission(['admin.orders.index', 'orders.files.index']))                                                
-                                                <a href="{{ route('orders.files.create', $order->id) }}" class="btn btn-primary">Agregar Archivo</a>
+                                            @if (Auth::user()->hasPermission(['admin.orders.index', 'orders.files.index']))
+                                                @if (Auth::user()->id == $order->creator_user_id)
+                                                    <a href="{{ route('orders.files.create', $order->id) }}" class="btn btn-primary">Agregar Archivo</a>
+                                                @endif
                                             @endif
                                         </div>
                                     </div>
@@ -117,60 +116,55 @@
 </div>
 @endsection
 
-{{-- @push('scripts')
-<script src="{{ asset('template-admin/js/jquery.datatables.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('template-admin/js/datatables.buttons.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('template-admin/js/datatables.bootstrap4.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('template-admin/js/datatables.responsive.min.js') }}" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $('#item_award_histories').DataTable();
+@push('scripts')
+    <script type="text/javascript">        
 
-    updateEvent = function(event){       
-        location.href = '/orders/order/'+event+'/edit';       
-    }
+        deleteFile = function(file) {
+            swal({
+                    title: "Atención",
+                    text: "Está seguro que desea eliminar el Archivo?",
 
-    deleteItemAwardHistories = function(item_id){
-      swal({
-            title: "Atención",
-            text: "Está seguro que desea eliminar los registros?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "Cancelar",
-        },
-        function(isConfirm){
-          if(isConfirm){
-            $.ajax({
-           
-
-              method : 'POST',
-              data: {_method: 'DELETE', _token: '{{ csrf_token() }}'},
-              success: function(data){
-                try{
-                    response = (typeof data == "object") ? data : JSON.parse(data);
-                    if(response.status == "success"){
-                        swal("Éxito!", "Endoso eliminado correctamente", "success");
-                        location.reload();
-                    }else{
-                        swal("Error!", response.message, "error");
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sí, anular",
+                    cancelButtonText: "Cancelar",
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: '/orders/files/' + file + '/delete/',
+                            method: 'POST',
+                            data: {
+                                _method: 'DELETE',
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(data) {
+                                try {
+                                    response = (typeof data == "object") ? data : JSON
+                                        .parse(data);
+                                    if (response.status == "success") {
+                                        location.reload();
+                                    } else {
+                                        swal("Error!", response.message, "error");
+                                    }
+                                } catch (error) {
+                                    swal("Error!",
+                                        "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina",
+                                        "error");
+                                    console.log(error);
+                                }
+                            },
+                            error: function(error) {
+                                swal("Error!",
+                                    "Ocurrió 1 error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina",
+                                    "error");
+                                console.log(error);
+                            }
+                        });
                     }
-                }catch(error){
-                    swal("Error!", "Ocurrió1 un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina", "error");
-                    console.log(error);
                 }
-              },
-              error: function(error){
-                swal("Error!", "Ocurrió2 un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina", "error");
-                console.log(error);
-              }
-            });
-          }
-        }
-      );
-    };
-
-});
-</script>
-@endpush --}}
+            );
+        };
+    </script>
+@endpush
