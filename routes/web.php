@@ -56,6 +56,7 @@ use App\Http\Controllers\Contract\EventsOrdersController;
 use App\Http\Controllers\Report\ReportsController;
 // use PHPJasper\PHPJasper;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\ViaticoController;
 
 
 /*
@@ -250,9 +251,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::post('orders/anuleDerive/{order_id}', [OrdersController::class, 'anuleDerive'])->name('orders.anuleDerive');
 
-
-
-
+     //VIATICOS
+     Route::get('/viaticos', [ViaticoController::class, 'index'])->name('viaticos.index');
+     Route::get('/viaticos/create', [ViaticoController::class, 'create'])->name('viaticos.create');
+     Route::post('/viaticos', [ViaticoController::class, 'store'])->name('viaticos.store');
+     
 
     Route::get('/orders/{id}/uploadExcelAw', [ItemsAdjudicaController::class, 'uploadExcelAw'])->name('orders.items_adjudica.uploadExcelAw');
     // Contrato Abierto

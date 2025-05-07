@@ -53,7 +53,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Código Departamento</th>
+                                                    <th>Nombre Región</th>
                                                     <th>Nombre Departamento</th>
                                                     <th>Acciones</th>
                                                 </tr>
@@ -62,8 +62,8 @@
                                             @for ($i = 0; $i < count($departments); $i++)
                                                 <tr>
                                                     <td>{{ ($i+1) }}</td>
-                                                    <td>{{ $departments[$i]->coddpto }}</td>
-                                                    <td>{{ $departments[$i]->nomdpto }}</td>
+                                                    <td>{{ $departments[$i]->region->description }}</td>
+                                                    <td>{{ $departments[$i]->description }}</td>
                                                     <td>
                                                         <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateDepartment({{ $departments[$i]->id }})">
                                                             <i class="fa fa-pencil"></i>
@@ -120,11 +120,18 @@ $(document).ready(function(){
               success: function(data){
                 try{
                     response = (typeof data == "object") ? data : JSON.parse(data);
-                    if(response.status == "success"){
-                        location.reload();
-                    }else{
-                        swal("Error!", response.message, "error");
-                    }
+                        if(response.status == "success"){
+                            swal({
+                                title: "Éxito!",
+                                text: response.message,
+                                type: "success"
+                            },
+                            function(isConfirm){
+                                location.reload();
+                            });
+                        }else{
+                            swal("Error!", response.message, "error");
+                        }
                 }catch(error){
                     swal("Error!", "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina", "error");
                     console.log(error);

@@ -42,7 +42,7 @@
                                     <form method="POST" action="{{ route('departments.update', $department->id) }}">
                                         @csrf
                                         @method('PUT')
-                                        <div class="form-group row @error('coddpto') has-danger @enderror">
+                                        {{-- <div class="form-group row @error('coddpto') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Código de Dpto.</label>
                                             <div class="col-sm-10">                                                
                                                 <input type="text" id="coddpto" name="coddpto" value="{{ old('coddpto', $department->coddpto) }}" class="form-control @error('coddpto') form-control-danger @enderror" value="{{ old('coddpto', $department->coddpto) }}">
@@ -50,12 +50,12 @@
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
-                                        <div class="form-group row @error('nomdpto') has-danger @enderror">
+                                        </div> --}}
+                                        <div class="form-group row @error('description') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Descripción</label>
                                             <div class="col-sm-10">
-                                                <input type="text" id="nomdpto" name="nomdpto" value="{{ old('nomdpto', $department->nomdpto) }}" class="form-control @error('nomdpto') form-control-danger @enderror" value="{{ old('nomdpto', $department->nomdpto) }}">
-                                                @error('nomdpto')
+                                                <input type="text" id="description" name="description" value="{{ old('description', $department->description) }}" class="form-control @error('description') form-control-danger @enderror" value="{{ old('description', $department->description) }}">
+                                                @error('description')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>

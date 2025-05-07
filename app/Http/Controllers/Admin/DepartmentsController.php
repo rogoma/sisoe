@@ -53,7 +53,7 @@ class DepartmentsController extends Controller
     public function store(Request $request)
     {
         $rules = array(
-            'coddpto' => 'required|numeric|max:999|unique:departments',          
+            // 'coddpto' => 'required|numeric|max:999|unique:departments',          
             'nomdpto' => 'string|required|max:25|unique:departments'
         );
         $validator =  Validator::make($request->input(), $rules);
@@ -61,19 +61,9 @@ class DepartmentsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        //SE CAPTURA CODIGO DE LA VISTA
-        $code = $request->input('coddpto');
-
-        //CHEQUEAMOS QUE CODIGO NO EXISTA EN LA TABLA    
-        $check = Department::where('coddpto', $code)->count();        
-        if($check > 0){
-            $validator->errors()->add('coddpto', 'Código ya existe, Verifique.');
-            return back()->withErrors($validator)->withInput();
-        }   
-
         $department = new Department;
-        $department->coddpto = $request->input('coddpto');        
-        $department->nomdpto = $request->input('nomdpto');
+        // $department->coddpto = $request->input('coddpto');        
+        $department->description = $request->input('description');
         $department->creator_user_id = $request->user()->id;  // usuario logueado
         $department->save();
 
@@ -113,13 +103,13 @@ class DepartmentsController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            'coddpto' => [
-                'integer',
-                'required',                
-                Rule::unique('departments')->ignore($id),
-            ],
+            // 'coddpto' => [
+            //     'integer',
+            //     'required',                
+            //     Rule::unique('departments')->ignore($id),
+            // ],
             
-            'nomdpto' => [
+            'description' => [
                 'string',
                 'required',
                 'max:25',
@@ -134,8 +124,8 @@ class DepartmentsController extends Controller
 
         // obtenemos la región
         $department = Department::find($id);
-        $department->coddpto = $request->input('coddpto');        
-        $department->nomdpto = $request->input('nomdpto');
+        // $department->coddpto = $request->input('coddpto');        
+        $department->description = $request->input('description');
         $department->modifier_user_id = $request->user()->id;  // usuario logueado
         $department->save();        
 

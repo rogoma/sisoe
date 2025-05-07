@@ -320,15 +320,15 @@
                             <span class="pcoded-micon"><i class="fa fa-map"></i></span>
                             <span class="pcoded-mtext">División Política</span>
                             </a>
-                            <ul class="pcoded-submenu">
-                                <li class="@if(Route::currentRouteName() == 'departments.index') active @endif">
-                                    <a href="{{ route('departments.index') }}" class="waves-effect waves-dark">
-                                    <span class="pcoded-mtext">Departamentos</span>
-                                    </a>
-                                </li>
+                            <ul class="pcoded-submenu">                                
                                 <li class="@if(Route::currentRouteName() == 'regiones.index') active @endif">
                                     <a href="{{ route('regiones.index') }}" class="waves-effect waves-dark">
                                     <span class="pcoded-mtext">Regiones</span>
+                                    </a>
+                                </li>
+                                <li class="@if(Route::currentRouteName() == 'departments.index') active @endif">
+                                    <a href="{{ route('departments.index') }}" class="waves-effect waves-dark">
+                                    <span class="pcoded-mtext">Departamentos</span>
                                     </a>
                                 </li>
                                 <li class="@if(Route::currentRouteName() == 'districts.index') active @endif">
