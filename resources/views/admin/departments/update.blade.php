@@ -42,15 +42,38 @@
                                     <form method="POST" action="{{ route('departments.update', $department->id) }}">
                                         @csrf
                                         @method('PUT')
-                                        {{-- <div class="form-group row @error('coddpto') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Código de Dpto.</label>
-                                            <div class="col-sm-10">                                                
-                                                <input type="text" id="coddpto" name="coddpto" value="{{ old('coddpto', $department->coddpto) }}" class="form-control @error('coddpto') form-control-danger @enderror" value="{{ old('coddpto', $department->coddpto) }}">
-                                                @error('coddpto')
+                                        
+                                        <div class="form-group row @error('regiones') has-danger @enderror">
+                                            <label class="col-sm-2 col-form-label">Región Geográfica</label>
+                                            <div class="col-sm-10">
+                                                <select id="regiones" name="regiones" class="form-control">
+                                                    <option value="">--- Seleccionar Región ---</option>
+                                                    @foreach ($regiones as $region)
+                                                        <option value="{{ $region->id}}" @if ($region->id == old('regiones', $region->id)) selected @endif>{{ $region->description }}</option>
+                                                        {{-- <option value="{{ $dependency_type->id }}" @if ($dependency_type->id == old('dependency_types',$dependency->dependency_type_id)) selected @endif>{{ $dependency_type->description }}</option> --}}
+                                                    @endforeach
+                                                </select>
+                                                @error('regiones')
+                                                    <div class="col-form-label">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        {{-- <div class="form-group row @error('dependency_types') has-danger @enderror">
+                                            <label class="col-sm-2 col-form-label">Tipo de Dependencia</label>
+                                            <div class="col-sm-10">
+                                                <select id="dependency_types" name="dependency_types" class="form-control">
+                                                    <option value="">--- Seleccionar Tipo de Dependencia ---</option>
+                                                    @foreach ($dependency_types as $dependency_type)
+                                                        <option value="{{ $dependency_type->id }}" @if ($dependency_type->id == old('dependency_types',$dependency->dependency_type_id)) selected @endif>{{ $dependency_type->description }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('dependency_types')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div> --}}
+
                                         <div class="form-group row @error('description') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Descripción</label>
                                             <div class="col-sm-10">
@@ -78,3 +101,13 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $('#regiones').select2();    
+
+});
+</script>
+@endpush

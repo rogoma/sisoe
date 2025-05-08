@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Region;
 use App\Models\Department;
 use Illuminate\Validation\Rule;
+
 
 class DepartmentsController extends Controller
 {
@@ -40,8 +42,9 @@ class DepartmentsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        return view('admin.departments.create');
+    {        
+        $regiones = Region::where('id', '!=', 9999)->get();
+        return view('admin.departments.create', compact('regiones'));        
     }
 
     /**
@@ -53,8 +56,8 @@ class DepartmentsController extends Controller
     public function store(Request $request)
     {
         $rules = array(
-            // 'coddpto' => 'required|numeric|max:999|unique:departments',          
-            'nomdpto' => 'string|required|max:25|unique:departments'
+            'regiones' => 'required|numeric',          
+            'description' => 'string|required|max:25|unique:departments'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -62,7 +65,7 @@ class DepartmentsController extends Controller
         }
 
         $department = new Department;
-        // $department->coddpto = $request->input('coddpto');        
+        $department->regiones_id = $request->input('regiones');        
         $department->description = $request->input('description');
         $department->creator_user_id = $request->user()->id;  // usuario logueado
         $department->save();
@@ -90,7 +93,8 @@ class DepartmentsController extends Controller
     public function edit($id)
     {
         $department = Department::find($id);
-        return view('admin.departments.update', compact('department'));
+        $regiones = Region::where('id', '!=', 9999)->get();
+        return view('admin.departments.update', compact('department','regiones'));        
     }
 
     /**
@@ -103,12 +107,7 @@ class DepartmentsController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            // 'coddpto' => [
-            //     'integer',
-            //     'required',                
-            //     Rule::unique('departments')->ignore($id),
-            // ],
-            
+            'regiones' => 'required|numeric',            
             'description' => [
                 'string',
                 'required',
@@ -124,7 +123,7 @@ class DepartmentsController extends Controller
 
         // obtenemos la región
         $department = Department::find($id);
-        // $department->coddpto = $request->input('coddpto');        
+        $department->regiones_id = $request->input('regiones');  
         $department->description = $request->input('description');
         $department->modifier_user_id = $request->user()->id;  // usuario logueado
         $department->save();        
