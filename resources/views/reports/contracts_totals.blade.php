@@ -212,6 +212,7 @@
                             <tr>
                                 <th>Contratista</th>
                                 <th>Cant. Órdenes</th>
+                                <th>Monto Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -219,6 +220,7 @@
                             <tr>
                                 <td>{{ $item->contratista }}</td>
                                 <td>{{ number_format($item->cant_ordenes, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->total_monto, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
