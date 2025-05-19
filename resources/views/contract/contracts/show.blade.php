@@ -198,11 +198,10 @@
                                             @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
-                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está
-                                                        en Curso)</a>
+                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está en Curso)</a>
                                                     <div class="slide"></div>
                                                 </li>
-                                            @endif
+                                            @endif                                            
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab1" role="tab"><i
                                                         class="fa fa-external-link"></i> Eval.Técnica</a>
@@ -223,6 +222,13 @@
                                                         class="fa fa-file-pdf-o"></i> Reportes</a>
                                                 <div class="slide"></div>
                                             </li>
+                                            @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab8" role="tab"><i
+                                                            class="fa fa-user-o"></i> Asignar Usuario Contratista <br></a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab6" role="tab"><i
                                                         class="fa fa-file-archive-o"></i> Archivos</a>
@@ -862,8 +868,7 @@
                                             </div>
 
                                             <div class="tab-pane" id="tab3" role="tabpanel">
-                                                <label class="col-form-label f-w-600">Asignación de Fiscales del
-                                                    Contrato:</label>
+                                                <label class="col-form-label f-w-600">Asignación de Fiscales del Contrato:</label>
                                                 <table class="table table-striped table-bcontracted">
                                                     <thead>
                                                         <tr>
@@ -1056,6 +1061,38 @@
                                                         @if (in_array($contract->contract_state_id, [1, 2]))
                                                             <a href="{{ route('contracts.files.create_con', $contract->id) }}"
                                                                 class="btn btn-primary">Cargar Archivos</a>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="tab-pane" id="tab8" role="tabpanel">
+                                                <label class="col-form-label f-w-600">Asignación de Contratista al Sistema:</label>
+                                                <table class="table table-striped table-bcontracted">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Nombre del Contratista</th>                                                            
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>{{ $contract->contra_user_id->name ?? '-' }}
+                                                                {{ $contract->contra_user_id->lastname ?? '-' }} -
+                                                                {{ $contract->contra_user_id->position->description ?? '-' }}
+                                                            </td>                                                            
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div class="text-center">
+                                                    @if (Auth::user()->hasPermission(['admin.fiscales.create', 'contracts.fiscales.create']))
+                                                        @if (in_array($contract->contract_state_id, [1]))
+                                                            @if ($contract->contra_user_id === null)
+                                                                <a href="{{ route('contracts.asign_contra', $contract->id) }}"
+                                                                    class="btn btn-danger">Asignar Usuario</a>
+                                                            @else
+                                                                <a href="{{ route('contracts.asign_contra', $contract->id) }}"
+                                                                    class="btn btn-danger">Reasignar Usuario</a>
+                                                            @endif
                                                         @endif
                                                     @endif
                                                 </div>

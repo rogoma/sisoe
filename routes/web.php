@@ -153,6 +153,11 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
     Route::put('/contracts/orders/{order}/edit', [ContractsController::class, 'update_fiscal'])->name('contracts.update.fiscal');
 
+    // RUTA PARA EDITAR FORM CONTRATO Y AGREGAR USUARIO CONTRATISTA
+    Route::get('/contracts/orders/{order}/edit2', [ContractsController::class, 'asign_contra'])->name('contracts.asign_contra');
+    // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA USUARIO CONTRATISTA
+    Route::put('/contracts/orders/{order}/edit2', [ContractsController::class, 'update_contra'])->name('contracts.update.contra');
+
     
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
     Route::resource('contracts.orders', OrdersEjecsController::class); //Recurso anidado, es igual a /contracts/{contract_id}/items/{item_id}

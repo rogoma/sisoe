@@ -391,6 +391,36 @@ class ContractsController extends Controller
     }
 
     /**
+     * Formulario de modificacion de contrato
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function edit2(Request $request, $contract_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+        // chequeamos que el usuario tenga permisos para editar el llamado
+        if($request->user()->hasPermission(['admin.contracts.update','contracts.contracts.update'])){
+            $dependencies = Dependency::all();
+            $modalities = Modality::all();
+            $sub_programs = SubProgram::all();
+            $funding_sources = FundingSource::all();
+            $financial_organisms = FinancialOrganism::all();
+            $expenditure_objects = ExpenditureObject::where('level', 3)->get();
+            $providers = Provider::all();//se podria filtrar por estado sólo activo
+            $contr_states = ContractState::all();
+            $contract_types = ContractType::all();
+            $users_admin = User::where('contract_admin', 1)->get();
+            // $users = User::all();
+
+            return view('contract.contracts.update', compact('contract','dependencies', 'modalities','sub_programs', 'funding_sources', 'financial_organisms',
+                'expenditure_objects', 'providers', 'contr_states','contract_types','users_admin'));
+        }else{
+            return back()->with('error', 'No tiene los suficientes permisos para editar el llamado.');
+        }
+    }
+
+    /**
      * Formulario de modificacion de contrato donde se asigna fiscal de obras
      *
      * @param  \Illuminate\Http\Request  $request
@@ -412,6 +442,34 @@ class ContractsController extends Controller
             $contract_types = ContractType::all();
             $users = User::where('role_id', 3)->get();
             return view('contract.contracts.asign_fiscal', compact('contract','dependencies', 'modalities','sub_programs', 'funding_sources', 'financial_organisms',
+                'expenditure_objects', 'providers', 'contr_states','contract_types','users'));
+        }else{
+            return back()->with('error', 'No tiene los suficientes permisos para editar el llamado.');
+        }
+    }
+
+    /**
+     * Formulario de modificacion de contrato donde se asigna usuarios contratista  
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function asign_contra(Request $request, $contract_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+        // chequeamos que el usuario tenga permisos para editar el llamado
+        if($request->user()->hasPermission(['admin.contracts.update','contracts.contracts.update', 'contracts.fiscales.create'])){
+            $dependencies = Dependency::all();
+            $modalities = Modality::all();
+            $sub_programs = SubProgram::all();
+            $funding_sources = FundingSource::all();
+            $financial_organisms = FinancialOrganism::all();
+            $expenditure_objects = ExpenditureObject::where('level', 3)->get();
+            $providers = Provider::all();//se podria filtrar por estado sólo activo
+            $contr_states = ContractState::all();
+            $contract_types = ContractType::all();
+            $users = User::where('role_id', 4)->get();
+            return view('contract.contracts.asign_contratista', compact('contract','dependencies', 'modalities','sub_programs', 'funding_sources', 'financial_organisms',
                 'expenditure_objects', 'providers', 'contr_states','contract_types','users'));
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para editar el llamado.');
@@ -627,6 +685,43 @@ class ContractsController extends Controller
         $contract->save();
         return redirect()->route('contracts.show', $contract->id)->with('success', 'Fiscal agregado correctamente');
     }
+
+
+    /**
+     * Funcionalidad de modificacion del contrato cuando se agrega Fiscales de Obras
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update_contra(Request $request, $contract_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+
+        // $rules = ['contra_user_id' => 'numeric','required', 'max:999999'];
+
+
+        // $validator =  Validator::make($request->input(), $rules);
+        // if ($validator->fails()) {
+        //     return back()->withErrors($validator)->withInput();
+        // }
+
+        // PARA ASIGNAR Y REASIGNAR FISCALES DE OBRAS
+        // $contra_user = $request->input('contra_user');
+        // if (empty($contra_user) || $contra_user === '0') {
+        //     // Acción si contra_user está vacío o es igual a 0
+        //     $contract->contra_user = null;            
+        // } else {
+        //     // Acción si contra_user tiene un valor válido
+        //     $contract->contra_user = $request->input('contra_user');
+        // }        
+
+        $contract->contra_user_id = $request->input('contra_user_id');
+        $contract->creator_user_id = $request->user()->id;  // usuario logueado
+        $contract->save();
+        return redirect()->route('contracts.show', $contract->id)->with('success', 'Usuario agregado correctamente');
+    }
+
+
 
     public function excel(){
         $spreadsheet = new Spreadsheet();
