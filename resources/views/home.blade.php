@@ -39,10 +39,13 @@
                                     <h5>Bienvenido: {{ Auth::user()->getFullName() }}</h5>
                                 </div>
                                 <div class="card-block">
-                                    <p>
-                                        <span class="f-w-600">Dependencia:</span><br>
-                                        {{ Auth::user()->dependency->description }}
-                                    </p>
+                                    @if (Auth::user()->role->id == 4)
+                                    @else
+                                        <p>
+                                            <span class="f-w-600">Dependencia:</span><br>
+                                            {{ Auth::user()->dependency->description }}
+                                        </p>
+                                    @endif
                                     <p>
                                         <span class="f-w-600">Rol:</span><br>                                        
                                         {{ Auth::user()->role->description }}

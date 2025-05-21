@@ -60,6 +60,11 @@ class Contract extends Model
         return $this->belongsTo(User::class, 'fiscal4_id');
     }
 
+    public function contratista()
+    {
+        return $this->belongsTo(User::class, 'contra_user_id');
+    }
+
     public function contractAdmin()
     {
         return $this->belongsTo(User::class, 'contract_admin_id');

@@ -175,11 +175,17 @@
                                 <div class="card">
                                     <div class="card-block">
                                         <ul class="nav nav-tabs md-tabs" role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" data-toggle="tab" href="#tab0"
-                                                    role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
-                                                <div class="slide"></div>
-                                            </li>
+                                            
+                                            @if (Auth::user()->role->id == 4)
+                                                {{-- No mostrar nada si el rol es 4 --}}
+                                            @else
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#tab0"
+                                                        role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
+                                            
                                             @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.rubros.import']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
@@ -202,11 +208,17 @@
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif                                            
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#tab1" role="tab"><i
-                                                        class="fa fa-external-link"></i> Eval.Técnica</a>
-                                                <div class="slide"></div>
-                                            </li>
+                                            
+                                            @if (Auth::user()->role->id == 4)
+                                                {{-- No mostrar nada si el rol es 4 --}}
+                                            @else
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab1" role="tab"><i
+                                                            class="fa fa-external-link"></i> Eval.Técnica</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
+                                            
                                             <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab2" role="tab"><i
                                                         class="fa fa-clone"></i> Órdenes de Ejec.</a>
@@ -217,11 +229,16 @@
                                                         class="fa fa-file-pdf-o"></i> Plazos/Prórrogas</a>
                                                 <div class="slide"></div>
                                             </li> --}}
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i
-                                                        class="fa fa-file-pdf-o"></i> Reportes</a>
-                                                <div class="slide"></div>
-                                            </li>
+                                            @if (Auth::user()->role->id == 4)
+                                                {{-- No mostrar nada si el rol es 4 --}}
+                                            @else
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i
+                                                            class="fa fa-file-pdf-o"></i> Reportes</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
+
                                             @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab8" role="tab"><i
@@ -229,13 +246,18 @@
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#tab6" role="tab"><i
-                                                        class="fa fa-file-archive-o"></i> Archivos</a>
-                                                <div class="slide"></div>
-                                            </li>
+                                            @if (Auth::user()->role->id == 4)
+                                                {{-- No mostrar nada si el rol es 4 --}}
+                                            @else
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab6" role="tab"><i
+                                                            class="fa fa-file-archive-o"></i> Archivos</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            @endif
                                         </ul>
-
+                                        
+                                        
                                         <div class="tab-content card-block">
                                             <div class="tab-pane active" id="tab0" role="tabpanel">
                                                 <h5 class="text-center fw-bold">Datos del Contrato</h5>
@@ -1076,9 +1098,8 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td>{{ $contract->contra_user_id->name ?? '-' }}
-                                                                {{ $contract->contra_user_id->lastname ?? '-' }} -
-                                                                {{ $contract->contra_user_id->position->description ?? '-' }}
+                                                            <td>{{ $contract->contratista->name ?? '-' }} -
+                                                                {{ $contract->contratista->lastname ?? '-' }}                                                            
                                                             </td>                                                            
                                                         </tr>
                                                     </tbody>

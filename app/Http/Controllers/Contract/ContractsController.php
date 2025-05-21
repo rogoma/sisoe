@@ -107,6 +107,16 @@ class ContractsController extends Controller
                 ->get();            
         }
 
+        //PARA MOSTRAR CONTRATO A CONTRATISTA
+        // Para ver contratos no anulados asignados a usuarios fiscales
+        // if($request->user()->hasPermission(['contracts.contracts.fiscal'])){
+                $contracts = Contract::where(function ($query) use ($request) {
+                    $query->where('contra_user_id', $request->user()->id);                        
+                })
+                ->where('contract_state_id', '>=', 1)                
+                ->get();            
+        // }
+
         
         return view('contract.contracts.index', compact('contracts'));
     }

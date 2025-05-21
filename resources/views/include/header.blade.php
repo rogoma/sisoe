@@ -78,7 +78,7 @@
         @elseif(Auth::user()->role_id == 3)//FISCAL
             @include('include.menus.orders')
         @elseif(Auth::user()->role_id == 4)//CONTRATISTA
-            @include('include.menus.orders')
+            @include('include.menus.contractors')
         {{-- @elseif(Auth::user()->role_id == 5)
             @include('include.menus.plannings')
         @elseif(Auth::user()->role_id == 6)

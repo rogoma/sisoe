@@ -30,19 +30,20 @@ p.centrado {
 <div class="pcoded-content">
     <div class="page-header card">
         <div class="row align-items-end">
-            <div class="col-lg-8">
+            <div class="col-lg-6">
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Contratos - Listado de Contratos de Licitaciones</h5>
-                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                        <br>
-                            <a href="pdf/panel_orders1" class="btn btn-outline-primary" target="_blank"> TOTAL ORDENES</a>
-                            <a href="pdf/tablero" class="btn btn-outline-danger" target="_blank"> TABLERO</a>
-                            {{-- <a href="pdf/panel_contracts1" class="btn btn-outline-warning" target="_blank">EN CURSO</a>
-                            <a href="pdf/panel_contracts6" class="btn btn-outline-success" target="_blank">EN PROCESO RESCISIÓN</a>
-                            <a href="pdf/panel_contracts2" class="btn btn-outline-warning" target="_blank">RESCINDIDOS</a>
-                            <a href="pdf/panel_contracts3" class="btn btn-outline-danger" target="_blank">CERRADOS</a>                             --}}
+                        {{-- NO MUESTRA NADA SI ES CONTRATISTA --}}
+                        @if (Auth::user()->role->id == 4)                            
+                            <h5>Certificaciones - Contratistas</h5>
+                        @else
+                            <h5>Contratos - Listado de Contratos de Licitaciones</h5>
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <br>
+                                <a href="pdf/panel_orders1" class="btn btn-outline-primary" target="_blank"> TOTAL ORDENES</a>
+                                <a href="pdf/tablero" class="btn btn-outline-danger" target="_blank"> TABLERO</a>
+                        @endif                            
                     </div>
                 </div>
             </div>
