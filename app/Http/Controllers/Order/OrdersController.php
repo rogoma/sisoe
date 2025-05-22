@@ -1093,6 +1093,7 @@ class OrdersController extends Controller
                                             ->orderBy('created_at','asc')
                                             ->get();
 
+                                            
 
         // ROL ADMINSTRADOR Obtenemos los archivos cargados por otras dependencias
         if($role_user == 1){

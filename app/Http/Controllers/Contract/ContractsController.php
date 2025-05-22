@@ -107,16 +107,16 @@ class ContractsController extends Controller
                 ->get();            
         }
 
-        //PARA MOSTRAR CONTRATO A CONTRATISTA
-        // Para ver contratos no anulados asignados a usuarios fiscales
-        // if($request->user()->hasPermission(['contracts.contracts.fiscal'])){
-                $contracts = Contract::where(function ($query) use ($request) {
+        //PARA MOSTRAR CONTRATO A CONTRATISTA role = 4
+        $role_user = $request->user()->role_id;
+
+        if($role_user == 4){
+             $contracts = Contract::where(function ($query) use ($request) {
                     $query->where('contra_user_id', $request->user()->id);                        
                 })
                 ->where('contract_state_id', '>=', 1)                
-                ->get();            
-        // }
-
+                ->get(); 
+        }
         
         return view('contract.contracts.index', compact('contracts'));
     }
@@ -290,8 +290,16 @@ class ContractsController extends Controller
         // Para acceder a eventos y localidades de las órdenes de un contrato
         $contract = Contract::with('orders.events', 'orders.locality')->findOrFail($contract_id);
         
-        // Obtener las órdenes del contrato
-        $orders = $contract->orders;
+        // Obtener las órdenes del contrato de acuerdo al rol
+        $role_user = $request->user()->role_id;
+
+        // SI ES CONTRATISTA ROL = 4
+        if($role_user == 4){
+            $orders = $contract->orders()->where('order_state_id', 1)->get();
+        }else{
+            $orders = $contract->orders;
+        }        
+        
         
         // Obtener todos los eventos del contrato a través de las órdenes
         $events = $contract->orders->flatMap->events;
@@ -363,8 +371,17 @@ class ContractsController extends Controller
         // chequeamos que el usuario tenga permisos para visualizar el pedido
         if($request->user()->hasPermission(['admin.contracts.show', 'contracts.contracts.show','process_contracts.contracts.show',
         'contracts.contracts.index','derive_contracts.contracts.index']) || $contract->dependency_id == $request->user()->dependency_id){
-            return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con',
-            'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract', 'orders', 'events'));
+            
+            $role_user = $request->user()->role_id;
+
+            // SI ES CONTRATISTA MUESTRA OTRA VISTA
+            if($role_user == 4){
+                return view('contract.contracts.showcontra', compact('contract','user_files_pol','user_files_con',
+                'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract', 'orders', 'events'));
+            }else{
+                return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con',
+                'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract', 'orders', 'events'));
+            }
         }else{
             return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
         }

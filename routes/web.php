@@ -73,7 +73,10 @@ use App\Http\Controllers\ViaticoController;
 Route::get('/login', [HomeController::class, 'login'])->name('login');
 Route::post('/login', [HomeController::class, 'checkLogin'])->name('checkLogin');
 Route::post('/logout', [HomeController::class, 'logout'])->name('logout');
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
 // obtener el token csrf
 Route::get('/token', function (Request $request) {
     $token = csrf_token();
@@ -191,7 +194,12 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //PARA MOSTRAR DATOS DE ITEMSCONTRACTS Y GENERAR RUBROS EN ORDENES    
     Route::get('/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('items_contracts.itemsRubros');
+    Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('itemsRubros.import');
 
+
+    //PARA MOSTRAR DATOS DE ITEMSORDERS Y GENERAR MEDICIÓN PARA CERTIFICACIÓN
+     //MODIFICAR PARA MOSTRAR ITEMS O RUBROS DE ORDENES
+    // location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' + component + '/itemsRubros';
     Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('itemsRubros.import');
 
     
