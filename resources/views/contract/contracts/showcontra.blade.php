@@ -629,7 +629,7 @@
 
             //lleva a indexRubros de ItemsContractsController
             certiOrder = function(order, contract, component) {
-                location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' + component + '/itemsRubros';
+                location.href = '/orders/' + order + '/items_orders/' + contract + '/component/' + component + '/itemsOrders';
             }
 
             //lleva a index de ItemsContractsController
