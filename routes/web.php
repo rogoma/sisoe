@@ -199,8 +199,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     //PARA MOSTRAR DATOS DE ITEMSORDERS Y GENERAR MEDICIÓN PARA CERTIFICACIÓN
      //MODIFICAR PARA MOSTRAR ITEMS O RUBROS DE ORDENES
-    // location.href = '/orders/' + order + '/items_contracts/' + contract + '/component/' + component + '/itemsRubros';
-    Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsRubros', [ItemsContractsController::class, 'indexRubros'])->name('itemsRubros.import');
+    Route::get('/orders/{order}/items_contracts/{contract}/component/{component}/itemsCerti', [ItemsContractsController::class, 'indexCerti']);
 
     
 

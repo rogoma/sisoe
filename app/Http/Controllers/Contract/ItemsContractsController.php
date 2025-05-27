@@ -86,6 +86,32 @@ class ItemsContractsController extends Controller
         return view('contract.itemscontracts.index2_orig2', compact('items','contract', 'order'));        
     }
 
+    // PARA MOSTRAR VISTA PARA MEDIR ITEMS DE LA ORDEN DE EJECUCIÓN
+    public function indexCerti(Request $request, $order_id, $contract_id, $component_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+
+        $order = Order::findOrFail($order_id);
+
+        // $order = Order::with('locality')->find($order_id);
+                
+       
+        $items0 = ItemContract::where('contract_id', $contract_id)
+                ->where('component_id', $component_id)
+                ->orderBy('id')
+                ->get();
+
+        $items = ItemOrder::where('order_id', $order_id)                
+                ->orderBy('id')
+                ->get();
+
+        // Chequeamos permisos del usuario
+        // if(!$request->user()->hasPermission(['admin.items.index', 'contracts.items.index','contracts.items.show'])){
+        //     return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        // }
+        
+        return view('contract.itemsorders.index_itemsorders', compact('items0','items','contract', 'order'));        
+    }
 
     public function getItems(Request $request)
     {        
