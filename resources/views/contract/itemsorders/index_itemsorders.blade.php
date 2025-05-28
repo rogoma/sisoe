@@ -80,10 +80,10 @@
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header">                                            
-                                        <h4 style="color: blue;"> Localidad: {{ $order->locality->description }} - Detalle de Rubros de Componente: {{ $items0[0]->component->code }} - {{ $items0[0]->component->description }}</h4>
-                                                                                
-                                        <div class="col-sm-3">
-                                                <label for="month_date" class="col-form-label" style="color: blue; font-size: 24px;">Mes/Año</label>
+                                        <h4 style="color: blue;"> Orden N°: {{ $order->component->code }}-{{ $order->number }} - Localidad: {{ $order->locality->description }} - Componente: {{ $items0[0]->component->code }} - {{ $items0[0]->component->description }} </h4>
+                                        <div class="form-group row">                                        
+                                            <div class="col-sm-2">
+                                                <label for="month_date" class="col-form-label" style="color: blue; font-size: 18px;">Mes/Año (mm/yyyy)</label>
                                                     <div class="input-group">
                                                         <input type="text" id="month_date" name="month_date"
                                                             class="form-control @error('month_date') is-invalid @enderror"
@@ -97,27 +97,39 @@
                                                 @error('month_date')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-                                        </div>
-                                        
-                                        <div class="col-sm-3">
-                                                        <label for="sign_date" class="col-form-label">Fecha acuse recibo
-                                                            Contratista</label>
-                                                        <div class="input-group">
-                                                            <input type="text" id="sign_date" name="sign_date"
-                                                                class="form-control @error('sign_date') is-invalid @enderror"
-                                                                value="{{ old('sign_date') }}" autocomplete="off"
-                                                                disabled>
-                                                            <span class="input-group-append">
-                                                                <button type="button" class="btn btn-outline-secondary"
-                                                                    onclick="show('sign_date');"><i
-                                                                        class="fa fa-calendar"></i></button>
-                                                            </span>
-                                                        </div>
-                                                        @error('sign_date')
+                                            </div>
+
+                                            <div class="col-sm-2">
+                                                <label for="sign_date" class="col-form-label" style="color: blue; font-size: 18px;">Fecha de la Medición</label>
+                                                    <div class="input-group">
+                                                        <input type="text" id="sign_date" name="sign_date"
+                                                            class="form-control @error('sign_date') is-invalid @enderror"
+                                                            value="{{ old('sign_date') }}" autocomplete="off">
+                                                        <span class="input-group-append">
+                                                            <button type="button" class="btn btn-outline-secondary"
+                                                            onclick="show('sign_date');"><i
+                                                            class="fa fa-calendar"></i></button>
+                                                        </span>
+                                                    </div>
+                                                    @error('sign_date')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+
+                                                <div class="col-sm-2">
+                                                        <label for="number" class="col-form-label" style="color: blue; font-size: 18px;">N° ACTA?? Certificado??</label>
+                                                        <input type="text" id="number" name="number_display"
+                                                            class="form-control @error('number') is-invalid @enderror"
+                                                            value="{{ old('number') }}" maxlength="23" disabled>
+                                                        <input type="hidden" id="number_hidden" name="number"
+                                                            value="{{ old('number') }}">
+                                                        @error('number')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
-                                                    </div>
-                                    </div>                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>    
 
                                     <div class="card-block">
                                         <div class="dt-responsive table-responsive">
@@ -129,8 +141,9 @@
                                                         <th>Rubro ID</th>
                                                         <th>Cod.- Rubro</th>                                                                                                                
                                                         <th>Unidad Med.</th>
-                                                        <th>Cantidad</th>
-                                                        <th>Medición</th>                                       
+                                                        <th>Cant. Orden</th>
+                                                        <th>Medición Acumulada</th>
+                                                        <th>Medición Actual</th>                                       
                                                         {{-- <th>Precio UNIT MO</th>
                                                         <th>Precio UNIT MAT</th>
                                                         <th>Precio Total MO</th>
@@ -172,7 +185,7 @@
                                                                 <td class="rubro-id" style="text-align: center;">
                                                                     {{ $item->rubro->id }}</td>
 
-                                                                <td class="rubro" style="text-align: left; width: 1500px;">
+                                                                <td class="rubro" style="text-align: left; width: 1350px;">
                                                                     {{ $item->rubro->code }}-{{ $item->rubro->description }}
                                                                 </td>
 
@@ -180,12 +193,16 @@
                                                                     {{ $item->rubro->orderPresentations->description }}
                                                                 </td>
 
-                                                                <td style="text-align: center; width: 150px;">
+                                                                <td class="quantity" style="text-align: center; width: 100px;">
                                                                     {{ $item->quantity }}
-                                                                </td>                                                                
+                                                                </td>
+                                                                
+                                                                <td class="acumulado" style="text-align: center; width: 150px;">
+                                                                    {{ $item->quantity }}
+                                                                </td>
 
                                                                 <td style="text-align: center; width: 150px;">
-                                                                    <input type="number" class="quantity"
+                                                                    <input type="number" class="medido"
                                                                         data-index="{{ $i }}" value="0"
                                                                         min="0" required step="any"
                                                                         style="width: 80px; text-align: center;"
