@@ -121,12 +121,12 @@
                             </ul>
                         </li>
                     </ul> --}}
-                    <div class="pcoded-navigation-label">Módulo de Contratos y Garantías</div>
+                    <div class="pcoded-navigation-label">Módulo de Pólizas y Garantías</div>
                     <ul class="pcoded-item pcoded-left-item">
                         <li class="pcoded-hasmenu">
                             <a href="javascript:void(0)" class="waves-effect waves-dark">
                             <span class="pcoded-micon"><i class="fa fa-clone"></i></span>
-                            <span class="pcoded-mtext">Contratos y Garantías</span>
+                            <span class="pcoded-mtext">Pólizas y Garantías</span>
                             </a>
                             <ul class="pcoded-submenu">
                                 <li class="@if(Route::currentRouteName() == 'contracts.index') active @endif">
@@ -142,40 +142,28 @@
                             </ul>
                         </li>
                     </ul>
-
-                    {{-- <div class="pcoded-navigation-label">Módulo de Gestión Documental</div>
+                    <div class="pcoded-navigation-label">Módulo de Contratos/Órdenes de Ejecución</div>
                     <ul class="pcoded-item pcoded-left-item">
                         <li class="pcoded-hasmenu">
                             <a href="javascript:void(0)" class="waves-effect waves-dark">
                             <span class="pcoded-micon"><i class="fa fa-clone"></i></span>
-                            <span class="pcoded-mtext">Gestión Documental</span>
+                            <span class="pcoded-mtext">Contratos de Obras</span>
                             </a>
                             <ul class="pcoded-submenu">
-                                <li class="@if(Route::currentRouteName() == 'documentals.index') active @endif">
-                                    <a href="{{ route('documentals.index') }}" class="waves-effect waves-dark">
-                                    <span class="pcoded-mtext">Listado de Llamados</span>
+                                <li class="@if(Route::currentRouteName() == 'contracts.index2') active @endif">
+                                    <a href="{{ route('contracts.index2') }}" class="waves-effect waves-dark">
+                                    <span class="pcoded-mtext">Listado de Contratos</span>
                                     </a>
                                 </li>
+                                {{-- <li class="@if(Route::currentRouteName() == 'contracts.create') active @endif">
+                                    <a href="{{ route('contracts.create') }}" class="waves-effect waves-dark">
+                                    <span class="pcoded-mtext">Agregar Llamado</span>
+                                    </a>
+                                </li> --}}
                             </ul>
                         </li>
                     </ul>
 
-                    <div class="pcoded-navigation-label">Módulo de Comité Evaluador</div>
-                    <ul class="pcoded-item pcoded-left-item">
-                        <li class="pcoded-hasmenu">
-                            <a href="javascript:void(0)" class="waves-effect waves-dark">
-                            <span class="pcoded-micon"><i class="fa fa-clone"></i></span>
-                            <span class="pcoded-mtext">Comité Evaluador</span>
-                            </a>
-                            <ul class="pcoded-submenu">
-                                <li class="@if(Route::currentRouteName() == 'comites.index') active @endif">
-                                    <a href="{{ route('comites.index') }}" class="waves-effect waves-dark">
-                                    <span class="pcoded-mtext">Listado de Llamados</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul> --}}
                     <div class="pcoded-navigation-label">Panel de Administración</div>
                     <ul class="pcoded-item pcoded-left-item">
                         {{-- <li class="pcoded-hasmenu">

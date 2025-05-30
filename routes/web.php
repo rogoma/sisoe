@@ -457,9 +457,12 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     // Route::delete('/contracts/contract/{contract_id}/delete', 'ContractController@delete')->name('contracts.delete');
     Route::delete('contracts/contract/{contract_id}/delete', [ContractsController::class, 'destroy'])->name('contracts.delete');
 
-
-    Route::get('contracts/getNotifications', [ContractsController::class, 'getNotifications'])->name('contracts.getNotifications');
+    Route::get('contracts/getNotifications', [ContractsController::class, 'getNotifications'])->name('contracts.getNotifications');            
     Route::resource('contracts', ContractsController::class);
+    Route::get('/contracts-list', [ContractsController::class, 'index2'])->name('contracts.index2');
+    Route::get('/contracts-show', [ContractsController::class, 'show2'])->name('contracts.show2');
+
+    
 
     // Route::post('contracts/recibe_order/{order_id}', [ContractsController::class, 'recibeOrder'])->name('contracts.recibeOrder');
     // Route::get('contracts/orders/{order_id}/edit', [ContractsController::class, 'edit'])->name('contracts.orders.edit');

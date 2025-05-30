@@ -73,6 +73,30 @@ class ContractsController extends Controller
      */
     public function index(Request $request)
     {
+        if($request->user()->hasPermission(['admin.contracts.index'])){
+            //NO SE MUESTRAN LOS PEDIDOS ANULADOS
+            $contracts = Contract::where('contract_state_id', '>=', 1)
+                    ->orderBy('iddncp','asc')
+                    ->get();
+            $dependency = $request->user()->dependency_id;
+        }else{
+            // Para los otros roles se visualizan los pedidos de la dependencia del usuario "NO MUESTRA PEDIDOS ANULADOS"
+            $contracts = Contract::where('dependency_id', $request->user()->dependency_id)
+                    ->where('contract_state_id', '>=', 1)
+                    ->orderBy('iddncp','asc')
+                    ->get();
+            //Se captura el id de de la dependencia para pasar este parámetro y así filtrar en Panel de llamados
+            $dependency = $request->user()->dependency_id;
+        }
+        return view('contract.contracts.index', compact('contracts'));
+    }
+
+    /**
+     * Listado de todos los pedidos.
+     * @return \Illuminate\Http\Response
+     */
+    public function index2(Request $request)
+    {
         // if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
         if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.all'])){
             //SE DEBEN MOSTRAR TODOS LOS PEDIDOS SI ES DE UOC NO IMPORTAN LOS ESTADOS
@@ -117,8 +141,8 @@ class ContractsController extends Controller
                 ->where('contract_state_id', '>=', 1)                
                 ->get(); 
         }
-        
-        return view('contract.contracts.index', compact('contracts'));
+                
+        return view('contract.contracts.index2', compact('contracts'));
     }
 
     //Para exportar a Excel pedidos encurso aún sn adjudicación
@@ -279,13 +303,63 @@ class ContractsController extends Controller
         return redirect()->route('contracts.index')->with('success', 'Llamado agregado correctamente');
     }
 
+
     /**
-     * Visualización de un pedido
+     * Visualización de un pedido general de licitaciones
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $contract_id)
+    {
+        $contract = Contract::findOrFail($contract_id);
+        $user_dependency = $request->user()->dependency_id;
+        $role_user = $request->user()->role_id;
+
+        // Obtenemos los archivos cargados por usuarios con tipo de archivos 1 pólizas
+        $user_files_pol = $contract->files()->where('dependency_id', $user_dependency)
+            ->whereIn('file_type', [1])//1-polizas 3-contratos 4-addendas  5-dictamenes
+            ->orderBy('created_at','asc')
+            ->get();
+
+        // ROL ADMINISTRADOR Obtenemos los archivos cargados por otras dependencias
+        // if($role_user == 1){
+            $other_files_pol = $contract->files()->where('dependency_id', '!=', $user_dependency)
+            ->whereIn('file_type', [1])//1-polizas 3-contratos 4-addendas  5-dictamenes
+            ->orderBy('created_at','asc')
+            ->get();
+        // }
+
+        // Obtenemos los archivos cargados por usuarios con tipo de archivos 3 contratos
+        $user_files_con = $contract->files()->where('dependency_id', $user_dependency)
+            ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas  5-dictamenes
+            ->orderBy('created_at','asc')
+            ->get();
+
+        // if($role_user == 1){
+            $other_files_con = $contract->files()->where('dependency_id', '!=', $user_dependency)
+            ->whereIn('file_type', [3])//1-polizas 3-contratos 4-addendas  5-dictamenes
+            ->orderBy('created_at','asc')
+            ->get();
+        // }
+
+        // chequeamos que el usuario tenga permisos para visualizar el pedido
+        if($request->user()->hasPermission(['admin.contracts.show', 'process_contracts.contracts.show',
+        'contracts.contracts.index','derive_contracts.contracts.index']) || $contract->dependency_id == $request->user()->dependency_id){
+            return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con','other_files_pol','other_files_con'));
+        }else{
+            return back()->with('error', 'No tiene los suficientes permisos para acceder a esta sección.');
+        }
+    }
+
+
+    /**
+     ** Visualización de un pedido de contratos de obras
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function show2(Request $request, $contract_id)
     {
         // Para acceder a eventos y localidades de las órdenes de un contrato
         $contract = Contract::with('orders.events', 'orders.locality')->findOrFail($contract_id);
