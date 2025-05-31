@@ -459,8 +459,10 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::get('contracts/getNotifications', [ContractsController::class, 'getNotifications'])->name('contracts.getNotifications');            
     Route::resource('contracts', ContractsController::class);
-    Route::get('/contracts-list', [ContractsController::class, 'index2'])->name('contracts.index2');
-    Route::get('/contracts-show', [ContractsController::class, 'show2'])->name('contracts.show2');
+    Route::get('/contracts-uoc', [ContractsController::class, 'index2'])->name('contracts.index2');
+
+    // Route::get('/contracts-show', [ContractsController::class, 'obras'])->name('contracts.obras');
+    Route::get('/contracts/{id}/obras', [ContractsController::class, 'obras'])->name('contracts.obras');
 
     
 

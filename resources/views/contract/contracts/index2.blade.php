@@ -17,9 +17,17 @@ p.centrado {
                 <div class="page-header-title">
                     <i class="fa fa-list bg-c-blue"></i>
                     <div class="d-inline">                                               
-                        <h5>Listado de Contratos de Obras</h5>                            
+                        <h5>Listado de Contratos de Obras</h5>
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                        <br>
+                        {{-- si es de UOC, role 30 no muestra reportes --}}
+                        @if (Auth::user()->role->id == 30)
+                        @else    
+                            <a href="pdf/panel_orders1" class="btn btn-outline-primary" target="_blank"> TOTAL ORDENES</a>
+                            <a href="pdf/tablero" class="btn btn-outline-danger" target="_blank"> TABLERO</a>
+                        @endif
                     </div>
-                </div>
+                </div>                
             </div>
             <div class="col-lg-4">
                 <div class="page-header-breadcrumb">
@@ -96,7 +104,7 @@ p.centrado {
 
                                                         <td>{{ $contracts[$i]->contractType->description }}</td>
                                                         <td>
-                                                            <a href="{{ route('contracts.show2', $contracts[$i]->id) }}" class="btn btn-outline-success">Ver Más</a>
+                                                            <a href="{{ route('contracts.obras', $contracts[$i]->id) }}" class="btn btn-outline-success">Ver Más</a>
                                                         </td>
                                                     </tr>
                                                 @endfor

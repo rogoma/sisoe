@@ -58,7 +58,7 @@ p.centrado {
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.index') }}">Llamados</a>
+                            <a href="{{ route('contracts.index2') }}">Llamados</a>
                         </li>
                     </ul>
                 </div>

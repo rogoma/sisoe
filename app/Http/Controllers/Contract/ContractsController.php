@@ -71,7 +71,7 @@ class ContractsController extends Controller
      * Listado de todos los pedidos.
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index2(Request $request)
     {
         if($request->user()->hasPermission(['admin.contracts.index'])){
             //NO SE MUESTRAN LOS PEDIDOS ANULADOS
@@ -95,7 +95,7 @@ class ContractsController extends Controller
      * Listado de todos los pedidos.
      * @return \Illuminate\Http\Response
      */
-    public function index2(Request $request)
+    public function index(Request $request)
     {
         // if($request->user()->hasPermission(['admin.contracts.index','contracts.contracts.index'])){
         if($request->user()->hasPermission(['admin.contracts.index', 'contracts.contracts.all'])){
@@ -103,6 +103,7 @@ class ContractsController extends Controller
             //DETERMINAR QUE DEPENDENCIAS DEBEN SOLO VER CONTRATOS DE OBRAS
             $contracts = Contract::where('contract_state_id', '>=', 1)                    
                     ->where('contract_type_id', '=', 2)//solo muestra contratos de obras
+                    ->where('contract_state_id', '=', 1)//solo muestra contratos en cursos
                     ->orderBy('iddncp','asc')
                     ->get();
             $dependency = $request->user()->dependency_id;
@@ -359,7 +360,7 @@ class ContractsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show2(Request $request, $contract_id)
+    public function obras(Request $request, $contract_id)
     {
         // Para acceder a eventos y localidades de las órdenes de un contrato
         $contract = Contract::with('orders.events', 'orders.locality')->findOrFail($contract_id);
@@ -453,7 +454,7 @@ class ContractsController extends Controller
                 return view('contract.contracts.showcontra', compact('contract','user_files_pol','user_files_con',
                 'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract', 'orders', 'events'));
             }else{
-                return view('contract.contracts.show', compact('contract','user_files_pol','user_files_con',
+                return view('contract.contracts.show2', compact('contract','user_files_pol','user_files_con',
                 'user_files_eval','other_files_pol','other_files_con','other_files_eval', 'items_contract', 'orders', 'events'));
             }
         }else{
