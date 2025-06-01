@@ -20,8 +20,8 @@ p.centrado {
                         <h5>Listado de Contratos de Obras</h5>
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                         <br>
-                        {{-- si es de UOC, role 30 no muestra reportes --}}
-                        @if (Auth::user()->role->id == 30)
+                        {{-- si es de UOC, role = 30 o si es contratista role = 4 no muestra reportes --}}
+                        @if (Auth::user()->role->id == 30 || Auth::user()->role->id == 4)
                         @else    
                             <a href="pdf/panel_orders1" class="btn btn-outline-primary" target="_blank"> TOTAL ORDENES</a>
                             <a href="pdf/tablero" class="btn btn-outline-danger" target="_blank"> TABLERO</a>
