@@ -129,8 +129,8 @@
                             <span class="pcoded-mtext">Pólizas y Garantías</span>
                             </a>
                             <ul class="pcoded-submenu">
-                                <li class="@if(Route::currentRouteName() == 'contracts.index_licita') active @endif">
-                                    <a href="{{ route('contracts.index_licita') }}" class="waves-effect waves-dark">
+                                <li class="@if(Route::currentRouteName() == 'contracts.index') active @endif">
+                                    <a href="{{ route('contracts.index') }}" class="waves-effect waves-dark">
                                     <span class="pcoded-mtext">Listado de Llamados</span>
                                     </a>
                                 </li>
