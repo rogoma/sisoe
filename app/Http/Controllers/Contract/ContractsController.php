@@ -373,7 +373,9 @@ class ContractsController extends Controller
         if($role_user == 4){
             $orders = $contract->orders()->where('order_state_id', 1)->get();
         }else{
-            $orders = $contract->orders;
+            // $orders = $contract->orders;            
+            //MUESTRA TODAS LAS ORDENES MENOS LAS QUE ESTAN SUSPENDIDAS = ESTADO 2
+            $orders = $contract->orders()->where('order_state_id', '!=', 2)->get();
         }        
         
         

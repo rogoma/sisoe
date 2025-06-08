@@ -214,8 +214,9 @@
                                                 </tbody>                                               
                                             </table>
                                             <div class="text-center">
-                                                @if (in_array($contract->contract_state_id, [1, 2]))
-                                                    <button id="saveButton" class="btn btn-primary">Grabar Medición</button>
+                                                @if (in_array($contract->contract_state_id, [1, 2]))                                                    
+                                                    <a href="{{ asset('files/certis.pdf') }}" target="_blank" class="btn btn-primary">Grabar Medición</a>
+                                                    {{-- <button id="saveButton" class="btn btn-primary">Grabar Medición</button> --}}
                                                 @endif
                                             </div>
                                         </div>

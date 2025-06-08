@@ -459,7 +459,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($orders->sortBy('id') as $index => $order)
+                                                        @foreach ($orders->sortBy('id') as $index => $order)                                                        
                                                             <tr>
                                                                 <td style="color:black;text-align: left;width: 150px;">
                                                                     {{ $order->creatorUser->name }}{{ $order->creatorUser->lastname }}-{{ $order->creatorUser->position->description }}

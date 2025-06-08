@@ -77,6 +77,7 @@ class ReportsController extends Controller
                     'monto_orden',
                     'order_state_id'
                 ])
+                ->where('order_state_id', '!=', 5) //filtra 5-Orden de Ejecución Anulada
                 ->orderBy('contratista')                
                 ->orderBy('nombre_fiscal')
                 ->orderBy('localidad')
