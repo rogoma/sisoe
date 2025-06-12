@@ -42,56 +42,40 @@
                                     <form method="POST" action="{{ route('districts.store') }}">
                                         @csrf
 
-                                        <div class="form-group row @error('coddist') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Código Distrito</label>
+                                        {{-- <div class="form-group row @error('coddpto') has-danger @enderror">
+                                            <label class="col-sm-2 col-form-label">Código Departamento Geográfico</label>
                                             <div class="col-sm-10">
-                                                <input type="text" id="coddist" name="coddist" value="{{ old('coddist') }}" class="form-control @error('coddist') form-control-danger @enderror" value="{{ old('coddist') }}">
-                                                @error('coddist')
-                                                    <div class="col-form-label">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row @error('coddpto') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Código Dpto. Geográfico</label>
-                                            <div class="col-sm-10">                                                
                                                 <input type="text" id="coddpto" name="coddpto" value="{{ old('coddpto') }}" class="form-control @error('coddpto') form-control-danger @enderror" value="{{ old('coddpto') }}">
                                                 @error('coddpto')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> --}}
 
-                                        <div class="form-group row @error('codreg') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Código Región</label>
-                                            <div class="col-sm-10">                                                
-                                                <input type="text" id="codreg" name="codreg" value="{{ old('codreg') }}" class="form-control @error('codreg') form-control-danger @enderror" value="{{ old('codreg') }}">
-                                                @error('codreg')
+                                        <div class="form-group row @error('departments') has-danger @enderror">
+                                            <label class="col-sm-2 col-form-label">Departamento</label>
+                                            <div class="col-sm-10">
+                                                <select id="departments" name="departments" class="form-control">
+                                                    <option value="">--- Seleccionar Departamento ---</option>
+                                                    @foreach ($departments as $department)
+                                                        <option value="{{ $department->id }}" @if ($department->id == old('departments')) selected @endif>{{ $department->description }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('departments')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
-                                        <div class="form-group row @error('subcreg') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Sub Código Región</label>
-                                            <div class="col-sm-10">                                                
-                                                <input type="text" id="subcreg" name="subcreg" value="{{ old('subcreg') }}" class="form-control @error('subcreg') form-control-danger @enderror" value="{{ old('subcreg') }}">
-                                                @error('subcreg')
-                                                    <div class="col-form-label">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row @error('nomdist') has-danger @enderror">
+                                        <div class="form-group row @error('description') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Nombre Distrito</label>
-                                            <div class="col-sm-10">                                                
-                                                <input type="text" id="nomdist" name="nomdist" value="{{ old('nomdist') }}" class="form-control @error('nomdist') form-control-danger @enderror" value="{{ old('nomdist') }}">
-                                                @error('nomdist')
+                                            <div class="col-sm-10">
+                                                <input type="text" id="description" name="description" value="{{ old('description') }}" class="form-control @error('description') form-control-danger @enderror" value="{{ old('description') }}">
+                                                @error('description')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-
 
                                         <div class="form-group row">
                                             <label class="col-sm-2"></label>
@@ -111,3 +95,13 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $('#departments').select2();    
+
+});
+</script>
+@endpush

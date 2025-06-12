@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Department;
 use App\Models\District;
 
 class DistrictsController extends Controller
@@ -41,7 +42,10 @@ class DistrictsController extends Controller
      */
     public function create()
     {
-        return view('admin.districts.create');
+        $departments = Department::where('id', '!=', 9999)
+                         ->orderBy('id')
+                         ->get();
+        return view('admin.districts.create', compact('departments'));         
     }
 
     /**
@@ -51,10 +55,10 @@ class DistrictsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {  
         $rules = array(
-            'nomdist' => 'string|required|max:100',
-            'coddist' => 'string|required|max:15'
+            'departments' => 'required|numeric',          
+            'description' => 'string|required|max:50|unique:districts'
         );
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
@@ -62,8 +66,8 @@ class DistrictsController extends Controller
         }
 
         $district = new District;
-        $district->nomdist = $request->input('nomdist');
-        $district->coddist = $request->input('coddist');
+        $district->department_id = $request->input('departments');        
+        $district->description = $request->input('description');
         $district->creator_user_id = $request->user()->id;  // usuario logueado
         $district->save();
 

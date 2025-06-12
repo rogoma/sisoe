@@ -53,10 +53,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Código Distrito</th>
-                                                    <th>Código Departamento Geográfico</th>
-                                                    <th>Código Región</th>
-                                                    <th>Sub Código Región</th>
+                                                    <th>Nombre Departamento</th>
                                                     <th>Nombre Distrito</th>
                                                     <th>Acciones</th>
                                                 </tr>
@@ -65,16 +62,13 @@
                                             @for ($i = 0; $i < count($districts); $i++)
                                                 <tr>
                                                     <td>{{ ($i+1) }}</td>
-                                                    <td>{{ $districts[$i]->coddist }}</td>
-                                                    <td>{{ $districts[$i]->coddpto }}</td>
-                                                    <td>{{ $districts[$i]->codreg }}</td>
-                                                    <td>{{ $districts[$i]->subcreg }}</td>
-                                                    <td>{{ $districts[$i]->nomdist }}</td>
+                                                    <td>{{ $districts[$i]->department->description }}</td>
+                                                    <td>{{ $districts[$i]->description }}</td>
                                                     <td>
-                                                        <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateDistrict({{ $districts[$i]->id }})">
+                                                        <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateDepartment({{ $districts[$i]->id }})">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
-                                                        <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteDistrict({{ $districts[$i]->id }})">
+                                                        <button type="button" title="Borrar" class="btn btn-danger btn-icon" onclick="deleteDepartment({{ $districts[$i]->id }})">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>
@@ -103,11 +97,11 @@
 $(document).ready(function(){
     $('#districts').DataTable();
 
-    updateDistrict = function(district){
-        location.href = '/districts/'+district+'/edit/';
+    updateDepartment = function(department){
+        location.href = '/districts/'+department+'/edit/';
     }
 
-    deleteDistrict = function(district){
+    deleteDepartment = function(department){
       swal({
             title: "Atención",
             text: "Está seguro que desea eliminar el registro?",
@@ -120,17 +114,24 @@ $(document).ready(function(){
         function(isConfirm){
           if(isConfirm){
             $.ajax({
-              url : '/districts/'+district,
+              url : '/districts/'+department,
               method : 'POST',
               data: {_method: 'DELETE', _token: '{{ csrf_token() }}'},
               success: function(data){
                 try{
                     response = (typeof data == "object") ? data : JSON.parse(data);
-                    if(response.status == "success"){
-                        location.reload();
-                    }else{
-                        swal("Error!", response.message, "error");
-                    }
+                        if(response.status == "success"){
+                            swal({
+                                title: "Éxito!",
+                                text: response.message,
+                                type: "success"
+                            },
+                            function(isConfirm){
+                                location.reload();
+                            });
+                        }else{
+                            swal("Error!", response.message, "error");
+                        }
                 }catch(error){
                     swal("Error!", "Ocurrió un error intentado resolver la solicitud, por favor complete todos los campos o recargue de vuelta la pagina", "error");
                     console.log(error);
