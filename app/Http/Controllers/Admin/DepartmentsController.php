@@ -146,6 +146,11 @@ class DepartmentsController extends Controller
 
         $department = Department::find($id);
         
+         // Chequeamos si existen usuarios referenciando a departamentos
+        if($department->region->count() > 0){
+            return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el departamentodebido a que se encuentra vinculada a Regiones ', 'code' => 200], 200);
+        }
+
         // Eliminamos en caso de no existir usuarios vinculados a la región
         $department->delete();
         return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el Departmento ' . $department->nomdpto, 'code' => 200], 200);

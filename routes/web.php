@@ -126,7 +126,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('providers', ProvidersController::class);
     Route::resource('regiones', RegionesController::class);
     Route::resource('departments', DepartmentsController::class);
-    Route::resource('districts', DistrictsController::class);
+    Route::resource('districts', DistrictsController::class);    
     Route::resource('localities', LocalityController::class)->names('admin.localities');
     Route::resource('expenditure_objects', ExpenditureObjectsController::class);
     Route::resource('files', FilesController::class);

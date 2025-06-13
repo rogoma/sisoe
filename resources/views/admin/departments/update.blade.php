@@ -59,23 +59,8 @@
                                             </div>
                                         </div>
 
-                                        {{-- <div class="form-group row @error('dependency_types') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Tipo de Dependencia</label>
-                                            <div class="col-sm-10">
-                                                <select id="dependency_types" name="dependency_types" class="form-control">
-                                                    <option value="">--- Seleccionar Tipo de Dependencia ---</option>
-                                                    @foreach ($dependency_types as $dependency_type)
-                                                        <option value="{{ $dependency_type->id }}" @if ($dependency_type->id == old('dependency_types',$dependency->dependency_type_id)) selected @endif>{{ $dependency_type->description }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('dependency_types')
-                                                    <div class="col-form-label">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div> --}}
-
                                         <div class="form-group row @error('description') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Descripción</label>
+                                            <label class="col-sm-2 col-form-label">Descripción Departamento</label>
                                             <div class="col-sm-10">
                                                 <input type="text" id="description" name="description" value="{{ old('description', $department->description) }}" class="form-control @error('description') form-control-danger @enderror" value="{{ old('description', $department->description) }}">
                                                 @error('description')

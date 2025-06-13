@@ -93,8 +93,13 @@ class DistrictsController extends Controller
      */
     public function edit($id)
     {
+        // $department = Department::find($id);
+        // $regiones = Region::where('id', '!=', 9999)->get();
+        // return view('admin.departments.update', compact('department','regiones'));         
+        
         $district = District::find($id);
-        return view('admin.districts.update', compact('district'));
+        $departments = Department::where('id', '!=', 9999)->get();
+        return view('admin.districts.update', compact('departments','district'));
     }
 
     /**

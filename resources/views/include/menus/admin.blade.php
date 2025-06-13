@@ -336,6 +336,11 @@
                                     <span class="pcoded-mtext">Distritos</span>
                                     </a>
                                 </li>
+                                <li class="@if(Route::currentRouteName() == 'admin.localities.index') active @endif">
+                                    <a href="{{ route('admin.localities.index') }}" class="waves-effect waves-dark">
+                                    <span class="pcoded-mtext">Localidades</span>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li class="pcoded-hasmenu">

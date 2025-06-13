@@ -12,14 +12,19 @@ class LocalityController extends Controller
 {
     public function index()
     {
-        $localities = Locality::with('district')->get();
+        // $districts = District::all();
+        // return view('admin.districts.index', compact('districts'));
+        
+        $localities = Locality::all();
         return view('admin.localities.index', compact('localities'));
     }
 
     public function create()
     {
-        $districts = District::all();
-        return view('admin.localities.create', compact('districts'));
+        $localities = Locality::where('id', '!=', 9999)
+                         ->orderBy('id')
+                         ->get();
+        return view('admin.localities.create', compact('localities'));
     }
 
     public function store(Request $request)
