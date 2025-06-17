@@ -99,11 +99,11 @@
 $(document).ready(function(){
     $('#localities').DataTable();
 
-    updateLocality = function(Locality){
-        location.href = '/localities/'+Locality+'/edit/';
+    updateLocality = function(locality){
+        location.href = '/localities/'+locality+'/edit/';
     }
 
-    deleteLocality = function(Locality){
+    deleteLocality = function(locality){
       swal({
             title: "Atención",
             text: "Está seguro que desea eliminar la localidad?",
@@ -116,7 +116,7 @@ $(document).ready(function(){
         function(isConfirm){
           if(isConfirm){
             $.ajax({
-              url : '/Localitys/'+Locality,
+              url : '/admin.localities/'+locality,
               method : 'POST',
               data: {_method: 'DELETE', _token: '{{ csrf_token() }}'},
               success: function(data){

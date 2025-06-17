@@ -8,8 +8,8 @@
                 <div class="page-header-title">
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Distritos</h5>
-                        <span>Editar Distrito</span>
+                        <h5>Localidades</h5>
+                        <span>Editar Localidad</span>
                     </div>
                 </div>
             </div>
@@ -20,7 +20,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('departments.index') }}">Distritos</a>
+                            <a href="{{ route('districts.index') }}">Localidades</a>
                         </li>
                     </ul>
                 </div>
@@ -36,32 +36,33 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>Editar Distrito</h5>
+                                    <h5>Editar Localidad</h5>
                                 </div>
                                 <div class="card-block">
-                                    <form method="POST" action="{{ route('districts.update', $district->id) }}">
+                                    {{-- <form method="POST" action="{{ route('admin.localities.update', $locality->id) }}"> --}}
                                         @csrf
                                         @method('PUT')                                       
 
-                                        <div class="form-group row @error('departments') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Departamento</label>
+                                        <div class="form-group row @error('districts') has-danger @enderror">
+                                            <label class="col-sm-2 col-form-label">Distrito</label>
                                             <div class="col-sm-10">
-                                                <select id="departments" name="departments" class="form-control">
-                                                    <option value="">--- Seleccionar Departamento ---</option>
-                                                    @foreach ($departments as $department)                                                        
-                                                        <option value="{{ $department->id }}" @if ($department->id == old('departments', $department->id)) selected @endif>{{ $department->description }}</option>
+                                                <select id="districts" name="districts" class="form-control">
+                                                    <option value="">--- Seleccionar Distrito ---</option>
+                                                    @foreach ($districts as $district)                                                        
+                                                        <option value="{{ $district->id }}" @if ($district->id == old('districts', $district->id           )) selected @endif>{{ $district->description }}</option>
+                                                        {{-- <option value="{{ $region->id   }}" @if ($region->id   == old('regiones' , $department->region->id )) selected @endif>{{ $region->description   }}</option> --}}
                                                     @endforeach
                                                 </select>
-                                                @error('departments')
+                                                @error('districts')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
                                         <div class="form-group row @error('description') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Descripción Distrito</label>
+                                            <label class="col-sm-2 col-form-label">Descripción Localidad</label>
                                             <div class="col-sm-10">
-                                                <input type="text" id="description" name="description" value="{{ old('description', $district->description) }}" class="form-control @error('description') form-control-danger @enderror" value="{{ old('description', $district->description) }}">
+                                                <input type="text" id="description" name="description" value="{{ old('description', $locality->description) }}" class="form-control @error('description') form-control-danger @enderror" value="{{ old('description', $locality->description) }}">
                                                 @error('description')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
@@ -92,7 +93,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-    $('#departments').select2();    
+    $('#districts').select2();    
 
 });
 </script>

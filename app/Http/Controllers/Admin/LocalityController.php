@@ -9,6 +9,7 @@ use App\Models\Locality;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LocalityExport;
+use Illuminate\Validation\Rule;
 
 
 class LocalityController extends Controller
@@ -43,16 +44,6 @@ class LocalityController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'description' => 'required|string|max:255',
-        //     'district_id' => 'required|exists:districts,id',
-        // ]);
-
-        // Locality::create($request->all());
-
-        // return redirect()->route('admin.localities.index')->with('success', 'Localidad creada exitosamente.');
-
-
         $rules = array(
             'description' => 'required|string|max:255',
             'district_id' => 'required|exists:districts,id'
@@ -72,33 +63,60 @@ class LocalityController extends Controller
 
     }
 
-    public function edit(Locality $locality)
+    public function edit(Locality $id)
     {
-        $districts = District::all();
-        return view('admin.localities.edit', compact('locality', 'districts'));
+        $locality = Locality::find($id);
+        $districts = District::all();        
+        return view('admin.localities.update', compact('locality', 'districts'));
     }
 
-    public function update(Request $request, Locality $locality)
-    {
-        $request->validate([
-            'description' => 'required|string|max:255',
-            'district_id' => 'required|exists:districts,id',
-        ]);
 
-        $locality->update($request->all());
+    public function update(Request $request, $id)
+    {
+        $rules = array(
+            'description' => 'required|string|max:255',
+            'district_id' => 'required|exists:districts,id'
+        );
+        $validator =  Validator::make($request->input(), $rules);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $locality = Locality::find($id);
+        
+        $locality->description = $request->input('description');
+        $locality->district_id = $request->input('district_id');        
+        $locality->creator_user_id = $request->user()->id;  // usuario logueado
+        $locality->save();
 
         return redirect()->route('admin.localities.index')->with('success', 'Localidad actualizada exitosamente.');
     }
 
-    public function destroy(Locality $locality)
+    public function destroy(Locality $id)
     {
-        $locality->delete();
-        return redirect()->route('admin.localities.index')->with('success', 'Localidad eliminada exitosamente.');
+    //     $locality->delete();
+    //     return redirect()->route('admin.localities.index')->with('success', 'Localidad eliminada exitosamente.');
+    
+
+        $locality = Locality::find($id);
+        // $region = Region::find($id);
+
+        // if (method_exists($locality, 'orders') && $locality->orders()->exists()) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'No se ha podido eliminar la localidada debido a que tiene ordenes asociadas.',
+        //         'code' => 200
+        //     ], 200);
+        // }
+
+        // $locality->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Se ha eliminado la localidad: ' . $locality->description,
+            'code' => 200
+        ], 200);
+
     }
-
-
-
-
-
 }
 

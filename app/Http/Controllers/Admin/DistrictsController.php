@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Department;
 use App\Models\District;
 use App\Models\Locality;
+use Illuminate\Validation\Rule;
 
 class DistrictsController extends Controller
 {
@@ -110,9 +111,15 @@ class DistrictsController extends Controller
     public function update(Request $request, $id)
     {
         $rules = array(
-            'nomdist' => 'string|required|max:100',
-            'coddist' => 'string|required|max:15'
-        );
+            'departments' => 'required|numeric',            
+            'description' => [
+                'string',
+                'required',
+                'max:25',
+                Rule::unique('districts')->ignore($id),
+            ],            
+        );        
+        
         $validator =  Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
@@ -120,8 +127,8 @@ class DistrictsController extends Controller
 
         // obtenemos el proveedor
         $district = District::find($id);
-        $district->nomdist = $request->input('nomdist');
-        $district->coddist = $request->input('coddist');
+        $district->department_id = $request->input('departments');        
+        $district->description = $request->input('description');        
         $district->modifier_user_id = $request->user()->id;  // usuario logueado
         $district->save();
 
