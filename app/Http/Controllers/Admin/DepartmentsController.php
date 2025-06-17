@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Region;
 use App\Models\Department;
+use App\Models\District;
 use Illuminate\Validation\Rule;
 
 
@@ -65,7 +66,7 @@ class DepartmentsController extends Controller
         }
 
         $department = new Department;
-        $department->regiones_id = $request->input('regiones');        
+        $department->region_id = $request->input('regiones');        
         $department->description = $request->input('description');
         $department->creator_user_id = $request->user()->id;  // usuario logueado
         $department->save();
@@ -123,7 +124,7 @@ class DepartmentsController extends Controller
 
         // obtenemos la región
         $department = Department::find($id);
-        $department->regiones_id = $request->input('regiones');  
+        $department->region_id = $request->input('regiones');  
         $department->description = $request->input('description');
         $department->modifier_user_id = $request->user()->id;  // usuario logueado
         $department->save();        
@@ -140,19 +141,29 @@ class DepartmentsController extends Controller
     public function destroy(Request $request, $id)
     {
         // Chequeamos que el usuario actual disponga de permisos de eliminacion
-        if(!$request->user()->hasPermission(['admin.departments.delete'])){
-            return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
-        }
+        // if(!$request->user()->hasPermission(['admin.departments.delete'])){
+        //     return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
+        // }
 
         $department = Department::find($id);
-        
-         // Chequeamos si existen usuarios referenciando a departamentos
-        if($department->region->count() > 0){
-            return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el departamentodebido a que se encuentra vinculada a Regiones ', 'code' => 200], 200);
+
+        if (method_exists($department, 'districts') && $department->districts()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se ha podido eliminar el departamento debido a que tiene distritos asociados.',
+                'code' => 200
+            ], 200);
         }
 
-        // Eliminamos en caso de no existir usuarios vinculados a la región
         $department->delete();
-        return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el Departmento ' . $department->nomdpto, 'code' => 200], 200);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Se ha eliminado el Departamento: ' . $department->description,
+            'code' => 200
+        ], 200);
+
+
+
     }
 }

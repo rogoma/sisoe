@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Department;
 use App\Models\District;
+use App\Models\Locality;
 
 class DistrictsController extends Controller
 {
@@ -93,13 +94,10 @@ class DistrictsController extends Controller
      */
     public function edit($id)
     {
-        // $department = Department::find($id);
-        // $regiones = Region::where('id', '!=', 9999)->get();
-        // return view('admin.departments.update', compact('department','regiones'));         
-        
         $district = District::find($id);
+        $districts = District::all();
         $departments = Department::where('id', '!=', 9999)->get();
-        return view('admin.districts.update', compact('departments','district'));
+        return view('admin.districts.update', compact('departments','district','districts'));
     }
 
     /**
@@ -146,13 +144,20 @@ class DistrictsController extends Controller
 
         $district = District::find($id);
 
-        // Chequeamos si existen usuarios referenciando a departamentos
-        if($district->department->count() > 0){
-            return response()->json(['status' => 'error', 'message' => 'No se ha podido eliminar el distrito debido a que se encuentra vinculada a Departamentos ', 'code' => 200], 200);
+        if (method_exists($district, 'localities') && $district->localities()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se ha podido eliminar el distrito debido a que tiene localidades asociadas.',
+                'code' => 200
+            ], 200);
         }
 
-        // Eliminamos en caso de no existir usuarios vinculados al proveedor
-        $district->delete();
-        return response()->json(['status' => 'success', 'message' => 'Se ha eliminado el Distrito ' . $district->nomdist, 'code' => 200], 200);
+        // $district->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Se ha eliminado el Distrito: ' . $district->description,
+            'code' => 200
+        ], 200);
     }
 }

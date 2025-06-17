@@ -53,13 +53,13 @@
                                                     </select>
                                                     @error('program')
                                                         <div class="col-form-label">{{ $message }}</div>
-                                                    @enderror                                                
-                                                <!-- <input type="text" id="program_id " name="program_id " value="{{ old('program_id ', $sub_program->program_id ) }}" class="form-control @error('program_id ') form-control-danger @enderror" value="{{ old('program_id ', $sub_program->program_id ) }}">
+                                                    @enderror                                                                                                
                                                 @error('program_id ')
                                                     <div class="col-form-label">{{ $message }}</div>
-                                                @enderror -->
+                                                @enderror
                                             </div>
                                         </div>
+
                                         <div class="form-group row @error('description') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Descripción del SubPrograma</label>
                                             <div class="col-sm-10">

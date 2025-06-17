@@ -42,6 +42,8 @@
                                 <div class="card-header">
                                     <div class="float-left">
                                         <h5>Listado de Localidades</h5>
+                                        <a href="pdf/localities" class="btn btn-danger" target="_blank">Listado de Localidades</a>
+                                        <a href="/localities/exportarlocalities" class="btn btn-success">Bajar_en_Excel</a>
                                     </div>
                                     <div class="float-right">
                                         <a href="{{ route('admin.localities.create') }}" class="btn btn-primary">Agregar Localidad</a>  
@@ -62,7 +64,7 @@
                                             @for ($i = 0; $i < count($localities); $i++)
                                                 <tr>
                                                     <td>{{ ($i+1) }}</td>
-                                                    <td>{{ $localities[$i]->Locality->description }}</td>
+                                                    <td>{{ $localities[$i]->district->description }}</td>
                                                     <td>{{ $localities[$i]->description }}</td>
                                                     <td>
                                                         <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateLocality({{ $localities[$i]->id }})">

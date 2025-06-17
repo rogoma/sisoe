@@ -21,6 +21,6 @@ class Department extends Model
 
     public function region()
     {
-        return $this->belongsTo(Region::class, 'regiones_id');
+        return $this->belongsTo(Region::class);
     }
 }

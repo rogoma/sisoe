@@ -8,8 +8,8 @@
                 <div class="page-header-title">
                     <i class="fa fa-sitemap bg-c-blue"></i>
                     <div class="d-inline">
-                        <h5>Distritos</h5>
-                        <span>Agregar Distrito</span>
+                        <h5>Localidades</h5>
+                        <span>Agregar Localidad</span>
                     </div>
                 </div>
             </div>
@@ -20,7 +20,7 @@
                             <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('districts.index') }}">Distritos</a>
+                            <a href="{{ route('districts.index') }}">Localidades</a>
                         </li>
                     </ul>
                 </div>
@@ -36,29 +36,29 @@
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>Agregar Distrito</h5>
+                                    <h5>Agregar Localidad</h5>
                                 </div>
                                 <div class="card-block">
-                                    <form method="POST" action="{{ route('districts.store') }}">
+                                    <form method="POST" action="{{ route('admin.localities.store') }}">
                                         @csrf                                      
 
-                                        <div class="form-group row @error('departments') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Departamento</label>
+                                        <div class="form-group row @error('district_id') has-danger @enderror">
+                                            <label class="col-sm-2 col-form-label">Distrito</label>
                                             <div class="col-sm-10">
-                                                <select id="departments" name="departments" class="form-control">
-                                                    <option value="">--- Seleccionar Departamento ---</option>
-                                                    @foreach ($departments as $department)
-                                                        <option value="{{ $department->id }}" @if ($department->id == old('departments')) selected @endif>{{ $department->description }}</option>
+                                                <select id="district_id" name="district_id" class="form-control">
+                                                    <option value="">--- Seleccionar Distrito ---</option>
+                                                    @foreach ($districts as $district)
+                                                        <option value="{{ $district->id }}" @if ($district->id == old('district_id')) selected @endif>{{ $district->description }}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('departments')
+                                                @error('district_id')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
                                         <div class="form-group row @error('description') has-danger @enderror">
-                                            <label class="col-sm-2 col-form-label">Nombre Distrito</label>
+                                            <label class="col-sm-2 col-form-label">Nombre Localidad</label>
                                             <div class="col-sm-10">
                                                 <input type="text" id="description" name="description" value="{{ old('description') }}" class="form-control @error('description') form-control-danger @enderror" value="{{ old('description') }}">
                                                 @error('description')
@@ -90,7 +90,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-    $('#departments').select2();    
+    $('#district_id').select2();    
 
 });
 </script>

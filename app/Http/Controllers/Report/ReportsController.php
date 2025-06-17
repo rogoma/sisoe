@@ -1175,6 +1175,25 @@ class ReportsController extends Controller
 
     }
 
+    public function pdfLocalities()
+    {
+        //SE ORDENA POR CI SE CASTEA VARCHAR A INTEGER EN ORDERBYRAW
+        $localities = DB::table('vista_div_politica')
+            ->select(['departamento', 'distrito', 'localidad'])
+            ->orderByRaw('id_departamento')
+            ->get();
+
+        // PARA MOSTRAR COMO PDF
+        $view = View::make('reports.localities', compact('localities'))->render();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        return $pdf->stream('Localidades' . '.pdf');
+
+        // PARA MOSTRAR COMO VISTA EN HTML
+        // return view('reports.users2', compact('users'));
+
+    }
+
     //MUESTRA PROVIDERS
     public function pdfContratistas()
     {

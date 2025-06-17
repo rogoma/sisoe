@@ -49,14 +49,14 @@
                                                 <select id="departments" name="departments" class="form-control">
                                                     <option value="">--- Seleccionar Departamento ---</option>
                                                     @foreach ($departments as $department)                                                        
-                                                        <option value="{{ $department->id }}" @if ($department->id == old('departments', $department->id)) selected @endif>{{ $department->description }}</option>
+                                                        <option value="{{ $department->id }}" @if ($department->id == old('departments', $district->department->id)) selected @endif>{{ $department->description }}</option>                                                      
                                                     @endforeach
                                                 </select>
                                                 @error('departments')
                                                     <div class="col-form-label">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div>                                       
 
                                         <div class="form-group row @error('description') has-danger @enderror">
                                             <label class="col-sm-2 col-form-label">Descripción Distrito</label>

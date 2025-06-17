@@ -98,6 +98,10 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::resource('order_presentations', OrderPresentationsController::class);
 
 
+    //LOCALIDADES
+     Route::get('/localities/exportarlocalities', [LocalityController::class, 'exportarlocalities']);
+
+
     //PARA CAMBIAR PASSWORD
     Route::put('users/{id}/update_pass', [UsersController::class, 'update_pass'])->name('users.update_pass');
 
@@ -374,6 +378,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
     Route::get('pdf/users', [ReportsController::class, 'pdfUsers'])->name('pdf.users');
     Route::get('pdf/users2', [ReportsController::class, 'pdfUsers2'])->name('pdf.users2');
+
+    Route::get('pdf/localities', [ReportsController::class, 'pdfLocalities'])->name('pdf.localities');
 
     Route::get('pdf/dependencies', [ReportsController::class, 'dependencies'])->name('pdf.dependencies');
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Region;
+use App\Models\Department;
 use Illuminate\Validation\Rule;
 
 class RegionesController extends Controller
@@ -84,15 +85,24 @@ class RegionesController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        // Chequeamos que el usuario actual disponga de permisos de eliminacion
-        // if(!$request->user()->hasPermission(['admin.regiones.delete'])){
-        //     return response()->json(['status' => 'error', 'message' => 'No posee los suficientes permisos para realizar esta acción.', 'code' => 200], 200);
-        // }
+                
+        $region = Region::find($id);
 
-        $regiones = Region::find($id);        
-        // Eliminamos en caso de no existir usuarios vinculados a dptos
-        
-        $regiones->delete();
-        return response()->json(['status' => 'success', 'message' => 'Se ha eliminado la Región ' . $regiones->description, 'code' => 200], 200);
+        if (method_exists($region, 'departments') && $region->departments()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se ha podido eliminar la región debido a que tiene departamentos asociados.',
+                'code' => 200
+            ], 200);
+        }
+
+        $region->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Se ha eliminado la región: ' . $region->description,
+            'code' => 200
+        ], 200);
+
     }
 }
