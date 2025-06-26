@@ -763,8 +763,10 @@
 
                                                     @endif
                                                 </div>
-                                                <br><br><br>
+                                                {{-- <br><br><br> --}}
+                                                <a href="/orders/exportarorders" class="btn btn-success">Bajar_en_Excel</a>
                                                 {{-- ACA DEBEN IR VALORES CALCULADOS DE ACUERDO A LA GENERACIÓN DE ORDENES --}}
+                                                <br><br>
                                                 <div
                                                     style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                                                     <div

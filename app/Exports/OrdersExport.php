@@ -24,7 +24,7 @@ class OrdersExport implements FromView
 
     public function view(): view    
     {        
-        $orders = DB::table('vista_uta')//vista que muestra los datos                
+        $orders = DB::table('vista_full')//vista que muestra los datos generales
                     ->select(['number','dncp_pac_id','order_description','modality_code','exp_obj_code','total_amount', 
                     'cdp_number','cdp_date','order_state_description','begin_date','covid','year',
                     'provider','contract_number','contract_date','cc_number','cc_date','monto_adjudica'])                    
@@ -32,7 +32,7 @@ class OrdersExport implements FromView
                     ->orderBy('provider','asc') 
                     ->get();
         //$orders = Order::all();
-        return view("order.orders.items", compact("orders"));
+        return view("order.orders.ordersexcel", compact("orders"));
 
         
 

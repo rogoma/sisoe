@@ -12,26 +12,15 @@ use Illuminate\Validation\Rule;
 
 use App\Models\Order;
 use App\Models\Contract;
-use App\Models\Policy;
-use App\Models\Item;
-use App\Models\File;
 use App\Models\Department;
 use App\Models\District;
 use App\Models\Locality;
-use App\Models\Level5CatalogCode;
-use App\Models\OrderPresentation;
-use App\Models\OrderMeasurementUnit;
 use App\Models\OrderState;
 use App\Models\Component;
 use App\Models\ItemContract;
-use Brick\Math\Internal\Calculator;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use App\Exports\OrdersExport;
-use App\Exports\OrdersExport2;
-use App\Exports\OrdersExport3;
+
+use Maatwebsite\Excel\Facades\Excel;
 
 
 
@@ -79,6 +68,13 @@ class OrdersEjecsController extends Controller
         // $this->postMaxSize = $postMaxSize;
         //MÁXIMO PERMITIDO 5 MEGAS POR CADA ARCHIVO
         $this->postMaxSize = 1048576 * 5;
+    }
+
+    //Para exportar Localidades a Excel
+    public function exportarorders()
+    {
+        return Excel::download(new OrdersExport, 'Ordenes.xlsx');
+
     }
 
     /**

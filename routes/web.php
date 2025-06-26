@@ -99,7 +99,8 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
 
     //LOCALIDADES
-     Route::get('/localities/exportarlocalities', [LocalityController::class, 'exportarlocalities']);
+    Route::get('/localities/exportarlocalities', [LocalityController::class, 'exportarlocalities']);
+
 
 
     //PARA CAMBIAR PASSWORD
@@ -172,6 +173,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('/orders', [OrdersEjecsController::class, 'store']);
     Route::get('/fetch-districts', [OrdersEjecsController::class, 'fetchDistricts']);
     Route::get('/fetch-localities', [OrdersEjecsController::class, 'fetchLocalities']);
+
+    //ORDENES EN EXCEL
+    Route::get('/orders/exportarorders', [OrdersEjecsController::class, 'exportarorders']);
 
 
     //PARA MOSTRAR LOS RUBROS DE UN CONTRATO DE ACUERDO A SU COMPONENTE
