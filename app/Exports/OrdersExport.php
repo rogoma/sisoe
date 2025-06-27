@@ -25,9 +25,19 @@ class OrdersExport implements FromView
     public function view(): view    
     {        
         $orders = DB::table('vista_full')//vista que muestra los datos generales
-                    ->select(['number','dncp_pac_id','order_description','modality_code','exp_obj_code','total_amount', 
-                    'cdp_number','cdp_date','order_state_description','begin_date','covid','year',
-                    'provider','contract_number','contract_date','cc_number','cc_date','monto_adjudica'])                    
+                    ->select(['fiscal_name',
+'fiscal_lastname',
+'providers_description', 
+'components_code',
+'orders_number',
+'orders_date',
+'orders_total_amount',
+'districts_description',
+'orders_locality',
+'components_description',
+'sign_date',
+'orders_plazo',
+'order_states_description'])                    
                     ->where('monto_adjudica', null)
                     ->orderBy('provider','asc') 
                     ->get();
