@@ -1180,7 +1180,7 @@ class ReportsController extends Controller
         //SE ORDENA POR CI SE CASTEA VARCHAR A INTEGER EN ORDERBYRAW
         $localities = DB::table('vista_div_politica')
             ->select(['departamento', 'distrito', 'localidad'])
-            ->orderByRaw('id_departamento')
+            ->orderByRaw('id_departamento, distrito, localidad')
             ->get();
 
         // PARA MOSTRAR COMO PDF

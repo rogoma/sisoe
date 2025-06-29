@@ -457,8 +457,11 @@
                                                             {{-- <th>Referencia</th> --}}
                                                             <th style="width: 190px; text-align: center;">Acciones</th>
                                                         </tr>
-                                                    </thead>
+                                                    </thead>                                                    
+                                                                                                        
                                                     <tbody>
+                                                        {{-- <a href="/orders/exportarorders/{{ $contract->id }}" class="btn btn-success">Bajar_en_Excel</a>                                                         --}}
+
                                                         @foreach ($orders->sortBy('id') as $index => $order)                                                        
                                                             <tr>
                                                                 <td style="color:black;text-align: left;width: 150px;">
@@ -764,7 +767,7 @@
                                                     @endif
                                                 </div>
                                                 {{-- <br><br><br> --}}
-                                                <a href="/orders/exportarorders" class="btn btn-success">Bajar_en_Excel</a>
+                                                {{-- <a href="/orders/exportarorders" class="btn btn-success">Bajar_en_Excel</a> --}}
                                                 {{-- ACA DEBEN IR VALORES CALCULADOS DE ACUERDO A LA GENERACIÓN DE ORDENES --}}
                                                 <br><br>
                                                 <div

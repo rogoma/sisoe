@@ -175,7 +175,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/fetch-localities', [OrdersEjecsController::class, 'fetchLocalities']);
 
     //ORDENES EN EXCEL
-    Route::get('/orders/exportarorders', [OrdersEjecsController::class, 'exportarorders']);
+    Route::get('/orders/exportarorders/{contract_id}', [OrdersEjecsController::class, 'exportarorders']);    
 
 
     //PARA MOSTRAR LOS RUBROS DE UN CONTRATO DE ACUERDO A SU COMPONENTE

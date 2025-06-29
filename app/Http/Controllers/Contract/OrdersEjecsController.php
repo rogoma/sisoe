@@ -70,11 +70,10 @@ class OrdersEjecsController extends Controller
         $this->postMaxSize = 1048576 * 5;
     }
 
-    //Para exportar Localidades a Excel
-    public function exportarorders()
+    //Para exportar Ordenes de un contrato a Excel
+    public function exportarorders(Request $request, int $contract_id)
     {
-        return Excel::download(new OrdersExport, 'Ordenes.xlsx');
-
+        return Excel::download(new OrdersExport($request->contract_id), 'Ordenes.xlsx');
     }
 
     /**
