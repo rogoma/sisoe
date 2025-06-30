@@ -26,7 +26,7 @@ class OrdersExport implements FromView
     {        
         $contract_id = $this->contract_id;
 
-        $orders = DB::table('vista_full')//vista que muestra los datos generales
+        $orders = DB::table('vista_orders')//vista que muestra los datos generales
                     // ->select(['fiscal_name','fiscal_lastname','providers_description', 
                     //             'components_code','orders_number','orders_date',
                     //             'orders_total_amount','districts_description','orders_locality',
@@ -38,8 +38,7 @@ class OrdersExport implements FromView
                     // ->get();
                     ->select([
     'fiscal_name',
-    'fiscal_lastname',
-    'providers_description', 
+    'fiscal_lastname',    
     'components_code',
     'orders_number',
     'orders_date',
@@ -54,7 +53,7 @@ class OrdersExport implements FromView
 ])
 ->where('contracts_id', '=', $contract_id)
 ->where('order_states_id', '<>', 5) // no mostrar las órdenes anuladas
-->groupBy('orders_id', 'fiscal_name', 'fiscal_lastname', 'providers_description', 'components_code',
+->groupBy('orders_id', 'fiscal_name', 'fiscal_lastname', 'components_code',
           'orders_number', 'orders_date', 'orders_total_amount', 'districts_description',
           'orders_locality', 'components_description', 'sign_date',
           'orders_plazo', 'order_states_description') // debes agrupar todos los campos seleccionados
