@@ -25,6 +25,7 @@ p.centrado {
                         @else    
                             <a href="pdf/panel_orders1" class="btn btn-outline-primary" target="_blank"> TOTAL ORDENES</a>
                             <a href="pdf/tablero" class="btn btn-outline-danger" target="_blank"> TABLERO</a>
+                            <a href="/orders/exportarorders2" class="btn btn-success">TOTAL ORDENES EXCEL</a>
                         @endif
                     </div>
                 </div>                

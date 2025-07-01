@@ -460,7 +460,7 @@
                                                     </thead>                                                    
                                                                                                         
                                                     <tbody>
-                                                        <a href="/orders/exportarorders/{{ $contract->id }}" class="btn btn-success">Bajar_en_Excel</a>                                                        
+                                                        <a href="/orders/exportarorders/{{ $contract->id }}" class="btn btn-success">Bajar_en_Excel</a>
 
                                                         @foreach ($orders->sortBy('id') as $index => $order)                                                        
                                                             <tr>

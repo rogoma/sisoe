@@ -74,7 +74,7 @@
         @if (Auth::user()->role_id == 1)//administrador del sistema
             @include('include.menus.admin')
         @elseif(Auth::user()->role_id == 2)//DOSAPAS
-            @include('include.menus.orders')
+            @include('include.menus.orders2')
         @elseif(Auth::user()->role_id == 3)//FISCAL
             @include('include.menus.orders')
         @elseif(Auth::user()->role_id == 4)//CONTRATISTA
@@ -108,7 +108,7 @@
         @elseif(Auth::user()->role_id == 30)//UOC2
             @include('include.menus.uoc2')
         @elseif(Auth::user()->role_id == 31)//DPP
-            @include('include.menus.orders')
+            @include('include.menus.orders2')
         @elseif(Auth::user()->role_id == 33)//FONDOS LOCALES
             @include('include.menus.orders')
         @elseif(Auth::user()->role_id == 34)//BID

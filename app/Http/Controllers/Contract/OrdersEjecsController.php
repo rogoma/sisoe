@@ -19,6 +19,7 @@ use App\Models\OrderState;
 use App\Models\Component;
 use App\Models\ItemContract;
 use App\Exports\OrdersExport;
+use App\Exports\OrdersExport2;
 
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -74,6 +75,11 @@ class OrdersEjecsController extends Controller
     public function exportarorders(Request $request, int $contract_id)
     {
         return Excel::download(new OrdersExport($request->contract_id), 'Ordenes.xlsx');
+    }
+
+    public function exportarorders2(Request $request)
+    {
+        return Excel::download(new OrdersExport2, 'Total_Ordenes.xlsx');
     }
 
     /**

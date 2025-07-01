@@ -175,7 +175,9 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/fetch-localities', [OrdersEjecsController::class, 'fetchLocalities']);
 
     //ORDENES EN EXCEL
-    Route::get('/orders/exportarorders/{contract_id}', [OrdersEjecsController::class, 'exportarorders']);    
+    Route::get('/orders/exportarorders/{contract_id}', [OrdersEjecsController::class, 'exportarorders']);
+    Route::get('/orders/exportarorders2', [OrdersEjecsController::class, 'exportarorders2']);    
+
 
 
     //PARA MOSTRAR LOS RUBROS DE UN CONTRATO DE ACUERDO A SU COMPONENTE
@@ -345,7 +347,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
 
     //REPORTE DE ORDENES TODOS
-    Route::get('pdf/panel_orders1', [ReportsController::class, 'generarOrders1'])->name('pdf.panel_orders1');
+    Route::get('pdf/panel_orders1', [ReportsController::class, 'generarOrders1'])->name('pdf.panel_orders1');    
     Route::get('pdf/tablero', [ReportsController::class, 'showChart'])->name('pdf.tablero');
 
     //RUTA PARA MOSTRAR RUBROS CARGADOS EN UN CONTRATO
