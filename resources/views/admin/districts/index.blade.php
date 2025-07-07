@@ -41,7 +41,9 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="float-left">
-                                        <h5>Listado de Distritos</h5>
+                                        <h5>Listado de Distritos</h5>                                        
+                                        <a href="pdf/districts" class="btn btn-danger" target="_blank">Listado de Distritos</a>
+                                        <a href="/localities/exportardistricts" class="btn btn-success">Bajar_en_Excel</a>
                                     </div>
                                     <div class="float-right">
                                         <a href="{{ route('districts.create') }}" class="btn btn-primary">Agregar Distrito</a>  

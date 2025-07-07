@@ -1175,6 +1175,28 @@ class ReportsController extends Controller
 
     }
 
+    //MUESTRA DISTRITOS
+    public function pdfDistricts()
+    {
+        //SE ORDENA POR CI SE CASTEA VARCHAR A INTEGER EN ORDERBYRAW
+        $districts = DB::table('vista_div_politica')
+            ->select('department_id','departamento', 'distrito')
+            ->distinct()
+            ->orderBy('department_id')            
+            ->get();
+
+        // PARA MOSTRAR COMO PDF
+        $view = View::make('reports.districts', compact('districts'))->render();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        return $pdf->stream('Distritos' . '.pdf');
+
+        // PARA MOSTRAR COMO VISTA EN HTML
+        // return view('reports.users2', compact('users'));
+
+    }
+
+    //MUESTRA LOCALIDADES
     public function pdfLocalities()
     {
         //SE ORDENA POR CI SE CASTEA VARCHAR A INTEGER EN ORDERBYRAW

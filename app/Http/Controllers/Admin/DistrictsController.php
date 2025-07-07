@@ -10,6 +10,8 @@ use App\Models\Department;
 use App\Models\District;
 use App\Models\Locality;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DistrictExport;
 
 class DistrictsController extends Controller
 {
@@ -25,6 +27,13 @@ class DistrictsController extends Controller
         $this->middleware('checkPermission:admin.districts.update')->only(['edit', 'update']);   // Permiso para update
     }
 
+
+    //Para exportar Localidades a Excel
+    public function exportardistricts()
+    {
+        return Excel::download(new DistrictExport, 'Distritos.xlsx');
+
+    }
 
     /**
      * Display a listing of the resource.

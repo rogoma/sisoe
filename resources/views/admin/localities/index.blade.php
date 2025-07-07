@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="card-block">
                                     <div class="dt-responsive table-responsive">
-                                        <table id="Localitys" class="table table-striped table-bordered nowrap">
+                                        <table id="localities" class="table table-striped table-bordered nowrap">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
