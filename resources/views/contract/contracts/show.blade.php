@@ -869,25 +869,16 @@
                                             <div class="tab-pane" id="tab4" role="tabpanel">
                                                 <label class="col-form-label f-w-600">Reportes:</label>
                                                 <table id="forms" class="table table-striped table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Reporte</th>
-                                                            <th>Detalle del Reporte</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if ($contract->items->count() > 0)
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>Componentes de Sistemas</td>
-                                                                {{-- <td><a href="/pdf/panel_contracts/{{ $contract->id }}"
-                                                                        class="btn btn-default" target="_blank"><i
-                                                                            class="fa fa-file-pdf-o"></i> &nbsp;Componentes
-                                                                        de Sistemas de Abastecimiento de Agua</a></td> --}}
-                                                            </tr>
-                                                        @endif
-                                                    </tbody>
+                                                    <div class="container">
+                                                        <h2 class="mb-4 text-center">Conectividad Alcantarillado</h2>
+                                                        <div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;">
+                                                            <iframe 
+                                                                src="https://docs.google.com/spreadsheets/d/14kAe0AQ693oNBuumkVBEUTFeUs9WhJtfhRKtpMh9hl8/preview?gid=0&single=true"
+                                                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                                                                allowfullscreen>
+                                                            </iframe>
+                                                        </div>
+                                                    </div>
                                                 </table>
                                             </div>
 

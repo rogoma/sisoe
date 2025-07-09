@@ -13,7 +13,6 @@ class ViaticoController extends Controller
         return view('viaticos.index', compact('viaticos'));
     }
 
-
     public function create()
     {
         $ultimo = Viatico::orderBy('id', 'desc')->first();
@@ -25,7 +24,7 @@ class ViaticoController extends Controller
 
 
     public function store(Request $request)
-{
+    {
     $request->validate([
         'saldo_inicial' => 'required|numeric|min:0',
         'fecha' => 'required|date',
@@ -56,7 +55,13 @@ class ViaticoController extends Controller
 
 
     return redirect()->route('viaticos.index')->with('success', 'Viático ingresado correctamente.');
-}
+    }
+
+    public function tablero()
+    {
+        // $viaticos = Viatico::orderBy('fecha')->get();
+        return view('tablero');
+    }
 
 
 }

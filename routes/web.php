@@ -73,8 +73,9 @@ use App\Http\Controllers\ViaticoController;
 Route::get('/login', [HomeController::class, 'login'])->name('login');
 Route::post('/login', [HomeController::class, 'checkLogin'])->name('checkLogin');
 Route::post('/logout', [HomeController::class, 'logout'])->name('logout');
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/tablero', [HomeController::class, 'tablero']);
 
 
 // obtener el token csrf
@@ -157,7 +158,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
 
 
     //RECURSOS PARA MANEJAR CONTRACTS (CONTRATOS)
-    Route::resource('contracts', ContractsController::class);
+    Route::resource('contracts', ContractsController::class);    
     // RUTA PARA EDITAR FORM CONTRATO Y AGREGAR FISCAL
     Route::get('/contracts/orders/{order}/edit', [ContractsController::class, 'asign'])->name('contracts.asign');
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA FISCALES
@@ -167,6 +168,10 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::get('/contracts/orders/{order}/edit2', [ContractsController::class, 'asign_contra'])->name('contracts.asign_contra');
     // RUTA PARA ACTUALIZAR CONTRATO CUANDO SE ASOCIA USUARIO CONTRATISTA
     Route::put('/contracts/orders/{order}/edit2', [ContractsController::class, 'update_contra'])->name('contracts.update.contra');
+
+    //RECURSO PARA MOSTRAR TABLERO EMBEBIDO DRIVE
+    // Route::resource('/tablero', ContractsController::class);
+    Route::get('/tablero', [ViaticoController::class, 'tablero'])->name('tablero.index');
 
     
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)
