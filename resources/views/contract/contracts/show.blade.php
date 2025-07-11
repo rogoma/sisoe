@@ -868,7 +868,7 @@
 
                                             <div class="tab-pane" id="tab4" role="tabpanel">
                                                 <label class="col-form-label f-w-600">Reportes:</label>
-                                                <table id="forms" class="table table-striped table-bordered">
+                                                {{-- <table id="forms" class="table table-striped table-bordered">
                                                     <div class="container">
                                                         <h2 class="mb-4 text-center">Conectividad Alcantarillado</h2>
                                                         <div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;">
@@ -879,7 +879,7 @@
                                                             </iframe>
                                                         </div>
                                                     </div>
-                                                </table>
+                                                </table> --}}
                                             </div>
 
                                             <div class="tab-pane" id="tab3" role="tabpanel">
