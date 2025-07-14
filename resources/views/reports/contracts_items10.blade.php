@@ -139,21 +139,21 @@
 
                 <tr>
                     <td colspan="4"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 80px;">
                         Fecha Emisión: {{ \Carbon\Carbon::parse($contracts1[0]->orders_date)->format('d/m/Y') }}
                     </td>
                     <td colspan="4"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 80px;">
                         Firma Fiscalización
                     </td>
                     <td colspan="4"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 80px;">
                         {{ $contracts1[0]->fiscal_name }} {{ $contracts1[0]->fiscal_lastname }}  <br> Aclaración Firma Fiscal
                     </td>
                 </tr>
                 <tr>
                     <td colspan="4"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">                       
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 80px;">                       
                         @if(!empty($contracts1[0]->sign_date))
                                 Fecha Recepción: {{ \Carbon\Carbon::parse($contracts1[0]->sign_date)->format('d/m/Y') }}
                         @else
@@ -161,11 +161,11 @@
                         @endif
                     </td>
                     <td colspan="4"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 80px;">
                         Firma Contratista
                     </td>
                     <td colspan="4"
-                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 30px;">
+                        style="font-size: 10px; font-weight: bold; text-align: center; padding-top: 80px;">
                         Aclaración Firma Contratista
                     </td>
                 </tr>
