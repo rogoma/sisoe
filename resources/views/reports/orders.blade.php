@@ -175,6 +175,7 @@
                 <th>FISCAL</th>
                 <th>DPTO-DISTRITO-LOCALIDAD</th>
                 <th>SUB_COMPONENTE</th>
+                <th>ESTADO</th>
             </tr>
         </thead>
         <tbody>
@@ -228,6 +229,7 @@
                     
                     <td> {{ $orders[$i]->dpto }}-{{ $orders[$i]->distrito }}-{{ $orders[$i]->localidad }}</td>
                     <td> {{ $orders[$i]->sub_componente }}</td>
+                    <td> {{ $orders[$i]->estado_orden }}</td>
                 </tr>
             @endfor
         </tbody>

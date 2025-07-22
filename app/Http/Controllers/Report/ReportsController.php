@@ -49,6 +49,7 @@ class ReportsController extends Controller
     }
 
 
+    // REPORTE QUE MUESTRAN TODAS LAS ORDENES DEL SISTEMA
     public function generarOrders1(Request $request)
     {
         //capturamos el nombre del método para poder cambiar el título del reporte en la vista
@@ -75,7 +76,8 @@ class ReportsController extends Controller
                     'estado_orden',
                     'nombre_fiscal',
                     'monto_orden',
-                    'order_state_id'
+                    'order_state_id',
+                    'estado_orden'
                 ])
                 ->where('order_state_id', '!=', 5) //filtra 5-Orden de Ejecución Anulada
                 ->orderBy('contratista')                
