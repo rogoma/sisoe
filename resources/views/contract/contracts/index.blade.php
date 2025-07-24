@@ -15,7 +15,7 @@ p.centrado {
         <div class="row align-items-end">
             <div class="col-lg-8">
                 <div class="page-header-title">
-                    <i class="fa fa-list bg-c-blue"></i>
+                    <i class="fas fa-list bg-c-blue"></i>
                     <div class="d-inline">                                               
                         <h5>Listado de Contratos de Obras</h5>
                         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -34,7 +34,7 @@ p.centrado {
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('contracts.index') }}">Contratos</a>

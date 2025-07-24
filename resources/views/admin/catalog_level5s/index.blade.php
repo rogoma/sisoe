@@ -22,7 +22,7 @@
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('catalog_level5s.index') }}">Cátalogo Nivel 5</a>
@@ -201,7 +201,7 @@
             <div class="page-header-breadcrumb">
                 <ul class=" breadcrumb breadcrumb-title">
                     <li class="breadcrumb-item">
-                        <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                        <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="{{ route('catalog_level5s.index') }}">Cátalogo Nivel 5</a>

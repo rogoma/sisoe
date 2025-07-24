@@ -17,7 +17,7 @@
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('items.item_award_histories.index', $item->id) }}">Endosos</a>
@@ -140,7 +140,7 @@
                                                 <div class="col-sm-10">
                                                     <label id="filename" name="filename">
                                                         <a href="{{ asset('storage/files/'. old('file', $itemA->file)) }}" target="_blank">
-                                                            <i class="fa fa-file-pdf-o" style="font-size:24px;color:red" value="{{ old('filename',$itemA->file) }}"></i>
+                                                            <i class="fa-solid fa-file-pdf" style="font-size:24px;color:red" value="{{ old('filename',$itemA->file) }}"></i>
                                                             {{ old('filename', $itemA->file) }}
                                                         </a>
                                                     </label>

@@ -107,7 +107,7 @@
                     <div class="page-header-breadcrumb">
                         <ul class=" breadcrumb breadcrumb-title">
                             <li class="breadcrumb-item">
-                                <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                                <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                             </li>
                             <li class="breadcrumb-item">
                                 <a href="{{ route('contracts.index',$contract->id) }}">Contratos</a>
@@ -178,7 +178,7 @@
                                             @else
                                                 <li class="nav-item">
                                                     <a class="nav-link active" data-toggle="tab" href="#tab0"
-                                                        role="tab"><i class="fa fa-tasks"></i> Datos del Contrato</a>
+                                                        role="tab"><i class="fa-solid fa-folder"></i> Datos del Contrato</a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -186,7 +186,7 @@
                                             @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.rubros.import']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
-                                                            class="fa fa-file-excel-o"></i> Cargar Rubros </a>
+                                                            class="fa-solid fa-file-excel"></i> Cargar Rubros </a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -194,14 +194,14 @@
                                             @if (Auth::user()->hasPermission(['admin.items.create', 'contracts.items.show']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab5" role="tab"><i
-                                                            class="fa fa-file-excel-o"></i> Rubros Cargados </a>
+                                                            class="fa-solid fa-pen-to-square"></i> Rubros Cargados </a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
                                             @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab3" role="tab"><i
-                                                            class="fa fa-user-o"></i> Asignar Fiscal <br>(Si contrato está en Curso)</a>
+                                                            class="fa-solid fa-person"></i> Asignar Fiscal <br>(Si contrato está en Curso)</a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif                                            
@@ -223,7 +223,7 @@
                                             </li>
                                             {{-- <li class="nav-item">
                                                 <a class="nav-link" data-toggle="tab" href="#tab7" role="tab"><i
-                                                        class="fa fa-file-pdf-o"></i> Plazos/Prórrogas</a>
+                                                        class="fa-solid fa-file-pdf"></i> Plazos/Prórrogas</a>
                                                 <div class="slide"></div>
                                             </li> --}}
                                             @if (Auth::user()->role->id == 4)
@@ -231,7 +231,7 @@
                                             @else
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i
-                                                            class="fa fa-file-pdf-o"></i> Reportes</a>
+                                                            class="fa-solid fa-file-pdf"></i> Reportes</a>                                                            
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -239,7 +239,7 @@
                                             @if (Auth::user()->hasPermission(['admin.users.create', 'contracts.users.create']))
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab8" role="tab"><i
-                                                            class="fa fa-user-o"></i> Asignar Usuario Contratista <br></a>
+                                                            class="fa-solid fa-person"></i> Asignar Usuario Contratista <br></a>
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -248,7 +248,7 @@
                                             @else
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#tab6" role="tab"><i
-                                                            class="fa fa-file-archive-o"></i> Archivos</a>
+                                                            class="fa-solid fa-file-code"></i> Archivos</a>                                                            
                                                     <div class="slide"></div>
                                                 </li>
                                             @endif
@@ -391,7 +391,7 @@
                                                                             class="fa fa-eye"></i></a>
                                                                     <a href="{{ route('contracts.files.download', $user_files_eval[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                            class="fa-solid fa-download"></i></a>
                                                                     <button title="Eliminar Archivo"
                                                                         onclick="deleteFile({{ $user_files_eval[$i]->id }})"
                                                                         class="btn btn-danger"><i
@@ -414,7 +414,7 @@
                                                                             class="fa fa-eye"></i></a>
                                                                     <a href="{{ route('contracts.files.download', $other_files_eval[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                            class="fa-solid fa-download"></i></a>
                                                                 </td>
                                                             </tr>
                                                         @endfor
@@ -664,7 +664,7 @@
                                                                                     <button type="button" title="Cargar Eventos"
                                                                                         class="btn btn-primary btn-icon"
                                                                                         onclick="itemEvents({{ $order->id }})"><i                                                                                        
-                                                                                            class="fa fa-clock-o"></i></button>
+                                                                                            class="fa-solid fa-calendar-days"></i></button>
                                                                                 @endif                                                                                
                                                                             @else
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
@@ -682,7 +682,7 @@
                                                                                             class="btn btn-primary btn-icon"
                                                                                             onclick="itemContraRubro({{ $order->id }}, {{ $order->contract->id }}, {{ $order->component->id }})">
                                                                                             <i
-                                                                                                class="fa fa-download text-white"></i>
+                                                                                                class="fa-solid fa-download text-white"></i>
                                                                                         </button>                                                                                        
                                                                                     @endif
                                                                                 @endif
@@ -708,15 +708,16 @@
                                                                     @if (in_array($order->orderState->id, [4]))                                                                         
                                                                          <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                             title="Ver Orden" target="_blank"
-                                                                            class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
+                                                                            class="btn btn-success btn-icon"><i class="fa-solid fa-eye"></i></a>
                                                                             
-                                                                            <a href="{{ asset('storage/files/'.$order->file) }}" title="Ver Archivo de Finalización de Orden" target="_blank" class="btn btn-danger btn-icon"><i class="fa fa-file-pdf-o"></i></a>
+                                                                            <a href="{{ asset('storage/files/'.$order->file) }}" title="Ver Archivo de Finalización de Orden" target="_blank" class="btn btn-danger btn-icon">
+                                                                                <i class="fa-solid fa-file-pdf"></i></a>
 
                                                                             @if ($order->events->count() > 0)
                                                                             <button type="button" title="Cargar Eventos"
                                                                                         class="btn btn-primary btn-icon"
                                                                                         onclick="itemEvents({{ $order->id }})"><i                                                                                        
-                                                                                            class="fa fa-clock-o"></i></button>
+                                                                                            class="fa-solid fa-calendar-days"></i></button>
                                                                             @endif
                                                                     @endif                                                                    
 
@@ -737,7 +738,7 @@
                                                                     <button type="button" title="Cargar Archivos"
                                                                     class="btn btn-info btn-icon"
                                                                     onclick="itemFiles({{ $order->id }})"><i                                                                                        
-                                                                        class="fa fa-files-o"></i></button>
+                                                                        class="fa-solid fa-file-circle-plus"></i></button>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -826,7 +827,7 @@
                                                                             class="fa fa-eye"></i></a>
                                                                     <a href="{{ route('contracts.files.download', $user_files_con[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                            class="fa-solid fa-download"></i></a>
                                                                     <button title="Eliminar Archivo"
                                                                         onclick="deleteFile({{ $user_files_con[$i]->id }})"
                                                                         class="btn btn-danger"><i
@@ -850,7 +851,7 @@
                                                                             class="fa fa-eye"></i></a>
                                                                     <a href="{{ route('contracts.files.download', $other_files_con[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                            class="fa-solid fa-download"></i></a>
                                                                 </td>
                                                             </tr>
                                                         @endfor
@@ -1040,7 +1041,7 @@
                                                                             class="fa fa-eye"></i></a>
                                                                     <a href="{{ route('contracts.files.download', $user_files_con[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                            class="fa-solid fa-download"></i></a>
                                                                     <button title="Eliminar Archivo"
                                                                         onclick="deleteFile({{ $user_files_con[$i]->id }})"
                                                                         class="btn btn-danger"><i
@@ -1064,7 +1065,7 @@
                                                                             class="fa fa-eye"></i></a>
                                                                     <a href="{{ route('contracts.files.download', $other_files_con[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                            class="fa-solid fa-download"></i></a>
                                                                 </td>
                                                             </tr>
                                                         @endfor

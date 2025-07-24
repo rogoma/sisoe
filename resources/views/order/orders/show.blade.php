@@ -53,7 +53,7 @@
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('orders.index') }}">Pedidos</a>
@@ -182,7 +182,7 @@
                                             <div class="slide"></div>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i class="fa fa-file-pdf-o"></i> Formularios</a>
+                                            <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i class="fa-solid fa-file-pdf"></i> Formularios</a>
                                             <div class="slide"></div>
                                         </li>
                                             <li class="nav-item">
@@ -586,12 +586,12 @@
                                                     <tr>
                                                         <td>1</td>
                                                         <td>Formulario 1</td>
-                                                        <td><a href="/pdf/reporte1/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Ver Formulario 1</a></td>
+                                                        <td><a href="/pdf/reporte1/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa-solid fa-file-pdf"></i> &nbsp;Ver Formulario 1</a></td>
                                                     </tr>
                                                     <tr>
                                                         <td>2</td>
                                                         <td>Formulario 2</td>
-                                                        <td><a href="/pdf/reporte2/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Ver Formulario 2</a></td>
+                                                        <td><a href="/pdf/reporte2/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa-solid fa-file-pdf"></i> &nbsp;Ver Formulario 2</a></td>
                                                     </tr>
                                                     {{-- Verificamos que el pedido tenga ítems cargados --}}
                                                     @if ($order->items->count() > 0)
@@ -600,11 +600,11 @@
                                                         <td>Formulario 3</td>
                                                             {{-- reporte contrato abierto --}}
                                                         @if ($order->open_contract == 1)
-                                                            <td><a href="/pdf/reporte31/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Ver Formulario 3</a></td>
+                                                            <td><a href="/pdf/reporte31/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa-solid fa-file-pdf"></i> &nbsp;Ver Formulario 3</a></td>
                                                         @else
                                                             {{-- reporte contrato cerrado --}}
                                                             @if ($order->open_contract == 2)
-                                                                <td><a href="/pdf/reporte3/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Ver Formulario 3</a></td>
+                                                                <td><a href="/pdf/reporte3/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa-solid fa-file-pdf"></i> &nbsp;Ver Formulario 3</a></td>
                                                             @else
                                                                 {{-- reporte contrato min max --}}
 
@@ -617,7 +617,7 @@
                                                     <tr>
                                                         <td>4</td>
                                                         <td>Formulario 4</td>
-                                                        <td><a href="/pdf/reporte4/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Ver Formulario 4</a></td>
+                                                        <td><a href="/pdf/reporte4/{{ $order->id }}" class="btn btn-default" target="_blank"><i class="fa-solid fa-file-pdf"></i> &nbsp;Ver Formulario 4</a></td>
                                                     </tr>
                                                     @endif
                                                 </tbody>
@@ -693,7 +693,7 @@
                                                             <td>{{ $other_files[$i]->updated_atDateFormat() }}</td>
                                                             <td>
                                                                 <a href="{{ asset('storage/files/'.$other_files[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                                                                <a href="{{ route('orders.files.download', $other_files[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
+                                                                <a href="{{ route('orders.files.download', $other_files[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa-solid fa-download"></i></a>
                                                             </td>
                                                         </tr>
                                                         @endfor
@@ -712,7 +712,7 @@
                                                             <td>{{ $user_files[$i]->updated_atDateFormat() }}</td>
                                                             <td>
                                                                 <a href="{{ asset('storage/files/'.$user_files[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                                                                <a href="{{ route('orders.files.download', $user_files[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
+                                                                <a href="{{ route('orders.files.download', $user_files[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa-solid fa-download"></i></a>
                                                                 <button title="Eliminar Archivo" onclick="deleteFile({{ $user_files[$i]->id }})" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                                             </td>
                                                         </tr>
@@ -757,7 +757,7 @@
                                                         <td>{{ $user_files[$i]->updated_atDateFormat() }}</td>
                                                         <td>
                                                             <a href="{{ asset('storage/files/'.$user_files[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                                                            <a href="{{ route('orders.files.download', $user_files[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
+                                                            <a href="{{ route('orders.files.download', $user_files[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa-solid fa-download"></i></a>
                                                             <button title="Eliminar Archivo" onclick="deleteFile({{ $user_files[$i]->id }})" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                                         </td>
                                                     </tr>

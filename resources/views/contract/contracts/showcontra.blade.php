@@ -107,7 +107,7 @@
                     <div class="page-header-breadcrumb">
                         <ul class=" breadcrumb breadcrumb-title">
                             <li class="breadcrumb-item">
-                                <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                                <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                             </li>
                             <li class="breadcrumb-item">
                                 <a href="{{ route('contracts.index') }}">Contratos</a>
@@ -273,13 +273,13 @@
                                                                             title="Ver Orden" target="_blank"
                                                                             class="btn btn-success btn-icon"><i class="fa fa-eye"></i></a>
                                                                             
-                                                                            <a href="{{ asset('storage/files/'.$order->file) }}" title="Ver Archivo de Finalización de Orden" target="_blank" class="btn btn-danger btn-icon"><i class="fa fa-file-pdf-o"></i></a>
+                                                                            <a href="{{ asset('storage/files/'.$order->file) }}" title="Ver Archivo de Finalización de Orden" target="_blank" class="btn btn-danger btn-icon"><i class="fa-solid fa-file-pdf"></i></a>
 
                                                                             @if ($order->events->count() > 0)
                                                                             <button type="button" title="Cargar Eventos"
                                                                                         class="btn btn-primary btn-icon"
                                                                                         onclick="itemEvents({{ $order->id }})"><i                                                                                        
-                                                                                            class="fa fa-clock-o"></i></button>
+                                                                                            class="fa-solid fa-calendar-days"></i></button>
                                                                             @endif
                                                                     @endif                                                                    
 

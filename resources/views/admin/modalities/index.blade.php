@@ -22,7 +22,7 @@
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('modalities.index') }}">Modalidades</a>
@@ -94,7 +94,7 @@
             </div>
         </div>
     </div>
-    <!-- <a href="pdf/reporte5" class="dropdown-item waves-light waves-effect" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Formulario 1</a><div class="dropdown-divider"></div> -->
+    <!-- <a href="pdf/reporte5" class="dropdown-item waves-light waves-effect" target="_blank"><i class="fa-solid fa-file-pdf"></i> &nbsp;Formulario 1</a><div class="dropdown-divider"></div> -->
     <!-- <div class="col-sm-12 p-b-20 p-l-20 m-l-20">
         <a href="pdf/modalities" class="btn btn-primary" target="_blank">Listado de Modalidades</a>
     </div> -->

@@ -25,7 +25,7 @@
                 <div class="page-header-breadcrumb">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ url('/') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ url('/') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('contracts.show', $contract->id) }}">Contrato N° {{ $contract->number_year }}</a>

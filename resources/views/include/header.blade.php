@@ -19,7 +19,7 @@
                         <li class="header-notification">
                             <div class="dropdown-primary dropdown">
                                 <div class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="feather icon-bell"></i>
+                                    <i class="fa-solid fa-bell"></i>
                                     <span id="numero-notificaciones" class="badge bg-c-red"></span>
                                 </div>
                                 <ul style="color:#ff0000" id="alertas-notificaciones" class="show-notification notification-view dropdown-menu" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
@@ -41,7 +41,7 @@
                                 </div>
                                 <ul class="show-notification profile-notification dropdown-menu" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
                                     <li class="breadcrumb-item">
-                                        <a href="{{ route('users.change_pass',Auth::user()->id)}}">Cambiar Contraseña</a>
+                                        <a href="{{ route('users.change_pass',Auth::user()->id)}}"><i class="fa-solid fa-key"></i>Cambiar Contraseña</a>                                         
                                     </li>
 
                                     {{-- <button type="button" title="Editar" class="btn btn-warning btn-icon" onclick="updateUser({{  Auth::user()->id }})">
@@ -52,7 +52,7 @@
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <button type="submit" title="Cerrar Sesión" class="logout-button">
-                                                 <i class="feather icon-log-out"></i> Cerrar sesión
+                                                 <i class="fa-solid fa-arrow-right-to-bracket"></i> Cerrar sesión
                                             </button>
                                         </form>
                                         {{-- <a href="{{ route('users.change_pass') }}">Usuarios</a> --}}

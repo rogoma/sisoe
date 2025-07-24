@@ -21,7 +21,7 @@
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('contracts.show', $contract->id) }}">Contrato</a>
@@ -83,7 +83,7 @@
                                                                             class="fa fa-eye"></i></a>
                                                                     <a href="{{ route('orders.files.download', $files[$i]->id) }}"
                                                                         title="Descargar Archivo" class="btn btn-info"><i
-                                                                            class="fa fa-download"></i></a>
+                                                                            class="fa-solid fa-download"></i></a>
                                                                     
                                                                     @if (Auth::user()->id == $order->creator_user_id)
                                                                             <button title="Eliminar Archivo"

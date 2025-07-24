@@ -16,7 +16,11 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/waves.min.css') }}" media="all">
     <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/feather.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/font-awesome.min.css') }}">
+
+    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/font-awesome.min.css') }}"> --}}
+    <link rel="stylesheet" type="text/css" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css') }}">   
+
+
     <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/select2.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/datatables.bootstrap4.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('template-admin/css/buttons.datatables.min.css') }}">

@@ -7,7 +7,7 @@
                     <ul class="pcoded-item pcoded-left-item">
                         <li class="@if(Route::currentRouteName() == 'home') active @endif">
                             <a href="{{ route('home') }}" class="waves-effect waves-dark">
-                                <span class="pcoded-micon"><i class="feather icon-shield"></i></span>
+                                <span class="pcoded-micon"><i class="fa-solid fa-shield"></i></span>
                                 <span class="pcoded-mtext">Inicio</span>
                             </a>
                         </li>

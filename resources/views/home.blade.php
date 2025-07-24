@@ -7,7 +7,7 @@
             <div class="col-lg-8">
                 <div class="page-header-title">
                     {{-- <br><br> --}}
-                    <i class="feather icon-shield bg-c-blue"></i>
+                    <i class="fa-solid fa-shield bg-c-blue"></i>
                     <div class="d-inline">
                         <h5>Página de inicio</h5>
                         <span>Bienvenido</span>
@@ -18,7 +18,7 @@
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('home') }}">Página de inicio</a>

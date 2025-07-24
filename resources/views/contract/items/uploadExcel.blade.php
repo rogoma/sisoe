@@ -19,7 +19,7 @@ hola
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a><i class="feather icon-home"></i></a>
+                            <a><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('orders.show', $order->id) }}">Pedido Nº {{ $order->id }}</a>

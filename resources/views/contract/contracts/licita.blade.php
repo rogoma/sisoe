@@ -49,7 +49,7 @@ p.centrado {
                 <div class="page-header-breadcrumb">
                     <ul class=" breadcrumb breadcrumb-title">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                            <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('contracts.index') }}">Llamados</a>
@@ -111,7 +111,7 @@ p.centrado {
                                             <div class="slide"></div>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i class="fa fa-file-pdf-o"></i> Reportes</a>
+                                            <a class="nav-link" data-toggle="tab" href="#tab4" role="tab"><i class="fa-solid fa-file-pdf"></i> Reportes</a>
                                             <div class="slide"></div>
                                         </li>
                                         {{-- <li class="nav-item">
@@ -290,7 +290,7 @@ p.centrado {
                                                         <tr>
                                                             <td>1</td>
                                                             <td>Reporte Pólizas del Llamado</td>
-                                                            <td><a href="/pdf/panel_contracts/{{ $contract->id }}" class="btn btn-default" target="_blank"><i class="fa fa-file-pdf-o"></i> &nbsp;Informe de Pólizas</a></td>
+                                                            <td><a href="/pdf/panel_contracts/{{ $contract->id }}" class="btn btn-default" target="_blank"><i class="fa-solid fa-file-pdf"></i> &nbsp;Informe de Pólizas</a></td>
                                                         </tr>
                                                     @endif
                                                 </tbody>
@@ -318,7 +318,7 @@ p.centrado {
                                                             <td>{{ $user_files_pol[$i]->updated_atDateFormat() }}</td>
                                                             <td>
                                                                 <a href="{{ asset('storage/files/'.$user_files_pol[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                                                                <a href="{{ route('contracts.files.download', $user_files_pol[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
+                                                                <a href="{{ route('contracts.files.download', $user_files_pol[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa-solid fa-download"></i></a>
                                                                 <button title="Eliminar Archivo" onclick="deleteFile({{ $user_files_pol[$i]->id }})" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                                             </td>
                                                         </tr>
@@ -332,7 +332,7 @@ p.centrado {
                                                             <td>{{ $other_files_pol[$i]->updated_atDateFormat() }}</td>
                                                             <td>
                                                                 <a href="{{ asset('storage/files/'.$other_files_pol[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                                                                <a href="{{ route('contracts.files.download', $other_files_pol[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
+                                                                <a href="{{ route('contracts.files.download', $other_files_pol[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa-solid fa-download"></i></a>
                                                         </td>
                                                     </tr>
                                                     @endfor
@@ -368,7 +368,7 @@ p.centrado {
                                                                 <td>{{ $user_files_con[$i]->updated_atDateFormat() }}</td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/'.$user_files_con[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                                                                    <a href="{{ route('contracts.files.download', $user_files_con[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
+                                                                    <a href="{{ route('contracts.files.download', $user_files_con[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa-solid fa-download"></i></a>
                                                                     <button title="Eliminar Archivo" onclick="deleteFile({{ $user_files_con[$i]->id }})" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                                                 </td>
                                                             </tr>
@@ -382,7 +382,7 @@ p.centrado {
                                                                 <td>{{ $other_files_con[$i]->updated_atDateFormat() }}</td>
                                                                 <td>
                                                                     <a href="{{ asset('storage/files/'.$other_files_con[$i]->file) }}" title="Ver Archivo" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
-                                                                    <a href="{{ route('contracts.files.download', $other_files_con[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa fa-download"></i></a>
+                                                                    <a href="{{ route('contracts.files.download', $other_files_con[$i]->id) }}" title="Descargar Archivo" class="btn btn-info"><i class="fa-solid fa-download"></i></a>
                                                             </td>
                                                         </tr>
                                                         @endfor

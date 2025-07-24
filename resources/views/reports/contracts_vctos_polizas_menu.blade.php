@@ -34,7 +34,7 @@
                     <div class="page-header-breadcrumb">
                         <ul class=" breadcrumb breadcrumb-title">
                             <li class="breadcrumb-item">
-                                <a href="{{ route('home') }}"><i class="feather icon-home"></i></a>
+                                <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i></a>
                             </li>
                             <li class="breadcrumb-item">
                                 <a href="{{ route('contracts.index') }}">Llamados</a>
@@ -85,13 +85,13 @@
                                                                 <td> {{ $contracts_poli[$i]->dependency_id }}</td>
                                                                 <td> {{ $contracts_poli[$i]->dependencia }}</td>
                                                                 <td>
-                                                                    {{-- <a href="/pdf/panel_contracts5" title="Ver Archivo"                      target="_blank" class="btn btn-danger btn-icon"><i class="fa fa-file-pdf-o"></i></a> --}}
-                                                                    <a href="/pdf/panel_contracts7/{{ $contracts_poli[$i]->dependency_id }}" target="_blank" class="btn btn-danger btn-icon"><i class="fa fa-file-pdf-o"></i></a>
+                                                                    {{-- <a href="/pdf/panel_contracts5" title="Ver Archivo"                      target="_blank" class="btn btn-danger btn-icon"><i class="fa-solid fa-file-pdf"></i></a> --}}
+                                                                    <a href="/pdf/panel_contracts7/{{ $contracts_poli[$i]->dependency_id }}" target="_blank" class="btn btn-danger btn-icon"><i class="fa-solid fa-file-pdf"></i></a>
                                                                 </td>
                                                             </tr>
                                                         @endfor
                                                     </table>
-                                                    {{-- <a href="/pdf/panel_contracts6 }}" target="_blank" class="btn btn-danger btn-icon"><i class="fa fa-file-pdf-o"></i></a> --}}
+                                                    {{-- <a href="/pdf/panel_contracts6 }}" target="_blank" class="btn btn-danger btn-icon"><i class="fa-solid fa-file-pdf"></i></a> --}}
                                                     <br>
                                                     <a style="font-size: 18px;color:BLUE" target="_blank" href="/pdf/panel_contracts5">LISTADO GENERAL DE ALERTAS</a></p>
                                                 @endif
