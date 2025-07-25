@@ -22,7 +22,8 @@ p.centrado {
                 id="looker"
                 width="1000" 
                 height="1500" 
-                src="https://lookerstudio.google.com/embed/reporting/a390cf42-32c9-4097-89a3-b8aed4f4f6e1/page/U3qQF" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">                                                        </iframe>
+                {{-- src="https://lookerstudio.google.com/embed/reporting/a390cf42-32c9-4097-89a3-b8aed4f4f6e1/page/U3qQF" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe> --}}
+                src="https://lookerstudio.google.com/embed/reporting/493b1913-5719-4fd6-bd9c-9242395ff32c/page/p_uxc01xroud" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>                
         </div>
     </div>
 @endsection
@@ -30,5 +31,5 @@ p.centrado {
 <script>
   setInterval(() => {
     document.getElementById('looker').src += '';
-  }, 30000); // recarga cada 30 segundos
+  }, 50000); // recarga cada 30 segundos
 </script>
