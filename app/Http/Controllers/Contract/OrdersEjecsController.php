@@ -500,7 +500,6 @@ class OrdersEjecsController extends Controller
             $contract->save();
         }
 
-
         $order->number = $request->input('number');
         $order->reference = $request->input('reference');
         $order->comments = $request->input('comments');
@@ -527,7 +526,7 @@ class OrdersEjecsController extends Controller
         $currentOrderAmount = $order->total_amount;
 
         // ANULAR Cambia a estado 5 = "Anulado" si es que Estado de la orden está en 1 (En curso)
-        if ($order->order_state_id == 1) {
+        if ($order->order_state_id >= 1) {
 
             $motivo = $request->input('motivo');
         // if (!$motivo) {

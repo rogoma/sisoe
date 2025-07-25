@@ -635,6 +635,14 @@
                                                                                 </button>
                                                                             @endif
 
+                                                                            {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
+                                                                                @if (Auth::user()->id == $order->creator_user_id)
+                                                                                    <button type="button" title="Anular"
+                                                                                        class="btn btn-danger btn-icon"
+                                                                                        onclick="anuleOrder({{ $order->id }})"><i
+                                                                                            class="fa fa-ban"></i></button>
+                                                                                @endif
+
                                                                             @if ($order->items->count() > 0)                                                                                
                                                                                 {{-- MOSTRAR PDF DE ORDEN --}}
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
@@ -643,12 +651,12 @@
                                                                                         class="fa fa-eye"></i></a>
 
                                                                                 {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
-                                                                                @if (Auth::user()->id == $order->creator_user_id)
+                                                                                {{-- @if (Auth::user()->id == $order->creator_user_id)
                                                                                     <button type="button" title="Anular"
                                                                                         class="btn btn-danger btn-icon"
                                                                                         onclick="anuleOrder({{ $order->id }})"><i
                                                                                             class="fa fa-ban"></i></button>
-                                                                                @endif
+                                                                                @endif --}}
 
                                                                                 {{-- Editar y Cambiar Rubros de la orden --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id && ($order->orderState->id == 1 || $order->orderState->id == 10))
@@ -723,15 +731,15 @@
 
                                                                     {{-- SI ESTA ANULADO --}}
                                                                     @if (in_array($order->orderState->id, [5]))
-                                                                         {{-- <a> Motivo: {{ $order->motivo_anule }} </a> --}}
-                                                                         <a style="color: red;">Motivo: {{ $order->motivo_anule }}</a>
-
-                                                                         <br>
+                                                                        <a style="color: red;">Motivo: {{ $order->motivo_anule }}</a>
+                                                                        <br>
+                                                                        @if ($order->items->count() > 0)                                                                         
                                                                          {{-- MOSTRAR PDF DE ORDEN --}}
                                                                          <a href="/pdf/panel_contracts10/{{ $order->id }}"                                                                            
                                                                             title="Ver Orden" target="_blank"
                                                                             class="btn btn-danger btn-icon"><i
-                                                                                class="fa fa-eye"></i></a>                                                                                
+                                                                                class="fa fa-eye"></i></a>
+                                                                        @endif                                                                                
                                                                     @endif
 
                                                                     {{-- botón para cargar archivos a la orden --}}
