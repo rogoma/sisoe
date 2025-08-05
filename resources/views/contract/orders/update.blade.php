@@ -258,13 +258,14 @@
                                                     </div>
 
                                                     <div class="col-sm-5">
-                                                        <label for="observation" class="col-form-label">Observación (Hasta 500 caracteres)</label>
-                                                        <textarea id="observation" name="observation" class="form-control @error('observation') is-invalid @enderror"
-                                                            maxlength="500">{{ old('observation', $order->observation) }}</textarea>
-                                                        @error('observation')
-                                                            <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror
-                                                    </div>
+    <label for="observation" class="col-form-label">Observación (Hasta 500 caracteres)</label>
+    <textarea id="observation" name="observation" class="form-control @error('observation') is-invalid @enderror"
+        maxlength="500" disabled>{{ old('observation', $order->observation) }}</textarea>
+    @error('observation')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
                                                     
                                                     <div class="col-sm-9">
                                                         <label for="reference" class="col-form-label">Referencia (Hasta 500 caracteres)</label>
@@ -484,6 +485,7 @@
 
                 if ($.trim(signDate.val()) === "") {
                     signDateFin.val("").prop('disabled', true);
+                    
                 } else {
                     signDateFin.prop('disabled', false);
                 }
@@ -509,11 +511,16 @@
             function toggleFileUpload() {
                 let signDateFin = $('#sign_date_fin');
                 let fileInput = $('#file');
+                let textarea = $('#observation');
 
                 if ($.trim(signDateFin.val()) !== '') {
                     fileInput.prop('disabled', false);
+                    textarea.prop('disabled', false);
+                    // textarea.val('');
                 } else {
                     fileInput.prop('disabled', true);
+                    textarea.prop('disabled', true);
+                    textarea.val('');
                 }
             }
 
