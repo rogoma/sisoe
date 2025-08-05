@@ -249,11 +249,20 @@
                                                         @enderror
                                                     </div> --}}
 
-                                                    <div class="col-sm-9">                                                    
+                                                    <div class="col-sm-4">                                                    
                                                         <label class="col-form-label text-danger">Cargar Archivo: <h7>(Tipo de archivo: PDF, DOC, DOCX hasta 5 MEGAS)</h7></label>
                                                         <input id="file" type="file"  name="file"  class="form-control @error('file') has-danger @enderror">
                                                         @error('file')                                                            
                                                             <div class="col-form-label text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="col-sm-5">
+                                                        <label for="observation" class="col-form-label">Observación (Hasta 500 caracteres)</label>
+                                                        <textarea id="observation" name="observation" class="form-control @error('observation') is-invalid @enderror"
+                                                            maxlength="500">{{ old('observation', $order->observation) }}</textarea>
+                                                        @error('observation')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
                                                     
