@@ -57,33 +57,33 @@ class ReportsController extends Controller
 
         //No filtra por permiso si es rol admin y uoc2
         // if ($request->user()->hasPermission(['admin.contracts.show'])) {
-            $orders = DB::table('vista_reporte1') //vista que muestra los datos
-                ->select([
-                    'contrato',
-                    'nro_contrato',
-                    'contratista',
-                    'monto_maximo',
-                    'monto_minimo',
-                    'nro_orden',
-                    'fecha_orden',
-                    'fecha_acuse_contr',
-                    'plazo',
-                    'fecha_fin_plazo',
-                    'dpto',
-                    'distrito',
-                    'localidad',
-                    'sub_componente',
-                    'estado_orden',
-                    'nombre_fiscal',
-                    'monto_orden',
-                    'order_state_id',
-                    'estado_orden'
-                ])
-                ->where('order_state_id', '!=', 5) //filtra 5-Orden de Ejecución Anulada
-                ->orderBy('contratista')                
-                ->orderBy('nombre_fiscal')
-                ->orderBy('localidad')
-                ->get();        
+        $orders = DB::table('vista_reporte1') //vista que muestra los datos
+            ->select([
+                'contrato',
+                'nro_contrato',
+                'contratista',
+                'monto_maximo',
+                'monto_minimo',
+                'nro_orden',
+                'fecha_orden',
+                'fecha_acuse_contr',
+                'plazo',
+                'fecha_fin_plazo',
+                'dpto',
+                'distrito',
+                'localidad',
+                'sub_componente',
+                'estado_orden',
+                'nombre_fiscal',
+                'monto_orden',
+                'order_state_id',
+                'estado_orden'
+            ])
+            ->where('order_state_id', '!=', 5) //filtra 5-Orden de Ejecución Anulada
+            ->orderBy('contratista')
+            ->orderBy('nombre_fiscal')
+            ->orderBy('localidad')
+            ->get();
         // }
 
         $view = View::make('reports.orders', compact('orders', 'nombreMetodo'))->render();
@@ -97,62 +97,85 @@ class ReportsController extends Controller
     public function showChart()
     {
         $summary = DB::table('vista_totals_123')->first();
-        $summary2 = DB::table('vista_totals_456')->first(); 
-        $summary3 = DB::table('vista_totals_789')->get(); 
-        return view('reports.contracts_totals', compact('summary', 'summary2', 'summary3'));
-        
+        $summary2 = DB::table('vista_totals_456')->first();
+        $summary3 = DB::table('vista_totals_789')->get();
+        $summary4 = DB::table('vista_totals_800')->get();
+
+        $summary4Json = $summary4->map(function ($item) {
+            return [
+                'provider_name' => $item->provider_name,
+                'order_state_name' => $item->order_state_name,
+                'total_orders' => $item->total_orders,
+            ];
+        });
+        return view('reports.contracts_totals', compact('summary', 'summary2', 'summary3', 'summary4', 'summary4Json'));
     }
 
 
     // MUESTRA UNA ORDEN DE EJECUCIÓN EN ESPECÍFICO
     public function generarContracts10(Request $request, $order_id)
     {
-        
-        // if ($request->user()->hasPermission(['orders.reports.show'])) {
-            //Donde contracts es una vista
-            $user = auth()->user();
-            $data = ['userName' => $user->name];// Pasar el nombre del usuario           
 
-            $contracts0 = DB::table('vista_encab_orden')
+        // if ($request->user()->hasPermission(['orders.reports.show'])) {
+        //Donde contracts es una vista
+        $user = auth()->user();
+        $data = ['userName' => $user->name]; // Pasar el nombre del usuario           
+
+        $contracts0 = DB::table('vista_encab_orden')
             ->select([
-                'id2','description2','id','component_code','number','number_year','batch',
-                'id1','description','locality','id3','description3','id4','description4',
-                'code','description1', 'reference', 'comments'
-                ])                   
-                ->where('id', '=', $order_id)                
-                ->orderBy('id')
-                ->get();
-            
-            $contracts1 = DB::table('vista_full')
-                ->select(DB::raw('DISTINCT ON (orders_id) 
+                'id2',
+                'description2',
+                'id',
+                'component_code',
+                'number',
+                'number_year',
+                'batch',
+                'id1',
+                'description',
+                'locality',
+                'id3',
+                'description3',
+                'id4',
+                'description4',
+                'code',
+                'description1',
+                'reference',
+                'comments'
+            ])
+            ->where('id', '=', $order_id)
+            ->orderBy('id')
+            ->get();
+
+        $contracts1 = DB::table('vista_full')
+            ->select(DB::raw('DISTINCT ON (orders_id) 
                     orders_id, orders_number, contracts_description, contracts_iddncp, contracts_number_year,
                     providers_description,orders_number,orders_references, districts_description,
                     creator_user_id, fiscal_ci,fiscal_name, fiscal_lastname, departments_description,
                     orders_locality,orders_date, dependencies_description,sign_date,components_code,
                     components_description,orders_total_amount,modalities_description,orders_comments, 
-                    orders_plazo,minim_amount,fiscal4_id,fiscal4_date,contract_admin_id,batch, order_states_id'))                    
-                ->where('orders_id', '=', $order_id)                
-                ->orderBy('orders_id')
-                ->get();
+                    orders_plazo,minim_amount,fiscal4_id,fiscal4_date,contract_admin_id,batch, order_states_id'))
+            ->where('orders_id', '=', $order_id)
+            ->orderBy('orders_id')
+            ->get();
 
-            
-            $contracts2 = DB::table('vista_full_rep10') //vista que muestra los datos
-                ->select([
-                    'sub_items_oi_description',
-                    'items_orders_item_number',
-                    'rubros_code',
-                    'rubros_description',
-                    'items_orders_quantity',
-                    'order_presentations_description',
-                    'items_orders_unit_price_mo',
-                    'items_orders_unit_price_mat'
-                ])
-                ->where('orders_id', '=', $order_id)
-                ->Orderby('items_orders_id')
-                ->get();        
+
+        $contracts2 = DB::table('vista_full_rep10') //vista que muestra los datos
+            ->select([
+                'sub_items_oi_description',
+                'items_orders_item_number',
+                'rubros_code',
+                'rubros_description',
+                'items_orders_quantity',
+                'order_presentations_description',
+                'items_orders_unit_price_mo',
+                'items_orders_unit_price_mat'
+            ])
+            ->where('orders_id', '=', $order_id)
+            ->Orderby('items_orders_id')
+            ->get();
         // }
 
-        $view = View::make('reports.contracts_items10', compact('contracts0','contracts1', 'contracts2', 'user'))->render();
+        $view = View::make('reports.contracts_items10', compact('contracts0', 'contracts1', 'contracts2', 'user'))->render();
         // $view = View::make('reports.contracts_items', compact('contracts1', 'contracts2', 'contracts3'))->render();
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
@@ -160,7 +183,7 @@ class ReportsController extends Controller
         return $pdf->stream('ORDEN DE EJECUCIÓN' . '.pdf');
     }
 
-    
+
     // Para mostrar todos los llamados que tienen contratos
     public function generarContracts(Request $request, $contract_id)
     {
@@ -637,17 +660,17 @@ class ReportsController extends Controller
         if ($request->user()->hasPermission(['admin.contracts.show'])) {
             //filtra y muestra vista para elegir reporte en pdf por dependencia
             $contracts_poli = DB::table('vista_contracts_days_full')
-            ->selectRaw('DISTINCT ON (dependencia) iddncp, number_year, dependency_id, dependencia')
-            ->whereIn('state_id', [1]) //1-En curso
-            ->where([
-                ['dias_advance', '<=', 0],
-                ['dias_advance_endo', null]
-            ])
-            ->orWhere([
-                ['dias_advance', '<=', 0],
-                ['dias_advance_endo', '<=', 0]
-            ])
-            ->get();
+                ->selectRaw('DISTINCT ON (dependencia) iddncp, number_year, dependency_id, dependencia')
+                ->whereIn('state_id', [1]) //1-En curso
+                ->where([
+                    ['dias_advance', '<=', 0],
+                    ['dias_advance_endo', null]
+                ])
+                ->orWhere([
+                    ['dias_advance', '<=', 0],
+                    ['dias_advance_endo', '<=', 0]
+                ])
+                ->get();
             //MUESTRA VISTA PARA PODER ELEGIR LA DEPENDENCIA PARA MOSTRAR EL PDF DE ALERTA
             return view('reports.contracts_vctos_polizas_menu', compact('contracts_poli'));
         } else {
@@ -701,12 +724,11 @@ class ReportsController extends Controller
                 ->where('dependency_id', $request->user()->dependency_id) //filtra por dependencia que generó la info
                 ->get();
 
-                $view = View::make('reports.contracts_vctos_polizas', compact('contracts_poli', 'contracts_endo',))->render();
-                $pdf = App::make('dompdf.wrapper');
-                $pdf->loadHTML($view);
-                $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
-                return $pdf->stream('DETALLES ALERTA VENCIMIENTOS DE PÓLIZAS' . '.pdf');
-
+            $view = View::make('reports.contracts_vctos_polizas', compact('contracts_poli', 'contracts_endo',))->render();
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadHTML($view);
+            $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
+            return $pdf->stream('DETALLES ALERTA VENCIMIENTOS DE PÓLIZAS' . '.pdf');
         }
     }
 
@@ -764,11 +786,11 @@ class ReportsController extends Controller
                 ->where('dependency_id', '=', $dependency_id)
                 ->get();
 
-                $view = View::make('reports.contracts_vctos_polizas', compact('contracts_poli', 'contracts_endo',))->render();
-                $pdf = App::make('dompdf.wrapper');
-                $pdf->loadHTML($view);
-                $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
-                return $pdf->stream('DETALLES ALERTA VENCIMIENTOS DE PÓLIZAS' . '.pdf');
+            $view = View::make('reports.contracts_vctos_polizas', compact('contracts_poli', 'contracts_endo',))->render();
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadHTML($view);
+            $pdf->setPaper('A4', 'landscape'); //coloca en apaisado
+            return $pdf->stream('DETALLES ALERTA VENCIMIENTOS DE PÓLIZAS' . '.pdf');
         }
         // Mail::to('rogoma700@gmail.com')->send(new enviar_alertas($contenido));
     }
@@ -802,10 +824,10 @@ class ReportsController extends Controller
             ])
             ->get();
 
-        return view('reports.contracts_vctos_polizas_menu', compact('contracts_poli','contracts_endo'));
+        return view('reports.contracts_vctos_polizas_menu', compact('contracts_poli', 'contracts_endo'));
     }
 
-    
+
     // Para mostrar llamados de Compras Menores
     public function generarPanelMinor()
     {
@@ -1182,9 +1204,9 @@ class ReportsController extends Controller
     {
         //SE ORDENA POR CI SE CASTEA VARCHAR A INTEGER EN ORDERBYRAW
         $districts = DB::table('vista_div_politica')
-            ->select('department_id','departamento', 'distrito')
+            ->select('department_id', 'departamento', 'distrito')
             ->distinct()
-            ->orderBy('department_id')            
+            ->orderBy('department_id')
             ->get();
 
         // PARA MOSTRAR COMO PDF
