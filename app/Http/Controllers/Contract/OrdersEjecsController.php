@@ -466,6 +466,11 @@ class OrdersEjecsController extends Controller
         if (($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 10) {
             $order->order_state_id = 1;        
         }
+
+        // if (($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 1) {
+        //     $order->order_state_id = 10;        
+        // }
+
         
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
         if ($request->filled('sign_date_fin')) {

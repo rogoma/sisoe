@@ -157,6 +157,22 @@
                                                     </div>                                                    
                                                 </div>                                               
 
+                                                <span style="color: red; font-size: 1.1rem; font-weight: bold">
+                                                    Fecha de Orden: {{ $order->created_at->format('d/m/Y') }} 
+
+                                                    @if ($order->order_state_id == 1)
+                                                        - Estado de la Orden: En curso
+                                                    @endif
+                                                    
+                                                    @if ($order->order_state_id == 10)
+                                                        - Estado de la Orden: Pendiente de carga de Fecha acuse de recibo Contratista
+                                                    @endif
+                                                    
+                                                    @if ($order->order_state_id == 11)
+                                                        - Estado de la Orden: Cargue Rubros de la Orden de Ejecución
+                                                    @endif
+                                                </span>
+
                                                 <div class="form-group row">
                                                     <div class="col-sm-3">
                                                         <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
@@ -226,15 +242,15 @@
                                                                 autocomplete="off"
                                                                 oninput="toggleFileUpload()"
                                                                 @if ($order->sign_date === null) disabled @endif>                                                    
-                                                            <span class="input-group-append">
-                                                                <button 
-                                                                    type="button" 
-                                                                    class="btn btn-outline-secondary" 
-                                                                    onclick="show('sign_date_fin');" 
-                                                                    {{ empty($order->sign_date_fin) ? 'disabled' : '' }}>
-                                                                    <i class="fa fa-calendar"></i>
-                                                                </button>
-                                                            </span>
+                                                                <span class="input-group-append">
+                                                                    <button 
+                                                                        type="button" 
+                                                                        class="btn btn-outline-secondary" 
+                                                                        onclick="show('sign_date_fin');" 
+                                                                        {{ empty($order->sign_date_fin) ? 'disabled' : '' }}>
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </button>
+                                                                </span>
                                                         </div>
                                                         @error('sign_date_fin')
                                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -250,7 +266,7 @@
                                                     </div> --}}
 
                                                     <div class="col-sm-4">                                                    
-                                                        <label class="col-form-label text-danger">Cargar Archivo: <h7>(Tipo de archivo: PDF, DOC, DOCX hasta 5 MEGAS)</h7></label>
+                                                        <label class="col-form-label text-danger">Cargar Archivo: <h7>(Tipo:PDF,DOC,DOCX hasta 5MB)</h7></label>
                                                         <input id="file" type="file"  name="file"  class="form-control @error('file') has-danger @enderror">
                                                         @error('file')                                                            
                                                             <div class="col-form-label text-danger">{{ $message }}</div>
@@ -258,13 +274,13 @@
                                                     </div>
 
                                                     <div class="col-sm-5">
-    <label for="observation" class="col-form-label">Observación (Hasta 500 caracteres)</label>
-    <textarea id="observation" name="observation" class="form-control @error('observation') is-invalid @enderror"
-        maxlength="500" disabled>{{ old('observation', $order->observation) }}</textarea>
-    @error('observation')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                                                        <label for="observation" class="col-form-label">Observación (Hasta 500 caracteres)</label>
+                                                        <textarea id="observation" name="observation" class="form-control @error('observation') is-invalid @enderror"
+                                                            maxlength="500" disabled>{{ old('observation', $order->observation) }}</textarea>
+                                                        @error('observation')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
                                                     
                                                     <div class="col-sm-9">
@@ -296,7 +312,7 @@
                                             </div>
                                             <br>
                                             <br>
-                                            <p><span style="color: red;">REFERENCIAS: PLAZO EN DIAS:</span></p>
+                                            <p><span style="color: red;"></span></p>
                                             <ul style="color: red;">
                                                 REFERENCIAS: PLAZO EN DIAS:
                                                 * Fuente de Provisión: 30 *
@@ -447,14 +463,29 @@
         $('#component_id, #order_state_id, #department_id, #district_id, #locality_id').select2();
         
         // Inicialización del datepicker
-        $('#sign_date, #sign_date_fin').datepicker({
+        $('#sign_date').datepicker({
                 language: 'es',
                 format: 'dd/mm/yyyy',
                 autoclose: true,
                 todayHighlight: true,
-                endDate: "today" // Restringe la selección de fechas futuras
-        });        
+                // startDate: "{{ $order->created_at->format('d/m/Y') }}", // No permite fechas menores a la fecha de la orden
+                startDate: "{{ $order->created_at->format('d/m/Y') }}", // No permite fechas menores a la fecha de la orden
+                endDate: "Today", // No permite fechas menores a la fecha de acuse de recibo
+        });
+        
+        $('#sign_date_fin').datepicker({
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                endDate: "Today", // No permite fechas menores a la fecha de acuse de recibo
+        });
 
+        // $('#sign_date').on('changeDate', function (selected) {
+        //     let minDate = new Date(selected.date.valueOf());
+        //     $('#sign_date_fin').datepicker('setStartDate', minDate);
+        // });
+        
         $('#locality_id').on('input', function() {
             $('#component_id').val($('#component_id option:first').val())
         .change(); // Establece la primera opción y dispara el evento change
@@ -482,11 +513,12 @@
         function toggleSignDateFin() {
                 let signDate = $('#sign_date');
                 let signDateFin = $('#sign_date_fin');
+                // signDateFin.prop('disabled', FALSE);
 
                 if ($.trim(signDate.val()) === "") {
                     signDateFin.val("").prop('disabled', true);
                     
-                } else {
+                } else {                    
                     signDateFin.prop('disabled', false);
                 }
             }
@@ -541,269 +573,20 @@
                 $('#guardar').removeAttr("disabled");
             }
         });
+
+        //Controla que no grabe si es que estado es 1 en curso  (que ya tiene fecha de acuse de recibo) y que se borre la fecha de acuse de recibo
+        $('#guardar').on('click', function (e) {
+            let orderStateId = {{ $order->order_state_id ?? 'null' }};
+            let signDate = $('#sign_date');
+
+            // Validación: si estado = 1 y sign_date vacío
+            if (orderStateId === 1 && $.trim(signDate.val()) === "") {
+                e.preventDefault(); // Bloquea el envío
+                swal("Atención", "No se puede grabar la orden con el estado 'EN CURSO' y sin fecha de acuse recibo.", "warning");
+                return false;
+            }
+        });
         
     });
     </script>
 @endpush
-
-
-{{-- @push('scripts')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // Evento para cargar distritos al cambiar el departamento
-            $('#department_id').on('change', function() {
-                var departmentId = $(this).val();
-                var districtDropdown = $('#district_id');
-                var localityDropdown = $('#locality_id');
-
-                // Limpia el combo de distritos
-                districtDropdown.empty().append('<option value="">--- Seleccionar Distrito ---</option>');
-                localityDropdown.empty().append('<option value="">--- Seleccionar Localidad ---</option>');
-
-                if (departmentId) {
-                    // Realiza la solicitud AJAX para obtener distritos
-                    $.ajax({
-                        url: '/fetch-districts',
-                        type: 'GET',
-                        data: {
-                            department_id: departmentId
-                        },
-                        success: function(data) {
-                            // Agrega las opciones al combo de distritos
-                            $.each(data, function(key, district) {
-                                districtDropdown.append('<option value="' + district
-                                    .id + '">' + district.description + '</option>');
-                            });
-                            $('#district_id').prop('disabled', false);
-                            $('#locality_id').prop('disabled', false);
-                        },
-                        error: function(xhr) {
-                            console.error('Error fetching districts:', xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            // Evento para cargar localidades al cambiar el distrito
-            $('#district_id').on('change', function() {
-                var districtId = $(this).val();
-                var localityDropdown = $('#locality_id');
-
-                // Limpia el combo de localidades
-                localityDropdown.empty().append('<option value="">--- Seleccionar Localidad ---</option>');
-
-                if (districtId) {
-                    // Realiza la solicitud AJAX para obtener localidades
-                    $.ajax({
-                        url: '/fetch-localities',
-                        type: 'GET',
-                        data: {
-                            district_id: districtId
-                        },
-                        success: function(data) {
-                            // Agrega las opciones al combo de localidades
-                            $.each(data, function(key, locality) {
-                                localityDropdown.append('<option value="' + locality
-                                    .id + '">' + locality.description + '</option>');
-                            });
-                            $('#locality_id').prop('disabled', false);
-                        },
-                        error: function(xhr) {
-                            console.error('Error fetching localities:', xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            // Inicialización de Select2
-            $('#component_id, #order_state_id, #department_id, #district_id, #locality_id').select2();
-
-            // Configuración de Datepicker
-            $('#sign_date, #sign_date_fin').datepicker({
-                language: 'es',
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                endDate: "today" // Restringe la selección de fechas futuras
-            });
-
-            // Control de habilitación de sign_date_fin
-            function toggleSignDateFin() {
-                let signDate = $('#sign_date');
-                let signDateFin = $('#sign_date_fin');
-
-                if ($.trim(signDate.val()) === "") {
-                    signDateFin.val("").prop('disabled', true);
-                } else {
-                    signDateFin.prop('disabled', false);
-                }
-            }
-
-            // Ejecutar la función al cargar la página
-            toggleSignDateFin();
-
-            // Evento al cambiar sign_date
-            $('#sign_date').on('change', toggleSignDateFin);
-
-            // Evento al cambiar sign_date_fin (deshabilitar sign_date si se selecciona)
-            $('#sign_date_fin').on('change', function() {
-                // $('#sign_date').prop('disabled', $.trim($(this).val()) !== "");
-            });
-
-            // Control de habilitación del campo de archivo
-            function toggleFileUpload() {
-                let fileInput = $('#file');
-                let signDateFin = $('#sign_date_fin');
-
-                fileInput.prop('disabled', $.trim(signDateFin.val()) === '');
-            }
-
-            // Ejecutar la función al cargar la página para mantener el estado correcto
-            toggleFileUpload();
-
-            // Evento al cambiar sign_date_fin
-            $('#sign_date_fin').on('change', toggleFileUpload);
-
-            // Manejo del cambio en el select component_id
-            let select = document.getElementById("component_id");
-            select.dataset.previousValue = select.value; // Guardamos el valor actual
-            let orderStateId = {{ $order->order_state_id ?? 'null' }}; // Pasar el estado de la orden desde PHP
-
-            // $('#component_id').on('change', function() {
-            //     let previousValue = this.dataset.previousValue; // Valor antes del cambio
-            //     let newValue = this.value; // Nuevo valor seleccionado
-
-            //     // if (newValue !== previousValue && (orderStateId === 10 || orderStateId === 1)) {
-            //     //     let selectedOptionText = this.options[this.selectedIndex].text;
-            //     //     alert("Cambiado por el Componente: " + selectedOptionText +" "+ " Edite rubros para recalcular valores del nuevo Componente");
-            //     //     this.dataset.previousValue = newValue; // Actualizamos el valor guardado
-            //     // }
-
-            //     if (newValue !== previousValue && (orderStateId === 10 || orderStateId === 1)) {
-            //         let selectedOptionText = this.options[this.selectedIndex].text;
-            //         // let mensaje = "Cambiado por el Componente: " + selectedOptionText + " Edite rubros para recalcular valores del nuevo Componente";
-            //         let mensaje = "Cambiado por el Componente: " + selectedOptionText;
-            //         let mensaje2 = "Edite rubros para recalcular valores del nuevo Componente";
-            //         document.getElementById('mensaje-componente').textContent = mensaje;
-            //         document.getElementById('mensaje-componente2').textContent = mensaje2;
-            //         // O si prefieres usar html dentro del div
-            //         // document.getElementById('mensaje-componente').innerHTML = '<span style="color: red;">' + mensaje + '</span>';
-            //         this.dataset.previousValue = newValue;
-            //     }
-            // });
-
-            $('#component_id').on('change', function() {
-
-                const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
-                const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
-                const locality = $('#locality_id').val(); // Obtiene la localidad seleccionada
-                const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
-
-                // Limpia el campo de texto al cambiar de componente
-                numberInput.val('');
-
-                if (componentId && locality) {
-                    // Realiza la solicitud al backend incluyendo la localidad
-                    fetch(`${url}?component_id=${componentId}&locality_id=${locality}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                const maxNumber = data.number || 0; // Si no hay registros, muestra 0
-                                const nextNumber = maxNumber + 1;
-                                numberInput.val(nextNumber); // Actualiza el valor del input
-                                $('#number_hidden').val(
-                                    nextNumber); // Actualiza el valor del input oculto
-                            } else {
-                                console.error('Error al obtener el número:', data.message);
-                                numberInput.val('Error'); // Muestra un mensaje en caso de error
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error en la solicitud:', error);
-                            numberInput.val('Error'); // Muestra un mensaje en caso de error
-                        });
-                }
-            });
-
-            $('#locality_id').on('input', function() {
-            $('#component_id').val($('#component_id option:first').val())
-        .change(); // Establece la primera opción y dispara el evento change
-        });
-
-        // Cuando el usuario sale del input locality
-        $('#locality_id').on('blur', function() {
-            let url = $('#component_id').data('url'); // Obtener la URL desde el atributo data-url
-            if (url) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        console.log(response); // Manejar la respuesta aquí si es necesario
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error al obtener los datos:', error);
-                    }
-                });
-            }
-        });
-
-        });
-    </script>
-@endpush --}}
-
-
-
-
-
-
-{{-- @push('scripts')
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            $('#department_id').on('change', function() {
-                var departmentId = $(this).val();
-                $('#district_id').empty().append('<option value="">--- Seleccionar Distrito ---</option>');
-
-                if (departmentId) {
-                    $.ajax({
-                        url: '/fetch-districts',
-                        type: 'GET',
-                        data: {
-                            department_id: departmentId
-                        },
-                        success: function(data) {
-                            $.each(data, function(key, district) {
-                                $('#district_id').append('<option value="' + district
-                                    .id +
-                                    '">' + district.description + '</option>');
-                            });
-                        },
-                        error: function(xhr) {
-                            console.error('Error fetching districts:', xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            $('#component_id').select2();
-            $('#order_state_id').select2();
-            $('#department_id').select2();
-            $('#district_id').select2();
-
-            $('#sign_date').datepicker({
-                language: 'es',
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-            });
-
-            $('#sign_date_fin').datepicker({
-                language: 'es',
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-            });
-        });
-    </script>
-@endpush --}}
