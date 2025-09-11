@@ -508,6 +508,14 @@
                 endDate: "Today", // No permite fechas menores a la fecha de acuse de recibo
         });
 
+        $('#created_at').datepicker({
+                language: 'es',
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                endDate: "Today", // No permite fechas menores a la fecha de acuse de recibo
+        });
+
         // $('#sign_date').on('changeDate', function (selected) {
         //     let minDate = new Date(selected.date.valueOf());
         //     $('#sign_date_fin').datepicker('setStartDate', minDate);

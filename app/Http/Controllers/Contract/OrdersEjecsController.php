@@ -510,7 +510,8 @@ class OrdersEjecsController extends Controller
         $order->comments = $request->input('comments');
         $order->plazo = $request->input('plazo');        
         $order->district_id = $request->input('district_id');
-        $order->creator_user_id = $request->user()->id;  // usuario logueado
+        $order->creator_user_id = $request->user()->id;  // usuario logueado        
+        $order->created_at = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('created_at')))); //fecha de la orden
         $order->save();
         return redirect()->route('contracts.show', $contract_id)->with('success', 'Orden modificada correctamente'); // Caso usuario posee rol pedidos
 
