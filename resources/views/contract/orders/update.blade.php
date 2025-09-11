@@ -161,19 +161,46 @@
                                                     Fecha de Orden: {{ $order->created_at->format('d/m/Y') }} 
 
                                                     @if ($order->order_state_id == 1)
-                                                        - Estado de la Orden: En curso
+                                                        - Estado de la Orden: 1- En curso
                                                     @endif
                                                     
                                                     @if ($order->order_state_id == 10)
-                                                        - Estado de la Orden: Pendiente de carga de Fecha acuse de recibo Contratista
+                                                        - Estado de la Orden: 10 - Pendiente de carga de Fecha acuse de recibo Contratista
                                                     @endif
                                                     
                                                     @if ($order->order_state_id == 11)
-                                                        - Estado de la Orden: Cargue Rubros de la Orden de Ejecución
+                                                        - Estado de la Orden: 11 - Cargue Rubros de la Orden de Ejecución
                                                     @endif
                                                 </span>
 
                                                 <div class="form-group row">
+                                                    <div class="col-sm-3">
+                                                        <label for="created_at" class="col-form-label">Fecha emisión de la orden</label>
+                                                        <div class="input-group">
+                                                            <input type="text"
+                                                                id="created_at"
+                                                                name="created_at"
+                                                                class="form-control @error('created_at') is-invalid @enderror"
+                                                                value="{{ old('created_at', $order->created_at ? $order->created_at->format('d/m/Y') : '') }}"
+                                                                autocomplete="off"
+                                                                {{-- Deshabilitar si no hay items o si el estado es distinto de 10 --}}
+                                                                @if($order->items->count() == 0 || $order->order_state_id != 10) disabled @endif>
+
+                                                            <span class="input-group-append">
+                                                                <button type="button"
+                                                                        class="btn btn-outline-secondary"
+                                                                        onclick="show('created_at');"
+                                                                        @if($order->items->count() == 0 || $order->order_state_id != 10) disabled @endif>
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+
+                                                        @error('created_at')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    
                                                     <div class="col-sm-3">
                                                         <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
                                                         <div class="input-group">
