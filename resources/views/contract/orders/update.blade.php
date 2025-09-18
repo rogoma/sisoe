@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+{{-- Para usar sweet alert --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @section('content')
     <div class="pcoded-content">
         <div class="page-header card">
@@ -54,7 +57,7 @@
                                     <div class="card-block">
                                         <form method="POST"
                                             action="{{ route('contracts.orders.update', [$contract->id, $order->id]) }}"
-                                            enctype="multipart/form-data">
+                                            enctype="multipart/form-data" id="miForm">
                                             @csrf
                                             @method('PUT')
 
@@ -200,6 +203,10 @@
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </div>
+
+                                                    {{-- HIDDEN PARA ENVIAR FECHA DE ORDEN PARA GRABAR --}}
+                                                    <input type="hidden" name="created_at_hidd" value="{{ $order->created_at->format('d/m/Y') }}">
+
                                                     
                                                     <div class="col-sm-3">
                                                         <label for="sign_date" class="col-form-label">Fecha acuse recibo Contratista</label>
@@ -335,7 +342,7 @@
                                                 <div class="form-group text-center">
                                                     <button id="guardar" type="submit"
                                                         class="btn btn-primary">Modificar Orden</button>
-                                                </div>
+                                                </div>                                                
                                             </div>
                                             <br>
                                             <br>
@@ -489,24 +496,38 @@
         // Inicialización de select2 en los combos
         $('#component_id, #order_state_id, #department_id, #district_id, #locality_id').select2();
         
-        // Inicialización del datepicker
-        $('#sign_date').datepicker({
-                language: 'es',
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                // startDate: "{{ $order->created_at->format('d/m/Y') }}", // No permite fechas menores a la fecha de la orden
-                startDate: "{{ $order->created_at->format('d/m/Y') }}", // No permite fechas menores a la fecha de la orden
-                endDate: "Today", // No permite fechas menores a la fecha de acuse de recibo
-        });
         
-        $('#sign_date_fin').datepicker({
-                language: 'es',
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                endDate: "Today", // No permite fechas menores a la fecha de acuse de recibo
+        // Inicializa el primer datepicker
+        $('#sign_date').datepicker({
+            language: 'es',
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            startDate: "{{ $order->created_at->format('d/m/Y') }}",
+            endDate: "today"
+        }).on('changeDate', function (e) {
+            // Cuando cambie, actualiza el mínimo del segundo
+            $('#sign_date_fin').datepicker('setStartDate', e.date);
         });
+
+        // Inicializa el segundo datepicker
+        $('#sign_date_fin').datepicker({
+            language: 'es',
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            startDate: "{{ $order->created_at->format('d/m/Y') }}",
+            endDate: "today"
+        });
+
+        // 🔑 Ajusta el mínimo del segundo usando el valor ya cargado en #sign_date
+        var signDateValue = $('#sign_date').val();
+        if (signDateValue) {
+            // Convertir dd/mm/yyyy a objeto Date
+            var parts = signDateValue.split('/');
+            var initialDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            $('#sign_date_fin').datepicker('setStartDate', initialDate);
+        }
 
         $('#created_at').datepicker({
                 language: 'es',
@@ -620,8 +641,40 @@
                 swal("Atención", "No se puede grabar la orden con el estado 'EN CURSO' y sin fecha de acuse recibo.", "warning");
                 return false;
             }
+        });        
+
+        //CONTROLA QUE FECHA DE ORDEN NO ESTE VACIO PARA GRABAR
+        $('#miForm').on('submit', function (e) {
+        const valor = $('#created_at').val().trim();
+        if (valor === '') {
+            e.preventDefault(); // Evita el envío del formulario
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: 'Seleccione fecha para la orden antes de guardar.'
+                }).then(() => {
+                    $('#created_at').focus(); // Pone el cursor en el campo
+                });
+            }
         });
-        
+
+        //CONTROLA QUE NO TENGA FECHA ACUSE SIN FECHA DE ORDEN
+        function toggleSignDate() {
+            const createdVal = $('#created_at').val().trim();
+            if (createdVal === '') {
+                $('#sign_date').prop('disabled', true).val(''); // deshabilita y limpia
+            } else {
+                $('#sign_date').prop('disabled', false);       // habilita
+            }
+        }
+
+        // Al cargar la página
+        toggleSignDate();
+
+        // Cada vez que cambie el campo created_at (datepicker o input)
+        $('#created_at').on('change keyup', toggleSignDate);
+
     });
     </script>
 @endpush

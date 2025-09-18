@@ -471,8 +471,7 @@
                                                                     {{ $order->component_code }} - {{ $order->number }}
                                                                 </td>
                                                                 <td style="text-align: center;width: 25px;">
-                                                                    {{ date('d/m/Y', strtotime($order->created_at)) }}</td>
-                                                                {{-- old('sign_date', date('d/m/Y', strtotime($order->created_at))) --}}
+                                                                    {{ date('d/m/Y', strtotime($order->created_at)) }}</td>                                                                
                                                                 <td style="text-align: center;width: 100px;">
                                                                     {{ $order->totalAmountFormat() }}</td>
                                                                 <td style="text-align: left;width: 120px;">
@@ -648,15 +647,7 @@
                                                                                 <a href="/pdf/panel_contracts10/{{ $order->id }}"
                                                                                     title="Ver Orden" target="_blank"
                                                                                     class="btn btn-success btn-icon"><i
-                                                                                        class="fa fa-eye"></i></a>
-
-                                                                                {{-- ACA PREGUNTAMOS SI LA ORDEN ES DEL MISMO USUARIO LOGUEADO --}}
-                                                                                {{-- @if (Auth::user()->id == $order->creator_user_id)
-                                                                                    <button type="button" title="Anular"
-                                                                                        class="btn btn-danger btn-icon"
-                                                                                        onclick="anuleOrder({{ $order->id }})"><i
-                                                                                            class="fa fa-ban"></i></button>
-                                                                                @endif --}}
+                                                                                        class="fa fa-eye"></i></a>                                                                                
 
                                                                                 {{-- Editar y Cambiar Rubros de la orden --}}
                                                                                 @if (Auth::user()->id == $order->creator_user_id && ($order->orderState->id == 1 || $order->orderState->id == 10))
