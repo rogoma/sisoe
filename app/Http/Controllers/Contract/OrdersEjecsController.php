@@ -467,10 +467,10 @@ class OrdersEjecsController extends Controller
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
         if ($request->filled('sign_date_fin')) {
             $order->sign_date_fin = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date_fin'))));
-            $order->order_state_id = 4;
-            
+            $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));
+            $order->order_state_id = 4;            
         } else {
-            $order->sign_date = $request->filled('sign_date') ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date')))) : null;
+            $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));            
             $order->sign_date_fin = null;
         }       
 
@@ -508,7 +508,8 @@ class OrdersEjecsController extends Controller
         // var_dump($order->order_state_id);exit;
         
 
-        if ($order->order_state_id == 4) {            
+        //SI ESTADO ES EN CURSO DEBE GUARDAR FECHA OCULTA created_at_hidd
+        if (in_array($order->order_state_id, [1, 4])) {
            $order->created_at = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('created_at_hidd')))); //fecha de la orden  
         } else {
            $order->created_at = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('created_at')))); //fecha de la orden 

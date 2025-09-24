@@ -572,8 +572,7 @@
                 // signDateFin.prop('disabled', FALSE);
 
                 if ($.trim(signDate.val()) === "") {
-                    signDateFin.val("").prop('disabled', true);
-                    
+                    signDateFin.val("").prop('disabled', true);                    
                 } else {                    
                     signDateFin.prop('disabled', false);
                 }
@@ -586,14 +585,14 @@
             $('#sign_date').on('change', toggleSignDateFin);
 
             // Evento al cambiar sign_date_fin (deshabilitar sign_date si se selecciona)
-            $('#sign_date_fin').on('change', function () {
-                let signDate = $('#sign_date');
-                if ($.trim($(this).val()) !== "") {
-                    signDate.prop('disabled', true);
-                } else {
-                    signDate.prop('disabled', false);
-                }
-            });
+            // $('#sign_date_fin').on('change', function () {
+            //     let signDate = $('#sign_date');
+            //     if ($.trim($(this).val()) !== "") {
+            //         signDate.prop('disabled', true);
+            //     } else {
+            //         signDate.prop('disabled', false);
+            //     }
+            // });
 
             // Control de habilitación del campo de archivo
             function toggleFileUpload() {
