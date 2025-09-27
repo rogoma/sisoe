@@ -269,7 +269,7 @@
                         </li> --}}
                         <li class="pcoded-hasmenu">
                             <a href="javascript:void(0)" class="waves-effect waves-dark">
-                            <span class="pcoded-micon"><i class="fa fa-money"></i></span>
+                            <span class="pcoded-micon"><i class="fa fa-credit-card"></i></span>
                             <span class="pcoded-mtext">Estructura Presupuestaria</span>
                             </a>
                             <ul class="pcoded-submenu">
