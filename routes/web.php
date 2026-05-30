@@ -172,6 +172,7 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     //RECURSO PARA MOSTRAR TABLERO EMBEBIDO DRIVE
     // Route::resource('/tablero', ContractsController::class);
     Route::get('/tablero', [ViaticoController::class, 'tablero'])->name('tablero.index');
+    Route::get('/tablero2', [ViaticoController::class, 'tablero2'])->name('tablero.index');
 
     
     //RECURSOS DE CONTRACTS PARA MANEJAR ORDERS (ORDENES)

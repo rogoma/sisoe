@@ -63,5 +63,11 @@ class ViaticoController extends Controller
         return view('tablero');
     }
 
+    public function tablero2()
+    {
+        // $viaticos = Viatico::orderBy('fecha')->get();
+        return view('tablero2');
+    }
+
 
 }

@@ -39,7 +39,7 @@
                                     </div>
                                     <div class="col-md-12 col-lg-6 p-t-30">
                                         <h3 class="text-center mt-2">SISOE</h3>
-                                        <h4 class="text-center text-mute">Sistema de Gestión de Ordenes de Ejecución de Componentes y Rubros de Obras</h4>
+                                        <h4 class="text-center text-mute">Gestión de Ordenes de Ejecución de Componentes y Rubros de Obras</h4>
                                         <hr class="mb-4">
 
                                         <div class="form-group">
