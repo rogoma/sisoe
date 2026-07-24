@@ -268,14 +268,15 @@
             const componentId = $(this).val(); // Obtiene el ID del componente seleccionado
             const url = $(this).data('url'); // Obtiene la URL desde el atributo data-url
             const locality = $('#locality_id').val(); // Obtiene la localidad seleccionada
+            const district = $('#district_id').val(); // Obtiene el distrito seleccionado
             const numberInput = $('#number'); // Referencia al input donde se mostrará el número máximo
 
             // Limpia el campo de texto al cambiar de componente
             numberInput.val('');
 
             if (componentId && locality) {
-                // Realiza la solicitud al backend incluyendo la localidad
-                fetch(`${url}?component_id=${componentId}&locality_id=${locality}`)
+                // Realiza la solicitud al backend incluyendo la localidad y el distrito
+                fetch(`${url}?component_id=${componentId}&locality_id=${locality}&district_id=${district}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
@@ -284,6 +285,12 @@
                             numberInput.val(nextNumber); // Actualiza el valor del input
                             $('#number_hidden').val(
                                 nextNumber); // Actualiza el valor del input oculto
+
+                            // Avisa si ese Componente ya fue procesado en esa Localidad/Distrito
+                            if (data.exists) {
+                                const selectedOptionText = $('#component_id option:selected').text();
+                                swal('Atención', 'En esa Localidad/Distrito ya se procesó el Componente: ' + selectedOptionText, 'warning');
+                            }
                         } else {
                             console.error('Error al obtener el número:', data.message);
                             numberInput.val('Error'); // Muestra un mensaje en caso de error
@@ -294,7 +301,7 @@
                         numberInput.val('Error'); // Muestra un mensaje en caso de error
                     });
             }
-        });        
+        });
 
         // Evento para cargar distritos al cambiar el departamento
         $('#department_id').on('change', function() {

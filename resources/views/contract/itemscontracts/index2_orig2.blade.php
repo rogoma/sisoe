@@ -258,6 +258,37 @@
             $("#tot_gral").text(totalGral.toLocaleString('es-ES'));
         }
 
+        // Controla si el rubro ya tuvo movimiento en otra Orden de Ejecución de la misma Localidad/Distrito
+        $(".quantity").on("change", function() {
+            let input = $(this);
+            let row = input.closest('tr');
+            let rubroId = parseInt(row.find('.rubro-id').text().trim()) || 0;
+            let orderId = $('#order_id').val();
+            let quantity = parseFloat(input.val()) || 0;
+
+            if (rubroId && quantity > 0) {
+                $.ajax({
+                    url: '{{ route('checkRubroMovement') }}',
+                    type: 'GET',
+                    data: {
+                        rubro_id: rubroId,
+                        order_id: orderId
+                    },
+                    success: function(response) {
+                        if (response.success && response.exists) {
+                            swal('Atención',
+                                'Este Rubro ya tuvo movimiento en otra Orden de Ejecución de la misma Localidad/Distrito. No se permite cargar el valor.',
+                                'warning');
+                            input.val(0).trigger('input');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error al verificar movimiento del rubro:', xhr.responseText);
+                    }
+                });
+            }
+        });
+
         $(".quantity").on("input", function() {
             let index = $(this).data("index");
             let quantity = parseFloat($(this).val()) || 0;

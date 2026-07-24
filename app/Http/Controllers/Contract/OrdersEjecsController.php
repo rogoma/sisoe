@@ -280,15 +280,31 @@ class OrdersEjecsController extends Controller
     {
         $componentId = $request->input('component_id');
         $locality = $request->input('locality_id');
+        $district = $request->input('district_id');
 
         // Buscar el número máximo solo de los registros con la misma localidad
         $maxNumber = Order::where('component_id', $componentId)
             ->where('locality_id', $locality) // Filtra por localidad
             ->max('number');
 
+        // Verifica si el Componente ya fue procesado en esa Localidad/Distrito
+        $exists = false;
+        if ($componentId && $locality && $district) {
+            $existsQuery = Order::where('component_id', $componentId)
+                ->where('locality_id', $locality)
+                ->where('district_id', $district);
+
+            if ($request->filled('order_id')) {
+                $existsQuery->where('id', '!=', $request->input('order_id'));
+            }
+
+            $exists = $existsQuery->exists();
+        }
+
         return response()->json([
             'success' => true,
-            'number' => $maxNumber ?? 0 // Si no hay registros, devuelve 0
+            'number' => $maxNumber ?? 0, // Si no hay registros, devuelve 0
+            'exists' => $exists
         ]);
     }
 
@@ -465,14 +481,19 @@ class OrdersEjecsController extends Controller
         }
         
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
+        // SI Fecha acuse recibo Contratista está en blanco se graba null en sign_date
         if ($request->filled('sign_date_fin')) {
             $order->sign_date_fin = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date_fin'))));
-            $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));
-            $order->order_state_id = 4;            
+            $order->sign_date = $request->filled('sign_date')
+                ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))))
+                : null;
+            $order->order_state_id = 4;
         } else {
-            $order->sign_date = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))));            
+            $order->sign_date = $request->filled('sign_date')
+                ? date('Y-m-d', strtotime(str_replace("/", "-", $request->input('sign_date'))))
+                : null;
             $order->sign_date_fin = null;
-        }       
+        }
 
         $order->locality_id = $request->input('locality_id');
         $order->component_id = $request->input('component_id');

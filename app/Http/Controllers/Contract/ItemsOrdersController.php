@@ -143,7 +143,36 @@ class ItemsOrdersController extends Controller
         return response()->json(['redirect_url' => route('orders.show', $data['order_id'])]);
     }
 
-    
+    /**
+     * Verifica si un rubro ya tuvo movimiento (cantidad cargada) en otra Orden de
+     * Ejecución que pertenezca a la misma Localidad/Distrito.
+     */
+    public function checkRubroMovement(Request $request)
+    {
+        $rubroId = $request->input('rubro_id');
+        $orderId = $request->input('order_id');
+
+        $order = Order::find($orderId);
+
+        $exists = false;
+        if ($rubroId && $order) {
+            $exists = ItemOrder::where('rubro_id', $rubroId)
+                ->where('quantity', '>', 0)
+                ->where('order_id', '!=', $order->id)
+                ->whereHas('order', function ($q) use ($order) {
+                    $q->where('locality_id', $order->locality_id)
+                        ->where('district_id', $order->district_id);
+                })
+                ->exists();
+        }
+
+        return response()->json([
+            'success' => true,
+            'exists' => $exists
+        ]);
+    }
+
+
 
     /**
      * Funcionalidad de guardado del pedido de ítemes Contrato Abierto.

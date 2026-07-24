@@ -237,7 +237,10 @@ Route::middleware('auth')->group(function () {  // Las siguientes funcionalidade
     Route::post('items_orders/store', [ItemsOrdersController::class, 'store'])->name('items_orders.store');
 
     Route::post('/item-orders', [ItemsOrdersController::class, 'store']);
-       
+
+    //PARA VERIFICAR SI UN RUBRO YA TUVO MOVIMIENTO EN OTRA ORDEN DE LA MISMA LOCALIDAD/DISTRITO
+    Route::get('/check-rubro-movement', [ItemsOrdersController::class, 'checkRubroMovement'])->name('checkRubroMovement');
+
 
     // SE AGREGA PARA EDITAR PROVEEDORES EN CONTRATOS
     Route::get('orders/{id}/budget_request_providers/{budget}edit_providers_contracts', [BudgetRequestProvidersController::class, 'edit_providers_contracts'])->name('orders.budget_request_providers.edit_providers_contracts');
