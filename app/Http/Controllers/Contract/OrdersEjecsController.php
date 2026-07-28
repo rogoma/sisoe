@@ -405,6 +405,12 @@ class OrdersEjecsController extends Controller
         $order = Order::findOrFail($order_id);
         $post_max_size = $this->postMaxSize;
 
+        // Guarda el estado original de la orden ANTES de aplicar cambios, para saber si el campo
+        // "Fecha emisión de la orden" estaba habilitado en el formulario (ver update.blade.php:
+        // se deshabilita si no hay items o si el estado es distinto de 10)
+        $originalOrderStateId = $order->order_state_id;
+        $originalItemsCount = $order->items->count();
+
         $rules = [
             'component_id' => [
                 'required',
@@ -529,11 +535,13 @@ class OrdersEjecsController extends Controller
         // var_dump($order->order_state_id);exit;
         
 
-        //SI ESTADO ES EN CURSO DEBE GUARDAR FECHA OCULTA created_at_hidd
-        if (in_array($order->order_state_id, [1, 4])) {
-           $order->created_at = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('created_at_hidd')))); //fecha de la orden  
+        //SI EL CAMPO "Fecha emisión de la orden" ESTABA DESHABILITADO EN EL FORMULARIO
+        //(SIN ITEMS O ESTADO ORIGINAL DISTINTO DE 10, EJ: 11) NO SE MODIFICA created_at,
+        //SE MANTIENE EL VALOR ORIGINAL ENVIADO EN EL CAMPO OCULTO created_at_hidd
+        if ($originalOrderStateId == 10 && $originalItemsCount > 0) {
+           $order->created_at = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('created_at')))); //fecha de la orden
         } else {
-           $order->created_at = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('created_at')))); //fecha de la orden 
+           $order->created_at = date('Y-m-d', strtotime(str_replace("/", "-", $request->input('created_at_hidd')))); //fecha de la orden original, no se modifica
         }
 
         $order->save();

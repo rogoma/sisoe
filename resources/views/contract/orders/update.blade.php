@@ -661,8 +661,11 @@
         //CONTROLA QUE NO TENGA FECHA ACUSE SIN FECHA DE ORDEN
         function toggleSignDate() {
             const createdVal = $('#created_at').val().trim();
-            if (createdVal === '') {
-                $('#sign_date').prop('disabled', true).val(''); // deshabilita y limpia
+            if (createdVal === '' || orderStateId === 11) {
+                $('#sign_date').prop('disabled', true); // deshabilita
+                if (createdVal === '') {
+                    $('#sign_date').val(''); // limpia solo si no hay fecha de orden
+                }
             } else {
                 $('#sign_date').prop('disabled', false);       // habilita
             }
