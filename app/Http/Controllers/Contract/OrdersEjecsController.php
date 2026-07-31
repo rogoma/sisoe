@@ -474,16 +474,16 @@ class OrdersEjecsController extends Controller
         
 
         // SI ESTADO = (11) PENDIENTE DE CARGA DE RUBROS Y ACUSE CONTRATISTA Y FINALIZADO SON VACIOS
-        if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 11) {
-            $order->order_state_id = 11;        
+        if (is_null($request->input('sign_date')) && is_null($request->input('sign_date_fin')) && $originalOrderStateId == 11) {
+            $order->order_state_id = 11;
         }
 
-        if (is_null($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 10) {
-            $order->order_state_id = 10;        
+        if (is_null($request->input('sign_date')) && is_null($request->input('sign_date_fin')) && $originalOrderStateId == 10) {
+            $order->order_state_id = 10;
         }
 
-        if (($request->input('sign_date') && (is_null($request->input('sign_date_fin')))) && $order->order_state_id = 10) {
-            $order->order_state_id = 1;        
+        if ($request->filled('sign_date') && is_null($request->input('sign_date_fin')) && $originalOrderStateId == 10) {
+            $order->order_state_id = 1;
         }
         
         // CONTROLA QUE ESTE EN ESTADO FINALIZADO Y QUE ESTE CARGADO FECHA DE FINALIZACIÓN
